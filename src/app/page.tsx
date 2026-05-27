@@ -1,65 +1,1057 @@
-import Image from "next/image";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { SentryWordmark, SentryGlyph } from "@/components/sentry-logo";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  AlertCircle,
+  ArrowUpRight,
+  Bug,
+  CheckCircle2,
+  ChevronRight,
+  Clock,
+  Copy,
+  ExternalLink,
+  GitBranch,
+  Info,
+  Layers,
+  Terminal,
+  TrendingDown,
+  TrendingUp,
+  Users,
+  Zap,
+} from "lucide-react";
+
+const BRAND_COLORS = [
+  { name: "Black", hex: "#181225", ring: "ring-border" },
+  { name: "Blurple", hex: "#7553FF", ring: "" },
+  { name: "Violet", hex: "#36166B", ring: "" },
+  { name: "Hot Pink", hex: "#FF45A8", ring: "" },
+  { name: "Orchid", hex: "#A737B4", ring: "" },
+  { name: "Yorange", hex: "#FDB81B", ring: "" },
+  { name: "Green", hex: "#92DD00", ring: "" },
+  { name: "!White", hex: "#F6F6F8", ring: "ring-border" },
+  { name: "White", hex: "#FFFFFF", ring: "ring-border" },
+];
+
+const ISSUES = [
+  {
+    id: "FRONT-4KP",
+    title: "TypeError: Cannot read properties of undefined (reading 'map')",
+    project: "frontend",
+    events: "2.8k",
+    users: 412,
+    firstSeen: "2h ago",
+    trend: "up" as const,
+  },
+  {
+    id: "API-3J2",
+    title: "ConnectionError: Connection refused to database pool",
+    project: "api-service",
+    events: "1.2k",
+    users: 89,
+    firstSeen: "45m ago",
+    trend: "up" as const,
+  },
+  {
+    id: "FRONT-4KN",
+    title: "Warning: Each child in a list should have a unique key prop",
+    project: "frontend",
+    events: "847",
+    users: 203,
+    firstSeen: "3d ago",
+    trend: "down" as const,
+  },
+  {
+    id: "WORKER-91",
+    title: "TimeoutError: Task exceeded maximum execution time (30s)",
+    project: "task-worker",
+    events: "234",
+    users: 18,
+    firstSeen: "1w ago",
+    trend: "down" as const,
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+    <div className="min-h-screen">
+      {/* Navbar */}
+      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
+        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
+          <div className="flex items-center gap-6">
+            <a href="/" className="flex items-center gap-2.5">
+              <SentryGlyph size={24} />
+              <span className="text-sm font-medium text-muted-foreground">
+                /
+              </span>
+              <span className="font-medium tracking-tight">scrapscn</span>
+            </a>
+            <nav className="hidden items-center gap-5 text-sm text-muted-foreground sm:flex">
+              <a href="#components" className="hover:text-foreground transition-colors">
+                Components
+              </a>
+              <a href="#tokens" className="hover:text-foreground transition-colors">
+                Tokens
+              </a>
+              <a href="#voice" className="hover:text-foreground transition-colors">
+                Voice
+              </a>
+            </nav>
+          </div>
+          <div className="flex items-center gap-2">
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="https://github.com/getsentry/scrapscn"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              GitHub <ExternalLink className="h-3 w-3" />
+            </a>
+            <ThemeToggle />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      <main>
+        {/* Hero */}
+        <section className="relative overflow-hidden border-b">
+          <div className="absolute inset-0 bg-[url('/fuzzy-dot-bg.png')] bg-cover bg-center opacity-20 dark:opacity-40" />
+          <div className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32">
+            <div className="max-w-3xl space-y-6">
+              <Badge variant="secondary" className="gap-1.5">
+                <Zap className="h-3 w-3" /> shadcn registry
+              </Badge>
+              <h1 className="font-heading text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+                Sentry&apos;s design system, built for&nbsp;shadcn
+              </h1>
+              <p className="max-w-xl text-lg text-muted-foreground leading-relaxed">
+                Drop in Sentry&apos;s purple-tinted neutrals, Blurple accent,
+                and Rubik typography. One install gives you the complete theme
+                for both light and dark&nbsp;modes.
+              </p>
+              <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+                <div className="flex items-center gap-2 rounded-lg border bg-muted/50 px-4 py-2.5 font-mono text-sm">
+                  <Terminal className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <code>npx shadcn add https://scrapscn.sentry.dev/r</code>
+                  <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
+                    <Copy className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="mx-auto max-w-7xl px-6">
+          {/* Stat cards */}
+          <section className="py-16 space-y-8">
+            <div className="flex items-end justify-between">
+              <div>
+                <h2 className="font-heading text-2xl font-bold" id="components">
+                  What you get
+                </h2>
+                <p className="text-muted-foreground">
+                  Everything maps to standard shadcn tokens. Your components
+                  just work.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardDescription className="flex items-center gap-1.5">
+                    <Layers className="h-3.5 w-3.5" /> Semantic tokens
+                  </CardDescription>
+                  <CardTitle className="text-3xl font-heading">26</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xs text-muted-foreground">
+                    Light + dark mode CSS variables, including Sentry-specific
+                    warning, success, and promotion
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardDescription className="flex items-center gap-1.5">
+                    <Bug className="h-3.5 w-3.5" /> Components
+                  </CardDescription>
+                  <CardTitle className="text-3xl font-heading">13+</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xs text-muted-foreground">
+                    All standard shadcn components, pre-themed with
+                    Sentry&apos;s color system
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardDescription className="flex items-center gap-1.5">
+                    <GitBranch className="h-3.5 w-3.5" /> Fonts
+                  </CardDescription>
+                  <CardTitle className="text-3xl font-heading">3</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xs text-muted-foreground">
+                    Dammit Sans (headlines), Rubik (body), Roboto Mono (code)
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardDescription className="flex items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5" /> Setup time
+                  </CardDescription>
+                  <CardTitle className="text-3xl font-heading">&lt;1m</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xs text-muted-foreground">
+                    One CLI command. Theme swaps in, components just work.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+
+          <Separator />
+
+          {/* Component showcase — real Sentry-like UI */}
+          <section className="py-16 space-y-8" id="tokens">
+            <div>
+              <h2 className="font-heading text-2xl font-bold">
+                Components in action
+              </h2>
+              <p className="text-muted-foreground">
+                These look like Sentry because they use Sentry&apos;s tokens.
+                Not custom CSS — just the theme doing its&nbsp;job.
+              </p>
+            </div>
+
+            <Tabs defaultValue="dashboard" className="w-full">
+              <TabsList>
+                <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+                <TabsTrigger value="buttons">Buttons & badges</TabsTrigger>
+                <TabsTrigger value="forms">Forms</TabsTrigger>
+                <TabsTrigger value="alerts">Alerts</TabsTrigger>
+              </TabsList>
+
+              {/* Dashboard */}
+              <TabsContent value="dashboard" className="space-y-6 pt-6">
+                {/* Metric row */}
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                      <CardDescription>Unresolved issues</CardDescription>
+                      <TrendingUp className="h-4 w-4 text-destructive" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-heading font-bold">
+                        1,284
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        <span className="text-destructive font-medium">
+                          +12%
+                        </span>{" "}
+                        from last week
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                      <CardDescription>Crash-free sessions</CardDescription>
+                      <TrendingUp className="h-4 w-4 text-success" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-heading font-bold">
+                        99.2%
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        <span className="text-success font-medium">+0.3%</span>{" "}
+                        since last release
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                      <CardDescription>Events (24h)</CardDescription>
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-heading font-bold">
+                        4.2M
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Across 12 projects
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Issues table */}
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                      <CardTitle className="text-base">Issues</CardTitle>
+                      <CardDescription>
+                        Unresolved errors across all projects
+                      </CardDescription>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Select defaultValue="all">
+                        <SelectTrigger className="h-8 w-[140px] text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All projects</SelectItem>
+                          <SelectItem value="frontend">frontend</SelectItem>
+                          <SelectItem value="api">api-service</SelectItem>
+                          <SelectItem value="worker">task-worker</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Issue</TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Project
+                          </TableHead>
+                          <TableHead className="text-right">Events</TableHead>
+                          <TableHead className="text-right hidden sm:table-cell">
+                            Users
+                          </TableHead>
+                          <TableHead className="text-right">Seen</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {ISSUES.map((issue) => (
+                          <TableRow key={issue.id}>
+                            <TableCell>
+                              <div className="flex items-start gap-3">
+                                <div
+                                  className={`mt-1 h-2 w-2 rounded-full shrink-0 ${
+                                    issue.trend === "up"
+                                      ? "bg-destructive"
+                                      : "bg-warning"
+                                  }`}
+                                />
+                                <div className="min-w-0">
+                                  <div className="text-sm font-medium font-mono truncate max-w-[400px]">
+                                    {issue.title}
+                                  </div>
+                                  <div className="text-xs text-muted-foreground">
+                                    {issue.id}
+                                  </div>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              <Badge variant="outline" className="text-xs">
+                                {issue.project}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right tabular-nums text-sm">
+                              {issue.events}
+                            </TableCell>
+                            <TableCell className="text-right tabular-nums text-sm hidden sm:table-cell">
+                              {issue.users}
+                            </TableCell>
+                            <TableCell className="text-right text-sm text-muted-foreground whitespace-nowrap">
+                              {issue.firstSeen}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+
+                {/* Release health */}
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">
+                        Release health
+                      </CardTitle>
+                      <CardDescription>
+                        v3.14.2 · deployed 2h ago
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">
+                            Crash free
+                          </span>
+                          <span className="font-medium">99.2%</span>
+                        </div>
+                        <Progress value={99.2} />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Adopted</span>
+                          <span className="font-medium">87%</span>
+                        </div>
+                        <Progress value={87} />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">
+                            Sessions
+                          </span>
+                          <span className="font-medium">24.1k</span>
+                        </div>
+                        <Progress value={65} />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">
+                        Performance
+                      </CardTitle>
+                      <CardDescription>Last 24 hours</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      {[
+                        {
+                          route: "/api/issues",
+                          p50: "45ms",
+                          p95: "320ms",
+                          tpm: "12.4k",
+                        },
+                        {
+                          route: "/api/events",
+                          p50: "23ms",
+                          p95: "180ms",
+                          tpm: "8.2k",
+                        },
+                        {
+                          route: "/api/users/me",
+                          p50: "12ms",
+                          p95: "95ms",
+                          tpm: "3.1k",
+                        },
+                        {
+                          route: "/api/projects",
+                          p50: "67ms",
+                          p95: "450ms",
+                          tpm: "1.8k",
+                        },
+                      ].map((tx) => (
+                        <div
+                          key={tx.route}
+                          className="flex items-center justify-between text-sm"
+                        >
+                          <code className="font-mono text-xs truncate max-w-[160px]">
+                            {tx.route}
+                          </code>
+                          <div className="flex items-center gap-4 text-muted-foreground text-xs tabular-nums">
+                            <span>{tx.p50}</span>
+                            <span>{tx.p95}</span>
+                            <span className="w-12 text-right">{tx.tpm}</span>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="flex items-center justify-between text-xs text-muted-foreground pt-1 border-t">
+                        <span />
+                        <div className="flex items-center gap-4">
+                          <span>p50</span>
+                          <span>p95</span>
+                          <span className="w-12 text-right">tpm</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+
+              {/* Buttons & Badges */}
+              <TabsContent value="buttons" className="space-y-8 pt-6">
+                <div className="space-y-3">
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    Button variants
+                  </h3>
+                  <div className="flex flex-wrap gap-3">
+                    <Button>
+                      Resolve issue <CheckCircle2 className="ml-1.5 h-4 w-4" />
+                    </Button>
+                    <Button variant="secondary">Ignore</Button>
+                    <Button variant="destructive">Delete project</Button>
+                    <Button variant="outline">
+                      View on GitHub{" "}
+                      <ArrowUpRight className="ml-1 h-3.5 w-3.5" />
+                    </Button>
+                    <Button variant="ghost">Cancel</Button>
+                    <Button variant="link">Learn more</Button>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    Button sizes
+                  </h3>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Button size="sm">Small</Button>
+                    <Button size="default">Default</Button>
+                    <Button size="lg">Large</Button>
+                    <Button size="icon">
+                      <Bug className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    Badges
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge>Unresolved</Badge>
+                    <Badge variant="secondary">Ignored</Badge>
+                    <Badge variant="destructive">Fatal</Badge>
+                    <Badge variant="outline">Regressed</Badge>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    Sentry-specific semantic colors
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge className="bg-destructive text-destructive-foreground">
+                      Error
+                    </Badge>
+                    <Badge className="bg-warning text-warning-foreground">
+                      Warning
+                    </Badge>
+                    <Badge className="bg-success text-success-foreground">
+                      Resolved
+                    </Badge>
+                    <Badge className="bg-promotion text-promotion-foreground">
+                      New
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    Avatars
+                  </h3>
+                  <div className="flex gap-2">
+                    <Avatar>
+                      <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                        SD
+                      </AvatarFallback>
+                    </Avatar>
+                    <Avatar>
+                      <AvatarFallback className="bg-chart-2 text-white text-xs">
+                        JM
+                      </AvatarFallback>
+                    </Avatar>
+                    <Avatar>
+                      <AvatarFallback className="bg-chart-3 text-[#181225] text-xs">
+                        AK
+                      </AvatarFallback>
+                    </Avatar>
+                    <Avatar>
+                      <AvatarFallback className="bg-chart-5 text-white text-xs">
+                        BV
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* Forms */}
+              <TabsContent value="forms" className="space-y-6 pt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">
+                      Project settings
+                    </CardTitle>
+                    <CardDescription>
+                      Configure your Sentry project
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="name">Project name</Label>
+                        <Input id="name" defaultValue="frontend" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="platform">Platform</Label>
+                        <Select defaultValue="nextjs">
+                          <SelectTrigger id="platform">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="nextjs">Next.js</SelectItem>
+                            <SelectItem value="react">React</SelectItem>
+                            <SelectItem value="node">Node.js</SelectItem>
+                            <SelectItem value="python">Python</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="dsn">DSN</Label>
+                      <Input
+                        id="dsn"
+                        defaultValue="https://abc123@o0.ingest.sentry.io/456"
+                        readOnly
+                        className="font-mono text-sm"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="notes">Release notes</Label>
+                      <Textarea
+                        id="notes"
+                        placeholder="Describe what changed..."
+                        rows={3}
+                      />
+                    </div>
+                    <Separator />
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <Label htmlFor="autofix">
+                            Auto-fix suggestions
+                          </Label>
+                          <p className="text-xs text-muted-foreground">
+                            Let Seer suggest fixes for new issues
+                          </p>
+                        </div>
+                        <Switch id="autofix" defaultChecked />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <Label htmlFor="perf">Performance monitoring</Label>
+                          <p className="text-xs text-muted-foreground">
+                            Track transaction performance and web vitals
+                          </p>
+                        </div>
+                        <Switch id="perf" defaultChecked />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <Label htmlFor="replay">Session replay</Label>
+                          <p className="text-xs text-muted-foreground">
+                            Record user sessions for error reproduction
+                          </p>
+                        </div>
+                        <Switch id="replay" />
+                      </div>
+                    </div>
+                    <div className="flex justify-end gap-3 pt-2">
+                      <Button variant="outline">Cancel</Button>
+                      <Button>Save changes</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Alerts */}
+              <TabsContent value="alerts" className="space-y-4 pt-6">
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertTitle>SDK update available</AlertTitle>
+                  <AlertDescription>
+                    Your project is using @sentry/nextjs 7.x. Upgrade to 8.x
+                    for improved tree-shaking and smaller bundle sizes.
+                  </AlertDescription>
+                </Alert>
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Spike detected</AlertTitle>
+                  <AlertDescription>
+                    TypeError: Cannot read properties of undefined has been
+                    reported 2,847 times in the last hour — a 4x increase over
+                    the baseline. This started after deploy v3.14.2.
+                  </AlertDescription>
+                </Alert>
+                <div className="rounded-lg border border-warning/30 bg-warning/5 p-4">
+                  <div className="flex gap-3">
+                    <div className="text-warning mt-0.5">
+                      <AlertCircle className="h-4 w-4" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">
+                        Quota warning
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        You&apos;ve used 87% of your monthly error quota.
+                        Consider adjusting your sample rate or upgrading your
+                        plan.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="rounded-lg border border-success/30 bg-success/5 p-4">
+                  <div className="flex gap-3">
+                    <div className="text-success mt-0.5">
+                      <CheckCircle2 className="h-4 w-4" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">
+                        All clear
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        No new issues in the last 24 hours. Your crash-free rate
+                        is holding steady at 99.2%.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </section>
+
+          <Separator />
+
+          {/* Color palette */}
+          <section className="py-16 space-y-8">
+            <div>
+              <h2 className="font-heading text-2xl font-bold">Brand palette</h2>
+              <p className="text-muted-foreground">
+                Blurple is the star. We use a dark shade of purple rather than
+                straight #000 black — it makes everything feel warmer and more
+                intentional.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4 sm:grid-cols-9">
+              {BRAND_COLORS.map((c) => (
+                <div key={c.name} className="space-y-2">
+                  <div
+                    className={`aspect-square rounded-xl ring-1 ring-inset ${c.ring || "ring-white/10"}`}
+                    style={{ backgroundColor: c.hex }}
+                  />
+                  <div>
+                    <div className="text-xs font-medium">{c.name}</div>
+                    <div className="text-xs text-muted-foreground font-mono">
+                      {c.hex}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Semantic tokens */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Semantic tokens — toggle the theme to see them adapt
+              </h3>
+              <div className="grid gap-2 grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
+                {[
+                  { label: "bg", c: "bg-background text-foreground border" },
+                  { label: "card", c: "bg-card text-card-foreground border" },
+                  { label: "muted", c: "bg-muted text-muted-foreground" },
+                  { label: "accent", c: "bg-accent text-accent-foreground" },
+                  { label: "primary", c: "bg-primary text-primary-foreground" },
+                  {
+                    label: "secondary",
+                    c: "bg-secondary text-secondary-foreground",
+                  },
+                  {
+                    label: "destructive",
+                    c: "bg-destructive text-destructive-foreground",
+                  },
+                  {
+                    label: "popover",
+                    c: "bg-popover text-popover-foreground border",
+                  },
+                ].map((t) => (
+                  <div
+                    key={t.label}
+                    className={`rounded-lg p-3 text-center ${t.c}`}
+                  >
+                    <div className="text-xs font-medium">{t.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="grid gap-2 grid-cols-3">
+                <div className="rounded-lg bg-warning p-3 text-warning-foreground text-center">
+                  <div className="text-xs font-medium">warning</div>
+                </div>
+                <div className="rounded-lg bg-success p-3 text-success-foreground text-center">
+                  <div className="text-xs font-medium">success</div>
+                </div>
+                <div className="rounded-lg bg-promotion p-3 text-promotion-foreground text-center">
+                  <div className="text-xs font-medium">promotion</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <Separator />
+
+          {/* Typography */}
+          <section className="py-16 space-y-8">
+            <div>
+              <h2 className="font-heading text-2xl font-bold">Typography</h2>
+              <p className="text-muted-foreground">
+                Dammit Sans for headlines. Rubik for everything else. Roboto
+                Mono for code. Always sentence case.
+              </p>
+            </div>
+
+            <div className="grid gap-8 lg:grid-cols-2">
+              <div className="space-y-6">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2 font-mono">
+                    font-heading · Dammit Sans
+                  </p>
+                  <p className="font-heading text-5xl font-bold tracking-tight leading-tight">
+                    Fix your bugs before your users find&nbsp;them
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2 font-mono">
+                    font-sans · Rubik 400
+                  </p>
+                  <p className="text-base leading-relaxed">
+                    Sentry helps developers ship with confidence. Real-time
+                    error tracking, performance monitoring, and session replay
+                    give you the context you need to fix what&apos;s broken —
+                    fast.
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2 font-mono">
+                    font-sans · Rubik 500
+                  </p>
+                  <p className="text-base font-medium">
+                    Subheads use medium weight to create hierarchy without
+                    shouting.
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-6">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-2 font-mono">
+                    font-mono · Roboto Mono
+                  </p>
+                  <div className="rounded-lg bg-muted p-4 font-mono text-sm space-y-1">
+                    <p className="text-destructive">
+                      TypeError: Cannot read properties of undefined
+                    </p>
+                    <p className="text-muted-foreground">
+                      {`  at UserList (./src/components/UserList.tsx:42:18)`}
+                    </p>
+                    <p className="text-muted-foreground">
+                      {`  at renderWithHooks (react-dom.js:14985:18)`}
+                    </p>
+                    <p className="text-muted-foreground">
+                      {`  at mountIndeterminateComponent (react-dom.js:17811:13)`}
+                    </p>
+                  </div>
+                </div>
+                <Card className="bg-muted">
+                  <CardContent className="pt-6 space-y-2 text-sm">
+                    <p>
+                      <strong>Sentence case always.</strong> Capitalize only the
+                      first word and proper nouns.
+                    </p>
+                    <p className="text-success font-mono text-xs">
+                      ✓ Welcome to Sentry
+                    </p>
+                    <p className="text-destructive font-mono text-xs">
+                      ✗ Welcome To Sentry
+                    </p>
+                    <p className="text-success font-mono text-xs">
+                      ✓ Set up your first project
+                    </p>
+                    <p className="text-destructive font-mono text-xs">
+                      ✗ Set Up Your First Project
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </section>
+
+          <Separator />
+
+          {/* Voice */}
+          <section className="py-16 space-y-8" id="voice">
+            <div>
+              <h2 className="font-heading text-2xl font-bold">Voice & tone</h2>
+              <p className="text-muted-foreground">
+                Sentry sounds like a veteran on the dev team who&apos;s seen
+                some stuff but keeps it approachable. Not corporate. Not trying
+                to sell you something.
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                {
+                  trait: "Informative",
+                  desc: "Straightforward, accurate. We don't manipulate.",
+                },
+                {
+                  trait: "Self-aware",
+                  desc: "We're not curing cancer. We help developers.",
+                },
+                {
+                  trait: "Unexcitable",
+                  desc: 'Use "!" sparingly. Better for sarcasm than CTAs.',
+                },
+                {
+                  trait: "Plain English",
+                  desc: "No jargon. Write how you speak. American spelling.",
+                },
+                {
+                  trait: "Gets our users",
+                  desc: "They should feel understood, not marketed to.",
+                },
+                {
+                  trait: "Fun",
+                  desc: "Dry humor. Poke fun at universal dev struggles.",
+                },
+              ].map((v) => (
+                <Card key={v.trait}>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">{v.trait}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">{v.desc}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Card className="border-success/20">
+                <CardContent className="pt-6">
+                  <div className="mb-3 text-sm font-medium text-success flex items-center gap-1.5">
+                    <CheckCircle2 className="h-4 w-4" /> Sounds like Sentry
+                  </div>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>&ldquo;Something broke. Here&apos;s the stack trace.&rdquo;</li>
+                    <li>&ldquo;Your deploy is fine. Probably.&rdquo;</li>
+                    <li>&ldquo;2,847 users hit this bug. You should probably fix it.&rdquo;</li>
+                  </ul>
+                </CardContent>
+              </Card>
+              <Card className="border-destructive/20">
+                <CardContent className="pt-6">
+                  <div className="mb-3 text-sm font-medium text-destructive flex items-center gap-1.5">
+                    <AlertCircle className="h-4 w-4" /> Doesn&apos;t sound like
+                    Sentry
+                  </div>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>&ldquo;We&apos;re THRILLED to announce our latest feature!!!&rdquo;</li>
+                    <li>&ldquo;Supercharge your developer experience today!&rdquo;</li>
+                    <li>&ldquo;Empower your team to achieve software excellence.&rdquo;</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+
+          <Separator />
+
+          {/* Install */}
+          <section className="py-16 space-y-6">
+            <div>
+              <h2 className="font-heading text-2xl font-bold">Get started</h2>
+              <p className="text-muted-foreground">
+                One command to install the base theme into any shadcn project.
+              </p>
+            </div>
+
+            <Card>
+              <CardContent className="pt-6 space-y-4">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">1. Install the theme</p>
+                  <div className="flex items-center gap-2 rounded-lg bg-muted p-3 font-mono text-sm">
+                    <Terminal className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <code className="flex-1">
+                      npx shadcn add https://scrapscn.sentry.dev/r/sentry-base
+                    </code>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 shrink-0"
+                    >
+                      <Copy className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">
+                    2. Wrap your app with the theme provider
+                  </p>
+                  <div className="rounded-lg bg-muted p-3 font-mono text-sm text-muted-foreground overflow-x-auto">
+                    <pre>{`import { ThemeProvider } from "@/components/theme-provider"
+
+<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+  {children}
+</ThemeProvider>`}</pre>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">3. Use components</p>
+                  <p className="text-sm text-muted-foreground">
+                    All shadcn components automatically pick up the Sentry
+                    theme. No custom CSS needed.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="border-t">
+        <div className="mx-auto max-w-7xl px-6 py-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <SentryWordmark className="h-5 w-auto" />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Built with shadcn/ui. Themed with Sentry&apos;s design tokens.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

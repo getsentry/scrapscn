@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "scrapscn",
+  "homepage": "https://scrapscn.sentry.dev",
+  "items": [
+    {
+      "name": "sentry-base",
+      "type": "registry:base",
+      "title": "Sentry Base Theme",
+      "description": "Complete Sentry design system theme for shadcn — purple-tinted neutrals, Blurple primary, Rubik typography, both light and dark modes. Includes warning, success, and promotion semantic tokens beyond the shadcn defaults.",
+      "dependencies": ["next-themes"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/app/globals.css",
+          "type": "registry:file"
+        },
+        {
+          "path": "src/components/theme-provider.tsx",
+          "type": "registry:component"
+        }
+      ]
+    }
+  ]
+}
