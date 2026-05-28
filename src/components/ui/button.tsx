@@ -10,6 +10,13 @@ function isChonky(variant: string | undefined | null): variant is ChonkVariant {
   return CHONK_VARIANTS.includes(variant as ChonkVariant)
 }
 
+const flatColors: Record<ChonkVariant, string> = {
+  default: "bg-primary text-primary-foreground hover:bg-primary/90",
+  secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+  destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+  warning: "bg-warning text-warning-foreground hover:bg-warning/90",
+}
+
 const chonkStyles: Record<
   ChonkVariant,
   { surface: string; chonk: string; border: string }
@@ -69,80 +76,80 @@ const buttonVariants = cva(
   }
 )
 
-function ChonkButton({
-  className,
-  variant,
-  size,
-  children,
-  ...props
-}: ButtonPrimitive.Props & {
-  variant: ChonkVariant
-  size: string
-}) {
-  const s = chonkStyles[variant]
-  const isXs = size === "xs" || size === "icon-xs"
-
-  const restY = isXs ? "-translate-y-px" : "-translate-y-0.5"
-  const hoverY = isXs
-    ? "group-hover/button:-translate-y-0.5"
-    : "group-hover/button:-translate-y-[3px]"
-  const flatStates =
-    "group-active/button:translate-y-0 group-aria-expanded/button:translate-y-0 group-aria-expanded/button:transition-none group-disabled/button:translate-y-0"
-  const transition =
-    "transition-transform [transition-duration:var(--duration-moderate)] [transition-timing-function:var(--ease-snap)]"
-
-  return (
-    <ButtonPrimitive
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size: size as any, className }))}
-      {...props}
-    >
-      {/* Chonk — visible at bottom when surface is raised */}
-      <span className={cn("absolute inset-0 rounded-[inherit]", s.chonk)} />
-      {/* Surface — raised layer with chonk-colored border */}
-      <span
-        className={cn(
-          "absolute inset-0 rounded-[inherit] border",
-          s.surface,
-          s.border,
-          transition,
-          restY,
-          hoverY,
-          flatStates
-        )}
-      />
-      {/* Content */}
-      <span
-        className={cn(
-          "relative z-10 flex items-center justify-center gap-[inherit]",
-          transition,
-          restY,
-          hoverY,
-          flatStates
-        )}
-      >
-        {children}
-      </span>
-    </ButtonPrimitive>
-  )
-}
+type ButtonProps = ButtonPrimitive.Props &
+  VariantProps<typeof buttonVariants> & {
+    chonk?: boolean
+  }
 
 function Button({
   className,
   variant = "default",
   size = "default",
+  chonk,
   children,
   ...props
-}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
-  if (isChonky(variant)) {
+}: ButtonProps) {
+  const shouldChonk = chonk !== false && isChonky(variant)
+
+  if (shouldChonk) {
+    const s = chonkStyles[variant as ChonkVariant]
+    const isXs = size === "xs" || size === "icon-xs"
+
     return (
-      <ChonkButton
-        className={className}
-        variant={variant}
-        size={size ?? "default"}
-        children={children}
+      <ButtonPrimitive
+        data-slot="button"
+        className={cn(buttonVariants({ variant, size, className }))}
         {...props}
-      />
+      >
+        <span className={cn("absolute inset-0 rounded-[inherit]", s.chonk)} />
+        <span
+          className={cn(
+            "absolute inset-0 rounded-[inherit] border",
+            s.surface,
+            s.border,
+            "transition-transform [transition-duration:var(--duration-moderate)] [transition-timing-function:var(--ease-snap)]",
+            isXs ? "-translate-y-px" : "-translate-y-0.5",
+            isXs
+              ? "group-hover/button:-translate-y-0.5"
+              : "group-hover/button:-translate-y-[3px]",
+            "group-active/button:translate-y-0",
+            "group-aria-expanded/button:translate-y-0 group-aria-expanded/button:!transition-none",
+            "group-aria-checked/button:translate-y-0 group-aria-checked/button:!transition-none",
+            "group-disabled/button:translate-y-0 group-disabled/button:!transition-none"
+          )}
+        />
+        <span
+          className={cn(
+            "relative z-10 flex items-center justify-center gap-[inherit]",
+            "transition-transform [transition-duration:var(--duration-moderate)] [transition-timing-function:var(--ease-snap)]",
+            isXs ? "-translate-y-px" : "-translate-y-0.5",
+            isXs
+              ? "group-hover/button:-translate-y-0.5"
+              : "group-hover/button:-translate-y-[3px]",
+            "group-active/button:translate-y-0",
+            "group-aria-expanded/button:translate-y-0 group-aria-expanded/button:!transition-none",
+            "group-aria-checked/button:translate-y-0 group-aria-checked/button:!transition-none",
+            "group-disabled/button:translate-y-0 group-disabled/button:!transition-none"
+          )}
+        >
+          {children}
+        </span>
+      </ButtonPrimitive>
+    )
+  }
+
+  if (chonk === false && isChonky(variant)) {
+    return (
+      <ButtonPrimitive
+        data-slot="button"
+        className={cn(
+          buttonVariants({ size, className }),
+          flatColors[variant as ChonkVariant]
+        )}
+        {...props}
+      >
+        {children}
+      </ButtonPrimitive>
     )
   }
 
@@ -158,3 +165,4 @@ function Button({
 }
 
 export { Button, buttonVariants }
+export type { ButtonProps }
