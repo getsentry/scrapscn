@@ -143,25 +143,31 @@ export default function Home() {
       </header>
 
       <main>
-        {/* Hero */}
-        <section className="relative overflow-hidden border-b">
-          <div className="absolute inset-0 bg-[url('/fuzzy-dot-bg.png')] bg-cover bg-center opacity-20 dark:opacity-40" />
+        {/* Hero — full gradient in light mode, texture in dark */}
+        <section
+          className="relative overflow-hidden border-b"
+          style={{
+            background:
+              "linear-gradient(135deg, #181225 0%, #36166B 30%, #7553FF 60%, #A737B4 100%)",
+          }}
+        >
+          <div className="absolute inset-0 bg-[url('/fuzzy-dot-bg.png')] bg-cover bg-center opacity-30" />
           <div className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32">
             <div className="max-w-3xl space-y-6">
-              <Badge variant="secondary" className="gap-1.5">
+              <Badge className="bg-white/15 text-white border-white/20 gap-1.5 backdrop-blur-sm">
                 <Zap className="h-3 w-3" /> shadcn registry
               </Badge>
-              <h1 className="font-heading text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+              <h1 className="font-heading text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
                 Sentry&apos;s design system, built for&nbsp;shadcn
               </h1>
-              <p className="max-w-xl text-lg text-muted-foreground leading-relaxed">
+              <p className="max-w-xl text-lg text-white/70 leading-relaxed">
                 Drop in Sentry&apos;s purple-tinted neutrals, Blurple accent,
                 and Rubik typography. One install gives you the complete theme
                 for both light and dark&nbsp;modes.
               </p>
               <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-                <div className="flex items-center gap-2 rounded-lg border bg-muted/50 px-4 py-2.5 font-mono text-sm">
-                  <Terminal className="h-4 w-4 text-muted-foreground shrink-0" />
+                <div className="flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-2.5 font-mono text-sm text-white">
+                  <Terminal className="h-4 w-4 text-white/60 shrink-0" />
                   <code>npx shadcn add https://scrapscn.sentry.dev/r</code>
                   <CopyButton text="npx shadcn add https://scrapscn.sentry.dev/r" />
                 </div>
