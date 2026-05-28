@@ -270,71 +270,55 @@ export default function Home() {
                   <span className="text-xs font-medium text-[#6A6772]">
                     Light mode
                   </span>
-                  <div className="h-5 w-5 rounded-full bg-[#7553FF]" />
+                  <div className="h-5 w-5 rounded-full bg-primary" />
                 </div>
-                <div className="space-y-3">
-                  <div className="rounded-lg bg-[#F8F8F9] p-4 space-y-2">
+                <Card className="bg-card">
+                  <CardContent className="space-y-2">
                     <div className="text-sm font-medium">
                       ConnectionError in api-service
                     </div>
-                    <div className="text-xs text-[#6A6772]">
+                    <div className="text-xs text-muted-foreground">
                       Connection refused to database pool — 1.2k events, 89
                       users affected
                     </div>
                     <div className="flex gap-2 pt-1">
-                      <span className="rounded-md bg-[#C50025] px-2 py-0.5 text-xs text-white">
-                        Fatal
-                      </span>
-                      <span className="rounded-md bg-[#F0F0F2] px-2 py-0.5 text-xs text-[#302E36]">
-                        api-service
-                      </span>
+                      <Badge variant="danger">Fatal</Badge>
+                      <Badge variant="muted">api-service</Badge>
                     </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <div className="rounded-md bg-[#7553FF] px-3 py-1.5 text-xs font-medium text-white">
-                      Resolve
-                    </div>
-                    <div className="rounded-md border border-[#E6E6E9] px-3 py-1.5 text-xs font-medium">
-                      Ignore
-                    </div>
-                  </div>
+                  </CardContent>
+                </Card>
+                <div className="flex gap-2">
+                  <Button size="xs">Resolve</Button>
+                  <Button size="xs" variant="secondary">Ignore</Button>
                 </div>
               </div>
 
               {/* Dark preview */}
-              <div className="rounded-xl border border-[#46404F] bg-[#2E2936] p-6 space-y-4 text-[#E7E5EA]">
+              <div className="dark rounded-xl border border-[#46404F] bg-[#2E2936] p-6 space-y-4 text-[#E7E5EA]">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-[#A49EAE]">
                     Dark mode
                   </span>
-                  <div className="h-5 w-5 rounded-full bg-[#7553FF]" />
+                  <div className="h-5 w-5 rounded-full bg-primary" />
                 </div>
-                <div className="space-y-3">
-                  <div className="rounded-lg bg-[#24202B] p-4 space-y-2">
+                <Card className="bg-card">
+                  <CardContent className="space-y-2">
                     <div className="text-sm font-medium">
                       ConnectionError in api-service
                     </div>
-                    <div className="text-xs text-[#A49EAE]">
+                    <div className="text-xs text-muted-foreground">
                       Connection refused to database pool — 1.2k events, 89
                       users affected
                     </div>
                     <div className="flex gap-2 pt-1">
-                      <span className="rounded-md bg-[#FF002B] px-2 py-0.5 text-xs text-white">
-                        Fatal
-                      </span>
-                      <span className="rounded-md bg-[#393442] px-2 py-0.5 text-xs text-[#E7E5EA]">
-                        api-service
-                      </span>
+                      <Badge variant="danger">Fatal</Badge>
+                      <Badge variant="muted">api-service</Badge>
                     </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <div className="rounded-md bg-[#7553FF] px-3 py-1.5 text-xs font-medium text-white">
-                      Resolve
-                    </div>
-                    <div className="rounded-md border border-[#46404F] px-3 py-1.5 text-xs font-medium">
-                      Ignore
-                    </div>
-                  </div>
+                  </CardContent>
+                </Card>
+                <div className="flex gap-2">
+                  <Button size="xs">Resolve</Button>
+                  <Button size="xs" variant="secondary">Ignore</Button>
                 </div>
               </div>
             </div>
@@ -617,6 +601,7 @@ export default function Home() {
                   code={`<Button>Resolve issue</Button>
 <Button variant="secondary">Ignore</Button>
 <Button variant="destructive">Delete project</Button>
+<Button variant="warning">Quota alert</Button>
 <Button variant="outline">View on GitHub</Button>
 <Button variant="ghost">Cancel</Button>
 <Button variant="link">Learn more</Button>`}
@@ -627,6 +612,7 @@ export default function Home() {
                     </Button>
                     <Button variant="secondary">Ignore</Button>
                     <Button variant="destructive">Delete project</Button>
+                    <Button variant="warning">Quota alert</Button>
                     <Button variant="outline">
                       View on GitHub{" "}
                       <ArrowUpRight className="ml-1 h-3.5 w-3.5" />
@@ -809,7 +795,7 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="flex justify-end gap-3 pt-2">
-                      <Button variant="outline">Cancel</Button>
+                      <Button variant="secondary">Cancel</Button>
                       <Button>Save changes</Button>
                     </div>
                   </CardContent>
@@ -890,7 +876,7 @@ export default function Home() {
                   </CardDescription>
                 </div>
                 <div className="flex gap-2 shrink-0">
-                  <Button size="sm" variant="outline">
+                  <Button size="sm" variant="secondary">
                     Ignore
                   </Button>
                   <Button size="sm">
