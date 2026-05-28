@@ -1,4 +1,5 @@
 import { ThemeToggle } from "@/components/theme-toggle";
+import { CopyButton } from "@/components/copy-button";
 import { SentryWordmark, SentryGlyph } from "@/components/sentry-logo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -38,15 +39,12 @@ import {
   ArrowUpRight,
   Bug,
   CheckCircle2,
-  ChevronRight,
   Clock,
-  Copy,
   ExternalLink,
   GitBranch,
   Info,
   Layers,
   Terminal,
-  TrendingDown,
   TrendingUp,
   Users,
   Zap,
@@ -164,9 +162,7 @@ export default function Home() {
                 <div className="flex items-center gap-2 rounded-lg border bg-muted/50 px-4 py-2.5 font-mono text-sm">
                   <Terminal className="h-4 w-4 text-muted-foreground shrink-0" />
                   <code>npx shadcn add https://scrapscn.sentry.dev/r</code>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
-                    <Copy className="h-3.5 w-3.5" />
-                  </Button>
+                  <CopyButton text="npx shadcn add https://scrapscn.sentry.dev/r" />
                 </div>
               </div>
             </div>
@@ -989,6 +985,162 @@ export default function Home() {
 
           <Separator />
 
+          {/* Motion */}
+          <section className="py-16 space-y-8">
+            <div>
+              <h2 className="font-heading text-2xl font-bold">
+                Motion & animation
+              </h2>
+              <p className="text-muted-foreground">
+                Sentry uses three speed tiers and five easing curves. Every
+                transition should feel intentional — slow for storytelling,
+                snappy for&nbsp;hype.
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              {[
+                {
+                  speed: "Fast",
+                  ms: "120ms",
+                  desc: "Micro-interactions: hover, focus, toggle",
+                },
+                {
+                  speed: "Moderate",
+                  ms: "160ms",
+                  desc: "State changes: expand, collapse, tab switch",
+                },
+                {
+                  speed: "Slow",
+                  ms: "240ms",
+                  desc: "Entrances, exits, page transitions",
+                },
+              ].map((tier) => (
+                <Card key={tier.speed}>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base flex items-center justify-between">
+                      {tier.speed}
+                      <code className="text-xs font-mono text-muted-foreground font-normal">
+                        {tier.ms}
+                      </code>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      {tier.desc}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Easing curves</CardTitle>
+                  <CardDescription>
+                    CSS cubic-bezier values for each motion style
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 font-mono text-sm">
+                    {[
+                      {
+                        name: "smooth",
+                        value: "cubic-bezier(0.72, 0, 0.16, 1)",
+                        desc: "Default for most transitions",
+                      },
+                      {
+                        name: "snap",
+                        value: "cubic-bezier(0.8, -0.4, 0.5, 1)",
+                        desc: "Playful bounce for toggles",
+                      },
+                      {
+                        name: "enter",
+                        value: "cubic-bezier(0.24, 1, 0.32, 1)",
+                        desc: "Elements appearing on screen",
+                      },
+                      {
+                        name: "exit",
+                        value: "cubic-bezier(0.64, 0, 0.8, 0)",
+                        desc: "Elements leaving the screen",
+                      },
+                      {
+                        name: "spring",
+                        value: "stiffness: 1000, damping: 50",
+                        desc: "Physics-based for delight",
+                      },
+                    ].map((curve) => (
+                      <div
+                        key={curve.name}
+                        className="flex items-baseline justify-between gap-4"
+                      >
+                        <div>
+                          <span className="text-foreground font-medium">
+                            {curve.name}
+                          </span>
+                          <span className="text-muted-foreground text-xs ml-2 font-sans">
+                            {curve.desc}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Live preview</CardTitle>
+                  <CardDescription>
+                    Hover these to see each curve in action
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {[
+                    {
+                      name: "smooth",
+                      style:
+                        "transition: all 240ms cubic-bezier(0.72, 0, 0.16, 1)",
+                      className:
+                        "transition-all duration-[240ms] [transition-timing-function:cubic-bezier(0.72,0,0.16,1)] hover:translate-x-4 hover:bg-primary hover:text-primary-foreground",
+                    },
+                    {
+                      name: "snap",
+                      style:
+                        "transition: all 160ms cubic-bezier(0.8, -0.4, 0.5, 1)",
+                      className:
+                        "transition-all duration-[160ms] [transition-timing-function:cubic-bezier(0.8,-0.4,0.5,1)] hover:translate-x-4 hover:bg-chart-2 hover:text-white",
+                    },
+                    {
+                      name: "enter",
+                      style:
+                        "transition: all 240ms cubic-bezier(0.24, 1, 0.32, 1)",
+                      className:
+                        "transition-all duration-[240ms] [transition-timing-function:cubic-bezier(0.24,1,0.32,1)] hover:translate-x-4 hover:bg-success hover:text-success-foreground",
+                    },
+                    {
+                      name: "exit",
+                      style:
+                        "transition: all 120ms cubic-bezier(0.64, 0, 0.8, 0)",
+                      className:
+                        "transition-all duration-[120ms] [transition-timing-function:cubic-bezier(0.64,0,0.8,0)] hover:translate-x-4 hover:bg-warning hover:text-warning-foreground",
+                    },
+                  ].map((curve) => (
+                    <div
+                      key={curve.name}
+                      className={`rounded-lg border px-4 py-3 text-sm font-medium cursor-pointer ${curve.className}`}
+                    >
+                      {curve.name}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+
+          <Separator />
+
           {/* Install */}
           <section className="py-16 space-y-6">
             <div>
@@ -998,45 +1150,35 @@ export default function Home() {
               </p>
             </div>
 
-            <Card>
-              <CardContent className="pt-6 space-y-4">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">1. Install the theme</p>
-                  <div className="flex items-center gap-2 rounded-lg bg-muted p-3 font-mono text-sm">
-                    <Terminal className="h-4 w-4 text-muted-foreground shrink-0" />
-                    <code className="flex-1">
-                      npx shadcn add https://scrapscn.sentry.dev/r/sentry-base
-                    </code>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 shrink-0"
-                    >
-                      <Copy className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-sm font-medium">1. Install the theme</p>
+                <div className="flex items-center gap-2 rounded-lg border bg-muted p-3 font-mono text-sm">
+                  <Terminal className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <code className="flex-1">npx shadcn add https://scrapscn.sentry.dev/r/sentry-base</code>
+                  <CopyButton text="npx shadcn add https://scrapscn.sentry.dev/r/sentry-base" />
                 </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">
-                    2. Wrap your app with the theme provider
-                  </p>
-                  <div className="rounded-lg bg-muted p-3 font-mono text-sm text-muted-foreground overflow-x-auto">
-                    <pre>{`import { ThemeProvider } from "@/components/theme-provider"
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium">
+                  2. Wrap your app with the theme provider
+                </p>
+                <div className="rounded-lg border bg-muted p-3 font-mono text-sm text-muted-foreground overflow-x-auto">
+                  <code className="block whitespace-pre">{`import { ThemeProvider } from "@/components/theme-provider"
 
 <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
   {children}
-</ThemeProvider>`}</pre>
-                  </div>
+</ThemeProvider>`}</code>
                 </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">3. Use components</p>
-                  <p className="text-sm text-muted-foreground">
-                    All shadcn components automatically pick up the Sentry
-                    theme. No custom CSS needed.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium">3. Use components</p>
+                <p className="text-sm text-muted-foreground">
+                  All shadcn components automatically pick up the Sentry
+                  theme. No custom CSS needed.
+                </p>
+              </div>
+            </div>
           </section>
         </div>
       </main>
