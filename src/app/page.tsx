@@ -1412,31 +1412,31 @@ export default function Home() {
                   {[
                     {
                       name: "smooth",
-                      style:
-                        "transition: all 240ms cubic-bezier(0.72, 0, 0.16, 1)",
+                      cssVar: "--ease-smooth",
+                      duration: "--duration-slow",
                       className:
-                        "transition-all duration-[240ms] [transition-timing-function:cubic-bezier(0.72,0,0.16,1)] hover:translate-x-4 hover:bg-primary hover:text-primary-foreground",
+                        "transition-all [transition-duration:var(--duration-slow)] [transition-timing-function:var(--ease-smooth)] hover:translate-x-4 hover:bg-primary hover:text-primary-foreground",
                     },
                     {
                       name: "snap",
-                      style:
-                        "transition: all 160ms cubic-bezier(0.8, -0.4, 0.5, 1)",
+                      cssVar: "--ease-snap",
+                      duration: "--duration-moderate",
                       className:
-                        "transition-all duration-[160ms] [transition-timing-function:cubic-bezier(0.8,-0.4,0.5,1)] hover:translate-x-4 hover:bg-chart-2 hover:text-white",
+                        "transition-all [transition-duration:var(--duration-moderate)] [transition-timing-function:var(--ease-snap)] hover:translate-x-4 hover:bg-chart-2 hover:text-white",
                     },
                     {
                       name: "enter",
-                      style:
-                        "transition: all 240ms cubic-bezier(0.24, 1, 0.32, 1)",
+                      cssVar: "--ease-enter",
+                      duration: "--duration-slow",
                       className:
-                        "transition-all duration-[240ms] [transition-timing-function:cubic-bezier(0.24,1,0.32,1)] hover:translate-x-4 hover:bg-success hover:text-success-foreground",
+                        "transition-all [transition-duration:var(--duration-slow)] [transition-timing-function:var(--ease-enter)] hover:translate-x-4 hover:bg-success hover:text-success-foreground",
                     },
                     {
                       name: "exit",
-                      style:
-                        "transition: all 120ms cubic-bezier(0.64, 0, 0.8, 0)",
+                      cssVar: "--ease-exit",
+                      duration: "--duration-fast",
                       className:
-                        "transition-all duration-[120ms] [transition-timing-function:cubic-bezier(0.64,0,0.8,0)] hover:translate-x-4 hover:bg-warning hover:text-warning-foreground",
+                        "transition-all [transition-duration:var(--duration-fast)] [transition-timing-function:var(--ease-exit)] hover:translate-x-4 hover:bg-warning hover:text-warning-foreground",
                     },
                   ].map((curve) => (
                     <div
@@ -1444,6 +1444,9 @@ export default function Home() {
                       className={`rounded-lg border px-4 py-3 text-sm font-medium cursor-pointer ${curve.className}`}
                     >
                       {curve.name}
+                      <span className="ml-2 text-xs text-muted-foreground font-mono">
+                        var({curve.cssVar})
+                      </span>
                     </div>
                   ))}
                 </CardContent>

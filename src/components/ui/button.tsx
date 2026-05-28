@@ -86,7 +86,7 @@ function Button({
         <span
           className={cn(
             "absolute inset-0 rounded-[inherit] border -translate-y-0.5",
-            "transition-transform duration-[160ms] [transition-timing-function:cubic-bezier(0.8,-0.4,0.5,1)]",
+            "transition-transform [transition-duration:var(--duration-moderate)] [transition-timing-function:var(--ease-snap)]",
             "group-hover/button:-translate-y-1",
             "group-active/button:translate-y-0",
             s.surface,
@@ -97,7 +97,7 @@ function Button({
         <span
           className={cn(
             "relative z-10 flex items-center justify-center gap-1.5 -translate-y-0.5",
-            "transition-transform duration-[160ms] [transition-timing-function:cubic-bezier(0.8,-0.4,0.5,1)]",
+            "transition-transform [transition-duration:var(--duration-moderate)] [transition-timing-function:var(--ease-snap)]",
             "group-hover/button:-translate-y-1",
             "group-active/button:translate-y-0"
           )}

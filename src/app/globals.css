@@ -62,6 +62,15 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  /* Motion — Sentry easing curves and durations */
+  --ease-smooth: cubic-bezier(0.72, 0, 0.16, 1);
+  --ease-snap: cubic-bezier(0.8, -0.4, 0.5, 1);
+  --ease-enter: cubic-bezier(0.24, 1, 0.32, 1);
+  --ease-exit: cubic-bezier(0.64, 0, 0.8, 0);
+  --duration-fast: 120ms;
+  --duration-moderate: 160ms;
+  --duration-slow: 240ms;
+
   /* Radius — Sentry base is 6px (0.375rem) */
   --radius-sm: calc(var(--radius) * 0.667);
   --radius-md: calc(var(--radius) * 0.833);
