@@ -3,6 +3,7 @@ import { CopyButton } from "@/components/copy-button";
 import { CodePreview } from "@/components/code-preview";
 import { SentryWordmark, SentryGlyph } from "@/components/sentry-logo";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -792,6 +793,22 @@ export default function Home() {
                           </p>
                         </div>
                         <Switch id="replay" />
+                      </div>
+                    </div>
+                    <Separator />
+                    <div className="space-y-3">
+                      <Label className="text-sm font-medium">Notifications</Label>
+                      <div className="flex items-center gap-2">
+                        <Checkbox id="email" defaultChecked />
+                        <Label htmlFor="email" className="font-normal">Email alerts for new issues</Label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Checkbox id="slack" defaultChecked />
+                        <Label htmlFor="slack" className="font-normal">Slack notifications</Label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Checkbox id="webhook" />
+                        <Label htmlFor="webhook" className="font-normal">Webhook integration</Label>
                       </div>
                     </div>
                     <div className="flex justify-end gap-3 pt-2">
