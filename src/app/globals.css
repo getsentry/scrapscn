@@ -137,7 +137,7 @@
   --promotion-foreground: oklch(1.000 0 0);       /* #FFFFFF */
 
   /* Debossed input tokens — the pressed-in Sentry input look */
-  --input-bg: oklch(0.979 0.002 286.3);           /* #F7F7F8 — subtle fill */
+  --input-bg: oklch(0.07 0.01 280 / 0.03);        /* ~#101030 at 3% — barely visible tint */
   --input-shadow: oklch(0.888 0.007 295.4);       /* #DAD9DE — inset top shadow */
 
   /* Chonky button depth tokens — the signature Sentry raised button effect */
@@ -214,7 +214,7 @@
   --promotion-foreground: oklch(1.000 0 0);       /* #FFFFFF */
 
   /* Debossed input tokens */
-  --input-bg: oklch(0.217 0.018 300.1);            /* #1B1821 — subtle fill */
+  --input-bg: oklch(0.90 0.01 280 / 0.06);         /* light tint — subtle on dark bg */
   --input-shadow: oklch(0.185 0.016 300.0);        /* #151219 — inset top shadow */
 
   /* Chonky button depth tokens — darker in dark mode for subtle depth */

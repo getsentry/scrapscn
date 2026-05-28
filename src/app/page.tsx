@@ -937,15 +937,12 @@ export default function Home() {
                       { k: "release", v: "v3.14.2" },
                       { k: "handled", v: "no" },
                     ].map((tag) => (
-                      <div
-                        key={tag.k}
-                        className="rounded-md border px-2 py-1 text-xs"
-                      >
+                      <Badge key={tag.k} variant="muted">
                         <span className="text-muted-foreground">
                           {tag.k}:
                         </span>{" "}
-                        <span className="font-medium">{tag.v}</span>
-                      </div>
+                        {tag.v}
+                      </Badge>
                     ))}
                   </div>
                 </div>
@@ -1168,7 +1165,7 @@ export default function Home() {
                   </div>
                 </div>
                 <Card className="bg-muted">
-                  <CardContent className="pt-6 space-y-2 text-sm">
+                  <CardContent className="space-y-2 text-sm">
                     <p>
                       <strong>Sentence case always.</strong> Capitalize only the
                       first word and proper nouns.
@@ -1244,7 +1241,7 @@ export default function Home() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <Card className="border-success/20">
-                <CardContent className="pt-6">
+                <CardContent>
                   <div className="mb-3 text-sm font-medium text-success flex items-center gap-1.5">
                     <CheckCircle2 className="h-4 w-4" /> Sounds like Sentry
                   </div>
@@ -1256,7 +1253,7 @@ export default function Home() {
                 </CardContent>
               </Card>
               <Card className="border-destructive/20">
-                <CardContent className="pt-6">
+                <CardContent>
                   <div className="mb-3 text-sm font-medium text-destructive flex items-center gap-1.5">
                     <AlertCircle className="h-4 w-4" /> Doesn&apos;t sound like
                     Sentry
