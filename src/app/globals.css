@@ -6,9 +6,9 @@
 
 @theme inline {
   /* Fonts */
-  --font-sans: var(--font-rubik), "Rubik", system-ui, sans-serif;
+  --font-sans: "Rubik", system-ui, sans-serif;
   --font-mono: "Roboto Mono", ui-monospace, monospace;
-  --font-heading: var(--font-dammit-sans), var(--font-sans);
+  --font-heading: "Dammit Sans", var(--font-sans);
 
   /* Core semantic colors */
   --color-background: var(--background);
