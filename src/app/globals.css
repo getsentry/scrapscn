@@ -94,14 +94,14 @@
 
   /* Muted */
   --muted: oklch(0.979 0 0);                      /* #F8F8F9 */
-  --muted-foreground: oklch(0.569 0.019 297.2);   /* #787581 */
+  --muted-foreground: oklch(0.520 0.017 298.3);   /* #6A6772 — 5.5:1 on white, 5.1:1 on card */
 
   /* Accent — hover/focus states */
   --accent: oklch(0.956 0.003 286.3);             /* #F0F0F2 */
   --accent-foreground: oklch(0.306 0.014 297.0);  /* #302E36 */
 
-  /* Destructive */
-  --destructive: oklch(0.630 0.255 25.1);         /* #FF002B */
+  /* Destructive — darkened for AA contrast as text on white */
+  --destructive: oklch(0.519 0.210 23.6);         /* #C50025 — 6.2:1 on white */
   --destructive-foreground: oklch(1.000 0 0);     /* #FFFFFF */
 
   /* Borders & Inputs */
@@ -109,11 +109,11 @@
   --input: oklch(0.888 0.007 295.4);              /* #DAD9DE */
   --ring: oklch(0.580 0.241 285.2);               /* #7553FF (blurple) */
 
-  /* Sentry-specific semantic */
+  /* Sentry-specific semantic — background-safe vibrant values */
   --warning: oklch(0.869 0.178 91.3);             /* #FFCE00 */
   --warning-foreground: oklch(0.200 0.038 297.4); /* #181225 */
-  --success: oklch(0.838 0.244 147.7);            /* #00F261 */
-  --success-foreground: oklch(0.200 0.038 297.4); /* #181225 */
+  --success: oklch(0.511 0.131 149.5);            /* #1A7A3A — 5.4:1 on white */
+  --success-foreground: oklch(1.000 0 0);         /* #FFFFFF */
   --promotion: oklch(0.709 0.212 349.8);          /* #FC5CB4 */
   --promotion-foreground: oklch(1.000 0 0);       /* #FFFFFF */
 
@@ -161,13 +161,13 @@
 
   /* Muted */
   --muted: oklch(0.253 0.021 301.5);              /* #24202B */
-  --muted-foreground: oklch(0.658 0.026 304.3);   /* #958E9F */
+  --muted-foreground: oklch(0.709 0.024 302.8);   /* #A49EAE — 5.4:1 on dark bg */
 
   /* Accent */
   --accent: oklch(0.336 0.025 301.4);             /* #393442 */
   --accent-foreground: oklch(0.925 0.007 304.2);  /* #E7E5EA */
 
-  /* Destructive */
+  /* Destructive — brighter in dark mode for readability on dark surfaces */
   --destructive: oklch(0.630 0.255 25.1);         /* #FF002B */
   --destructive-foreground: oklch(1.000 0 0);     /* #FFFFFF */
 
@@ -179,7 +179,7 @@
   /* Sentry-specific semantic */
   --warning: oklch(0.869 0.178 91.3);             /* #FFCE00 */
   --warning-foreground: oklch(0.200 0.038 297.4); /* #181225 */
-  --success: oklch(0.838 0.244 147.7);            /* #00F261 */
+  --success: oklch(0.838 0.244 147.7);            /* #00F261 — vibrant on dark bg is fine */
   --success-foreground: oklch(0.200 0.038 297.4); /* #181225 */
   --promotion: oklch(0.688 0.236 352.7);          /* #FF45A8 */
   --promotion-foreground: oklch(1.000 0 0);       /* #FFFFFF */
