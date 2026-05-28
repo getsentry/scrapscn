@@ -39,6 +39,12 @@
   --color-promotion: var(--promotion);
   --color-promotion-foreground: var(--promotion-foreground);
 
+  /* Chonky depth — the shadow color under raised buttons */
+  --color-chonk-neutral: var(--chonk-neutral);
+  --color-chonk-accent: var(--chonk-accent);
+  --color-chonk-danger: var(--chonk-danger);
+  --color-chonk-warning: var(--chonk-warning);
+
   /* Chart colors — Sentry categorical palette */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -117,6 +123,12 @@
   --promotion: oklch(0.709 0.212 349.8);          /* #FC5CB4 */
   --promotion-foreground: oklch(1.000 0 0);       /* #FFFFFF */
 
+  /* Chonky button depth tokens — the signature Sentry raised button effect */
+  --chonk-neutral: oklch(0.888 0.007 295.4);      /* #DAD9DE */
+  --chonk-accent: oklch(0.466 0.240 285.1);       /* #5827D6 */
+  --chonk-danger: oklch(0.509 0.209 29.2);        /* #C10000 */
+  --chonk-warning: oklch(0.716 0.149 78.6);       /* #D59600 */
+
   /* Chart — categorical palette */
   --chart-1: oklch(0.580 0.241 285.2);            /* Blurple  #7553FF */
   --chart-2: oklch(0.688 0.236 352.7);            /* Pink     #FF45A8 */
@@ -183,6 +195,12 @@
   --success-foreground: oklch(0.200 0.038 297.4); /* #181225 */
   --promotion: oklch(0.688 0.236 352.7);          /* #FF45A8 */
   --promotion-foreground: oklch(1.000 0 0);       /* #FFFFFF */
+
+  /* Chonky button depth tokens — darker in dark mode for subtle depth */
+  --chonk-neutral: oklch(0.888 0.007 295.4);      /* #DAD9DE — same, buttons stay white-surface */
+  --chonk-accent: oklch(0.185 0.093 285.0);       /* #120539 */
+  --chonk-danger: oklch(0.202 0.083 29.2);        /* #330000 */
+  --chonk-warning: oklch(0.188 0.054 44.4);       /* #260900 */
 
   /* Chart */
   --chart-1: oklch(0.580 0.241 285.2);

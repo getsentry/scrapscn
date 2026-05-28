@@ -3,6 +3,7 @@ import { CopyButton } from "@/components/copy-button";
 import { CodePreview } from "@/components/code-preview";
 import { SentryWordmark, SentryGlyph } from "@/components/sentry-logo";
 import { Button } from "@/components/ui/button";
+import { SentryButton } from "@/components/ui/sentry-button";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -593,6 +594,42 @@ export default function Home() {
 
               {/* Buttons & Badges */}
               <TabsContent value="buttons" className="space-y-6 pt-6">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      Chonky buttons
+                    </h3>
+                    <Badge variant="outline" className="text-xs">
+                      Sentry signature
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    The raised &ldquo;embossed&rdquo; button from
+                    Sentry&apos;s product UI. Hover to lift, click to
+                    press down. Uses the snap easing curve.
+                  </p>
+                </div>
+                <CodePreview
+                  code={`import { SentryButton } from "@/components/ui/sentry-button"
+
+<SentryButton variant="primary">Resolve issue</SentryButton>
+<SentryButton variant="secondary">Ignore</SentryButton>
+<SentryButton variant="danger">Delete project</SentryButton>
+<SentryButton variant="warning">Needs attention</SentryButton>`}
+                >
+                  <div className="flex flex-wrap gap-4">
+                    <SentryButton variant="primary">
+                      <CheckCircle2 className="h-4 w-4" /> Resolve issue
+                    </SentryButton>
+                    <SentryButton variant="secondary">Ignore</SentryButton>
+                    <SentryButton variant="danger">Delete project</SentryButton>
+                    <SentryButton variant="warning">Needs attention</SentryButton>
+                  </div>
+                </CodePreview>
+
+                <h3 className="text-sm font-medium text-muted-foreground pt-4">
+                  Standard shadcn buttons
+                </h3>
                 <CodePreview
                   code={`<Button>Resolve issue <CheckCircle2 /></Button>
 <Button variant="secondary">Ignore</Button>
