@@ -1,36 +1,85 @@
+"use client"
+
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
+import {
+  AlertCircle,
+  CheckCircle2,
+  Info,
+  TriangleAlert,
+  CircleSlash,
+} from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
 const alertVariants = cva(
-  "group/alert relative grid w-full gap-0.5 rounded-lg border px-2.5 py-2 text-left text-sm has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-18 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4",
+  "group/alert relative grid w-full gap-x-3 gap-y-0 rounded-lg border px-3 py-2.5 text-left text-sm [&_a]:underline [&_a]:underline-offset-3",
   {
     variants: {
       variant: {
-        default: "bg-card text-card-foreground",
-        destructive:
-          "bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 *:[svg]:text-current",
+        info: "border-primary/30 bg-primary/5 dark:bg-primary/10",
+        warning:
+          "border-warning/30 bg-warning/10 dark:border-warning/20 dark:bg-warning/10",
+        danger:
+          "border-destructive/30 bg-destructive/5 dark:bg-destructive/10",
+        success:
+          "border-success/30 bg-success/5 dark:bg-success/10",
+        muted: "border-border bg-card",
+      },
+      showIcon: {
+        true: "grid-cols-[auto_1fr] [&>svg]:row-span-2 [&>svg]:mt-0.5 [&>svg]:size-4",
+        false: "",
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "info",
+      showIcon: true,
     },
   }
 )
 
+const alertIconMap = {
+  info: Info,
+  warning: TriangleAlert,
+  danger: CircleSlash,
+  success: CheckCircle2,
+  muted: Info,
+} as const
+
+const alertIconColors = {
+  info: "text-primary",
+  warning: "text-warning-foreground dark:text-warning",
+  danger: "text-destructive",
+  success: "text-success",
+  muted: "text-muted-foreground",
+} as const
+
 function Alert({
   className,
-  variant,
+  variant = "info",
+  showIcon = true,
+  icon,
+  children,
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof alertVariants>) {
+}: React.ComponentProps<"div"> &
+  VariantProps<typeof alertVariants> & {
+    icon?: React.ReactNode
+    showIcon?: boolean
+  }) {
+  const resolvedVariant = variant ?? "info"
+  const IconComponent = alertIconMap[resolvedVariant]
+
   return (
     <div
       data-slot="alert"
       role="alert"
-      className={cn(alertVariants({ variant }), className)}
+      className={cn(alertVariants({ variant, showIcon }), className)}
       {...props}
-    />
+    >
+      {showIcon &&
+        (icon ?? <IconComponent className={alertIconColors[resolvedVariant]} />)}
+      {children}
+    </div>
   )
 }
 
@@ -55,7 +104,7 @@ function AlertDescription({
     <div
       data-slot="alert-description"
       className={cn(
-        "text-sm text-balance text-muted-foreground md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4",
+        "text-sm text-balance text-muted-foreground md:text-pretty group-has-[>svg]/alert:col-start-2 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4",
         className
       )}
       {...props}

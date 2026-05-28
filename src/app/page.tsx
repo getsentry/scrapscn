@@ -43,7 +43,6 @@ import {
   Clock,
   ExternalLink,
   GitBranch,
-  Info,
   Layers,
   Terminal,
   TrendingUp,
@@ -476,7 +475,7 @@ export default function Home() {
                               </div>
                             </TableCell>
                             <TableCell className="hidden sm:table-cell">
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant="muted" className="text-xs">
                                 {issue.project}
                               </Badge>
                             </TableCell>
@@ -604,7 +603,7 @@ export default function Home() {
                     <h3 className="text-sm font-medium text-muted-foreground">
                       Chonky buttons
                     </h3>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="muted" className="text-xs">
                       Sentry signature
                     </Badge>
                   </div>
@@ -638,79 +637,64 @@ export default function Home() {
                 </CodePreview>
 
                 <CodePreview
-                  code={`<Badge>Unresolved</Badge>
-<Badge variant="secondary">Ignored</Badge>
-<Badge variant="destructive">Fatal</Badge>
-<Badge variant="outline">Regressed</Badge>
+                  code={`<Badge variant="muted">Ignored</Badge>
+<Badge variant="info">Unresolved</Badge>
+<Badge variant="danger">Fatal</Badge>
+<Badge variant="warning">Warning</Badge>
+<Badge variant="success">Resolved</Badge>
+<Badge variant="promotion">Promoted</Badge>
 
-{/* Sentry semantic colors */}
-<Badge className="bg-warning text-warning-foreground">Warning</Badge>
-<Badge className="bg-success text-success-foreground">Resolved</Badge>
-<Badge className="bg-promotion text-promotion-foreground">New</Badge>`}
+{/* Feature badges */}
+<Badge variant="alpha">Alpha</Badge>
+<Badge variant="beta">Beta</Badge>
+<Badge variant="new">New</Badge>`}
                 >
                   <div className="space-y-4">
                     <div className="flex flex-wrap gap-2">
-                      <Badge>Unresolved</Badge>
-                      <Badge variant="secondary">Ignored</Badge>
-                      <Badge variant="destructive">Fatal</Badge>
-                      <Badge variant="outline">Regressed</Badge>
+                      <Badge variant="muted">Ignored</Badge>
+                      <Badge variant="info">Unresolved</Badge>
+                      <Badge variant="danger">Fatal</Badge>
+                      <Badge variant="warning">Warning</Badge>
+                      <Badge variant="success">Resolved</Badge>
+                      <Badge variant="promotion">Promoted</Badge>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <Badge className="bg-destructive text-destructive-foreground">
-                        Error
-                      </Badge>
-                      <Badge className="bg-warning text-warning-foreground">
-                        Warning
-                      </Badge>
-                      <Badge className="bg-success text-success-foreground">
-                        Resolved
-                      </Badge>
-                      <Badge className="bg-promotion text-promotion-foreground">
-                        New
-                      </Badge>
+                      <Badge variant="alpha">Alpha</Badge>
+                      <Badge variant="beta">Beta</Badge>
+                      <Badge variant="new">New</Badge>
                     </div>
                   </div>
                 </CodePreview>
 
                 <CodePreview
-                  code={`<Alert variant="destructive">
-  <AlertCircle className="h-4 w-4" />
+                  code={`<Alert variant="danger">
   <AlertTitle>Spike detected</AlertTitle>
   <AlertDescription>
     TypeError reported 2,847 times in the last hour.
   </AlertDescription>
 </Alert>
 
-{/* Custom semantic alert using Sentry tokens */}
-<div className="rounded-lg border border-warning/30 bg-warning/5 p-4">
-  <p className="text-sm font-medium">Quota warning</p>
-  <p className="text-sm text-muted-foreground">
+<Alert variant="warning">
+  <AlertTitle>Quota warning</AlertTitle>
+  <AlertDescription>
     You've used 87% of your monthly error quota.
-  </p>
-</div>`}
+  </AlertDescription>
+</Alert>`}
                 >
                   <div className="w-full space-y-3">
-                    <Alert variant="destructive">
-                      <AlertCircle className="h-4 w-4" />
+                    <Alert variant="danger">
                       <AlertTitle>Spike detected</AlertTitle>
                       <AlertDescription>
                         TypeError reported 2,847 times in the last hour — 4x
                         above baseline.
                       </AlertDescription>
                     </Alert>
-                    <div className="rounded-lg border border-warning/30 bg-warning/5 p-4">
-                      <div className="flex gap-3">
-                        <div className="text-warning mt-0.5">
-                          <AlertCircle className="h-4 w-4" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium">Quota warning</p>
-                          <p className="text-sm text-muted-foreground">
-                            You&apos;ve used 87% of your monthly error quota.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    <Alert variant="warning">
+                      <AlertTitle>Quota warning</AlertTitle>
+                      <AlertDescription>
+                        You&apos;ve used 87% of your monthly error quota.
+                      </AlertDescription>
+                    </Alert>
                   </div>
                 </CodePreview>
 
@@ -834,16 +818,14 @@ export default function Home() {
 
               {/* Alerts */}
               <TabsContent value="alerts" className="space-y-4 pt-6">
-                <Alert>
-                  <Info className="h-4 w-4" />
+                <Alert variant="info">
                   <AlertTitle>SDK update available</AlertTitle>
                   <AlertDescription>
                     Your project is using @sentry/nextjs 7.x. Upgrade to 8.x
                     for improved tree-shaking and smaller bundle sizes.
                   </AlertDescription>
                 </Alert>
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
+                <Alert variant="danger">
                   <AlertTitle>Spike detected</AlertTitle>
                   <AlertDescription>
                     TypeError: Cannot read properties of undefined has been
@@ -851,39 +833,27 @@ export default function Home() {
                     the baseline. This started after deploy v3.14.2.
                   </AlertDescription>
                 </Alert>
-                <div className="rounded-lg border border-warning/30 bg-warning/5 p-4">
-                  <div className="flex gap-3">
-                    <div className="text-warning mt-0.5">
-                      <AlertCircle className="h-4 w-4" />
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">
-                        Quota warning
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        You&apos;ve used 87% of your monthly error quota.
-                        Consider adjusting your sample rate or upgrading your
-                        plan.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="rounded-lg border border-success/30 bg-success/5 p-4">
-                  <div className="flex gap-3">
-                    <div className="text-success mt-0.5">
-                      <CheckCircle2 className="h-4 w-4" />
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">
-                        All clear
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        No new issues in the last 24 hours. Your crash-free rate
-                        is holding steady at 99.2%.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                <Alert variant="warning">
+                  <AlertTitle>Quota warning</AlertTitle>
+                  <AlertDescription>
+                    You&apos;ve used 87% of your monthly error quota. Consider
+                    adjusting your sample rate or upgrading your plan.
+                  </AlertDescription>
+                </Alert>
+                <Alert variant="success">
+                  <AlertTitle>All clear</AlertTitle>
+                  <AlertDescription>
+                    No new issues in the last 24 hours. Your crash-free rate is
+                    holding steady at 99.2%.
+                  </AlertDescription>
+                </Alert>
+                <Alert variant="muted">
+                  <AlertTitle>Tip</AlertTitle>
+                  <AlertDescription>
+                    Set up release tracking to correlate deploys with new issues
+                    automatically.
+                  </AlertDescription>
+                </Alert>
               </TabsContent>
             </Tabs>
           </section>
@@ -906,8 +876,8 @@ export default function Home() {
               <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <Badge variant="destructive">Fatal</Badge>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="danger">Fatal</Badge>
+                    <Badge variant="muted" className="text-xs">
                       FRONT-4KP
                     </Badge>
                   </div>
