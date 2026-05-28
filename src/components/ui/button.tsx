@@ -89,11 +89,13 @@ function Button({
   children,
   ...props
 }: ButtonProps) {
-  const shouldChonk = chonk !== false && isChonky(variant)
+  // xs is too short for the depth layer to read — the 1px chonk edge plus the
+  // surface border looks like an asymmetric border, so xs always renders flat.
+  const isXs = size === "xs" || size === "icon-xs"
+  const shouldChonk = chonk !== false && isChonky(variant) && !isXs
 
   if (shouldChonk) {
     const s = chonkStyles[variant as ChonkVariant]
-    const isXs = size === "xs" || size === "icon-xs"
 
     return (
       <ButtonPrimitive
@@ -138,7 +140,7 @@ function Button({
     )
   }
 
-  if (chonk === false && isChonky(variant)) {
+  if (isChonky(variant)) {
     return (
       <ButtonPrimitive
         data-slot="button"
