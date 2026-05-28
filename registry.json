@@ -20,6 +20,86 @@
           "type": "registry:component"
         }
       ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "Sentry chonk button with embossed depth on solid variants.",
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
+      "files": [
+        {
+          "path": "src/components/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "description": "Surfaced tooltip overlay built on Base UI.",
+      "dependencies": ["@base-ui/react"],
+      "files": [
+        {
+          "path": "src/components/ui/tooltip.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "alert",
+      "type": "registry:ui",
+      "title": "Alert",
+      "description": "Sentry alert with the colored icon rail, system banner, expand/collapse, trailing items, and AlertLink.",
+      "dependencies": ["lucide-react", "class-variance-authority"],
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "path": "src/components/ui/alert.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "description": "Contextual highlighted text element with semantic and feature variants.",
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
+      "files": [
+        {
+          "path": "src/components/ui/badge.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tag",
+      "type": "registry:ui",
+      "title": "Tag",
+      "description": "Status pill with optional leading icon and dismiss button.",
+      "dependencies": ["lucide-react", "class-variance-authority"],
+      "files": [
+        {
+          "path": "src/components/ui/tag.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "feature-badge",
+      "type": "registry:ui",
+      "title": "Feature Badge",
+      "description": "Square tooltip badge for annotating feature rollout stages (alpha, beta, new, experimental, debug).",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["tag", "tooltip"],
+      "files": [
+        {
+          "path": "src/components/ui/feature-badge.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

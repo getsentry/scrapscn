@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: () => (
     <Select defaultValue="14d">
-      <SelectTrigger>
+      <SelectTrigger aria-label="Time range">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
@@ -36,7 +36,7 @@ export const Default: Story = {
 export const Small: Story = {
   render: () => (
     <Select defaultValue="all">
-      <SelectTrigger size="sm">
+      <SelectTrigger size="sm" aria-label="Project">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
@@ -53,7 +53,7 @@ export const MultipleSelects: Story = {
   render: () => (
     <div className="flex items-center gap-2">
       <Select defaultValue="all">
-        <SelectTrigger>
+        <SelectTrigger aria-label="Projects">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -63,7 +63,7 @@ export const MultipleSelects: Story = {
         </SelectContent>
       </Select>
       <Select defaultValue="all">
-        <SelectTrigger>
+        <SelectTrigger aria-label="Environments">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -73,7 +73,7 @@ export const MultipleSelects: Story = {
         </SelectContent>
       </Select>
       <Select defaultValue="14d">
-        <SelectTrigger>
+        <SelectTrigger aria-label="Time range">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

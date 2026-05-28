@@ -11,11 +11,11 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  render: () => <Switch defaultChecked />,
+  render: () => <Switch defaultChecked aria-label="Enable feature" />,
 }
 
 export const Unchecked: Story = {
-  render: () => <Switch />,
+  render: () => <Switch aria-label="Enable feature" />,
 }
 
 export const Small: Story = {
@@ -57,8 +57,8 @@ export const WithLabel: Story = {
 export const Disabled: Story = {
   render: () => (
     <div className="space-y-3">
-      <Switch disabled defaultChecked />
-      <Switch disabled />
+      <Switch disabled defaultChecked aria-label="Enabled (disabled)" />
+      <Switch disabled aria-label="Disabled" />
     </div>
   ),
 }

@@ -38,13 +38,16 @@ export const WithSearchIcon: Story = {
 }
 
 export const Disabled: Story = {
-  render: () => <Input className="w-80" defaultValue="read-only DSN" disabled />,
+  render: () => (
+    <Input className="w-80" aria-label="DSN" defaultValue="read-only DSN" disabled />
+  ),
 }
 
 export const ReadOnly: Story = {
   render: () => (
     <Input
       className="w-96 font-mono text-sm"
+      aria-label="DSN"
       defaultValue="https://abc123@o0.ingest.sentry.io/456"
       readOnly
     />

@@ -39,6 +39,10 @@
   --color-promotion: var(--promotion);
   --color-promotion-foreground: var(--promotion-foreground);
 
+  /* On-tint readable text colors (AA-safe text on the matching tinted surface) */
+  --color-info: var(--info);
+  --color-promotion-strong: var(--promotion-strong);
+
   /* Debossed input tokens */
   --color-input-bg: var(--input-bg);
   --color-input-shadow: var(--input-shadow);
@@ -146,6 +150,11 @@
   --promotion: oklch(0.709 0.212 349.8);          /* #FC5CB4 */
   --promotion-foreground: oklch(1.000 0 0);       /* #FFFFFF */
 
+  /* On-tint text colors — darker than the vibrant brand colors so text passes
+     WCAG AA (4.5:1) on the matching /10 tint. Mirrors Sentry's content.* tokens. */
+  --info: oklch(0.503 0.243 281.0);               /* #653DE9 — accent text on blurple tint */
+  --promotion-strong: oklch(0.515 0.232 356.0);   /* #C8007E — promotion text on pink tint */
+
   /* Debossed input tokens — the pressed-in Sentry input look */
   --input-bg: oklch(0.07 0.01 280 / 0.03);        /* ~#101030 at 3% — barely visible tint */
   --input-shadow: oklch(0.888 0.007 295.4);       /* #DAD9DE — inset top shadow */
@@ -222,6 +231,10 @@
   --success-foreground: oklch(0.200 0.038 297.4); /* #181225 */
   --promotion: oklch(0.688 0.236 352.7);          /* #FF45A8 */
   --promotion-foreground: oklch(1.000 0 0);       /* #FFFFFF */
+
+  /* On-tint text colors — lighter in dark mode for AA on the darker tints */
+  --info: oklch(0.800 0.130 286.0);               /* ~#c2b3f7 */
+  --promotion-strong: oklch(0.800 0.120 350.0);   /* ~#f2aad0 */
 
   /* Debossed input tokens */
   --input-bg: oklch(0.90 0.01 280 / 0.06);         /* light tint — subtle on dark bg */

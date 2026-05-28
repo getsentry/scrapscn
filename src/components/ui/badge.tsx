@@ -10,7 +10,7 @@ const badgeVariants = cva(
     variants: {
       variant: {
         muted: "bg-secondary text-muted-foreground",
-        info: "bg-primary/10 text-primary dark:bg-primary/20",
+        info: "bg-primary/10 text-info dark:bg-primary/20",
         success:
           "bg-success/10 text-success dark:bg-success/20",
         warning:
@@ -18,9 +18,9 @@ const badgeVariants = cva(
         danger:
           "bg-destructive/10 text-destructive dark:bg-destructive/20",
         promotion:
-          "bg-promotion/10 text-promotion dark:bg-promotion/20",
+          "bg-promotion/10 text-promotion-strong dark:bg-promotion/20",
         alpha:
-          "bg-promotion text-promotion-foreground",
+          "bg-promotion text-black",
         beta:
           "bg-warning text-warning-foreground",
         new:

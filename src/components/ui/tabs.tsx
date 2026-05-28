@@ -81,7 +81,7 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
         // Flat active hover — faint accent tint
         "group-not-data-[variant=floating]/tabs-list:data-active:hover:bg-primary/10",
         // Floating variant selected state — accent tint, no shadow
-        "group-data-[variant=floating]/tabs-list:data-active:bg-primary/10 group-data-[variant=floating]/tabs-list:data-active:text-primary",
+        "group-data-[variant=floating]/tabs-list:data-active:bg-primary/10 group-data-[variant=floating]/tabs-list:data-active:text-info",
         // Selection indicator bar (flat variant only)
         "after:absolute after:bg-primary after:opacity-0 after:transition-opacity",
         "group-data-horizontal/tabs:after:inset-x-0 group-data-horizontal/tabs:after:-bottom-1 group-data-horizontal/tabs:after:h-0.5 group-data-horizontal/tabs:after:rounded-full",
