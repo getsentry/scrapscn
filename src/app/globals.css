@@ -66,6 +66,16 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  /* Chonk shadows — reusable across all embossed/debossed components */
+  --shadow-chonk: 0 2px 0 var(--border);
+  --shadow-debossed: inset 0 1px 0 0 var(--border);
+
+  /* Chonk elevation — how far the surface sits above the chonk layer */
+  --chonk-elevation: 2px;
+  --chonk-elevation-xs: 1px;
+  --chonk-elevation-hover: 3px;
+  --chonk-elevation-hover-xs: 2px;
+
   /* Motion — Sentry easing curves and durations */
   --ease-smooth: cubic-bezier(0.72, 0, 0.16, 1);
   --ease-snap: cubic-bezier(0.8, -0.4, 0.5, 1);
@@ -143,7 +153,7 @@
   /* Chonky button depth tokens — the signature Sentry raised button effect */
   --chonk-neutral: oklch(0.888 0.007 295.4);      /* #DAD9DE */
   --chonk-accent: oklch(0.466 0.240 285.1);       /* #5827D6 */
-  --chonk-danger: oklch(0.509 0.209 29.2);        /* #C10000 */
+  --chonk-danger: oklch(0.370 0.160 25.0);         /* #8B0018 — darker than destructive for visible depth */
   --chonk-warning: oklch(0.716 0.149 78.6);       /* #D59600 */
 
   /* Chart — categorical palette */

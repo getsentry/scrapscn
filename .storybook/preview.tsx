@@ -1,4 +1,7 @@
 import type { Preview } from '@storybook/nextjs-vite'
+import '@fontsource/rubik/400.css'
+import '@fontsource/rubik/500.css'
+import '@fontsource/roboto-mono/400.css'
 import '../src/app/globals.css'
 
 const preview: Preview = {
