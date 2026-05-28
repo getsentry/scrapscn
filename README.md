@@ -10,8 +10,12 @@ npx shadcn add https://scrapscn.sentry.dev/r/sentry-base
 
 ## What's included
 
-- **26 semantic CSS variables** mapped from Sentry's product design tokens (oklch)
+- **26+ semantic CSS variables** mapped from Sentry's product design tokens (oklch)
 - **Custom tokens** beyond shadcn defaults: `--warning`, `--success`, `--promotion`
+- **Chonky buttons**: Sentry's signature raised embossed depth effect with snap easing
+- **Debossed inputs**: Pressed-in feel with inset shadows, matching the product UI
+- **Semantic Badge & Alert variants**: `info`, `success`, `warning`, `danger`, `promotion`, `muted` — plus feature badges (`alpha`, `beta`, `new`)
+- **Chonky Switch**: Debossed track, embossed thumb, crossfading check/close icons
 - **Typography**: Dammit Sans (headlines), Rubik (body), Roboto Mono (code)
 - **Both modes**: Light and dark are first-class citizens — purple-tinted neutrals, never pure black
 - **WCAG AA compliant**: All text/surface pairs pass 4.5:1 contrast
@@ -19,8 +23,8 @@ npx shadcn add https://scrapscn.sentry.dev/r/sentry-base
 ## Development
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 ## Deploy
