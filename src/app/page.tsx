@@ -1,5 +1,6 @@
 import { ThemeToggle } from "@/components/theme-toggle";
 import { CopyButton } from "@/components/copy-button";
+import { CodePreview } from "@/components/code-preview";
 import { SentryWordmark, SentryGlyph } from "@/components/sentry-logo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -239,6 +240,98 @@ export default function Home() {
                   </p>
                 </CardContent>
               </Card>
+            </div>
+          </section>
+
+          <Separator />
+
+          {/* Theme preview — both modes side by side */}
+          <section className="py-16 space-y-8">
+            <div>
+              <h2 className="font-heading text-2xl font-bold">
+                Both modes, one theme
+              </h2>
+              <p className="text-muted-foreground">
+                Purple-tinted neutrals in both directions. Dark mode
+                isn&apos;t an afterthought — it&apos;s where Sentry
+                lives.
+              </p>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              {/* Light preview */}
+              <div className="rounded-xl border bg-white p-6 space-y-4 text-[#302E36]">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-[#6A6772]">
+                    Light mode
+                  </span>
+                  <div className="h-5 w-5 rounded-full bg-[#7553FF]" />
+                </div>
+                <div className="space-y-3">
+                  <div className="rounded-lg bg-[#F8F8F9] p-4 space-y-2">
+                    <div className="text-sm font-medium">
+                      ConnectionError in api-service
+                    </div>
+                    <div className="text-xs text-[#6A6772]">
+                      Connection refused to database pool — 1.2k events, 89
+                      users affected
+                    </div>
+                    <div className="flex gap-2 pt-1">
+                      <span className="rounded-md bg-[#C50025] px-2 py-0.5 text-xs text-white">
+                        Fatal
+                      </span>
+                      <span className="rounded-md bg-[#F0F0F2] px-2 py-0.5 text-xs text-[#302E36]">
+                        api-service
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="rounded-md bg-[#7553FF] px-3 py-1.5 text-xs font-medium text-white">
+                      Resolve
+                    </div>
+                    <div className="rounded-md border border-[#E6E6E9] px-3 py-1.5 text-xs font-medium">
+                      Ignore
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Dark preview */}
+              <div className="rounded-xl border border-[#46404F] bg-[#2E2936] p-6 space-y-4 text-[#E7E5EA]">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-[#A49EAE]">
+                    Dark mode
+                  </span>
+                  <div className="h-5 w-5 rounded-full bg-[#7553FF]" />
+                </div>
+                <div className="space-y-3">
+                  <div className="rounded-lg bg-[#24202B] p-4 space-y-2">
+                    <div className="text-sm font-medium">
+                      ConnectionError in api-service
+                    </div>
+                    <div className="text-xs text-[#A49EAE]">
+                      Connection refused to database pool — 1.2k events, 89
+                      users affected
+                    </div>
+                    <div className="flex gap-2 pt-1">
+                      <span className="rounded-md bg-[#FF002B] px-2 py-0.5 text-xs text-white">
+                        Fatal
+                      </span>
+                      <span className="rounded-md bg-[#393442] px-2 py-0.5 text-xs text-[#E7E5EA]">
+                        api-service
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="rounded-md bg-[#7553FF] px-3 py-1.5 text-xs font-medium text-white">
+                      Resolve
+                    </div>
+                    <div className="rounded-md border border-[#46404F] px-3 py-1.5 text-xs font-medium">
+                      Ignore
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -499,11 +592,15 @@ export default function Home() {
               </TabsContent>
 
               {/* Buttons & Badges */}
-              <TabsContent value="buttons" className="space-y-8 pt-6">
-                <div className="space-y-3">
-                  <h3 className="text-sm font-medium text-muted-foreground">
-                    Button variants
-                  </h3>
+              <TabsContent value="buttons" className="space-y-6 pt-6">
+                <CodePreview
+                  code={`<Button>Resolve issue <CheckCircle2 /></Button>
+<Button variant="secondary">Ignore</Button>
+<Button variant="destructive">Delete project</Button>
+<Button variant="outline">View on GitHub</Button>
+<Button variant="ghost">Cancel</Button>
+<Button variant="link">Learn more</Button>`}
+                >
                   <div className="flex flex-wrap gap-3">
                     <Button>
                       Resolve issue <CheckCircle2 className="ml-1.5 h-4 w-4" />
@@ -517,53 +614,84 @@ export default function Home() {
                     <Button variant="ghost">Cancel</Button>
                     <Button variant="link">Learn more</Button>
                   </div>
-                </div>
+                </CodePreview>
 
-                <div className="space-y-3">
-                  <h3 className="text-sm font-medium text-muted-foreground">
-                    Button sizes
-                  </h3>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <Button size="sm">Small</Button>
-                    <Button size="default">Default</Button>
-                    <Button size="lg">Large</Button>
-                    <Button size="icon">
-                      <Bug className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
+                <CodePreview
+                  code={`<Badge>Unresolved</Badge>
+<Badge variant="secondary">Ignored</Badge>
+<Badge variant="destructive">Fatal</Badge>
+<Badge variant="outline">Regressed</Badge>
 
-                <div className="space-y-3">
-                  <h3 className="text-sm font-medium text-muted-foreground">
-                    Badges
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge>Unresolved</Badge>
-                    <Badge variant="secondary">Ignored</Badge>
-                    <Badge variant="destructive">Fatal</Badge>
-                    <Badge variant="outline">Regressed</Badge>
+{/* Sentry semantic colors */}
+<Badge className="bg-warning text-warning-foreground">Warning</Badge>
+<Badge className="bg-success text-success-foreground">Resolved</Badge>
+<Badge className="bg-promotion text-promotion-foreground">New</Badge>`}
+                >
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap gap-2">
+                      <Badge>Unresolved</Badge>
+                      <Badge variant="secondary">Ignored</Badge>
+                      <Badge variant="destructive">Fatal</Badge>
+                      <Badge variant="outline">Regressed</Badge>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge className="bg-destructive text-destructive-foreground">
+                        Error
+                      </Badge>
+                      <Badge className="bg-warning text-warning-foreground">
+                        Warning
+                      </Badge>
+                      <Badge className="bg-success text-success-foreground">
+                        Resolved
+                      </Badge>
+                      <Badge className="bg-promotion text-promotion-foreground">
+                        New
+                      </Badge>
+                    </div>
                   </div>
-                </div>
+                </CodePreview>
 
-                <div className="space-y-3">
-                  <h3 className="text-sm font-medium text-muted-foreground">
-                    Sentry-specific semantic colors
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge className="bg-destructive text-destructive-foreground">
-                      Error
-                    </Badge>
-                    <Badge className="bg-warning text-warning-foreground">
-                      Warning
-                    </Badge>
-                    <Badge className="bg-success text-success-foreground">
-                      Resolved
-                    </Badge>
-                    <Badge className="bg-promotion text-promotion-foreground">
-                      New
-                    </Badge>
+                <CodePreview
+                  code={`<Alert variant="destructive">
+  <AlertCircle className="h-4 w-4" />
+  <AlertTitle>Spike detected</AlertTitle>
+  <AlertDescription>
+    TypeError reported 2,847 times in the last hour.
+  </AlertDescription>
+</Alert>
+
+{/* Custom semantic alert using Sentry tokens */}
+<div className="rounded-lg border border-warning/30 bg-warning/5 p-4">
+  <p className="text-sm font-medium">Quota warning</p>
+  <p className="text-sm text-muted-foreground">
+    You've used 87% of your monthly error quota.
+  </p>
+</div>`}
+                >
+                  <div className="w-full space-y-3">
+                    <Alert variant="destructive">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertTitle>Spike detected</AlertTitle>
+                      <AlertDescription>
+                        TypeError reported 2,847 times in the last hour — 4x
+                        above baseline.
+                      </AlertDescription>
+                    </Alert>
+                    <div className="rounded-lg border border-warning/30 bg-warning/5 p-4">
+                      <div className="flex gap-3">
+                        <div className="text-warning mt-0.5">
+                          <AlertCircle className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">Quota warning</p>
+                          <p className="text-sm text-muted-foreground">
+                            You&apos;ve used 87% of your monthly error quota.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </CodePreview>
 
                 <div className="space-y-3">
                   <h3 className="text-sm font-medium text-muted-foreground">
@@ -737,6 +865,175 @@ export default function Home() {
                 </div>
               </TabsContent>
             </Tabs>
+          </section>
+
+          <Separator />
+
+          {/* Block: Error detail page */}
+          <section className="py-16 space-y-8">
+            <div>
+              <h2 className="font-heading text-2xl font-bold">
+                Blocks
+              </h2>
+              <p className="text-muted-foreground">
+                Composed layouts built entirely from themed shadcn components.
+                No custom CSS — just the tokens doing their&nbsp;job.
+              </p>
+            </div>
+
+            <Card>
+              <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="destructive">Fatal</Badge>
+                    <Badge variant="outline" className="text-xs">
+                      FRONT-4KP
+                    </Badge>
+                  </div>
+                  <CardTitle className="font-mono text-base">
+                    TypeError: Cannot read properties of undefined
+                    (reading &apos;map&apos;)
+                  </CardTitle>
+                  <CardDescription>
+                    frontend · v3.14.2 · first seen 2h ago · 2,847 events
+                  </CardDescription>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <Button size="sm" variant="outline">
+                    Ignore
+                  </Button>
+                  <Button size="sm">
+                    <CheckCircle2 className="mr-1.5 h-3.5 w-3.5" /> Resolve
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Stack trace */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium">Stack trace</h3>
+                  <div className="rounded-lg border bg-muted p-4 font-mono text-xs space-y-1.5 overflow-x-auto">
+                    <p className="text-destructive font-medium">
+                      TypeError: Cannot read properties of undefined (reading
+                      &apos;map&apos;)
+                    </p>
+                    <p className="text-foreground">
+                      at UserList{" "}
+                      <span className="text-muted-foreground">
+                        (./src/components/UserList.tsx:42:18)
+                      </span>
+                    </p>
+                    <p className="text-muted-foreground">
+                      at renderWithHooks (react-dom.js:14985:18)
+                    </p>
+                    <p className="text-muted-foreground">
+                      at mountIndeterminateComponent
+                      (react-dom.js:17811:13)
+                    </p>
+                    <p className="text-muted-foreground">
+                      at beginWork (react-dom.js:19049:16)
+                    </p>
+                  </div>
+                </div>
+
+                {/* Tags */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium">Tags</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { k: "browser", v: "Chrome 125" },
+                      { k: "os", v: "macOS 15.1" },
+                      { k: "environment", v: "production" },
+                      { k: "release", v: "v3.14.2" },
+                      { k: "handled", v: "no" },
+                    ].map((tag) => (
+                      <div
+                        key={tag.k}
+                        className="rounded-md border px-2 py-1 text-xs"
+                      >
+                        <span className="text-muted-foreground">
+                          {tag.k}:
+                        </span>{" "}
+                        <span className="font-medium">{tag.v}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Event timeline */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium">Event frequency</h3>
+                  <div className="flex items-end gap-0.5 h-16">
+                    {[
+                      3, 5, 2, 8, 12, 15, 9, 22, 45, 78, 95, 100, 88, 92, 96,
+                      85, 72, 65, 58, 42, 38, 35, 30, 28,
+                    ].map((v, i) => (
+                      <div
+                        key={i}
+                        className="flex-1 rounded-t-sm bg-destructive/70"
+                        style={{ height: `${v}%` }}
+                      />
+                    ))}
+                  </div>
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>24h ago</span>
+                    <span>now</span>
+                  </div>
+                </div>
+
+                {/* Assignee + breadcrumbs hint */}
+                <Separator />
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Avatar className="h-6 w-6">
+                      <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+                        SD
+                      </AvatarFallback>
+                    </Avatar>
+                    <span>Assigned to you</span>
+                  </div>
+                  <span className="text-muted-foreground text-xs">
+                    12 breadcrumbs · 3 replays available
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Gradient showcase */}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div
+                className="relative rounded-xl overflow-hidden h-48 bg-cover bg-center flex items-end p-6"
+                style={{
+                  backgroundImage: "url('/fuzzy-dot-bg.png')",
+                }}
+              >
+                <div className="space-y-1">
+                  <p className="text-white text-lg font-heading font-bold">
+                    The signature gradient
+                  </p>
+                  <p className="text-white/70 text-sm">
+                    Deep purple canvas with vivid mesh washes and dot
+                    texture. This is what &ldquo;Sentry&rdquo; looks&nbsp;like.
+                  </p>
+                </div>
+              </div>
+              <div
+                className="rounded-xl h-48 flex items-end p-6"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #181225 0%, #36166B 30%, #7553FF 60%, #A737B4 100%)",
+                }}
+              >
+                <div className="space-y-1">
+                  <p className="text-white text-lg font-heading font-bold">
+                    CSS fallback
+                  </p>
+                  <p className="text-white/70 text-sm">
+                    When the texture isn&apos;t available: Black → Violet →
+                    Blurple → Orchid at 135°.
+                  </p>
+                </div>
+              </div>
+            </div>
           </section>
 
           <Separator />
