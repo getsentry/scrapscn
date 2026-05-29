@@ -23,11 +23,11 @@ const variantMap: Record<FeatureType, TagVariant> = {
 }
 
 const iconMap: Record<FeatureType, React.ReactNode> = {
-  alpha: <FlaskConical aria-hidden />,
-  beta: <FlaskConical aria-hidden />,
-  new: <Radio aria-hidden />,
-  experimental: <FlaskConical aria-hidden />,
-  debug: <Bug aria-hidden />,
+  alpha: <FlaskConical className="size-3" aria-hidden />,
+  beta: <FlaskConical className="size-3" aria-hidden />,
+  new: <Radio className="size-3" aria-hidden />,
+  experimental: <FlaskConical className="size-3" aria-hidden />,
+  debug: <Bug className="size-3" aria-hidden />,
 }
 
 const defaultTitles: Record<FeatureType, string> = {

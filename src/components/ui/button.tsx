@@ -11,10 +11,10 @@ function isChonky(variant: string | undefined | null): variant is ChonkVariant {
 }
 
 const flatColors: Record<ChonkVariant, string> = {
-  default: "bg-primary text-primary-foreground hover:bg-primary/90",
-  secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-  destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-  warning: "bg-warning text-warning-foreground hover:bg-warning/90",
+  default: "bg-primary text-primary-foreground enabled:hover:bg-primary/90",
+  secondary: "bg-secondary text-secondary-foreground enabled:hover:bg-secondary/80",
+  destructive: "bg-destructive text-destructive-foreground enabled:hover:bg-destructive/90",
+  warning: "bg-warning text-warning-foreground enabled:hover:bg-warning/90",
 }
 
 const chonkStyles: Record<
@@ -44,7 +44,7 @@ const chonkStyles: Record<
 }
 
 const buttonVariants = cva(
-  "group/button relative inline-flex shrink-0 items-center justify-center text-sm font-medium whitespace-nowrap outline-none select-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button relative inline-flex shrink-0 cursor-pointer items-center justify-center text-sm font-medium whitespace-nowrap outline-none select-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -53,10 +53,10 @@ const buttonVariants = cva(
         destructive: "text-destructive-foreground",
         warning: "text-warning-foreground",
         outline:
-          "border border-border bg-background hover:bg-muted dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+          "border border-border bg-background enabled:hover:bg-muted dark:border-input dark:bg-input/30 dark:enabled:hover:bg-input/50",
         ghost:
-          "hover:bg-muted dark:hover:bg-muted/50",
-        link: "text-primary underline-offset-4 hover:underline",
+          "enabled:hover:bg-muted dark:enabled:hover:bg-muted/50",
+        link: "text-primary underline-offset-4 enabled:hover:underline",
       },
       size: {
         default: "h-9 gap-1.5 rounded-lg px-4",

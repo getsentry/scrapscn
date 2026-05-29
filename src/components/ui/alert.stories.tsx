@@ -122,3 +122,26 @@ export const Link: Story = {
     </AlertLink>
   ),
 }
+
+// Args-driven story so the Controls panel (variant, system, showIcon) drives a live instance.
+export const Playground: Story = {
+  args: { variant: "info", system: false, showIcon: true },
+  argTypes: {
+    variant: {
+      control: "select",
+      options: ["info", "warning", "danger", "success", "muted"],
+    },
+    system: { control: "boolean" },
+    showIcon: { control: "boolean" },
+  },
+  render: (args) => (
+    <div className="w-full max-w-2xl">
+      <Alert {...args}>
+        <AlertTitle>SDK update available</AlertTitle>
+        <AlertDescription>
+          Upgrade to @sentry/nextjs 8.x for smaller bundles.
+        </AlertDescription>
+      </Alert>
+    </div>
+  ),
+}

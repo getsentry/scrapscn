@@ -45,8 +45,8 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "group/select relative inline-flex w-fit items-center justify-between gap-1.5 text-sm font-medium whitespace-nowrap outline-none select-none",
-        "disabled:pointer-events-none disabled:opacity-60",
+        "group/select relative inline-flex w-fit cursor-pointer items-center justify-between gap-1.5 text-sm font-medium whitespace-nowrap outline-none select-none",
+        "disabled:cursor-not-allowed disabled:opacity-60",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         "data-placeholder:text-muted-foreground",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",

@@ -86,3 +86,25 @@ export const MultipleSelects: Story = {
     </div>
   ),
 }
+
+// Args-driven story so the Controls panel (size, disabled) drives a live instance.
+export const Playground: Story = {
+  args: { size: "default", disabled: false },
+  argTypes: {
+    size: { control: "select", options: ["sm", "default"] },
+    disabled: { control: "boolean" },
+  },
+  render: ({ size, disabled }) => (
+    <Select defaultValue="14d" disabled={disabled}>
+      <SelectTrigger size={size as "sm" | "default"} aria-label="Time range">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="1h">Last hour</SelectItem>
+        <SelectItem value="24h">Last 24 hours</SelectItem>
+        <SelectItem value="7d">Last 7 days</SelectItem>
+        <SelectItem value="14d">Last 14 days</SelectItem>
+      </SelectContent>
+    </Select>
+  ),
+}

@@ -66,7 +66,7 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
     <TabsPrimitive.Tab
       data-slot="tabs-trigger"
       className={cn(
-        "relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md py-1 font-medium whitespace-nowrap text-muted-foreground transition-colors",
+        "relative inline-flex h-[calc(100%-1px)] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-md py-1 font-medium whitespace-nowrap text-muted-foreground transition-colors",
         // Per-size padding + font (size is read from the parent TabsList)
         "group-data-[size=md]/tabs-list:px-3 group-data-[size=md]/tabs-list:text-sm",
         "group-data-[size=sm]/tabs-list:px-2.5 group-data-[size=sm]/tabs-list:text-sm",
@@ -75,7 +75,7 @@ function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
         // Inactive hover — subtle neutral tint (matches Sentry flat tabs)
         "not-data-active:hover:bg-accent not-data-active:hover:text-foreground",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none",
-        "disabled:pointer-events-none disabled:opacity-50",
+        "disabled:cursor-not-allowed disabled:opacity-50",
         // Selected state — accent text
         "data-active:text-primary",
         // Flat active hover — faint accent tint

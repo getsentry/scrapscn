@@ -53,3 +53,14 @@ export const ReadOnly: Story = {
     />
   ),
 }
+
+// Args-driven story so the Controls panel manipulates a live instance.
+export const Playground: Story = {
+  args: {
+    placeholder: "Search issues...",
+    disabled: false,
+    "aria-label": "Search",
+  },
+  argTypes: { disabled: { control: "boolean" } },
+  render: (args) => <Input className="w-80" {...args} />,
+}

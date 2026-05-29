@@ -16,6 +16,10 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const SemanticVariants: Story = {
+  args: {
+    variant: "new"
+  },
+
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Badge variant="muted">Ignored</Badge>
@@ -25,7 +29,7 @@ export const SemanticVariants: Story = {
       <Badge variant="danger">Fatal</Badge>
       <Badge variant="promotion">Promoted</Badge>
     </div>
-  ),
+  )
 }
 
 export const FeatureBadges: Story = {
@@ -36,4 +40,10 @@ export const FeatureBadges: Story = {
       <Badge variant="new">New</Badge>
     </div>
   ),
+}
+
+// Args-driven story so the Controls panel manipulates a live instance.
+export const Playground: Story = {
+  args: { variant: "info", children: "Badge" },
+  render: (args) => <Badge {...args} />,
 }

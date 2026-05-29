@@ -54,7 +54,7 @@ function Tag({
             event.preventDefault()
             onDismiss()
           }}
-          className="-mr-1 inline-flex shrink-0 items-center justify-center rounded-sm text-current opacity-80 outline-none hover:opacity-100 focus-visible:ring-2 focus-visible:ring-ring"
+          className="-mr-1 inline-flex shrink-0 cursor-pointer items-center justify-center rounded-sm text-current opacity-80 outline-none hover:opacity-100 focus-visible:ring-2 focus-visible:ring-ring"
         >
           <X className="size-3" />
         </button>

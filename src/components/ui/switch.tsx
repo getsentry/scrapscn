@@ -17,7 +17,7 @@ function Switch({
       data-slot="switch"
       data-size={size}
       className={cn(
-        "peer group/switch relative inline-flex shrink-0 items-center outline-none",
+        "peer group/switch relative inline-flex shrink-0 cursor-pointer items-center outline-none",
         "after:absolute after:-inset-x-3 after:-inset-y-2",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         "data-disabled:cursor-not-allowed data-disabled:opacity-50",

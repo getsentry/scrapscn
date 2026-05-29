@@ -62,3 +62,18 @@ export const Disabled: Story = {
     </div>
   ),
 }
+
+// Args-driven story so the Controls panel manipulates a live instance.
+export const Playground: Story = {
+  args: {
+    size: "default",
+    defaultChecked: true,
+    disabled: false,
+    "aria-label": "Toggle setting",
+  },
+  argTypes: {
+    size: { control: "select", options: ["sm", "default"] },
+    disabled: { control: "boolean" },
+  },
+  render: (args) => <Switch {...args} />,
+}

@@ -73,3 +73,25 @@ export const Vertical: Story = {
     </Tabs>
   ),
 }
+
+// Args-driven story so the Controls panel (variant, size) drives a live instance.
+export const Playground: Story = {
+  args: { variant: "flat", size: "md" },
+  argTypes: {
+    variant: { control: "select", options: ["flat", "floating"] },
+    size: { control: "select", options: ["md", "sm", "xs"] },
+  },
+  render: ({ variant, size }) => (
+    <Tabs defaultValue="overview" className="w-96">
+      <TabsList
+        variant={variant as "flat" | "floating"}
+        size={size as "md" | "sm" | "xs"}
+      >
+        <TabsTrigger value="overview">Overview</TabsTrigger>
+        <TabsTrigger value="activity">Activity</TabsTrigger>
+        <TabsTrigger value="settings">Settings</TabsTrigger>
+      </TabsList>
+      {sampleTabs}
+    </Tabs>
+  ),
+}

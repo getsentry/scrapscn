@@ -100,6 +100,45 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "Radio Group",
+      "description": "Single-select radio group with sm/md sizes (accent fill + white dot).",
+      "dependencies": ["@base-ui/react"],
+      "files": [
+        {
+          "path": "src/components/ui/radio-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "segmented-control",
+      "type": "registry:ui",
+      "title": "Segmented Control",
+      "description": "Single-select segmented control (radio semantics) with md/sm/xs sizes.",
+      "dependencies": ["@base-ui/react"],
+      "files": [
+        {
+          "path": "src/components/ui/segmented-control.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "description": "Range slider with accent fill and focus ring.",
+      "dependencies": ["@base-ui/react"],
+      "files": [
+        {
+          "path": "src/components/ui/slider.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }
