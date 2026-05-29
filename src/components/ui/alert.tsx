@@ -24,8 +24,8 @@ const alertVariants = cva(
       variant: {
         info: "border-primary/30 bg-primary/5 dark:bg-primary/10",
         warning: "border-warning/30 bg-warning/10 dark:border-warning/20",
-        danger: "border-destructive/30 bg-destructive/5 dark:bg-destructive/10",
-        success: "border-success/30 bg-success/5 dark:bg-success/10",
+        danger: "border-danger-vibrant/40 bg-destructive/5 dark:bg-destructive/10",
+        success: "border-success-vibrant/40 bg-success/5 dark:bg-success/10",
         muted: "border-border bg-card",
       },
       system: {
@@ -69,8 +69,8 @@ const railIconColor: Record<AlertVariant, string> = {
 const railBorder: Record<AlertVariant, string> = {
   info: "border-primary/30",
   warning: "border-warning/30 dark:border-warning/20",
-  danger: "border-destructive/30",
-  success: "border-success/30",
+  danger: "border-danger-vibrant/40",
+  success: "border-success-vibrant/40",
   muted: "border-border",
 }
 
