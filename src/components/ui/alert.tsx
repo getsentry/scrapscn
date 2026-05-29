@@ -53,8 +53,8 @@ const alertIconMap: Record<AlertVariant, React.ComponentType<{ className?: strin
 const railBg: Record<AlertVariant, string> = {
   info: "bg-primary",
   warning: "bg-warning",
-  danger: "bg-destructive",
-  success: "bg-success",
+  danger: "bg-danger-vibrant",
+  success: "bg-success-vibrant",
   muted: "bg-card",
 }
 

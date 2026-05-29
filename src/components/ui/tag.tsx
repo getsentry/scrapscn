@@ -12,10 +12,9 @@ const tagVariants = cva(
         muted: "bg-secondary text-muted-foreground",
         info: "bg-primary/10 text-info dark:bg-primary/20",
         promotion: "bg-promotion/10 text-promotion-strong dark:bg-promotion/20",
-        danger: "bg-destructive/10 text-destructive dark:bg-destructive/20",
-        warning:
-          "bg-warning/20 text-warning-foreground dark:bg-warning/15 dark:text-warning",
-        success: "bg-success/10 text-success dark:bg-success/20",
+        danger: "bg-destructive/10 text-danger-content dark:bg-destructive/20",
+        warning: "bg-warning/20 text-warning-content dark:bg-warning/15",
+        success: "bg-success-vibrant/10 text-success-content dark:bg-success-vibrant/15",
       },
     },
     defaultVariants: {

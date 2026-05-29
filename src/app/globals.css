@@ -43,6 +43,13 @@
   --color-info: var(--info);
   --color-promotion-strong: var(--promotion-strong);
 
+  /* Vibrant solid backgrounds (alert rail, solid badges) + AA on-tint text */
+  --color-success-vibrant: var(--success-vibrant);
+  --color-danger-vibrant: var(--danger-vibrant);
+  --color-success-content: var(--success-content);
+  --color-danger-content: var(--danger-content);
+  --color-warning-content: var(--warning-content);
+
   /* Debossed input tokens */
   --color-input-bg: var(--input-bg);
   --color-input-shadow: var(--input-shadow);
@@ -155,6 +162,14 @@
   --info: oklch(0.503 0.243 281.0);               /* #653DE9 — accent text on blurple tint */
   --promotion-strong: oklch(0.515 0.232 356.0);   /* #C8007E — promotion text on pink tint */
 
+  /* Vibrant solids for rails/solid badges (Sentry *.vibrant) */
+  --success-vibrant: #00f261;                     /* green.opaque800 */
+  --danger-vibrant: #ff002b;                      /* red.opaque1000 */
+  /* On-tint AA text (Sentry content.*) */
+  --success-content: #007000;                     /* darker than Sentry #008900 to clear AA on the green tint at 12px */
+  --danger-content: #d50000;                      /* red.opaque1100 */
+  --warning-content: #a45200;                     /* yellow.opaque1100 — amber */
+
   /* Debossed input tokens — the pressed-in Sentry input look */
   --input-bg: oklch(0.07 0.01 280 / 0.03);        /* ~#101030 at 3% — barely visible tint */
   --input-shadow: oklch(0.888 0.007 295.4);       /* #DAD9DE — inset top shadow */
@@ -235,6 +250,13 @@
   /* On-tint text colors — lighter in dark mode for AA on the darker tints */
   --info: oklch(0.800 0.130 286.0);               /* ~#c2b3f7 */
   --promotion-strong: oklch(0.800 0.120 350.0);   /* ~#f2aad0 */
+
+  /* Vibrant solids (same bright values read well on dark) + lighter on-tint text */
+  --success-vibrant: #00f261;
+  --danger-vibrant: #ff002b;
+  --success-content: #7cd88a;                     /* lighter green for dark tints */
+  --danger-content: #ff615d;                      /* lighter red for dark tints */
+  --warning-content: #ffce00;                     /* amber reads on dark */
 
   /* Debossed input tokens */
   --input-bg: oklch(0.90 0.01 280 / 0.06);         /* light tint — subtle on dark bg */

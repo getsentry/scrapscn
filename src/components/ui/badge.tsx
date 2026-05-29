@@ -12,11 +12,11 @@ const badgeVariants = cva(
         muted: "bg-secondary text-muted-foreground",
         info: "bg-primary/10 text-info dark:bg-primary/20",
         success:
-          "bg-success/10 text-success dark:bg-success/20",
+          "bg-success-vibrant/10 text-success-content dark:bg-success-vibrant/15",
         warning:
-          "bg-warning/20 text-warning-foreground dark:bg-warning/15 dark:text-warning",
+          "bg-warning/20 text-warning-content dark:bg-warning/15",
         danger:
-          "bg-destructive/10 text-destructive dark:bg-destructive/20",
+          "bg-destructive/10 text-danger-content dark:bg-destructive/20",
         promotion:
           "bg-promotion/10 text-promotion-strong dark:bg-promotion/20",
         alpha:
@@ -24,7 +24,7 @@ const badgeVariants = cva(
         beta:
           "bg-warning text-warning-foreground",
         new:
-          "bg-success text-success-foreground",
+          "bg-success-vibrant text-black",
       },
     },
     defaultVariants: {
