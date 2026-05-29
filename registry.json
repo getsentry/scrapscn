@@ -131,11 +131,24 @@
       "name": "slider",
       "type": "registry:ui",
       "title": "Slider",
-      "description": "Range slider with accent fill and focus ring.",
+      "description": "Range slider with value label, ticks, formatOptions, and a chonk thumb.",
       "dependencies": ["@base-ui/react"],
       "files": [
         {
           "path": "src/components/ui/slider.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "link",
+      "type": "registry:ui",
+      "title": "Link",
+      "description": "Styled anchor with accent/muted variants and an external option.",
+      "dependencies": ["class-variance-authority"],
+      "files": [
+        {
+          "path": "src/components/ui/link.tsx",
           "type": "registry:ui"
         }
       ]

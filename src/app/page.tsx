@@ -13,6 +13,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Link } from "@/components/ui/link";
+import { Tag } from "@/components/ui/tag";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
@@ -116,27 +118,29 @@ export default function Home() {
               </span>
               <span className="font-medium tracking-tight">scrapscn</span>
             </a>
-            <nav className="hidden items-center gap-5 text-sm text-muted-foreground sm:flex">
-              <a href="#components" className="hover:text-foreground transition-colors">
+            <nav className="hidden items-center gap-5 text-sm sm:flex">
+              <Link variant="muted" href="#components">
                 Components
-              </a>
-              <a href="#tokens" className="hover:text-foreground transition-colors">
+              </Link>
+              <Link variant="muted" href="#tokens">
                 Tokens
-              </a>
-              <a href="#voice" className="hover:text-foreground transition-colors">
+              </Link>
+              <Link variant="muted" href="#voice">
                 Voice
-              </a>
+              </Link>
             </nav>
           </div>
-          <div className="flex items-center gap-2">
-            <a
+          <div className="flex items-center gap-4 text-sm">
+            <Link variant="muted" href="/storybook" external>
+              Storybook <ExternalLink className="h-3 w-3" />
+            </Link>
+            <Link
+              variant="muted"
               href="https://github.com/getsentry/scrapscn"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              external
             >
               GitHub <ExternalLink className="h-3 w-3" />
-            </a>
+            </Link>
             <ThemeToggle />
           </div>
         </div>
@@ -940,12 +944,9 @@ export default function Home() {
                       { k: "release", v: "v3.14.2" },
                       { k: "handled", v: "no" },
                     ].map((tag) => (
-                      <Badge key={tag.k} variant="muted">
-                        <span className="text-muted-foreground">
-                          {tag.k}:
-                        </span>{" "}
-                        {tag.v}
-                      </Badge>
+                      <Tag key={tag.k} variant="muted">
+                        <span className="opacity-70">{tag.k}:</span> {tag.v}
+                      </Tag>
                     ))}
                   </div>
                 </div>
