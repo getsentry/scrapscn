@@ -28,13 +28,15 @@ The Checkbox browser assertions cover exact sizes, radii, light and dark border 
 
 ## Preview proof
 
-- Deployment ID: `dpl_3sgJe18GmZrPfFb7tZedvcHRoDP9`
-- Deployment URL: `https://scrapscn-62w85gow4.sentry.dev`
-- Inspector: `https://vercel.com/sentry/scrapscn/3sgJe18GmZrPfFb7tZedvcHRoDP9`
+- Git branch: `codex/checkbox-playground-slice`
+- Git commit: `5b75cb8d059641c687b9bcc5e449323f340c0a63`
+- Vercel branch URL: `https://scrapscn-git-codex-checkbox-playground-slice.sentry.dev`
+- Immutable deployment URL for that commit: `https://scrapscn-3j7c2urk2.sentry.dev`
+- Deployment ID: `dpl_9UbEtffSCkeo8yEsU2uxtTM8uwWR`
 - Vercel build: passes with Next.js 16.3.2 and prerenders the template route.
-- Protected route check: an authenticated `vercel curl` request to `/templates/checkbox-settings` returns HTTP 200.
+- Protected route check: authenticated requests to the branch and immutable deployment template URLs return HTTP 200 with the complete review-state query.
 
-This CLI deployment proves the build and immutable deployment URL. It is not a Git branch URL or commit URL. Vercel Authentication protects it. An intended reviewer must still open it, create or use a Shareable Link, and confirm toolbar comments.
+Vercel Authentication protects these URLs. An intended reviewer must still open the branch URL, create or use a Shareable Link when needed, and confirm toolbar comments.
 
 ## Open manual gates
 
@@ -43,7 +45,7 @@ This CLI deployment proves the build and immutable deployment URL. It is not a G
 3. Publish or inspect the `Scrapscn React` connection in Dev Mode for every Checkbox combination.
 4. Run the Figma MCP design-to-code, code-to-canvas, and changed-property return-trip checks. Record the test-frame URL.
 5. Approve a side-by-side Checkbox image baseline against the monolith or approved Figma component.
-6. Push a branch or pull request to get Vercel branch and commit URLs. Confirm reviewer access and comments.
+6. Confirm reviewer access and comments on the recorded Vercel branch and immutable deployment URLs.
 7. Measure cold `pnpm dev` startup, template hot reload, and the five-minute and ten-minute usability criteria with a new user.
 
 The slice and the 48-module goal remain incomplete until these gates pass.
