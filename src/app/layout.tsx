@@ -17,9 +17,9 @@ const dammitSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Scrapscn — Sentry Design System for shadcn",
+  title: "Scrapscn Playground",
   description:
-    "A shadcn-compatible component registry based on the Sentry design system.",
+    "A local playground for building with Sentry's regular Scraps components.",
 };
 
 export default function RootLayout({
@@ -33,7 +33,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${rubik.variable} ${dammitSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

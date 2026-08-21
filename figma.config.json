@@ -1,0 +1,7 @@
+{
+  "codeConnect": {
+    "label": "Scrapscn React",
+    "language": "jsx",
+    "include": ["src/**/*.figma.ts"]
+  }
+}

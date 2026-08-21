@@ -1,0 +1,6 @@
+{
+  "slug": "checkbox-settings",
+  "title": "Checkbox settings",
+  "description": "Compose and review native Checkbox controls in a Sentry project settings page.",
+  "tags": ["checkbox", "form", "settings"]
+}

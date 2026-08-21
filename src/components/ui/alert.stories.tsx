@@ -31,7 +31,7 @@ export const AllVariants: Story = {
       </Alert>
       <Alert variant="warning">
         <AlertTitle>Quota warning</AlertTitle>
-        <AlertDescription>You've used 87% of your monthly error quota.</AlertDescription>
+        <AlertDescription>You have used 87% of your monthly error quota.</AlertDescription>
       </Alert>
       <Alert variant="success">
         <AlertTitle>All clear</AlertTitle>
