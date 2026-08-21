@@ -188,9 +188,9 @@ function MobileNavigation() {
   return (
     <div className="@md:hidden">
       <Sheet>
-      <SheetTrigger render={<button type="button" className="relative flex size-10 items-center justify-center rounded-md hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" />}>
+      <SheetTrigger className="relative flex size-10 items-center justify-center rounded-md hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
         <span className="absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden" aria-hidden="true" />
-        <Menu className="size-5 shrink-0 stroke-current" aria-hidden="true" />
+        <Menu className="pointer-events-none size-5 shrink-0 stroke-current" aria-hidden="true" />
         <span className="sr-only">Open navigation</span>
       </SheetTrigger>
       <SheetContent side="left" className="w-[min(22rem,calc(100vw-2rem))] gap-0 overflow-hidden p-0" showCloseButton>

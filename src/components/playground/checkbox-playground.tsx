@@ -179,12 +179,12 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
   return (
     <div className="isolate min-h-dvh bg-muted">
       <header className="border-b border-foreground/10 bg-background">
-        <div className="mx-auto flex max-w-[100rem] items-center gap-3 p-4 sm:px-6">
-          <div className="min-w-0 flex-1">
+        <div className="mx-auto grid max-w-[100rem] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-4 p-4 sm:flex sm:px-6">
+          <div className="col-span-2 min-w-0 sm:flex-1">
             <h1 className="text-balance text-lg font-semibold">Scrapscn playground</h1>
             <p className="text-pretty text-base text-muted-foreground sm:text-sm">Build regular Scraps screens without the monolith.</p>
           </div>
-          <nav aria-label="Playground sections" className="flex items-center gap-3 text-sm font-medium">
+          <nav aria-label="Playground sections" className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-base font-medium sm:text-sm">
             <Link href={`/?${getUrlParams({}).toString()}`} aria-current={pathname === "/" ? "page" : undefined} className="text-muted-foreground hover:text-foreground aria-[current=page]:text-primary">
               Workbench
             </Link>

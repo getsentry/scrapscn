@@ -41,3 +41,31 @@ test("shares and restores the Checkbox template workflow", async ({ browser, pag
   await expect(restoredPage.getByRole("checkbox", { name: "Critical regressions" })).toBeChecked()
   await secondContext.close()
 })
+
+test("keeps the playground and page-frame navigation usable on mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto("/templates/checkbox-settings")
+
+  const playgroundTitle = page.getByRole("heading", { name: "Scrapscn playground" })
+  const playgroundDescription = page.getByText("Build regular Scraps screens without the monolith.")
+  const playgroundNavigation = page.getByRole("navigation", { name: "Playground sections" })
+  const titleBox = await playgroundTitle.boundingBox()
+  const descriptionBox = await playgroundDescription.boundingBox()
+  const navigationBox = await playgroundNavigation.boundingBox()
+
+  expect(titleBox?.width).toBeGreaterThan(200)
+  expect(navigationBox?.y).toBeGreaterThanOrEqual(
+    (descriptionBox?.y ?? 0) + (descriptionBox?.height ?? 0) + 12
+  )
+
+  const trigger = page.getByRole("button", { name: "Open navigation" })
+  await trigger.scrollIntoViewIfNeeded()
+  const triggerBox = await trigger.boundingBox()
+  if (!triggerBox) throw new Error("Mobile navigation trigger is not visible")
+  await page.mouse.click(triggerBox.x + triggerBox.width / 2, triggerBox.y + triggerBox.height / 2)
+  await expect(page.getByRole("navigation", { name: "Mobile navigation" })).toBeVisible()
+
+  await page.keyboard.press("Escape")
+  await expect(page.getByRole("navigation", { name: "Mobile navigation" })).toBeHidden()
+  await expect(trigger).toBeFocused()
+})

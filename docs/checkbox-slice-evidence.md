@@ -19,10 +19,12 @@ Status: local automated gates pass; external Figma and reviewer gates remain ope
 - `pnpm lint`: passes.
 - `pnpm build:next`: passes with Next.js 16.3.2.
 - `pnpm build-storybook`: passes.
-- `pnpm test:playground`: 1 production-browser workflow passes. It changes Checkbox controls, reorders the stack, uses the keyboard, opens the template, submits the form, changes theme and viewport, copies the Share URL, and restores it in a second browser context.
+- `pnpm test:playground`: 2 production-browser workflows pass. They change Checkbox controls, reorder the stack, use the keyboard, open the template, submit the form, change theme and viewport, copy and restore the Share URL, and verify the physical mobile header and navigation workflow at 390 × 844 px.
 - `pnpm test:templates`: 4 scaffold and metadata tests and 1 production-browser route test pass. The generated manifest is valid, the build prerenders `/templates/checkbox-settings`, and a hard refresh restores item order, disabled state, size, label, theme, viewport, and selected values.
 - `pnpm figma:parse`: passes with label `Scrapscn React`.
 - Package registry check: Next.js 16.3.2, React 19.2.8, and React DOM 19.2.8 are the current latest versions on 2026-08-21.
+- Local browser QA at 1440 × 1000 px and 390 × 844 px found no horizontal overflow, console errors, or broken state restoration after the responsive header fix. The mobile navigation opens, closes with Escape, and returns focus to its trigger.
+- The existing development process measured 53.7 ms TTFB, 96 ms LCP and FCP, 0 CLS, 36.9 ms React hydration, and a 378 ms Fast Refresh. Cold development startup was not measured because this Codex process does not have access to the required cmux workspace.
 
 The Checkbox browser assertions cover exact sizes, radii, light and dark border colors, canonical SVG paths, size-specific stroke widths, focus-ring geometry, disabled and read-only behavior, `aria-disabled`, and inherited interaction color. These source-level and computed-style checks do not replace an approved side-by-side image baseline.
 
@@ -46,6 +48,6 @@ Vercel Authentication protects these URLs. An intended reviewer must still open 
 4. Run the Figma MCP design-to-code, code-to-canvas, and changed-property return-trip checks. Record the test-frame URL.
 5. Approve a side-by-side Checkbox image baseline against the monolith or approved Figma component.
 6. Confirm reviewer access and comments on the recorded Vercel branch and immutable deployment URLs.
-7. Measure cold `pnpm dev` startup, template hot reload, and the five-minute and ten-minute usability criteria with a new user.
+7. Measure cold `pnpm dev` startup and the five-minute and ten-minute usability criteria with a new user. The local hot-reload measurement is recorded above.
 
 The slice and the 48-module goal remain incomplete until these gates pass.
