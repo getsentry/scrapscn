@@ -33,6 +33,7 @@ const localModules = {
     'src/components/ui/input.tsx',
     'src/components/ui/input-group.tsx',
   ],
+  interactionStateLayer: ['src/components/ui/interaction-state-layer.tsx'],
   link: ['src/components/ui/link.tsx'],
   radio: ['src/components/ui/radio-group.tsx'],
   segmentedControl: ['src/components/ui/segmented-control.tsx'],
@@ -50,11 +51,17 @@ const registryItems = {
   alert: ['alert'],
   badge: ['badge', 'feature-badge', 'tag'],
   button: ['button'],
+  interactionStateLayer: ['interaction-state-layer'],
   link: ['link'],
   radio: ['radio-group'],
   segmentedControl: ['segmented-control'],
   slider: ['slider'],
   tooltip: ['tooltip'],
+};
+
+const completionEvidence = {
+  interactionStateLayer:
+    'Exact state-layer contract, behavior stories, focused Storybook assertions, and registry publication are present. The canonical module has no Figma component.',
 };
 
 const figmaNodes = {
@@ -175,7 +182,13 @@ for (const moduleName of moduleNames) {
           'tests/e2e/templates.spec.ts',
           'tests/figma/figma-preview.test.mjs',
         ]
-      : [];
+      : moduleName === 'interactionStateLayer'
+        ? [
+            'tests/e2e/playground.spec.ts',
+            'tests/parity/interaction-state-layer.test.mjs',
+          ]
+        : [];
+  const completionNote = completionEvidence[moduleName];
 
   modules.push({
     name: moduleName,
@@ -189,15 +202,22 @@ for (const moduleName of moduleNames) {
       codeConnect:
         moduleName === 'checkbox' ? ['src/components/ui/checkbox.figma.ts'] : [],
       figmaNodes: [...(figmaNodes[moduleName] ?? [])].sort(),
-      playgroundPath: moduleName === 'checkbox' ? '/?component=checkbox' : null,
+      playgroundPath:
+        moduleName === 'checkbox' || moduleName === 'interactionStateLayer'
+          ? '/?component=checkbox'
+          : null,
     },
     completion: {
-      state: implementationPaths.length > 0 ? 'partial' : 'missing',
-      complete: false,
-      note:
-        implementationPaths.length > 0
+      state: completionNote
+        ? 'complete'
+        : implementationPaths.length > 0
+          ? 'partial'
+          : 'missing',
+      complete: Boolean(completionNote),
+      note: completionNote ??
+        (implementationPaths.length > 0
           ? 'A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed.'
-          : `No local ${kebabName} implementation is mapped.`,
+          : `No local ${kebabName} implementation is mapped.`),
     },
   });
 }

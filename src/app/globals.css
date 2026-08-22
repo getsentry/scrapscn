@@ -157,6 +157,58 @@
   --checkbox-checked-chonk: #5827D6;
   --checkbox-focus: #7553FF;
 
+  /* Canonical Sentry theme aliases accepted by legacy Scraps color props. */
+  --scraps-theme-black: #000000;
+  --scraps-theme-white: #FFFFFF;
+  --scraps-theme-surface500: #FFFFFF;
+  --scraps-theme-surface400: #F8F8F9;
+  --scraps-theme-surface300: #F0F0F2;
+  --scraps-theme-surface200: #E6E6E9;
+  --scraps-theme-surface100: #DAD9DE;
+  --scraps-theme-gray800: #3E3B45;
+  --scraps-theme-gray700: #4C4954;
+  --scraps-theme-gray600: #5B5864;
+  --scraps-theme-gray500: #6A6772;
+  --scraps-theme-gray400: #787581;
+  --scraps-theme-gray300: #00002026;
+  --scraps-theme-gray200: #0000181A;
+  --scraps-theme-gray100: #0000200F;
+  --scraps-theme-blue700: #4C0FC0;
+  --scraps-theme-blue600: #5827D6;
+  --scraps-theme-blue500: #653DE9;
+  --scraps-theme-blue400: #7553FF;
+  --scraps-theme-blue300: #1008F82E;
+  --scraps-theme-blue200: #1010F81F;
+  --scraps-theme-blue100: #0008F012;
+  --scraps-theme-pink700: #9F005F;
+  --scraps-theme-pink600: #B5006F;
+  --scraps-theme-pink500: #C8007E;
+  --scraps-theme-pink400: #D9008D;
+  --scraps-theme-pink300: #F840A852;
+  --scraps-theme-pink200: #F8008829;
+  --scraps-theme-pink100: #F000901A;
+  --scraps-theme-red700: #AB0000;
+  --scraps-theme-red600: #C10000;
+  --scraps-theme-red500: #D50000;
+  --scraps-theme-red400: #FF002B;
+  --scraps-theme-red300: #F8483052;
+  --scraps-theme-red200: #F8301030;
+  --scraps-theme-red100: #F828081C;
+  --scraps-theme-yellow700: #813100;
+  --scraps-theme-yellow600: #934100;
+  --scraps-theme-yellow500: #A45200;
+  --scraps-theme-yellow400: #D59600;
+  --scraps-theme-yellow300: #E8B8308C;
+  --scraps-theme-yellow200: #E0A8084D;
+  --scraps-theme-yellow100: #E0B01030;
+  --scraps-theme-green700: #006700;
+  --scraps-theme-green600: #007800;
+  --scraps-theme-green500: #008900;
+  --scraps-theme-green400: #009800;
+  --scraps-theme-green300: #00B8104A;
+  --scraps-theme-green200: #08B81833;
+  --scraps-theme-green100: #00B8001C;
+
   /* Sentry-specific semantic — background-safe vibrant values */
   --warning: oklch(0.869 0.178 91.3);             /* #FFCE00 */
   --warning-foreground: oklch(0.200 0.038 297.4); /* #181225 */
@@ -250,6 +302,55 @@
   --checkbox-checked: #7553FF;
   --checkbox-checked-chonk: #120539;
   --checkbox-focus: #7553FF;
+
+  --scraps-theme-surface500: #2E2936;
+  --scraps-theme-surface400: #24202B;
+  --scraps-theme-surface300: #1B1821;
+  --scraps-theme-surface200: #141119;
+  --scraps-theme-surface100: #0D0A10;
+  --scraps-theme-gray800: #E7E5EA;
+  --scraps-theme-gray700: #D5D2DA;
+  --scraps-theme-gray600: #C4C0CB;
+  --scraps-theme-gray500: #B5B0BD;
+  --scraps-theme-gray400: #A49EAE;
+  --scraps-theme-gray300: #C0B0F02E;
+  --scraps-theme-gray200: #D0B8F821;
+  --scraps-theme-gray100: #C0A8F81A;
+  --scraps-theme-blue700: #CFCEFF;
+  --scraps-theme-blue600: #BCBAFD;
+  --scraps-theme-blue500: #ABA8F8;
+  --scraps-theme-blue400: #9A94F1;
+  --scraps-theme-blue300: #402898D1;
+  --scraps-theme-blue200: #4828B894;
+  --scraps-theme-blue100: #5828F05E;
+  --scraps-theme-pink700: #F8C3D8;
+  --scraps-theme-pink600: #F1AAC8;
+  --scraps-theme-pink500: #EA95B9;
+  --scraps-theme-pink400: #DF7DA9;
+  --scraps-theme-pink300: #F000884A;
+  --scraps-theme-pink200: #F800803B;
+  --scraps-theme-pink100: #F800782E;
+  --scraps-theme-red700: #FFC2BC;
+  --scraps-theme-red600: #FCAAA2;
+  --scraps-theme-red500: #F6938C;
+  --scraps-theme-red400: #ED7B74;
+  --scraps-theme-red300: #F8000052;
+  --scraps-theme-red200: #F8000042;
+  --scraps-theme-red100: #F8000033;
+  --scraps-theme-yellow700: #F3E5BF;
+  --scraps-theme-yellow600: #E9D290;
+  --scraps-theme-yellow500: #E0C05E;
+  --scraps-theme-yellow400: #FFCE00;
+  --scraps-theme-yellow300: #F8580040;
+  --scraps-theme-yellow200: #E8480036;
+  --scraps-theme-yellow100: #E8380029;
+  --scraps-theme-green700: #CDF1D0;
+  --scraps-theme-green600: #A8E6AF;
+  --scraps-theme-green500: #83DA90;
+  --scraps-theme-green400: #5ECE73;
+  --scraps-theme-green300: #00F80033;
+  --scraps-theme-green200: #00F80029;
+  --scraps-theme-green100: #00F8001F;
 
   /* Sentry-specific semantic */
   --warning: oklch(0.869 0.178 91.3);             /* #FFCE00 */

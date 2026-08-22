@@ -18,6 +18,16 @@ test("shares and restores the Checkbox template workflow", async ({ browser, pag
   await expect(page.locator('[data-slot="playground-island"]')).toBeVisible()
   await expect(page.getByLabel("Size")).toBeHidden()
 
+  const initialCheckbox = page.getByRole("checkbox", { name: "Alert me about new issues" })
+  const interactionTarget = initialCheckbox.locator("..")
+  const interactionStateLayer = interactionTarget.locator('[role="presentation"]')
+  await expect(interactionStateLayer).toHaveCSS("opacity", "0")
+  await interactionTarget.hover()
+  await expect(interactionStateLayer).toHaveCSS("opacity", "0.06")
+  await page.mouse.down()
+  await expect(interactionStateLayer).toHaveCSS("opacity", "0.09")
+  await page.mouse.up()
+
   await page.getByRole("button", { name: "Open setup" }).click()
   await page.getByRole("button", { name: "Reset" }).click()
   await expect(page.getByRole("button", { name: "Close setup" })).toHaveAttribute("aria-expanded", "true")

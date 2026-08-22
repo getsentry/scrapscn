@@ -1,0 +1,33 @@
+.interactionStateLayer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  box-sizing: content-box;
+  border: inherit;
+  border-color: currentcolor;
+  border-radius: inherit;
+  transform: translate(-50%, -50%);
+  color: currentcolor;
+  background-color: currentcolor;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.interactionStateLayer[data-is-hovered='true'],
+:global(*):hover:not(:focus-visible) > .interactionStateLayer[data-is-hovered='undefined'] {
+  opacity: var(--interaction-state-layer-hover-opacity);
+}
+
+.interactionStateLayer.interactionStateLayer.interactionStateLayer[data-is-pressed='true'],
+:global(*):active > .interactionStateLayer.interactionStateLayer[data-is-pressed='undefined'],
+:global(*)[aria-expanded='true'] > .interactionStateLayer.interactionStateLayer[data-is-pressed='undefined'][data-has-selected-background='true'],
+:global(*)[aria-selected='true'] > .interactionStateLayer.interactionStateLayer[data-is-pressed='undefined'][data-has-selected-background='true'] {
+  opacity: var(--interaction-state-layer-press-opacity);
+}
+
+:global(*):disabled .interactionStateLayer.interactionStateLayer.interactionStateLayer.interactionStateLayer,
+:global(*)[aria-disabled='true'] .interactionStateLayer.interactionStateLayer.interactionStateLayer.interactionStateLayer {
+  opacity: 0;
+}

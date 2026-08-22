@@ -3,6 +3,7 @@
 import { useCallback } from "react"
 
 import { cn } from "@/lib/utils"
+import InteractionStateLayer from "@/components/ui/interaction-state-layer"
 
 type CheckboxSize = "xs" | "sm" | "md"
 
@@ -49,15 +50,16 @@ export function Checkbox({
     [isIndeterminate, ref]
   )
   const dimensions = checkboxSizes[size]
+  const isInteractive = !props.disabled && !props.readOnly
 
   return (
     <div
       data-slot="checkbox"
       data-size={size}
       className={cn(
-        "group/checkbox relative inline-flex justify-start",
+        "relative inline-flex justify-start",
         dimensions.radius,
-        props.disabled || props.readOnly ? "cursor-auto" : "cursor-pointer",
+        isInteractive ? "cursor-pointer" : "cursor-auto",
         className
       )}
       style={style}
@@ -95,14 +97,8 @@ export function Checkbox({
           </svg>
         )}
       </div>
-      {!(props.disabled || props.readOnly) && (
-        <span
-          role="presentation"
-          className={cn(
-            "pointer-events-none absolute inset-0 box-content rounded-[inherit] border-inherit bg-current opacity-0 group-hover/checkbox:opacity-6 group-active/checkbox:opacity-9",
-            (checked === true || isIndeterminate) && "group-hover/checkbox:opacity-[0.085] group-active/checkbox:opacity-12"
-          )}
-        />
+      {isInteractive && (
+        <InteractionStateLayer higherOpacity={checked === true || isIndeterminate} />
       )}
     </div>
   )

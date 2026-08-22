@@ -1016,22 +1016,33 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/interaction-state-layer.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "default"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "interaction-state-layer"
+        ],
+        "stories": [
+          "src/components/ui/interaction-state-layer.stories.tsx"
+        ],
+        "tests": [
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/interaction-state-layer.test.mjs"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=checkbox"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local interaction-state-layer implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact state-layer contract, behavior stories, focused Storybook assertions, and registry publication are present. The canonical module has no Figma component."
       }
     },
     {

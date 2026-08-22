@@ -13,7 +13,8 @@
       "files": [
         {
           "path": "src/app/globals.css",
-          "type": "registry:file"
+          "type": "registry:file",
+          "target": "src/app/globals.css"
         },
         {
           "path": "src/components/theme-provider.tsx",
@@ -44,6 +45,24 @@
         {
           "path": "src/components/ui/tooltip.tsx",
           "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "interaction-state-layer",
+      "type": "registry:ui",
+      "title": "Interaction State Layer",
+      "description": "Regular Scraps interaction overlay for hover, press, selected, and expanded states.",
+      "registryDependencies": ["sentry-base"],
+      "files": [
+        {
+          "path": "src/components/ui/interaction-state-layer.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/interaction-state-layer.module.css",
+          "type": "registry:file",
+          "target": "src/components/ui/interaction-state-layer.module.css"
         }
       ]
     },
