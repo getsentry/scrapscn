@@ -486,6 +486,31 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "image",
+      "type": "registry:ui",
+      "title": "Image",
+      "description": "Regular Scraps native image with responsive dimensions and radius.",
+      "dependencies": ["@emotion/is-prop-valid@1.4.0"],
+      "registryDependencies": [],
+      "cssVars": {
+        "light": {
+          "scraps-theme-border-primary": "#dad9de",
+          "scraps-theme-border-secondary": "#e6e6e9"
+        },
+        "dark": {
+          "scraps-theme-border-primary": "#141119",
+          "scraps-theme-border-secondary": "#1b1821"
+        }
+      },
+      "files": [
+        { "path": "src/components/ui/container-query-context.ts", "type": "registry:ui" },
+        { "path": "src/components/ui/layout-style-engine.ts", "type": "registry:ui" },
+        { "path": "src/components/ui/layout.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/separator.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/image.tsx", "type": "registry:ui" }
+      ]
     }
   ]
 }

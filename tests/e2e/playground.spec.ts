@@ -1001,3 +1001,92 @@ test("keeps Split Panel valid and contained at 320px", async ({ page }) => {
   await page.goForward()
   await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "checkbox")
 })
+
+test("configures, restores, and falls back in the Image workbench", async ({ browser, page }) => {
+  await page.setViewportSize({ width: 320, height: 844 })
+  await page.goto("/evidence/image-server")
+  await expect(page.getByRole("img", { name: "Server image" })).toBeAttached()
+
+  await page.goto("/?component=image&imageAspectRatio=1+%2F+1&imageFit=contain&imagePosition=top&imageRadius=full&imageLoading=eager&imageResponsive=responsive&imageBroken=true")
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "image")
+  const image = page.getByTestId("image-preview")
+  await expect(image).toHaveCSS("object-fit", "contain")
+  await expect(image).toHaveCSS("object-position", "50% 0%")
+  await expect(image).toHaveCSS("border-radius", "999px")
+  await expect(image).toHaveAttribute("loading", "eager")
+  await expect(image).toHaveCSS("height", "180px")
+  expect(
+    await image.evaluate((element) => {
+      const parent = element.parentElement
+      if (!parent) return false
+      const parentStyle = getComputedStyle(parent)
+      const contentWidth =
+        parent.clientWidth -
+        Number.parseFloat(parentStyle.paddingLeft) -
+        Number.parseFloat(parentStyle.paddingRight)
+      return Math.abs(element.getBoundingClientRect().width - contentWidth) < 1
+    })
+  ).toBe(true)
+
+  await page.setViewportSize({ width: 1200, height: 900 })
+  await expect(image).toHaveCSS("width", "480px")
+  await expect(image).toHaveCSS("height", "280px")
+  await image.evaluate((element) => element.dispatchEvent(new Event("error")))
+  await expect(page.getByTestId("image-fallback-state")).toHaveText("Fallback: true")
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await expect(page.getByLabel("Responsive preset")).toHaveValue("responsive")
+  await page.getByLabel("Broken image").uncheck()
+  await page.getByRole("button", { name: "Share" }).click()
+  const sharedUrl = await page.evaluate(() => navigator.clipboard.readText())
+  expect(sharedUrl).toContain("/?component=image")
+
+  const restoredContext = await browser.newContext({
+    ignoreHTTPSErrors: true,
+    permissions: ["clipboard-read", "clipboard-write"],
+    viewport: { width: 320, height: 844 },
+  })
+  const restoredPage = await restoredContext.newPage()
+  await restoredPage.goto(sharedUrl)
+  await restoredPage.getByRole("button", { name: "Open setup" }).click()
+  await expect(restoredPage.getByLabel("Object fit")).toHaveValue("contain")
+  await expect(restoredPage.getByLabel("Radius")).toHaveValue("full")
+  await restoredContext.close()
+
+  await page.getByLabel("Component or template").selectOption("checkbox")
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "checkbox")
+  await page.goBack()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "image")
+  await expect(page.getByLabel("Aspect ratio")).toHaveValue("1 / 1")
+  await expect(page.getByLabel("Object fit")).toHaveValue("contain")
+  await expect(page.getByLabel("Object position")).toHaveValue("top")
+  await expect(page.getByLabel("Radius")).toHaveValue("full")
+  await expect(page.getByLabel("Loading")).toHaveValue("eager")
+  await expect(page.getByLabel("Responsive preset")).toHaveValue("responsive")
+  await expect(page.getByLabel("Broken image")).not.toBeChecked()
+  await page.getByRole("button", { name: "Reset" }).click()
+  await expect(page.getByLabel("Aspect ratio")).toHaveValue("16 / 9")
+  await expect(page.getByLabel("Object fit")).toHaveValue("cover")
+  await expect(page.getByLabel("Object position")).toHaveValue("center")
+  await expect(page.getByLabel("Radius")).toHaveValue("md")
+  await expect(page.getByLabel("Loading")).toHaveValue("lazy")
+  await expect(page.getByLabel("Responsive preset")).toHaveValue("fixed")
+  await expect(page.getByLabel("Broken image")).not.toBeChecked()
+  await expect(page.getByTestId("image-fallback-state")).toHaveText("Fallback: false")
+  expect(
+    await page.evaluate(() =>
+      Object.fromEntries(
+        [...new URL(location.href).searchParams.entries()].filter(([key]) =>
+          key.startsWith("image")
+        )
+      )
+    )
+  ).toEqual({
+    imageAspectRatio: "16 / 9",
+    imageBroken: "false",
+    imageFit: "cover",
+    imageLoading: "lazy",
+    imagePosition: "center",
+    imageRadius: "md",
+    imageResponsive: "fixed",
+  })
+})

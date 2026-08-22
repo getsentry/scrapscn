@@ -12,6 +12,12 @@ import {
 const CANONICAL_COMMIT = 'd91f823d232ddd12a4d2a64554d85fd36df0e278';
 const EXCLUDED_DIRECTORIES = ['overview', 'patterns', 'principles'];
 const canonicalBehaviorDependencies = {
+  image: [
+    'static/app/components/core/layout/styles.tsx',
+    'static/app/utils/theme/scraps/theme/base.tsx',
+    'static/app/utils/theme/scraps/tokens/size.tsx',
+    'static/app/utils/theme/types.tsx',
+  ],
   hotkey: [
     'static/app/components/core/hotkey/keyMappings.tsx',
     'static/app/icons/iconArrow.tsx',
@@ -84,6 +90,7 @@ const localModules = {
   ],
   interactionStateLayer: ['src/components/ui/interaction-state-layer.tsx'],
   hotkey: ['src/components/ui/hotkey.tsx'],
+  image: ['src/components/ui/image.tsx'],
   layout: ['src/components/ui/layout.tsx'],
   link: ['src/components/ui/link.tsx'],
   radio: ['src/components/ui/radio-group.tsx'],
@@ -109,6 +116,7 @@ const registryItems = {
   dragHandle: ['drag-handle'],
   interactionStateLayer: ['interaction-state-layer'],
   hotkey: ['hotkey'],
+  image: ['image'],
   layout: ['layout'],
   separator: ['separator'],
   slot: ['slot'],
@@ -128,6 +136,8 @@ const completionEvidence = {
     'Exact state-layer contract, behavior stories, focused Storybook assertions, and registry publication are present. The canonical module has no Figma component.',
   hotkey:
     'Exact regular Scraps Hotkey, Kbd, and useHotkeys display, platform mapping, layout-aware matching, listener lifecycle, tests, workbench, and self-contained registry delivery are present. The canonical module has no Figma component.',
+  image:
+    'Exact regular Scraps Image native contract, responsive dimensions and radius, focused assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component.',
   dragHandle:
     'Exact regular Scraps drag handle contract, pointer and keyboard behavior, focused assertions, and registry publication are present. The canonical module has no Figma component.',
   layout:
@@ -315,6 +325,13 @@ for (const moduleName of moduleNames) {
               'tests/parity/hotkey.test.mjs',
               'tests/types/hotkey-types.test.tsx',
             ]
+        : moduleName === 'image'
+          ? [
+              'src/components/ui/image.test.tsx',
+              'tests/e2e/playground.spec.ts',
+              'tests/parity/image.test.mjs',
+              'tests/types/image-types.test.tsx',
+            ]
         : [];
   const completionNote = completionEvidence[moduleName];
 
@@ -343,6 +360,8 @@ for (const moduleName of moduleNames) {
               ? '/?component=reveal-on-hover'
             : moduleName === 'hotkey'
               ? '/?component=hotkey'
+              : moduleName === 'image'
+                ? '/?component=image'
               : moduleName === 'checkbox' ||
                   moduleName === 'interactionStateLayer' ||
                   moduleName === 'layout' ||

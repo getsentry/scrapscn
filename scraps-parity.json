@@ -926,7 +926,11 @@
         "indexPath": "static/app/components/core/image/index.tsx",
         "sourcePaths": [
           "static/app/components/core/image/image.tsx",
-          "static/app/components/core/image/index.tsx"
+          "static/app/components/core/image/index.tsx",
+          "static/app/components/core/layout/styles.tsx",
+          "static/app/utils/theme/scraps/theme/base.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/types.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -938,22 +942,37 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/image.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "Image"
+          ],
+          "types": [
+            "ImageProps"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "image"
+        ],
+        "stories": [
+          "src/components/ui/image.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/image.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/image.test.mjs",
+          "tests/types/image-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=image"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local image implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Image native contract, responsive dimensions and radius, focused assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component."
       }
     },
     {
