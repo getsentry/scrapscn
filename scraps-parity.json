@@ -687,22 +687,42 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/drag-handle.tsx",
+          "src/components/ui/use-drag-move.tsx",
+          "src/components/ui/use-drag-separator.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "DRAG_HANDLE_SIZE",
+            "DRAG_SEPARATOR_TARGET_SIZE",
+            "DragHandle",
+            "useDragMove",
+            "useDragSeparator"
+          ],
+          "types": [
+            "DragHandleVariant"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "drag-handle"
+        ],
+        "stories": [
+          "src/components/ui/drag-handle.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/drag-handle.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/drag-handle.test.mjs"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=drag-handle"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local drag-handle implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps drag handle contract, pointer and keyboard behavior, focused assertions, and registry publication are present. The canonical module has no Figma component."
       }
     },
     {

@@ -27,6 +27,8 @@
     "@emotion/is-prop-valid": "^1.4.0",
     "@fontsource/roboto-mono": "^5.2.9",
     "@fontsource/rubik": "^5.2.8",
+    "@react-aria/interactions": "3.28.1",
+    "@react-aria/utils": "3.34.1",
     "@sentry/react": "^10.70.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

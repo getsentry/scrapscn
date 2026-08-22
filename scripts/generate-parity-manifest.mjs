@@ -35,6 +35,11 @@ const localModules = {
   ],
   button: ['src/components/ui/button.tsx'],
   checkbox: ['src/components/ui/checkbox.tsx'],
+  dragHandle: [
+    'src/components/ui/drag-handle.tsx',
+    'src/components/ui/use-drag-move.tsx',
+    'src/components/ui/use-drag-separator.tsx',
+  ],
   input: [
     'src/components/ui/input.tsx',
     'src/components/ui/input-group.tsx',
@@ -59,6 +64,7 @@ const registryItems = {
   alert: ['alert'],
   badge: ['badge', 'feature-badge', 'tag'],
   button: ['button'],
+  dragHandle: ['drag-handle'],
   interactionStateLayer: ['interaction-state-layer'],
   layout: ['layout'],
   separator: ['separator'],
@@ -73,6 +79,8 @@ const registryItems = {
 const completionEvidence = {
   interactionStateLayer:
     'Exact state-layer contract, behavior stories, focused Storybook assertions, and registry publication are present. The canonical module has no Figma component.',
+  dragHandle:
+    'Exact regular Scraps drag handle contract, pointer and keyboard behavior, focused assertions, and registry publication are present. The canonical module has no Figma component.',
   layout:
     'Exact regular Scraps layout exports, responsive container and viewport cascade, focused assertions, and registry publication are present. The canonical module has no Figma component.',
   separator:
@@ -209,6 +217,12 @@ for (const moduleName of moduleNames) {
           ? ['tests/parity/layout-separator.test.mjs']
           : moduleName === 'slot'
             ? ['src/components/ui/slot.test.tsx', 'tests/parity/slot.test.mjs']
+          : moduleName === 'dragHandle'
+            ? [
+                'src/components/ui/drag-handle.test.tsx',
+                'tests/e2e/playground.spec.ts',
+                'tests/parity/drag-handle.test.mjs',
+              ]
         : [];
   const completionNote = completionEvidence[moduleName];
 
@@ -225,9 +239,15 @@ for (const moduleName of moduleNames) {
         moduleName === 'checkbox' ? ['src/components/ui/checkbox.figma.ts'] : [],
       figmaNodes: [...(figmaNodes[moduleName] ?? [])].sort(),
       playgroundPath:
-        moduleName === 'checkbox' || moduleName === 'interactionStateLayer' || moduleName === 'layout' || moduleName === 'separator' || moduleName === 'slot'
-          ? '/?component=checkbox'
-          : null,
+        moduleName === 'dragHandle'
+          ? '/?component=drag-handle'
+          : moduleName === 'checkbox' ||
+              moduleName === 'interactionStateLayer' ||
+              moduleName === 'layout' ||
+              moduleName === 'separator' ||
+              moduleName === 'slot'
+            ? '/?component=checkbox'
+            : null,
     },
     completion: {
       state: completionNote

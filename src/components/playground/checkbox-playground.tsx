@@ -8,7 +8,8 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "reac
 import { SentryPageFrame } from "@/components/playground/sentry-page-frame"
 import { Button } from "@/components/ui/button"
 import { Checkbox, type CheckboxProps } from "@/components/ui/checkbox"
-import { Container, Stack } from "@/components/ui/layout"
+import { DRAG_HANDLE_SIZE, DragHandle, type DragHandleVariant } from "@/components/ui/drag-handle"
+import { Container, Flex, Stack } from "@/components/ui/layout"
 import { slot } from "@/components/ui/slot"
 import { cn } from "@/lib/utils"
 import type { TemplateMetadata } from "@/templates/types"
@@ -17,10 +18,16 @@ type CheckedState = "false" | "true" | "indeterminate"
 type CheckboxSize = NonNullable<CheckboxProps["size"]>
 type PlaygroundTheme = "dark" | "light"
 type PlaygroundViewport = "desktop" | "mobile"
+type PlaygroundComponent = "checkbox" | "drag-handle"
+type DragHandleOrientation = "horizontal" | "vertical"
 type NotificationId = "issue-status" | "new-issues" | "weekly-reports"
 type PlaygroundState = {
   checked: CheckedState
+  component: PlaygroundComponent
   disabled: boolean
+  dragHandleOrientation: DragHandleOrientation
+  dragHandleSize: number
+  dragHandleVariant: DragHandleVariant
   items: NotificationId[]
   label: string
   selected: NotificationId[]
@@ -30,6 +37,12 @@ type PlaygroundState = {
 }
 
 const defaultLabel = "Alert me about new issues"
+const defaultDragHandleSize = 180
+const defaultDragHandleOrientation: DragHandleOrientation = "horizontal"
+const defaultDragHandleVariant: DragHandleVariant = "solid"
+const dragHandleMinimum = 100
+const dragHandleMaximum = 320
+const dragHandleFlexibleMinimum = 64
 const PlaygroundSlot = slot(["utility"] as const)
 const defaultNotificationIds: NotificationId[] = ["new-issues", "issue-status", "weekly-reports"]
 const notificationContent: Record<NotificationId, { description: string; label: string }> = {
@@ -61,6 +74,35 @@ function getTheme(value: string | null): PlaygroundTheme | null {
 
 function getViewport(value: string | null): PlaygroundViewport {
   return value === "mobile" ? "mobile" : "desktop"
+}
+
+function getPlaygroundComponent(value: string | null): PlaygroundComponent {
+  return value === "drag-handle" ? "drag-handle" : "checkbox"
+}
+
+function getDragHandleOrientation(value: string | null): DragHandleOrientation {
+  return value === "vertical" ? "vertical" : defaultDragHandleOrientation
+}
+
+function getDragHandleVariant(value: string | null): DragHandleVariant {
+  return value === "ghost" ? "ghost" : defaultDragHandleVariant
+}
+
+function getDragHandleSize(value: string | null) {
+  if (value === null) return defaultDragHandleSize
+  const parsed = Number(value)
+  if (!Number.isFinite(parsed)) return defaultDragHandleSize
+  return Math.max(dragHandleMinimum, Math.min(dragHandleMaximum, Math.round(parsed)))
+}
+
+function getEffectiveDragHandleMaximum(availableLength: number) {
+  return Math.max(
+    dragHandleMinimum,
+    Math.min(
+      dragHandleMaximum,
+      Math.floor(availableLength - dragHandleFlexibleMinimum - DRAG_HANDLE_SIZE)
+    )
+  )
 }
 
 function isNotificationId(id: string): id is NotificationId {
@@ -98,7 +140,13 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
   const initialState = useMemo(
     () => ({
       checked: getCheckedState(searchParams.get("checked")),
+      component: pathname.startsWith("/templates/")
+        ? "checkbox"
+        : getPlaygroundComponent(searchParams.get("component")),
       disabled: searchParams.get("disabled") === "true",
+      dragHandleOrientation: getDragHandleOrientation(searchParams.get("dragHandleOrientation")),
+      dragHandleSize: getDragHandleSize(searchParams.get("dragHandleSize")),
+      dragHandleVariant: getDragHandleVariant(searchParams.get("dragHandleVariant")),
       items: getNotificationIds(searchParams.get("items")),
       label: searchParams.get("label") ?? defaultLabel,
       selected: getSelectedNotificationIds(searchParams.get("selected")),
@@ -106,10 +154,15 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
       theme: getTheme(searchParams.get("theme")),
       viewport: getViewport(searchParams.get("viewport")),
     }),
-    [searchParams]
+    [pathname, searchParams]
   )
   const [checked, setChecked] = useState<CheckedState>(initialState.checked)
+  const [component, setComponent] = useState<PlaygroundComponent>(initialState.component)
   const [disabled, setDisabled] = useState(initialState.disabled)
+  const [dragHandleOrientation, setDragHandleOrientation] = useState(initialState.dragHandleOrientation)
+  const [dragHandleSize, setDragHandleSize] = useState(initialState.dragHandleSize)
+  const [dragHandleVariant, setDragHandleVariant] = useState(initialState.dragHandleVariant)
+  const [dragHandleAvailableLength, setDragHandleAvailableLength] = useState<number | null>(null)
   const [items, setItems] = useState(initialState.items)
   const [label, setLabel] = useState(initialState.label)
   const [selected, setSelected] = useState(initialState.selected)
@@ -121,13 +174,65 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
   const [submittedState, setSubmittedState] = useState<string | null>(null)
   const setupIslandRef = useRef<HTMLElement>(null)
   const setupTriggerRef = useRef<HTMLButtonElement>(null)
+  const dragHandleFrameRef = useRef<HTMLDivElement>(null)
   const restoreSetupFocus = useRef(false)
   const hydrated = useHydrated()
   const currentTheme = theme ?? (hydrated && resolvedTheme === "dark" ? "dark" : "light")
+  const effectiveDragHandleMaximum = dragHandleAvailableLength === null
+    ? dragHandleMaximum
+    : getEffectiveDragHandleMaximum(dragHandleAvailableLength)
 
   useEffect(() => {
-    if (initialState.theme) setAppTheme(initialState.theme)
+    setAppTheme(initialState.theme ?? "system")
   }, [initialState.theme, setAppTheme])
+
+  useEffect(() => {
+    function restoreStateFromUrl() {
+      const params = new URLSearchParams(window.location.search)
+      const restoredComponent = window.location.pathname.startsWith("/templates/")
+        ? "checkbox"
+        : getPlaygroundComponent(params.get("component"))
+      const restoredTheme = getTheme(params.get("theme"))
+
+      setChecked(getCheckedState(params.get("checked")))
+      setComponent(restoredComponent)
+      setDisabled(params.get("disabled") === "true")
+      setDragHandleOrientation(getDragHandleOrientation(params.get("dragHandleOrientation")))
+      setDragHandleSize(getDragHandleSize(params.get("dragHandleSize")))
+      setDragHandleVariant(getDragHandleVariant(params.get("dragHandleVariant")))
+      setItems(getNotificationIds(params.get("items")))
+      setLabel(params.get("label") ?? defaultLabel)
+      setSelected(getSelectedNotificationIds(params.get("selected")))
+      setSize(getCheckboxSize(params.get("size")))
+      setTheme(restoredTheme)
+      setViewport(getViewport(params.get("viewport")))
+      setAppTheme(restoredTheme ?? "system")
+    }
+
+    window.addEventListener("popstate", restoreStateFromUrl)
+    return () => window.removeEventListener("popstate", restoreStateFromUrl)
+  }, [setAppTheme])
+
+  useEffect(() => {
+    if (component !== "drag-handle") return
+    const frame = dragHandleFrameRef.current
+    if (!frame) return
+    const updateAvailableLength = () => {
+      const availableLength = dragHandleOrientation === "horizontal"
+        ? frame.clientWidth
+        : frame.clientHeight
+      const maximum = getEffectiveDragHandleMaximum(availableLength)
+      setDragHandleAvailableLength(availableLength)
+      if (dragHandleSize <= maximum) return
+      setDragHandleSize(maximum)
+      const params = new URLSearchParams(window.location.search)
+      params.set("dragHandleSize", String(maximum))
+      window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`)
+    }
+    const observer = new ResizeObserver(updateAvailableLength)
+    observer.observe(frame)
+    return () => observer.disconnect()
+  }, [component, dragHandleOrientation, dragHandleSize])
 
   useEffect(() => {
     if (setupOpen || !restoreSetupFocus.current) return
@@ -149,7 +254,11 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
   function getUrlParams(next: Partial<PlaygroundState>) {
     const params = new URLSearchParams(searchParams.toString())
     params.set("checked", next.checked ?? checked)
+    params.set("component", next.component ?? component)
     params.set("disabled", String(next.disabled ?? disabled))
+    params.set("dragHandleOrientation", next.dragHandleOrientation ?? dragHandleOrientation)
+    params.set("dragHandleSize", String(next.dragHandleSize ?? dragHandleSize))
+    params.set("dragHandleVariant", next.dragHandleVariant ?? dragHandleVariant)
     params.set("items", (next.items ?? items).join(","))
     params.set("label", next.label ?? label)
     params.set("selected", (next.selected ?? selected).join(","))
@@ -166,7 +275,10 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
 
   async function copyShareUrl() {
     updateUrl({})
-    await navigator.clipboard.writeText(new URL(templateHref, window.location.origin).href)
+    const shareHref = component === "drag-handle"
+      ? `/?${getUrlParams({}).toString()}`
+      : templateHref
+    await navigator.clipboard.writeText(new URL(shareHref, window.location.origin).href)
     setCopied(true)
     window.setTimeout(() => setCopied(false), 1600)
   }
@@ -177,7 +289,11 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
   function resetPlayground() {
     const resetState: PlaygroundState = {
       checked: "false",
+      component,
       disabled: false,
+      dragHandleOrientation: defaultDragHandleOrientation,
+      dragHandleSize: defaultDragHandleSize,
+      dragHandleVariant: defaultDragHandleVariant,
       items: defaultNotificationIds,
       label: defaultLabel,
       selected: ["issue-status"],
@@ -187,6 +303,9 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
     }
     setChecked(resetState.checked)
     setDisabled(resetState.disabled)
+    setDragHandleOrientation(resetState.dragHandleOrientation)
+    setDragHandleSize(resetState.dragHandleSize)
+    setDragHandleVariant(resetState.dragHandleVariant)
     setItems(resetState.items)
     setLabel(resetState.label)
     setSelected(resetState.selected)
@@ -217,11 +336,11 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
   }
 
   return (
-    <div className="isolate min-h-dvh bg-muted" data-slot="playground-canvas" data-viewport={viewport}>
+    <div className="isolate min-h-dvh bg-muted" data-component={component} data-slot="playground-canvas" data-viewport={viewport}>
       <aside
         aria-label="Playground controls"
         className={cn(
-          "fixed left-1/2 z-40 flex -translate-x-1/2 flex-col-reverse overflow-hidden rounded-2xl border border-foreground/10 bg-popover/95 text-popover-foreground shadow-xl backdrop-blur-md [bottom:max(0.75rem,env(safe-area-inset-bottom))]",
+          "fixed left-1/2 z-[10000] flex -translate-x-1/2 flex-col-reverse overflow-hidden rounded-2xl border border-foreground/10 bg-popover/95 text-popover-foreground shadow-xl backdrop-blur-md [bottom:max(0.75rem,env(safe-area-inset-bottom))]",
           setupOpen ? "w-[calc(100%-1rem)] max-w-3xl" : "w-14"
         )}
         data-slot="playground-island"
@@ -254,16 +373,21 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
           <select
             id="playground-section"
             aria-label="Component or template"
-            value={pathname}
+            value={pathname.startsWith("/templates/") ? pathname : component}
             onChange={(event) => {
-              const destination = event.target.value === "/templates/checkbox-settings"
-                ? templateHref
-                : `${event.target.value}?${getUrlParams({}).toString()}`
+              const value = event.target.value
+              const isTemplate = value.startsWith("/templates/")
+              const nextComponent: PlaygroundComponent = value === "drag-handle" ? "drag-handle" : "checkbox"
+              setComponent(nextComponent)
+              const destination = isTemplate
+                ? `/templates/checkbox-settings?${getUrlParams({ component: "checkbox" }).toString()}`
+                : `/?${getUrlParams({ component: nextComponent }).toString()}`
               router.push(destination, { scroll: false })
             }}
             className="col-span-full h-11 min-w-0 touch-manipulation rounded-xl border border-input bg-background px-2 text-base font-medium focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:col-auto sm:h-10 sm:flex-1 sm:text-sm"
           >
-            <option value="/">Workbench</option>
+            <option value="checkbox">Checkbox</option>
+            <option value="drag-handle">Drag Handle</option>
             {templates.map((template) => (
               <option key={template.slug} value={`/templates/${template.slug}`}>{template.title}</option>
             ))}
@@ -326,7 +450,71 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
 
         {setupOpen && (
           <div id="playground-setup" className="max-h-[calc(100dvh-8rem)] overflow-y-auto overscroll-contain border-b border-foreground/10 p-3 sm:max-h-[calc(100dvh-5rem)]">
-            <div className="grid gap-4 sm:grid-cols-2">
+            {component === "drag-handle" && (
+              <div className="grid gap-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-sm font-semibold">Drag Handle setup</h2>
+                    <p className="text-xs text-muted-foreground">Changes stay in the share URL.</p>
+                  </div>
+                  <ChevronUp className="size-4 text-muted-foreground" aria-hidden="true" />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <label className="grid gap-2 text-base font-medium sm:text-sm">
+                    Orientation
+                    <select
+                      name="drag-handle-orientation"
+                      value={dragHandleOrientation}
+                      onChange={(event) => {
+                        const value = event.target.value as DragHandleOrientation
+                        setDragHandleOrientation(value)
+                        updateUrl({ dragHandleOrientation: value })
+                      }}
+                      className="h-11 touch-manipulation rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-10 sm:text-sm"
+                    >
+                      <option value="horizontal">Horizontal</option>
+                      <option value="vertical">Vertical</option>
+                    </select>
+                  </label>
+                  <label className="grid gap-2 text-base font-medium sm:text-sm">
+                    Variant
+                    <select
+                      name="drag-handle-variant"
+                      value={dragHandleVariant}
+                      onChange={(event) => {
+                        const value = event.target.value as DragHandleVariant
+                        setDragHandleVariant(value)
+                        updateUrl({ dragHandleVariant: value })
+                      }}
+                      className="h-11 touch-manipulation rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-10 sm:text-sm"
+                    >
+                      <option value="solid">Solid</option>
+                      <option value="ghost">Ghost</option>
+                    </select>
+                  </label>
+                  <label className="grid gap-2 text-base font-medium sm:text-sm">
+                    Value
+                    <input
+                      name="drag-handle-value"
+                      type="number"
+                      min={dragHandleMinimum}
+                      max={effectiveDragHandleMaximum}
+                      value={dragHandleSize}
+                      onChange={(event) => {
+                        const value = Math.min(
+                          effectiveDragHandleMaximum,
+                          getDragHandleSize(event.target.value)
+                        )
+                        setDragHandleSize(value)
+                        updateUrl({ dragHandleSize: value })
+                      }}
+                      className="h-11 touch-manipulation rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-10 sm:text-sm"
+                    />
+                  </label>
+                </div>
+              </div>
+            )}
+            <div className={cn("grid gap-4 sm:grid-cols-2", component !== "checkbox" && "hidden")}>
               <div className="grid gap-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
@@ -461,18 +649,80 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
 
       <div className={viewport === "mobile" ? "flex min-h-dvh justify-center bg-muted" : "min-h-dvh"}>
           <div className={viewport === "mobile" ? "min-h-dvh w-full max-w-[390px] ring-1 ring-foreground/10" : "min-h-dvh w-full"}>
-          <SentryPageFrame title="Notification Settings" breadcrumbs={["Settings", "Projects", "Frontend"]}>
+          <SentryPageFrame
+            title={component === "drag-handle" ? "Drag Handle" : "Notification Settings"}
+            breadcrumbs={component === "drag-handle" ? ["Components", "Drag Handle"] : ["Settings", "Projects", "Frontend"]}
+          >
             <div className="grid max-w-3xl gap-8">
               <p className="max-w-[65ch] text-pretty text-base text-muted-foreground sm:text-sm">
-                Choose how your team receives issue updates for this project.
+                {component === "drag-handle"
+                  ? "Resize two panes with pointer, touch, or keyboard input."
+                  : "Choose how your team receives issue updates for this project."}
               </p>
-              <Container data-testid="layout-separator-proof" padding="md" border="primary" radius="md" background="primary">
+              <Container display={component === "checkbox" ? "block" : "none"} data-testid="layout-separator-proof" padding="md" border="primary" radius="md" background="primary">
                 <Stack gap="sm" direction={{ zero: "column", "screen:lg": "row" }}>
                   <span className="text-sm font-medium">Layout and separator proof</span>
                   <Stack.Separator data-testid="layout-stack-separator-proof" />
                   <span className="text-sm text-muted-foreground">Responsive Scraps primitives</span>
                 </Stack>
               </Container>
+              <Container display={component === "drag-handle" ? "block" : "none"} minWidth="0" padding="md" border="primary" radius="md" background="primary">
+                <Stack gap="sm">
+                  <span className="text-sm font-medium">Drag handle proof</span>
+                  <span data-testid="drag-handle-size" className="text-sm text-muted-foreground">
+                    Sized pane {dragHandleOrientation === "horizontal" ? "width" : "height"}: {dragHandleSize}px
+                  </span>
+                  <Flex
+                    ref={dragHandleFrameRef}
+                    direction={dragHandleOrientation === "horizontal" ? "row" : "column"}
+                    height={dragHandleOrientation === "horizontal" ? "120px" : "420px"}
+                    minWidth="0"
+                    width="100%"
+                    border="primary"
+                    radius="md"
+                    overflow="hidden"
+                    data-testid="drag-handle-frame"
+                  >
+                    <Container padding="md" background="secondary" flexShrink={0} flexBasis={`${dragHandleSize}px`}>
+                      <span className="text-sm font-medium">Sized pane</span>
+                    </Container>
+                    <DragHandle
+                      aria-label={`Adjust drag pane ${dragHandleOrientation === "horizontal" ? "width" : "height"}`}
+                      isSizedFirst
+                      max={effectiveDragHandleMaximum}
+                      min={dragHandleMinimum}
+                      orientation={dragHandleOrientation}
+                      value={dragHandleSize}
+                      variant={dragHandleVariant}
+                      onDoubleClick={() => {
+                        setDragHandleSize(defaultDragHandleSize)
+                        updateUrl({ dragHandleSize: defaultDragHandleSize })
+                      }}
+                      onMove={(delta) => {
+                        setDragHandleSize((current) => {
+                          const value = Math.max(
+                            dragHandleMinimum,
+                            Math.min(effectiveDragHandleMaximum, current + delta)
+                          )
+                          updateUrl({ dragHandleSize: value })
+                          return value
+                        })
+                      }}
+                    />
+                    <Container
+                      padding="md"
+                      background="primary"
+                      flexGrow={1}
+                      minWidth={dragHandleOrientation === "horizontal" ? `${dragHandleFlexibleMinimum}px` : undefined}
+                      minHeight={dragHandleOrientation === "vertical" ? `${dragHandleFlexibleMinimum}px` : undefined}
+                      data-testid="drag-handle-flexible-pane"
+                    >
+                      <span className="text-sm text-muted-foreground">Flexible pane</span>
+                    </Container>
+                  </Flex>
+                </Stack>
+              </Container>
+              <div className={component === "checkbox" ? "contents" : "hidden"}>
               <PlaygroundSlot.Provider>
                 <Container containerType="inline-size" padding="md" border="primary" radius="md" background="primary">
                   <Stack gap="sm">
@@ -491,9 +741,10 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
                   <span data-testid="slot-playground-content">Portaled Scraps content</span>
                 </PlaygroundSlot>
               </PlaygroundSlot.Provider>
+              </div>
               <form
                 aria-labelledby="email-heading"
-                className="grid"
+                className={component === "checkbox" ? "grid" : "hidden"}
                 onSubmit={(event) => {
                   event.preventDefault()
                   const formData = new FormData(event.currentTarget)

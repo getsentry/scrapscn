@@ -34,7 +34,7 @@ export const EndToEndWorkflow: Story = {
 
     await expect(canvas.queryByRole("textbox", { name: "Label" })).not.toBeInTheDocument()
     await userEvent.click(setupButton)
-    await expect(canvas.getByRole("combobox", { name: "Component or template" })).toHaveValue("/")
+    await expect(canvas.getByRole("combobox", { name: "Component or template" })).toHaveValue("checkbox")
     await expect(canvas.getByRole("button", { name: "Close setup" })).toHaveAttribute("aria-expanded", "true")
     await userEvent.selectOptions(canvas.getByRole("combobox", { name: "Preview width" }), "mobile")
     await userEvent.clear(canvas.getByRole("textbox", { name: "Label" }))

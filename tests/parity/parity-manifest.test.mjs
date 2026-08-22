@@ -34,7 +34,7 @@ test('accepts the pinned 48-module parity inventory', () => {
     cwd: process.cwd(),
     encoding: 'utf8',
   });
-  assert.match(output, /Validated 48 modules: 4 complete, 16 partial, 28 missing/);
+  assert.match(output, /Validated 48 modules: 5 complete, 16 partial, 27 missing/);
 });
 
 test('rejects a missing canonical module', async () => {

@@ -151,3 +151,227 @@ test("keeps the playground and page-frame navigation usable on mobile", async ({
   await expect(page.getByLabel("Label")).toBeHidden()
   await expect(page.getByRole("button", { name: "Open setup" })).toBeFocused()
 })
+
+test("restores every workbench state when navigating Back and Forward", async ({ page }) => {
+  await page.goto(
+    "/?component=checkbox&checked=true&disabled=true&items=new-issues%2Cissue-status&label=Back+state&selected=issue-status&size=md&theme=dark&viewport=mobile"
+  )
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await page.getByLabel("Component or template").selectOption("drag-handle")
+  await expect(page.getByRole("heading", { name: "Drag Handle", exact: true })).toBeVisible()
+  await page.getByLabel("Orientation").selectOption("vertical")
+  await page.getByLabel("Variant").selectOption("ghost")
+  await page.getByLabel("Value").fill("150")
+
+  await page.goBack()
+  await expect(page).toHaveURL(/component=checkbox/)
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "checkbox")
+  await expect(page.getByRole("heading", { name: "Notification Settings" })).toBeVisible()
+  await expect(page.getByLabel("Component or template")).toHaveValue("checkbox")
+  await expect(page.getByLabel("Size")).toHaveValue("md")
+  await expect(page.getByLabel("Label")).toHaveValue("Back state")
+  await expect(page.getByLabel("Disabled")).toBeChecked()
+  await expect(page.getByLabel("Preview width")).toHaveValue("mobile")
+  await expect(page.locator("html")).toHaveClass(/dark/)
+  await expect(page.locator("form label")).toHaveText(["Back state", "Issue status changes"])
+
+  await page.goForward()
+  await expect(page).toHaveURL(/component=drag-handle/)
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "drag-handle")
+  await expect(page.getByRole("heading", { name: "Drag Handle", exact: true })).toBeVisible()
+  await expect(page.getByLabel("Component or template")).toHaveValue("drag-handle")
+  await expect(page.getByLabel("Orientation")).toHaveValue("vertical")
+  await expect(page.getByLabel("Variant")).toHaveValue("ghost")
+  await expect(page.getByLabel("Value")).toHaveValue("150")
+  await expect(page.getByLabel("Preview width")).toHaveValue("mobile")
+  await expect(page.locator("html")).toHaveClass(/dark/)
+})
+
+test("restores the system theme when history has no theme override", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "light" })
+  await page.goto("/?component=checkbox")
+  await page.getByRole("button", { name: "Open setup" }).click()
+  const themeButton = page.getByRole("button", { name: /Switch to (dark|light) theme/ })
+
+  await expect(page).not.toHaveURL(/theme=/)
+  await expect(page.locator("html")).not.toHaveClass(/dark/)
+  await expect(themeButton).toHaveAccessibleName("Switch to dark theme")
+
+  await page.evaluate(() => {
+    window.history.pushState(null, "", "/?component=checkbox&theme=dark")
+    window.dispatchEvent(new PopStateEvent("popstate"))
+  })
+  await expect(page.locator("html")).toHaveClass(/dark/)
+  await expect(themeButton).toHaveAccessibleName("Switch to light theme")
+
+  await page.evaluate(() => {
+    window.history.pushState(null, "", "/?component=checkbox&theme=light")
+    window.dispatchEvent(new PopStateEvent("popstate"))
+  })
+  await expect(page.locator("html")).not.toHaveClass(/dark/)
+  await expect(themeButton).toHaveAccessibleName("Switch to dark theme")
+
+  await page.goBack()
+  await expect(page).toHaveURL(/theme=dark/)
+  await expect(page.locator("html")).toHaveClass(/dark/)
+  await expect(themeButton).toHaveAccessibleName("Switch to light theme")
+
+  await page.goBack()
+  await expect(page).not.toHaveURL(/theme=/)
+  await expect(page.locator("html")).not.toHaveClass(/dark/)
+  await expect(themeButton).toHaveAccessibleName("Switch to dark theme")
+
+  await page.goForward()
+  await expect(page).toHaveURL(/theme=dark/)
+  await expect(page.locator("html")).toHaveClass(/dark/)
+  await expect(themeButton).toHaveAccessibleName("Switch to light theme")
+
+  await page.goForward()
+  await expect(page).toHaveURL(/theme=light/)
+  await expect(page.locator("html")).not.toHaveClass(/dark/)
+  await expect(themeButton).toHaveAccessibleName("Switch to dark theme")
+})
+
+test("keeps a horizontal maximum usable at a 320px viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 844 })
+  await page.goto(
+    "/?component=drag-handle&dragHandleOrientation=horizontal&dragHandleSize=320"
+  )
+
+  const handle = page.getByRole("separator", { name: "Adjust drag pane width" })
+  await expect.poll(async () => Number(await handle.getAttribute("aria-valuemax"))).toBeLessThan(320)
+  const effectiveMaximum = Number(await handle.getAttribute("aria-valuemax"))
+  expect(effectiveMaximum).toBeGreaterThanOrEqual(100)
+  await expect(handle).toHaveAttribute("aria-valuenow", String(effectiveMaximum))
+  await expect(page).toHaveURL(new RegExp(`dragHandleSize=${effectiveMaximum}`))
+
+  const frameBox = await page.getByTestId("drag-handle-frame").boundingBox()
+  const handleBox = await handle.boundingBox()
+  const flexiblePaneBox = await page.getByTestId("drag-handle-flexible-pane").boundingBox()
+  if (!frameBox || !handleBox || !flexiblePaneBox) throw new Error("Responsive drag panes are not visible")
+  expect(handleBox.x).toBeGreaterThan(0)
+  expect(handleBox.x).toBeLessThan(320)
+  expect(flexiblePaneBox.width).toBeGreaterThanOrEqual(64)
+  expect(flexiblePaneBox.x).toBeGreaterThanOrEqual(frameBox.x)
+  expect(flexiblePaneBox.x + flexiblePaneBox.width).toBeLessThanOrEqual(frameBox.x + frameBox.width)
+
+  await handle.focus()
+  await page.keyboard.press("ArrowLeft")
+  const horizontalValue = effectiveMaximum - 10
+  await expect(handle).toHaveAttribute("aria-valuenow", String(horizontalValue))
+  await expect(page).toHaveURL(new RegExp(`dragHandleSize=${horizontalValue}`))
+
+  await page.evaluate(() => {
+    window.history.pushState(
+      null,
+      "",
+      "/?component=drag-handle&dragHandleOrientation=vertical&dragHandleSize=300"
+    )
+    window.dispatchEvent(new PopStateEvent("popstate"))
+  })
+  let restoredHandle = page.getByRole("separator", { name: "Adjust drag pane height" })
+  await expect(restoredHandle).toHaveAttribute("aria-valuemax", "320")
+  await expect(restoredHandle).toHaveAttribute("aria-valuenow", "300")
+
+  await page.goBack()
+  restoredHandle = page.getByRole("separator", { name: "Adjust drag pane width" })
+  await expect(restoredHandle).toHaveAttribute("aria-valuemax", String(effectiveMaximum))
+  await expect(restoredHandle).toHaveAttribute("aria-valuenow", String(horizontalValue))
+
+  await page.goForward()
+  restoredHandle = page.getByRole("separator", { name: "Adjust drag pane height" })
+  await expect(restoredHandle).toHaveAttribute("aria-valuemax", "320")
+  await expect(restoredHandle).toHaveAttribute("aria-valuenow", "300")
+  await expect(page).toHaveURL(/dragHandleSize=300/)
+})
+
+test("configures, shares, restores, drags, and arrows the Drag Handle workbench", async ({ browser, page }) => {
+  await page.goto("/?component=drag-handle")
+  await expect(page.getByRole("heading", { name: "Drag Handle", exact: true })).toBeVisible()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "drag-handle")
+
+  await page.getByRole("button", { name: "Open setup" }).click()
+  const componentSelect = page.getByLabel("Component or template")
+  await expect(componentSelect).toHaveValue("drag-handle")
+  await expect(componentSelect.locator('option[value="checkbox"]')).toHaveText("Checkbox")
+  await expect(componentSelect.locator('option[value="drag-handle"]')).toHaveText("Drag Handle")
+  await expect(page.locator('[data-slot="playground-island"]')).toHaveCSS("z-index", "10000")
+  await expect(page.getByRole("heading", { name: "Drag Handle setup" })).toBeVisible()
+  await expect(page.getByLabel("Orientation")).toHaveValue("horizontal")
+  await expect(page.getByLabel("Variant")).toHaveValue("solid")
+  await expect(page.getByLabel("Value")).toHaveValue("180")
+
+  let handle = page.getByRole("separator", { name: "Adjust drag pane width" })
+  await expect(handle).toHaveAttribute("aria-orientation", "vertical")
+  await expect(handle).toHaveAttribute("aria-valuemin", "100")
+  await expect(handle).toHaveAttribute("aria-valuemax", "320")
+  await expect(page.getByTestId("drag-handle-size")).toHaveText("Sized pane width: 180px")
+  await expect(handle).toHaveCSS("border-left-width", "1px")
+  expect(await handle.evaluate((element) => getComputedStyle(element, "::before").width)).toBe("24px")
+  expect(await handle.evaluate((element) => getComputedStyle(element, "::after").width)).toBe("4px")
+  expect(await handle.evaluate((element) => getComputedStyle(element, "::before").cursor)).toBe("ew-resize")
+
+  await page.getByLabel("Orientation").selectOption("vertical")
+  await page.getByLabel("Variant").selectOption("ghost")
+  await page.getByLabel("Value").fill("160")
+  await expect(page).toHaveURL(/component=drag-handle/)
+  await expect(page).toHaveURL(/dragHandleOrientation=vertical/)
+  await expect(page).toHaveURL(/dragHandleVariant=ghost/)
+  await expect(page).toHaveURL(/dragHandleSize=160/)
+  await expect(page.getByRole("button", { name: "Share" })).toBeVisible()
+  await page.getByRole("button", { name: "Share" }).click()
+  const sharedUrl = await page.evaluate(() => navigator.clipboard.readText())
+  expect(sharedUrl).toContain("/?component=drag-handle")
+  expect(sharedUrl).not.toContain("/templates/checkbox-settings")
+
+  const restoredContext = await browser.newContext({
+    ignoreHTTPSErrors: true,
+    permissions: ["clipboard-read", "clipboard-write"],
+  })
+  const restoredPage = await restoredContext.newPage()
+  await restoredPage.goto(sharedUrl)
+  await restoredPage.getByRole("button", { name: "Open setup" }).click()
+  await expect(restoredPage.getByLabel("Component or template")).toHaveValue("drag-handle")
+  await expect(restoredPage.getByLabel("Orientation")).toHaveValue("vertical")
+  await expect(restoredPage.getByLabel("Variant")).toHaveValue("ghost")
+  await expect(restoredPage.getByLabel("Value")).toHaveValue("160")
+  await restoredPage.getByRole("button", { name: "Close setup" }).click()
+
+  handle = restoredPage.getByRole("separator", { name: "Adjust drag pane height" })
+  await expect(handle).toHaveAttribute("aria-orientation", "horizontal")
+  await expect(handle).toHaveAttribute("data-orientation", "vertical")
+  await expect(handle).toHaveAttribute("data-variant", "ghost")
+  await expect(restoredPage.getByTestId("drag-handle-size")).toHaveText("Sized pane height: 160px")
+  await expect(handle).toHaveCSS("border-top-width", "1px")
+  expect(await handle.evaluate((element) => getComputedStyle(element, "::before").height)).toBe("24px")
+  expect(await handle.evaluate((element) => getComputedStyle(element, "::after").height)).toBe("4px")
+  expect(await handle.evaluate((element) => getComputedStyle(element, "::before").cursor)).toBe("ns-resize")
+
+  const box = await handle.boundingBox()
+  if (!box) throw new Error("Drag handle is not visible")
+  const initialAccent = await handle.evaluate((element) => getComputedStyle(element, "::after").backgroundColor)
+  await restoredPage.mouse.move(box.x + 24, box.y)
+  const hoveredAccent = await handle.evaluate((element) => getComputedStyle(element, "::after").backgroundColor)
+  expect(hoveredAccent).not.toBe(initialAccent)
+  await restoredPage.mouse.down()
+  await restoredPage.mouse.move(box.x + 24, box.y + 25)
+  await restoredPage.mouse.up()
+  await expect(restoredPage.getByTestId("drag-handle-size")).toHaveText("Sized pane height: 185px")
+
+  await handle.focus()
+  await restoredPage.keyboard.press("ArrowUp")
+  await expect(handle).toHaveCSS("outline-width", "2px")
+  expect(await handle.evaluate((element) => element.matches(":focus-visible"))).toBe(true)
+  await restoredPage.keyboard.press("Shift+ArrowDown")
+  await expect(restoredPage.getByTestId("drag-handle-size")).toHaveText("Sized pane height: 225px")
+  await expect(restoredPage).toHaveURL(/dragHandleSize=225/)
+
+  await restoredPage.getByRole("button", { name: "Open setup" }).click()
+  await restoredPage.getByRole("button", { name: "Reset" }).click()
+  await expect(restoredPage.getByLabel("Component or template")).toHaveValue("drag-handle")
+  await expect(restoredPage.getByLabel("Orientation")).toHaveValue("horizontal")
+  await expect(restoredPage.getByLabel("Variant")).toHaveValue("solid")
+  await expect(restoredPage.getByLabel("Value")).toHaveValue("180")
+  await expect(restoredPage).toHaveURL(/component=drag-handle/)
+  await restoredContext.close()
+})
