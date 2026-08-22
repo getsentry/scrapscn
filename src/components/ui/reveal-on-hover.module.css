@@ -1,0 +1,29 @@
+.root [data-reveal-on-hover][data-reveal-on-hover-visible] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (hover: hover) {
+  .root [data-reveal-on-hover] {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-fast, 120ms)
+      var(--ease-exit, cubic-bezier(0.64, 0, 0.8, 0));
+  }
+
+  .root:hover [data-reveal-on-hover],
+  .root:focus-within [data-reveal-on-hover] {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity var(--duration-moderate, 160ms)
+      var(--ease-enter, cubic-bezier(0.24, 1, 0.32, 1));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root [data-reveal-on-hover],
+  .root:hover [data-reveal-on-hover],
+  .root:focus-within [data-reveal-on-hover] {
+    transition: none;
+  }
+}

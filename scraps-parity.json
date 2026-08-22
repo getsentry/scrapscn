@@ -1518,7 +1518,8 @@
         "indexPath": "static/app/components/core/revealOnHover/index.tsx",
         "sourcePaths": [
           "static/app/components/core/revealOnHover/index.tsx",
-          "static/app/components/core/revealOnHover/revealOnHover.tsx"
+          "static/app/components/core/revealOnHover/revealOnHover.tsx",
+          "static/app/utils/theme/theme.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -1528,22 +1529,35 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/reveal-on-hover.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "RevealOnHover"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "reveal-on-hover"
+        ],
+        "stories": [
+          "src/components/ui/reveal-on-hover.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/reveal-on-hover.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/reveal-on-hover.test.mjs",
+          "tests/types/reveal-on-hover-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=reveal-on-hover"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local reveal-on-hover implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps RevealOnHover render branches, visibility behavior, focused assertions, and registry publication are present. The canonical module has no Figma component."
       }
     },
     {
@@ -1885,7 +1899,11 @@
         "indexPath": "static/app/components/core/statusIndicator/index.tsx",
         "sourcePaths": [
           "static/app/components/core/statusIndicator/index.tsx",
-          "static/app/components/core/statusIndicator/statusIndicator.tsx"
+          "static/app/components/core/statusIndicator/statusIndicator.tsx",
+          "static/app/utils/theme/scraps/theme/base.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -1895,22 +1913,35 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/status-indicator.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "StatusIndicator"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "status-indicator"
+        ],
+        "stories": [
+          "src/components/ui/status-indicator.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/status-indicator.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/status-indicator.test.mjs",
+          "tests/types/status-indicator-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=status-indicator"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local status-indicator implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps StatusIndicator animation, accessibility, focused assertions, and registry publication are present. The canonical module has no Figma component."
       }
     },
     {

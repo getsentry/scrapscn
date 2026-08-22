@@ -181,6 +181,241 @@ test("configures, resizes, sorts, shares, and restores the Table workbench", asy
   await expect(table).toHaveCSS("min-width", "540px")
 })
 
+test("configures, shares, and restores the Status Indicator workbench", async ({ browser, page }) => {
+  await page.setViewportSize({ width: 320, height: 844 })
+  await page.goto("/evidence/status-indicator-server")
+  await expect(page.getByRole("img", { name: "Server status" })).toBeAttached()
+
+  await page.goto(
+    "/?component=status-indicator&statusCount=0&statusLabeled=true&statusRole=status&statusVariant=promotion&theme=dark&viewport=mobile"
+  )
+
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "status-indicator"
+  )
+  await expect(page.getByRole("heading", { name: "Status Indicator", exact: true })).toBeVisible()
+  const status = page.getByRole("status", { name: "Online" })
+  await expect(status).toHaveCSS("width", "8px")
+  await expect(status).toHaveCSS("height", "8px")
+  expect(
+    await status.evaluate((element) => ({
+      fill: element.style.getPropertyValue("--status-fill"),
+      iterations: element.style.getPropertyValue("--status-iterations"),
+    }))
+  ).toEqual({ fill: "forwards", iterations: "0" })
+  expect(
+    await status.evaluate((element) => ({
+      dot: getComputedStyle(element, "::after").backgroundColor,
+      pulse: getComputedStyle(element, "::before").backgroundColor,
+    }))
+  ).toEqual({
+    dot: "rgb(255, 69, 168)",
+    pulse: "rgba(248, 0, 120, 0.18)",
+  })
+  expect(
+    await status.evaluate((element) => {
+      const before = getComputedStyle(element, "::before")
+      const after = getComputedStyle(element, "::after")
+      return {
+        activeAnimations: element.getAnimations().length,
+        afterIterations: after.animationIterationCount,
+        afterTransform: after.transform,
+        beforeIterations: before.animationIterationCount,
+        beforeTransform: before.transform,
+      }
+    })
+  ).toEqual({
+    activeAnimations: 0,
+    afterIterations: "0",
+    afterTransform: "matrix(1, 0, 0, 1, 0, 0)",
+    beforeIterations: "0",
+    beforeTransform: "matrix(0.9, 0, 0, 0.9, 0, 0)",
+  })
+  await expect(page.getByTestId("status-indicator-state")).toHaveText(
+    "promotion, 0 iterations"
+  )
+
+  await page.emulateMedia({ reducedMotion: "reduce" })
+  expect(
+    await status.evaluate((element) => {
+      const before = getComputedStyle(element, "::before")
+      const after = getComputedStyle(element, "::after")
+      return {
+        afterAnimation: after.animationName,
+        afterTransform: after.transform,
+        beforeAnimation: before.animationName,
+        beforeOpacity: before.opacity,
+        beforeTransform: before.transform,
+      }
+    })
+  ).toEqual({
+    afterAnimation: "none",
+    afterTransform: "matrix(1, 0, 0, 1, 0, 0)",
+    beforeAnimation: "none",
+    beforeOpacity: "0",
+    beforeTransform: "matrix(1.25, 0, 0, 1.25, 0, 0)",
+  })
+
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await expect(page.getByLabel("Component or template")).toHaveValue("status-indicator")
+  await expect(page.getByLabel("Status variant")).toHaveValue("promotion")
+  await expect(page.getByLabel("Animation iterations")).toHaveValue("0")
+  await expect(page.getByLabel("Status label")).toBeChecked()
+  await expect(page.getByLabel("Status role")).toHaveValue("status")
+  const variantControlBox = await page.getByLabel("Status variant").boundingBox()
+  expect(variantControlBox?.height).toBeGreaterThanOrEqual(44)
+  await page.emulateMedia({ reducedMotion: "no-preference" })
+  await page.getByRole("button", { name: "Switch to light theme" }).click()
+  expect(
+    await status.evaluate((element) => ({
+      dot: getComputedStyle(element, "::after").backgroundColor,
+      pulse: getComputedStyle(element, "::before").backgroundColor,
+    }))
+  ).toEqual({
+    dot: "rgb(252, 92, 180)",
+    pulse: "rgba(240, 0, 144, 0.1)",
+  })
+
+  await page.reload()
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await expect(page.getByLabel("Status variant")).toHaveValue("promotion")
+  await expect(page.getByLabel("Animation iterations")).toHaveValue("0")
+
+  await page.getByRole("button", { name: "Reset" }).click()
+  const decorativeStatus = page.getByTestId("status-indicator-preview")
+  await expect(decorativeStatus).toHaveAttribute("aria-hidden", "true")
+  expect(
+    await decorativeStatus.evaluate((element) => ({
+      fill: element.style.getPropertyValue("--status-fill"),
+      iterations: element.style.getPropertyValue("--status-iterations"),
+    }))
+  ).toEqual({ fill: "none", iterations: "infinite" })
+  await expect(page.getByLabel("Status variant")).toHaveValue("accent")
+
+  await page.getByLabel("Status variant").selectOption("promotion")
+  await page.getByLabel("Animation iterations").selectOption("0")
+  await page.getByLabel("Status label").check()
+  await page.getByRole("button", { name: "Share" }).click()
+  const sharedUrl = await page.evaluate(() => navigator.clipboard.readText())
+  expect(sharedUrl).toContain("/?component=status-indicator")
+
+  const restoredContext = await browser.newContext({
+    ignoreHTTPSErrors: true,
+    permissions: ["clipboard-read", "clipboard-write"],
+    viewport: { width: 320, height: 844 },
+  })
+  const restoredPage = await restoredContext.newPage()
+  await restoredPage.goto(sharedUrl)
+  await restoredPage.getByRole("button", { name: "Open setup" }).click()
+  await expect(restoredPage.getByLabel("Status variant")).toHaveValue("promotion")
+  await expect(restoredPage.getByLabel("Animation iterations")).toHaveValue("0")
+  await expect(restoredPage.getByLabel("Status label")).toBeChecked()
+  await restoredContext.close()
+
+  await page.getByLabel("Component or template").selectOption("checkbox")
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "checkbox"
+  )
+  await page.goBack()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "status-indicator"
+  )
+  await expect(page.getByLabel("Status variant")).toHaveValue("promotion")
+  await expect(page.getByLabel("Animation iterations")).toHaveValue("0")
+  await page.goForward()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "checkbox"
+  )
+})
+
+test("runs Reveal On Hover through pointer, keyboard, touch, history, and restore", async ({ browser, page }) => {
+  await page.goto(
+    "/?component=reveal-on-hover&revealActions=true&revealCustom=true&revealInteractive=true&revealVisible=false"
+  )
+
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "reveal-on-hover"
+  )
+  await expect(page.getByRole("heading", { name: "Reveal On Hover", exact: true })).toBeVisible()
+  const customRoot = page.getByTestId("reveal-custom-root")
+  const action = page.getByRole("button", { name: "Reveal action" })
+  const actionWrapper = action.locator("..")
+  await expect(customRoot).toBeVisible()
+  await expect(actionWrapper).toHaveCSS("opacity", "0")
+  await customRoot.hover()
+  await expect(actionWrapper).toHaveCSS("opacity", "1")
+  await action.focus()
+  await expect(action).toBeFocused()
+  await expect(actionWrapper).toHaveCSS("opacity", "1")
+  await action.click()
+  await expect(page.getByTestId("reveal-clicks")).toHaveText("Clicks: 1")
+
+  await page.emulateMedia({ reducedMotion: "reduce" })
+  await expect(actionWrapper).toHaveCSS("transition-duration", "0s")
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await expect(page.getByLabel("Component or template")).toHaveValue("reveal-on-hover")
+  await expect(page.getByLabel("Custom root")).toBeChecked()
+  await expect(page.getByLabel("Actions")).toBeChecked()
+  await page.getByLabel("Visible").check()
+  await expect(actionWrapper).toHaveAttribute("data-reveal-on-hover-visible", "")
+  await page.getByLabel("Custom root").uncheck()
+  await expect(page.getByTestId("reveal-flex-root")).toBeVisible()
+  await page.getByLabel("Actions").uncheck()
+  await expect(page.getByRole("button", { name: "Reveal action" })).toHaveCount(0)
+  await page.getByLabel("Actions").check()
+
+  await page.reload()
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await expect(page.getByLabel("Visible")).toBeChecked()
+  await expect(page.getByLabel("Custom root")).not.toBeChecked()
+  await expect(page.getByLabel("Actions")).toBeChecked()
+  await page.getByRole("button", { name: "Share" }).click()
+  const sharedUrl = await page.evaluate(() => navigator.clipboard.readText())
+  expect(sharedUrl).toContain("/?component=reveal-on-hover")
+
+  const touchContext = await browser.newContext({
+    hasTouch: true,
+    ignoreHTTPSErrors: true,
+    permissions: ["clipboard-read", "clipboard-write"],
+    viewport: { width: 320, height: 844 },
+  })
+  const touchPage = await touchContext.newPage()
+  const touchUrl = new URL(sharedUrl)
+  touchUrl.searchParams.set("revealVisible", "false")
+  touchUrl.searchParams.set("viewport", "mobile")
+  await touchPage.goto(touchUrl.href)
+  expect(await touchPage.evaluate(() => matchMedia("(hover: hover)").matches)).toBe(false)
+  await expect(touchPage.getByRole("button", { name: "Reveal action" }).locator("..")).toHaveCSS(
+    "opacity",
+    "1"
+  )
+  await touchPage.getByRole("button", { name: "Reveal action" }).tap()
+  await expect(touchPage.getByTestId("reveal-clicks")).toHaveText("Clicks: 1")
+  await touchContext.close()
+
+  await page.getByLabel("Component or template").selectOption("checkbox")
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "checkbox"
+  )
+  await page.goBack()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "reveal-on-hover"
+  )
+  await expect(page.getByLabel("Visible")).toBeChecked()
+  await page.goForward()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "checkbox"
+  )
+})
+
 test("keeps the playground and page-frame navigation usable on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 844 })
   await page.goto("/templates/checkbox-settings")

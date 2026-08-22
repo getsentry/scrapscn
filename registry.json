@@ -378,6 +378,76 @@
         { "path": "src/components/ui/use-drag-move.tsx", "type": "registry:ui" },
         { "path": "src/components/ui/use-drag-separator.tsx", "type": "registry:ui" }
       ]
+    },
+    {
+      "name": "status-indicator",
+      "type": "registry:ui",
+      "title": "Status Indicator",
+      "description": "Regular Scraps status dot with accessible finite and infinite pulse states.",
+      "dependencies": ["@emotion/is-prop-valid@1.4.0"],
+      "registryDependencies": [],
+      "cssVars": {
+        "light": {
+          "scraps-status-accent-dot": "#7553ff",
+          "scraps-status-accent-pulse": "#0008f012",
+          "scraps-status-danger-dot": "#ff002b",
+          "scraps-status-danger-pulse": "#f828081c",
+          "scraps-status-warning-dot": "#ffce00",
+          "scraps-status-warning-pulse": "#e0b01030",
+          "scraps-status-success-dot": "#00f261",
+          "scraps-status-success-pulse": "#00b8001c",
+          "scraps-status-promotion-dot": "#fc5cb4",
+          "scraps-status-promotion-pulse": "#f000901a",
+          "scraps-status-muted-dot": "#c0bec6",
+          "scraps-status-muted-pulse": "#0000200f"
+        },
+        "dark": {
+          "scraps-status-accent-dot": "#7553ff",
+          "scraps-status-accent-pulse": "#4828b894",
+          "scraps-status-danger-dot": "#ff002b",
+          "scraps-status-danger-pulse": "#f8000033",
+          "scraps-status-warning-dot": "#ffce00",
+          "scraps-status-warning-pulse": "#e8380029",
+          "scraps-status-success-dot": "#00f261",
+          "scraps-status-success-pulse": "#00f8001f",
+          "scraps-status-promotion-dot": "#ff45a8",
+          "scraps-status-promotion-pulse": "#f800782e",
+          "scraps-status-muted-dot": "#898294",
+          "scraps-status-muted-pulse": "#c0a8f81a"
+        }
+      },
+      "files": [
+        { "path": "src/components/ui/container-query-context.ts", "type": "registry:ui" },
+        { "path": "src/components/ui/layout-style-engine.ts", "type": "registry:ui" },
+        { "path": "src/components/ui/layout.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/separator.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/status-indicator.module.css", "type": "registry:file", "target": "src/components/ui/status-indicator.module.css" },
+        { "path": "src/components/ui/status-indicator.tsx", "type": "registry:ui" }
+      ]
+    },
+    {
+      "name": "reveal-on-hover",
+      "type": "registry:ui",
+      "title": "Reveal On Hover",
+      "description": "Regular Scraps hover and focus action reveal primitive.",
+      "dependencies": ["@emotion/is-prop-valid@1.4.0"],
+      "registryDependencies": [],
+      "cssVars": {
+        "theme": {
+          "duration-fast": "120ms",
+          "duration-moderate": "160ms",
+          "ease-enter": "cubic-bezier(0.24, 1, 0.32, 1)",
+          "ease-exit": "cubic-bezier(0.64, 0, 0.8, 0)"
+        }
+      },
+      "files": [
+        { "path": "src/components/ui/container-query-context.ts", "type": "registry:ui" },
+        { "path": "src/components/ui/layout-style-engine.ts", "type": "registry:ui" },
+        { "path": "src/components/ui/layout.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/reveal-on-hover.module.css", "type": "registry:file", "target": "src/components/ui/reveal-on-hover.module.css" },
+        { "path": "src/components/ui/reveal-on-hover.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/separator.tsx", "type": "registry:ui" }
+      ]
     }
   ]
 }

@@ -172,6 +172,20 @@
   --scraps-theme-shadow-high: 0px 4px 0px 2px #10103008,
     0px 1px 0px 1px #10103008;
 
+  /* Regular Scraps StatusIndicator semantic tokens. */
+  --scraps-status-accent-dot: #7553ff;
+  --scraps-status-accent-pulse: #0008f012;
+  --scraps-status-danger-dot: #ff002b;
+  --scraps-status-danger-pulse: #f828081c;
+  --scraps-status-warning-dot: #ffce00;
+  --scraps-status-warning-pulse: #e0b01030;
+  --scraps-status-success-dot: #00f261;
+  --scraps-status-success-pulse: #00b8001c;
+  --scraps-status-promotion-dot: #fc5cb4;
+  --scraps-status-promotion-pulse: #f000901a;
+  --scraps-status-muted-dot: #c0bec6;
+  --scraps-status-muted-pulse: #0000200f;
+
   /* Canonical Sentry theme aliases accepted by legacy Scraps color props. */
   --scraps-theme-black: #000000;
   --scraps-theme-white: #FFFFFF;
@@ -331,6 +345,19 @@
     0px 1px 0px 0px #0000181a;
   --scraps-theme-shadow-high: 0px 4px 0px 2px #0000181a,
     0px 1px 0px 1px #0000181a;
+
+  --scraps-status-accent-dot: #7553ff;
+  --scraps-status-accent-pulse: #4828b894;
+  --scraps-status-danger-dot: #ff002b;
+  --scraps-status-danger-pulse: #f8000033;
+  --scraps-status-warning-dot: #ffce00;
+  --scraps-status-warning-pulse: #e8380029;
+  --scraps-status-success-dot: #00f261;
+  --scraps-status-success-pulse: #00f8001f;
+  --scraps-status-promotion-dot: #ff45a8;
+  --scraps-status-promotion-pulse: #f800782e;
+  --scraps-status-muted-dot: #898294;
+  --scraps-status-muted-pulse: #c0a8f81a;
 
   --scraps-theme-surface500: #2E2936;
   --scraps-theme-surface400: #24202B;

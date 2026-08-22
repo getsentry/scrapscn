@@ -4,7 +4,9 @@ import type { WorkbenchProps } from "@/components/playground/workbench";
 
 import { CheckboxWorkbench } from "./checkbox-workbench";
 import { DragHandleWorkbench } from "./drag-handle-workbench";
+import { RevealOnHoverWorkbench } from "./reveal-on-hover-workbench";
 import { SplitPanelWorkbench } from "./split-panel-workbench";
+import { StatusIndicatorWorkbench } from "./status-indicator-workbench";
 import { TableWorkbench } from "./table-workbench";
 
 function defineWorkbench<const Id extends string>(definition: {
@@ -28,6 +30,8 @@ export const workbenchRegistry = Object.freeze([
   defineWorkbench({ Component: DragHandleWorkbench, id: "drag-handle", label: "Drag Handle", sharePath: "/" }),
   defineWorkbench({ Component: SplitPanelWorkbench, id: "split-panel", label: "Split Panel", sharePath: "/" }),
   defineWorkbench({ Component: TableWorkbench, id: "table", label: "Table", sharePath: "/" }),
+  defineWorkbench({ Component: StatusIndicatorWorkbench, id: "status-indicator", label: "Status Indicator", sharePath: "/" }),
+  defineWorkbench({ Component: RevealOnHoverWorkbench, id: "reveal-on-hover", label: "Reveal On Hover", sharePath: "/" }),
 ]);
 
 export type WorkbenchId = (typeof workbenchRegistry)[number]["id"];

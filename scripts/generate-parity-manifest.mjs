@@ -12,6 +12,9 @@ import {
 const CANONICAL_COMMIT = 'd91f823d232ddd12a4d2a64554d85fd36df0e278';
 const EXCLUDED_DIRECTORIES = ['overview', 'patterns', 'principles'];
 const canonicalBehaviorDependencies = {
+  revealOnHover: [
+    'static/app/utils/theme/theme.tsx',
+  ],
   slot: [
     'static/app/components/core/sizeContext.tsx',
     'static/app/components/core/slot/knownContexts.ts',
@@ -25,6 +28,12 @@ const canonicalBehaviorDependencies = {
     'static/app/components/tables/useColumnResize.tsx',
     'static/app/components/tables/useObservedColumnSize.tsx',
     'static/app/icons/iconArrow.tsx',
+  ],
+  statusIndicator: [
+    'static/app/utils/theme/scraps/theme/base.tsx',
+    'static/app/utils/theme/scraps/theme/dark.tsx',
+    'static/app/utils/theme/scraps/theme/light.tsx',
+    'static/app/utils/theme/scraps/tokens/size.tsx',
   ],
 };
 const sentryRepository = path.resolve(
@@ -58,12 +67,14 @@ const localModules = {
   layout: ['src/components/ui/layout.tsx'],
   link: ['src/components/ui/link.tsx'],
   radio: ['src/components/ui/radio-group.tsx'],
+  revealOnHover: ['src/components/ui/reveal-on-hover.tsx'],
   segmentedControl: ['src/components/ui/segmented-control.tsx'],
   select: ['src/components/ui/select.tsx'],
   separator: ['src/components/ui/separator.tsx'],
   slot: ['src/components/ui/slot.tsx'],
   splitPanel: ['src/components/ui/split-panel.tsx'],
   slider: ['src/components/ui/slider.tsx'],
+  statusIndicator: ['src/components/ui/status-indicator.tsx'],
   switch: ['src/components/ui/switch.tsx'],
   table: ['src/components/ui/table.tsx'],
   tabs: ['src/components/ui/tabs.tsx'],
@@ -84,8 +95,10 @@ const registryItems = {
   table: ['table'],
   link: ['link'],
   radio: ['radio-group'],
+  revealOnHover: ['reveal-on-hover'],
   segmentedControl: ['segmented-control'],
   slider: ['slider'],
+  statusIndicator: ['status-indicator'],
   tooltip: ['tooltip'],
 };
 
@@ -104,6 +117,10 @@ const completionEvidence = {
     'Exact regular Scraps SplitPanel contract, sizing behavior, focused assertions, and registry publication are present. The canonical module has no Figma component.',
   table:
     'Exact regular Scraps Table compound contract, column sizing, resize and sort behavior, focused assertions, and registry publication are present. The canonical module has no Figma component.',
+  revealOnHover:
+    'Exact regular Scraps RevealOnHover render branches, visibility behavior, focused assertions, and registry publication are present. The canonical module has no Figma component.',
+  statusIndicator:
+    'Exact regular Scraps StatusIndicator animation, accessibility, focused assertions, and registry publication are present. The canonical module has no Figma component.',
 };
 
 const figmaNodes = {
@@ -254,6 +271,20 @@ for (const moduleName of moduleNames) {
               'tests/parity/table.test.mjs',
               'tests/types/table-types.test.tsx',
             ]
+        : moduleName === 'statusIndicator'
+          ? [
+              'src/components/ui/status-indicator.test.tsx',
+              'tests/e2e/playground.spec.ts',
+              'tests/parity/status-indicator.test.mjs',
+              'tests/types/status-indicator-types.test.tsx',
+            ]
+        : moduleName === 'revealOnHover'
+          ? [
+              'src/components/ui/reveal-on-hover.test.tsx',
+              'tests/e2e/playground.spec.ts',
+              'tests/parity/reveal-on-hover.test.mjs',
+              'tests/types/reveal-on-hover-types.test.tsx',
+            ]
         : [];
   const completionNote = completionEvidence[moduleName];
 
@@ -276,13 +307,17 @@ for (const moduleName of moduleNames) {
             ? '/?component=split-panel'
           : moduleName === 'table'
             ? '/?component=table'
-          : moduleName === 'checkbox' ||
-              moduleName === 'interactionStateLayer' ||
-              moduleName === 'layout' ||
-              moduleName === 'separator' ||
-              moduleName === 'slot'
-            ? '/?component=checkbox'
-            : null,
+          : moduleName === 'statusIndicator'
+            ? '/?component=status-indicator'
+            : moduleName === 'revealOnHover'
+              ? '/?component=reveal-on-hover'
+              : moduleName === 'checkbox' ||
+                  moduleName === 'interactionStateLayer' ||
+                  moduleName === 'layout' ||
+                  moduleName === 'separator' ||
+                  moduleName === 'slot'
+                ? '/?component=checkbox'
+                : null,
     },
     completion: {
       state: completionNote
