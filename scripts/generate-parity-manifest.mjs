@@ -34,6 +34,7 @@ const localModules = {
     'src/components/ui/input-group.tsx',
   ],
   interactionStateLayer: ['src/components/ui/interaction-state-layer.tsx'],
+  layout: ['src/components/ui/layout.tsx'],
   link: ['src/components/ui/link.tsx'],
   radio: ['src/components/ui/radio-group.tsx'],
   segmentedControl: ['src/components/ui/segmented-control.tsx'],
@@ -52,6 +53,8 @@ const registryItems = {
   badge: ['badge', 'feature-badge', 'tag'],
   button: ['button'],
   interactionStateLayer: ['interaction-state-layer'],
+  layout: ['layout'],
+  separator: ['separator'],
   link: ['link'],
   radio: ['radio-group'],
   segmentedControl: ['segmented-control'],
@@ -62,6 +65,10 @@ const registryItems = {
 const completionEvidence = {
   interactionStateLayer:
     'Exact state-layer contract, behavior stories, focused Storybook assertions, and registry publication are present. The canonical module has no Figma component.',
+  layout:
+    'Exact regular Scraps layout exports, responsive container and viewport cascade, focused assertions, and registry publication are present. The canonical module has no Figma component.',
+  separator:
+    'Exact regular Scraps native hr separator contract, focused assertions, and registry publication are present. The canonical module has no Figma component.',
 };
 
 const figmaNodes = {
@@ -187,6 +194,8 @@ for (const moduleName of moduleNames) {
             'tests/e2e/playground.spec.ts',
             'tests/parity/interaction-state-layer.test.mjs',
           ]
+        : moduleName === 'layout' || moduleName === 'separator'
+          ? ['tests/parity/layout-separator.test.mjs']
         : [];
   const completionNote = completionEvidence[moduleName];
 
@@ -203,7 +212,7 @@ for (const moduleName of moduleNames) {
         moduleName === 'checkbox' ? ['src/components/ui/checkbox.figma.ts'] : [],
       figmaNodes: [...(figmaNodes[moduleName] ?? [])].sort(),
       playgroundPath:
-        moduleName === 'checkbox' || moduleName === 'interactionStateLayer'
+        moduleName === 'checkbox' || moduleName === 'interactionStateLayer' || moduleName === 'layout' || moduleName === 'separator'
           ? '/?component=checkbox'
           : null,
     },

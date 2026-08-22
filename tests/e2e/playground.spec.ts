@@ -17,6 +17,10 @@ test("shares and restores the Checkbox template workflow", async ({ browser, pag
   await expect(pageFrame).toHaveCSS("border-radius", "0px")
   await expect(page.locator('[data-slot="playground-island"]')).toBeVisible()
   await expect(page.getByLabel("Size")).toBeHidden()
+  await expect(page.getByTestId("layout-stack-separator-proof")).toHaveAttribute(
+    "aria-orientation",
+    "vertical"
+  )
 
   const initialCheckbox = page.getByRole("checkbox", { name: "Alert me about new issues" })
   const interactionTarget = initialCheckbox.locator("..")
@@ -90,6 +94,10 @@ test("shares and restores the Checkbox template workflow", async ({ browser, pag
 test("keeps the playground and page-frame navigation usable on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 844 })
   await page.goto("/templates/checkbox-settings")
+  await expect(page.getByTestId("layout-stack-separator-proof")).toHaveAttribute(
+    "aria-orientation",
+    "horizontal"
+  )
 
   const collapsedIslandBox = await page.locator('[data-slot="playground-island"]').boundingBox()
   expect(collapsedIslandBox?.width).toBeLessThanOrEqual(56)

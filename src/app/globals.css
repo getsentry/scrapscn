@@ -157,6 +157,21 @@
   --checkbox-checked-chonk: #5827D6;
   --checkbox-focus: #7553FF;
 
+  /* Regular Scraps layout semantic border aliases. */
+  --scraps-theme-border-primary: #dad9de;
+  --scraps-theme-border-secondary: #e6e6e9;
+  --scraps-theme-border-muted: #e6e6e9;
+  --scraps-theme-border-accent: #7553ff;
+  --scraps-theme-border-danger: #ff002b;
+  --scraps-theme-border-success: #00f261;
+  --scraps-theme-border-warning: #ffce00;
+  --scraps-theme-border-promotion: #ff70bc;
+  --scraps-theme-shadow-low: 0px 1px 0px 0px #0000200f;
+  --scraps-theme-shadow-medium: 0px 2px 0px 1px #10103008,
+    0px 1px 0px 0px #10103008;
+  --scraps-theme-shadow-high: 0px 4px 0px 2px #10103008,
+    0px 1px 0px 1px #10103008;
+
   /* Canonical Sentry theme aliases accepted by legacy Scraps color props. */
   --scraps-theme-black: #000000;
   --scraps-theme-white: #FFFFFF;
@@ -302,6 +317,20 @@
   --checkbox-checked: #7553FF;
   --checkbox-checked-chonk: #120539;
   --checkbox-focus: #7553FF;
+
+  --scraps-theme-border-primary: #141119;
+  --scraps-theme-border-secondary: #1b1821;
+  --scraps-theme-border-muted: #1b1821;
+  --scraps-theme-border-accent: #7553ff;
+  --scraps-theme-border-danger: #ff002b;
+  --scraps-theme-border-success: #00f261;
+  --scraps-theme-border-warning: #ffce00;
+  --scraps-theme-border-promotion: #ff45a8;
+  --scraps-theme-shadow-low: 0px 1px 0px 0px #10082863;
+  --scraps-theme-shadow-medium: 0px 2px 0px 1px #0000181a,
+    0px 1px 0px 0px #0000181a;
+  --scraps-theme-shadow-high: 0px 4px 0px 2px #0000181a,
+    0px 1px 0px 1px #0000181a;
 
   --scraps-theme-surface500: #2E2936;
   --scraps-theme-surface400: #24202B;

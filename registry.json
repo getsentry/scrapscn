@@ -171,6 +171,50 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "layout",
+      "type": "registry:ui",
+      "title": "Layout",
+      "description": "Regular Scraps responsive Container, Flex, Grid, Stack, and Surface primitives.",
+      "dependencies": ["@emotion/is-prop-valid"],
+      "registryDependencies": [
+        "https://scrapscn.sentry.dev/r/sentry-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/layout-style-engine.ts",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/layout.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/separator.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "title": "Separator",
+      "description": "Regular Scraps native horizontal or vertical separator.",
+      "dependencies": ["@emotion/is-prop-valid"],
+      "registryDependencies": [
+        "https://scrapscn.sentry.dev/r/sentry-base.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/layout-style-engine.ts",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/separator.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

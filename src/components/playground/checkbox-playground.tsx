@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "reac
 import { SentryPageFrame } from "@/components/playground/sentry-page-frame"
 import { Button } from "@/components/ui/button"
 import { Checkbox, type CheckboxProps } from "@/components/ui/checkbox"
+import { Container, Stack } from "@/components/ui/layout"
 import { cn } from "@/lib/utils"
 import type { TemplateMetadata } from "@/templates/types"
 
@@ -463,6 +464,13 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
               <p className="max-w-[65ch] text-pretty text-base text-muted-foreground sm:text-sm">
                 Choose how your team receives issue updates for this project.
               </p>
+              <Container data-testid="layout-separator-proof" padding="md" border="primary" radius="md" background="primary">
+                <Stack gap="sm" direction={{ zero: "column", "screen:lg": "row" }}>
+                  <span className="text-sm font-medium">Layout and separator proof</span>
+                  <Stack.Separator data-testid="layout-stack-separator-proof" />
+                  <span className="text-sm text-muted-foreground">Responsive Scraps primitives</span>
+                </Stack>
+              </Container>
               <form
                 aria-labelledby="email-heading"
                 className="grid"

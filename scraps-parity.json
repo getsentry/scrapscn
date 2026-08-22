@@ -1087,22 +1087,53 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/layout.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "Container",
+            "ContainerQueryProvider",
+            "Flex",
+            "Grid",
+            "Stack",
+            "Surface",
+            "getBorder",
+            "getMargin",
+            "getRadius",
+            "getSpacing",
+            "rc",
+            "useContainerBreakpoint",
+            "useHasContainerQuery",
+            "useResponsivePropValue"
+          ],
+          "types": [
+            "ContainerProps",
+            "ContainerPropsWithRenderFunction",
+            "FlexProps",
+            "GridProps",
+            "Responsive",
+            "ResponsiveKey",
+            "StackProps"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "layout"
+        ],
+        "stories": [
+          "src/components/ui/layout.stories.tsx"
+        ],
+        "tests": [
+          "tests/parity/layout-separator.test.mjs"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=checkbox"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local layout implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps layout exports, responsive container and viewport cascade, focused assertions, and registry publication are present. The canonical module has no Figma component."
       }
     },
     {
@@ -1620,19 +1651,27 @@
           "runtime": [
             "Separator"
           ],
-          "types": []
+          "types": [
+            "SeparatorProps"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "separator"
+        ],
+        "stories": [
+          "src/components/ui/separator.stories.tsx"
+        ],
+        "tests": [
+          "tests/parity/layout-separator.test.mjs"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=checkbox"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps native hr separator contract, focused assertions, and registry publication are present. The canonical module has no Figma component."
       }
     },
     {
