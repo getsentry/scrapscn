@@ -339,6 +339,45 @@
         { "path": "src/components/ui/use-drag-move.tsx", "type": "registry:ui" },
         { "path": "src/components/ui/use-drag-separator.tsx", "type": "registry:ui" }
       ]
+    },
+    {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "Table",
+      "description": "Regular Scraps CSS-grid table with sortable headers and accessible resizable columns.",
+      "dependencies": [
+        "@base-ui/react@1.5.0",
+        "@emotion/is-prop-valid@1.4.0",
+        "@react-aria/interactions@3.28.1",
+        "@react-aria/utils@3.34.1"
+      ],
+      "registryDependencies": [],
+      "cssVars": {
+        "theme": {
+          "duration-slow": "240ms",
+          "ease-smooth": "cubic-bezier(0.72, 0, 0.16, 1)"
+        },
+        "light": {
+          "scraps-theme-border-primary": "#dad9de",
+          "scraps-theme-border-secondary": "#e6e6e9"
+        },
+        "dark": {
+          "scraps-theme-border-primary": "#141119",
+          "scraps-theme-border-secondary": "#1b1821"
+        }
+      },
+      "files": [
+        { "path": "src/components/ui/container-query-context.ts", "type": "registry:ui" },
+        { "path": "src/components/ui/drag-handle.module.css", "type": "registry:file", "target": "src/components/ui/drag-handle.module.css" },
+        { "path": "src/components/ui/drag-handle.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/layout-style-engine.ts", "type": "registry:ui" },
+        { "path": "src/components/ui/layout.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/separator.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/table.module.css", "type": "registry:file", "target": "src/components/ui/table.module.css" },
+        { "path": "src/components/ui/table.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/use-drag-move.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/use-drag-separator.tsx", "type": "registry:ui" }
+      ]
     }
   ]
 }

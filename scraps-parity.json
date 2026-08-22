@@ -1964,7 +1964,11 @@
         "sourcePaths": [
           "static/app/components/core/table/index.tsx",
           "static/app/components/core/table/styles.tsx",
-          "static/app/components/core/table/table.tsx"
+          "static/app/components/core/table/table.tsx",
+          "static/app/components/tables/sortableHeaderCell.tsx",
+          "static/app/components/tables/useColumnResize.tsx",
+          "static/app/components/tables/useObservedColumnSize.tsx",
+          "static/app/icons/iconArrow.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -1986,28 +1990,37 @@
         ],
         "implementedExports": {
           "runtime": [
+            "COL_WIDTH_MINIMUM",
+            "COL_WIDTH_UNDEFINED",
+            "TABLE_HEAD_ROW_HEIGHT",
             "Table",
-            "TableBody",
-            "TableCaption",
-            "TableCell",
-            "TableFooter",
-            "TableHead",
-            "TableHeader",
-            "TableRow"
+            "TableResizer",
+            "TableStatusCell"
           ],
-          "types": []
+          "types": [
+            "TableColumnConfig"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "table"
+        ],
+        "stories": [
+          "src/components/ui/table.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/table.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/table.test.mjs",
+          "tests/types/table-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=table"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Table compound contract, column sizing, resize and sort behavior, focused assertions, and registry publication are present. The canonical module has no Figma component."
       }
     },
     {

@@ -8,6 +8,7 @@ test("discovers, serves, and restores templates in production", async ({ page, r
     "Checkbox",
     "Drag Handle",
     "Split Panel",
+    "Table",
     "Checkbox settings",
   ])
 

@@ -20,6 +20,12 @@ const canonicalBehaviorDependencies = {
     'static/app/utils/useDimensions.tsx',
     'static/app/utils/useResizableDrawer.tsx',
   ],
+  table: [
+    'static/app/components/tables/sortableHeaderCell.tsx',
+    'static/app/components/tables/useColumnResize.tsx',
+    'static/app/components/tables/useObservedColumnSize.tsx',
+    'static/app/icons/iconArrow.tsx',
+  ],
 };
 const sentryRepository = path.resolve(
   process.env.SENTRY_REPO_PATH ?? '../sentry'
@@ -75,6 +81,7 @@ const registryItems = {
   separator: ['separator'],
   slot: ['slot'],
   splitPanel: ['split-panel'],
+  table: ['table'],
   link: ['link'],
   radio: ['radio-group'],
   segmentedControl: ['segmented-control'],
@@ -95,6 +102,8 @@ const completionEvidence = {
     'Exact regular Scraps typed portal slot contract, logical size and container-query context bridge, focused assertions, and registry publication are present. The canonical module has no Figma component.',
   splitPanel:
     'Exact regular Scraps SplitPanel contract, sizing behavior, focused assertions, and registry publication are present. The canonical module has no Figma component.',
+  table:
+    'Exact regular Scraps Table compound contract, column sizing, resize and sort behavior, focused assertions, and registry publication are present. The canonical module has no Figma component.',
 };
 
 const figmaNodes = {
@@ -238,6 +247,13 @@ for (const moduleName of moduleNames) {
               'tests/parity/split-panel.test.mjs',
               'tests/types/split-panel-types.test.tsx',
             ]
+        : moduleName === 'table'
+          ? [
+              'src/components/ui/table.test.tsx',
+              'tests/e2e/playground.spec.ts',
+              'tests/parity/table.test.mjs',
+              'tests/types/table-types.test.tsx',
+            ]
         : [];
   const completionNote = completionEvidence[moduleName];
 
@@ -258,6 +274,8 @@ for (const moduleName of moduleNames) {
           ? '/?component=drag-handle'
           : moduleName === 'splitPanel'
             ? '/?component=split-panel'
+          : moduleName === 'table'
+            ? '/?component=table'
           : moduleName === 'checkbox' ||
               moduleName === 'interactionStateLayer' ||
               moduleName === 'layout' ||
