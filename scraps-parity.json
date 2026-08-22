@@ -1832,7 +1832,9 @@
         "indexPath": "static/app/components/core/splitPanel/index.tsx",
         "sourcePaths": [
           "static/app/components/core/splitPanel/index.tsx",
-          "static/app/components/core/splitPanel/splitPanel.tsx"
+          "static/app/components/core/splitPanel/splitPanel.tsx",
+          "static/app/utils/useDimensions.tsx",
+          "static/app/utils/useResizableDrawer.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -1844,22 +1846,37 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/split-panel.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "SplitPanel"
+          ],
+          "types": [
+            "SplitPanelHandle"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "split-panel"
+        ],
+        "stories": [
+          "src/components/ui/split-panel.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/split-panel.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/split-panel.test.mjs",
+          "tests/types/split-panel-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=split-panel"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local split-panel implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps SplitPanel contract, sizing behavior, focused assertions, and registry publication are present. The canonical module has no Figma component."
       }
     },
     {

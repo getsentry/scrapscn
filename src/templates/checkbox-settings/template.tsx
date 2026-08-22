@@ -1,7 +1,7 @@
-import { CheckboxPlayground } from "@/components/playground/checkbox-playground"
+import { Playground } from "@/components/playground/playground"
 
 import type { TemplateProps } from "../types"
 
 export default function CheckboxSettingsTemplate({ templates }: TemplateProps) {
-  return <CheckboxPlayground templates={templates} />
+  return <Playground templates={templates} />
 }

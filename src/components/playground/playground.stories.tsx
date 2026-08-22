@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite"
 import { expect, userEvent, within } from "storybook/test"
 
-import { CheckboxPlayground } from "./checkbox-playground"
+import { Playground } from "./playground"
 
 const meta = {
   title: "Playground/Checkbox Workbench",
-  component: CheckboxPlayground,
+  component: Playground,
   args: {
     templates: [{
       slug: "checkbox-settings",
@@ -21,7 +21,7 @@ const meta = {
       navigation: { pathname: "/" },
     },
   },
-} satisfies Meta<typeof CheckboxPlayground>
+} satisfies Meta<typeof Playground>
 
 export default meta
 type Story = StoryObj<typeof meta>

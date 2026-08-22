@@ -303,6 +303,42 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "split-panel",
+      "type": "registry:ui",
+      "title": "Split Panel",
+      "description": "Regular Scraps two-pane layout with a resizable sized pane and keyboard-accessible divider.",
+      "dependencies": [
+        "@emotion/is-prop-valid@1.4.0",
+        "@react-aria/interactions@3.28.1",
+        "@react-aria/utils@3.34.1"
+      ],
+      "registryDependencies": [],
+      "cssVars": {
+        "theme": {
+          "duration-slow": "240ms",
+          "ease-smooth": "cubic-bezier(0.72, 0, 0.16, 1)"
+        },
+        "light": {
+          "scraps-theme-border-primary": "#dad9de"
+        },
+        "dark": {
+          "scraps-theme-border-primary": "#141119"
+        }
+      },
+      "files": [
+        { "path": "src/components/ui/container-query-context.ts", "type": "registry:ui" },
+        { "path": "src/components/ui/drag-handle.module.css", "type": "registry:file", "target": "src/components/ui/drag-handle.module.css" },
+        { "path": "src/components/ui/drag-handle.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/layout-style-engine.ts", "type": "registry:ui" },
+        { "path": "src/components/ui/layout.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/separator.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/split-panel.module.css", "type": "registry:file", "target": "src/components/ui/split-panel.module.css" },
+        { "path": "src/components/ui/split-panel.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/use-drag-move.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/use-drag-separator.tsx", "type": "registry:ui" }
+      ]
     }
   ]
 }

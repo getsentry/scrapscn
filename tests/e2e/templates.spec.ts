@@ -4,7 +4,12 @@ test("discovers, serves, and restores templates in production", async ({ page, r
   await page.goto("/")
   await page.getByRole("button", { name: "Open setup" }).click()
   const sectionOptions = page.getByLabel("Component or template").locator("option")
-  await expect(sectionOptions).toHaveText(["Workbench", "Checkbox settings"])
+  await expect(sectionOptions).toHaveText([
+    "Checkbox",
+    "Drag Handle",
+    "Split Panel",
+    "Checkbox settings",
+  ])
 
   const response = await request.get("/templates/checkbox-settings")
   expect(response.status()).toBe(200)

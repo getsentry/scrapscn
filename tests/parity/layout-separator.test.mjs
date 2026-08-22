@@ -74,7 +74,7 @@ test("layout and separator registry items have an acyclic dependency closure", a
 
 test("the playground proves the orientation-aware Stack separator", async () => {
   const playground = await readFile(
-    "src/components/playground/checkbox-playground.tsx",
+    "src/components/playground/workbenches/checkbox-workbench.tsx",
     "utf8"
   );
 

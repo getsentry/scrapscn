@@ -16,6 +16,10 @@ const canonicalBehaviorDependencies = {
     'static/app/components/core/sizeContext.tsx',
     'static/app/components/core/slot/knownContexts.ts',
   ],
+  splitPanel: [
+    'static/app/utils/useDimensions.tsx',
+    'static/app/utils/useResizableDrawer.tsx',
+  ],
 };
 const sentryRepository = path.resolve(
   process.env.SENTRY_REPO_PATH ?? '../sentry'
@@ -52,6 +56,7 @@ const localModules = {
   select: ['src/components/ui/select.tsx'],
   separator: ['src/components/ui/separator.tsx'],
   slot: ['src/components/ui/slot.tsx'],
+  splitPanel: ['src/components/ui/split-panel.tsx'],
   slider: ['src/components/ui/slider.tsx'],
   switch: ['src/components/ui/switch.tsx'],
   table: ['src/components/ui/table.tsx'],
@@ -69,6 +74,7 @@ const registryItems = {
   layout: ['layout'],
   separator: ['separator'],
   slot: ['slot'],
+  splitPanel: ['split-panel'],
   link: ['link'],
   radio: ['radio-group'],
   segmentedControl: ['segmented-control'],
@@ -87,6 +93,8 @@ const completionEvidence = {
     'Exact regular Scraps native hr separator contract, focused assertions, and registry publication are present. The canonical module has no Figma component.',
   slot:
     'Exact regular Scraps typed portal slot contract, logical size and container-query context bridge, focused assertions, and registry publication are present. The canonical module has no Figma component.',
+  splitPanel:
+    'Exact regular Scraps SplitPanel contract, sizing behavior, focused assertions, and registry publication are present. The canonical module has no Figma component.',
 };
 
 const figmaNodes = {
@@ -221,8 +229,15 @@ for (const moduleName of moduleNames) {
             ? [
                 'src/components/ui/drag-handle.test.tsx',
                 'tests/e2e/playground.spec.ts',
-                'tests/parity/drag-handle.test.mjs',
-              ]
+              'tests/parity/drag-handle.test.mjs',
+            ]
+        : moduleName === 'splitPanel'
+          ? [
+              'src/components/ui/split-panel.test.tsx',
+              'tests/e2e/playground.spec.ts',
+              'tests/parity/split-panel.test.mjs',
+              'tests/types/split-panel-types.test.tsx',
+            ]
         : [];
   const completionNote = completionEvidence[moduleName];
 
@@ -241,6 +256,8 @@ for (const moduleName of moduleNames) {
       playgroundPath:
         moduleName === 'dragHandle'
           ? '/?component=drag-handle'
+          : moduleName === 'splitPanel'
+            ? '/?component=split-panel'
           : moduleName === 'checkbox' ||
               moduleName === 'interactionStateLayer' ||
               moduleName === 'layout' ||
