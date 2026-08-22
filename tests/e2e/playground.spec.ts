@@ -416,6 +416,151 @@ test("runs Reveal On Hover through pointer, keyboard, touch, history, and restor
   )
 })
 
+test("runs Hotkey display and registration through URL, inputs, history, and restore", async ({ browser, page }) => {
+  await page.setViewportSize({ width: 320, height: 844 })
+  await page.goto(
+    "/?component=hotkey&hotkeyEnabled=true&hotkeyIncludeInputs=false&hotkeySkipPreventDefault=false&hotkeyValue=mod%2Bshift%2B1&hotkeyVariant=debossed&theme=dark&viewport=mobile"
+  )
+
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "hotkey"
+  )
+  await expect(page.getByRole("heading", { name: "Hotkey", exact: true })).toBeVisible()
+  const displayedHotkey = page.getByTestId("hotkey-display").locator(":scope > kbd")
+  await expect(displayedHotkey).toHaveCSS("font-size", "12px")
+  await expect(displayedHotkey).toHaveCSS("font-weight", "500")
+  await expect(displayedHotkey).toHaveCSS("border-radius", "5px")
+  await expect(displayedHotkey).toHaveCSS("border-top-width", "2px")
+  await expect(displayedHotkey).toHaveCSS("border-bottom-width", "1px")
+  await expect(displayedHotkey).toHaveCSS("color", "rgb(181, 176, 189)")
+  await expect(displayedHotkey).toHaveCSS("background-color", "rgb(36, 32, 43)")
+
+  async function dispatchShortcut(target: "document" | "input") {
+    return page.evaluate((targetName) => {
+      const target = targetName === "input"
+        ? document.querySelector<HTMLInputElement>('[aria-label="Hotkey target input"]')
+        : document
+      if (!target) throw new Error("Missing Hotkey event target")
+      const init = { bubbles: true, cancelable: true, code: "Digit1", key: "!", shiftKey: true }
+      const metaResult = target.dispatchEvent(new KeyboardEvent("keydown", { ...init, metaKey: true }))
+      const controlResult = target.dispatchEvent(new KeyboardEvent("keydown", { ...init, ctrlKey: true }))
+      return { controlResult, metaResult }
+    }, target)
+  }
+
+  const initialResult = await dispatchShortcut("document")
+  expect([initialResult.controlResult, initialResult.metaResult].filter((result) => !result)).toHaveLength(1)
+  await expect(page.getByTestId("hotkey-match-count")).toHaveText("Matches: 1")
+  await expect(page.getByTestId("hotkey-prevented-state")).toHaveText("Prevented: true")
+
+  await page.getByLabel("Hotkey target input").focus()
+  await dispatchShortcut("input")
+  await expect(page.getByTestId("hotkey-match-count")).toHaveText("Matches: 1")
+
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await expect(page.getByLabel("Component or template")).toHaveValue("hotkey")
+  await expect(page.getByLabel("Hotkey shortcut")).toHaveValue("mod+shift+1")
+  await expect(page.getByLabel("Hotkey variant")).toHaveValue("debossed")
+  await expect(page.getByLabel("Include text inputs")).not.toBeChecked()
+  const shortcutBox = await page.getByLabel("Hotkey shortcut").boundingBox()
+  expect(shortcutBox?.height).toBeGreaterThanOrEqual(44)
+
+  await page.getByLabel("Include text inputs").check()
+  await page.getByLabel("Hotkey target input").focus()
+  await dispatchShortcut("input")
+  await expect(page.getByTestId("hotkey-match-count")).toHaveText("Matches: 2")
+
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await page.getByLabel("Skip prevent default").check()
+  const skippedResult = await dispatchShortcut("document")
+  expect(skippedResult.controlResult).toBe(true)
+  expect(skippedResult.metaResult).toBe(true)
+  await expect(page.getByTestId("hotkey-match-count")).toHaveText("Matches: 3")
+  await expect(page.getByTestId("hotkey-prevented-state")).toHaveText("Prevented: false")
+
+  await page.getByLabel("Hotkey enabled").uncheck()
+  await dispatchShortcut("document")
+  await expect(page.getByTestId("hotkey-match-count")).toHaveText("Matches: 3")
+  await page.getByLabel("Hotkey enabled").check()
+
+  await page.getByRole("button", { name: "Reset" }).click()
+  await expect(page.getByLabel("Hotkey shortcut")).toHaveValue("mod+k")
+  await expect(page.getByLabel("Hotkey variant")).toHaveValue("embossed")
+  await expect(page.getByLabel("Hotkey enabled")).toBeChecked()
+  await expect(page.getByLabel("Include text inputs")).not.toBeChecked()
+  await expect(page.getByLabel("Skip prevent default")).not.toBeChecked()
+  await expect(page.getByTestId("hotkey-match-count")).toHaveText("Matches: 0")
+  await expect(page.getByTestId("hotkey-prevented-state")).toHaveText(
+    "Prevented: not tested"
+  )
+  expect(
+    await page.evaluate(() => Object.fromEntries(new URL(location.href).searchParams))
+  ).toEqual({
+    component: "hotkey",
+    hotkeyEnabled: "true",
+    hotkeyIncludeInputs: "false",
+    hotkeySkipPreventDefault: "false",
+    hotkeyValue: "mod+k",
+    hotkeyVariant: "embossed",
+    theme: "light",
+    viewport: "desktop",
+  })
+
+  await page.getByLabel("Hotkey shortcut").selectOption("mod+shift+1")
+  await page.getByLabel("Hotkey variant").selectOption("debossed")
+  await page.getByLabel("Include text inputs").check()
+  await page.getByLabel("Skip prevent default").check()
+  await page.getByLabel("Preview width").selectOption("mobile")
+  await page.getByRole("button", { name: "Switch to dark theme" }).click()
+
+  await page.reload()
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await expect(page.getByLabel("Hotkey shortcut")).toHaveValue("mod+shift+1")
+  await expect(page.getByLabel("Hotkey variant")).toHaveValue("debossed")
+  await expect(page.getByLabel("Include text inputs")).toBeChecked()
+  await expect(page.getByLabel("Skip prevent default")).toBeChecked()
+  await expect(page.getByLabel("Preview width")).toHaveValue("mobile")
+  await expect(page.locator("html")).toHaveClass(/dark/)
+
+  await page.getByRole("button", { name: "Share" }).click()
+  const sharedUrl = await page.evaluate(() => navigator.clipboard.readText())
+  expect(sharedUrl).toContain("/?component=hotkey")
+
+  const restoredContext = await browser.newContext({
+    ignoreHTTPSErrors: true,
+    permissions: ["clipboard-read", "clipboard-write"],
+    viewport: { width: 320, height: 844 },
+  })
+  const restoredPage = await restoredContext.newPage()
+  await restoredPage.goto(sharedUrl)
+  await restoredPage.getByRole("button", { name: "Open setup" }).click()
+  await expect(restoredPage.getByLabel("Component or template")).toHaveValue("hotkey")
+  await expect(restoredPage.getByLabel("Hotkey shortcut")).toHaveValue("mod+shift+1")
+  await expect(restoredPage.getByLabel("Hotkey variant")).toHaveValue("debossed")
+  await expect(restoredPage.getByLabel("Include text inputs")).toBeChecked()
+  await expect(restoredPage.getByLabel("Skip prevent default")).toBeChecked()
+  await restoredContext.close()
+
+  await page.getByLabel("Component or template").selectOption("checkbox")
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "checkbox"
+  )
+  await page.goBack()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "hotkey"
+  )
+  await expect(page.getByLabel("Hotkey shortcut")).toHaveValue("mod+shift+1")
+  await expect(page.getByLabel("Include text inputs")).toBeChecked()
+  await page.goForward()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "checkbox"
+  )
+})
+
 test("keeps the playground and page-frame navigation usable on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 844 })
   await page.goto("/templates/checkbox-settings")

@@ -1,0 +1,45 @@
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.67em;
+  margin: 0;
+  padding: 0 4px;
+  color: var(--scraps-hotkey-content-primary);
+  font-family: "Roboto Mono", Monaco, Consolas, "Courier New", monospace;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--scraps-hotkey-background-primary);
+  border: 1px solid var(--scraps-hotkey-border-primary);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  box-shadow: none;
+}
+
+.debossed {
+  color: var(--scraps-hotkey-content-secondary);
+  background: var(--scraps-hotkey-background-secondary);
+  border-top-width: 2px;
+  border-bottom-width: 1px;
+}
+
+.hotkey {
+  gap: 2px;
+  padding: 0 4px;
+}
+
+.key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  scale: 0.9;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}

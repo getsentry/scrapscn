@@ -448,6 +448,44 @@
         { "path": "src/components/ui/reveal-on-hover.tsx", "type": "registry:ui" },
         { "path": "src/components/ui/separator.tsx", "type": "registry:ui" }
       ]
+    },
+    {
+      "name": "hotkey",
+      "type": "registry:ui",
+      "title": "Hotkey",
+      "description": "Regular Scraps platform-aware keyboard shortcut display and document listener.",
+      "dependencies": [
+        "@react-aria/utils@3.34.1",
+        "@sentry/react@10.70.0"
+      ],
+      "registryDependencies": [],
+      "cssVars": {
+        "light": {
+          "scraps-hotkey-background-primary": "#ffffff",
+          "scraps-hotkey-background-secondary": "#f8f8f9",
+          "scraps-hotkey-border-primary": "#dad9de",
+          "scraps-hotkey-content-primary": "#302e36",
+          "scraps-hotkey-content-secondary": "#6a6772"
+        },
+        "dark": {
+          "scraps-hotkey-background-primary": "#2e2936",
+          "scraps-hotkey-background-secondary": "#24202b",
+          "scraps-hotkey-border-primary": "#141119",
+          "scraps-hotkey-content-primary": "#e7e5ea",
+          "scraps-hotkey-content-secondary": "#b5b0bd"
+        }
+      },
+      "files": [
+        {
+          "path": "src/components/ui/hotkey.module.css",
+          "type": "registry:file",
+          "target": "src/components/ui/hotkey.module.css"
+        },
+        {
+          "path": "src/components/ui/hotkey.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

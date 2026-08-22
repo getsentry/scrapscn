@@ -6,6 +6,7 @@ import path from 'node:path';
 import test from 'node:test';
 
 const validatorPath = path.resolve('scripts/validate-parity-manifest.mjs');
+const generatorPath = path.resolve('scripts/generate-parity-manifest.mjs');
 const manifest = JSON.parse(await readFile('scraps-parity.json', 'utf8'));
 
 function runParityValidator(manifestPath) {
@@ -34,7 +35,25 @@ test('accepts the pinned 48-module parity inventory', () => {
     cwd: process.cwd(),
     encoding: 'utf8',
   });
-  assert.match(output, /Validated 48 modules: 9 complete, 15 partial, 24 missing/);
+  assert.match(output, /Validated 48 modules: 10 complete, 15 partial, 23 missing/);
+});
+
+test('regenerates the checked-in parity manifest without drift', async () => {
+  const temporaryDirectory = await mkdtemp(path.join(tmpdir(), 'scrapscn-parity-generate-'));
+  const generatedPath = path.join(temporaryDirectory, 'scraps-parity.json');
+  const expected = await readFile('scraps-parity.json', 'utf8');
+  const env = {...process.env, PARITY_MANIFEST_OUTPUT: generatedPath};
+
+  try {
+    execFileSync(process.execPath, [generatorPath], {cwd: process.cwd(), env});
+    const first = await readFile(generatedPath, 'utf8');
+    execFileSync(process.execPath, [generatorPath], {cwd: process.cwd(), env});
+    const second = await readFile(generatedPath, 'utf8');
+    assert.equal(first, expected);
+    assert.equal(second, first);
+  } finally {
+    await rm(temporaryDirectory, {recursive: true});
+  }
 });
 
 test('rejects a missing canonical module', async () => {

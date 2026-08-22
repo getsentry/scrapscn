@@ -858,7 +858,24 @@
           "static/app/components/core/hotkey/hotkey.tsx",
           "static/app/components/core/hotkey/index.tsx",
           "static/app/components/core/hotkey/kbd.tsx",
-          "static/app/components/core/hotkey/useHotkeys.tsx"
+          "static/app/components/core/hotkey/keyMappings.tsx",
+          "static/app/components/core/hotkey/useHotkeys.tsx",
+          "static/app/icons/iconArrow.tsx",
+          "static/app/icons/iconCommand.tsx",
+          "static/app/icons/iconControl.tsx",
+          "static/app/icons/iconOption.tsx",
+          "static/app/icons/iconReturn.tsx",
+          "static/app/icons/iconShift.tsx",
+          "static/app/icons/svgIcon.tsx",
+          "static/app/icons/useIconDefaults.tsx",
+          "static/app/utils/array/toArray.tsx",
+          "static/app/utils/string/toTitleCase.tsx",
+          "static/app/utils/theme/scraps/theme/base.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/scraps/tokens/typography.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -870,22 +887,37 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/hotkey.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "Hotkey",
+            "Kbd",
+            "useHotkeys"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "hotkey"
+        ],
+        "stories": [
+          "src/components/ui/hotkey.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/hotkey.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/hotkey.test.mjs",
+          "tests/types/hotkey-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=hotkey"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local hotkey implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Hotkey, Kbd, and useHotkeys display, platform mapping, layout-aware matching, listener lifecycle, tests, workbench, and self-contained registry delivery are present. The canonical module has no Figma component."
       }
     },
     {

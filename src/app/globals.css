@@ -166,6 +166,11 @@
   --scraps-theme-border-success: #00f261;
   --scraps-theme-border-warning: #ffce00;
   --scraps-theme-border-promotion: #ff70bc;
+  --scraps-hotkey-background-primary: #ffffff;
+  --scraps-hotkey-background-secondary: #f8f8f9;
+  --scraps-hotkey-border-primary: #dad9de;
+  --scraps-hotkey-content-primary: #302e36;
+  --scraps-hotkey-content-secondary: #6a6772;
   --scraps-theme-shadow-low: 0px 1px 0px 0px #0000200f;
   --scraps-theme-shadow-medium: 0px 2px 0px 1px #10103008,
     0px 1px 0px 0px #10103008;
@@ -340,6 +345,11 @@
   --scraps-theme-border-success: #00f261;
   --scraps-theme-border-warning: #ffce00;
   --scraps-theme-border-promotion: #ff45a8;
+  --scraps-hotkey-background-primary: #2e2936;
+  --scraps-hotkey-background-secondary: #24202b;
+  --scraps-hotkey-border-primary: #141119;
+  --scraps-hotkey-content-primary: #e7e5ea;
+  --scraps-hotkey-content-secondary: #b5b0bd;
   --scraps-theme-shadow-low: 0px 1px 0px 0px #10082863;
   --scraps-theme-shadow-medium: 0px 2px 0px 1px #0000181a,
     0px 1px 0px 0px #0000181a;
