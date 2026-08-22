@@ -6,6 +6,7 @@ import { CheckboxWorkbench } from "./checkbox-workbench";
 import { DragHandleWorkbench } from "./drag-handle-workbench";
 import { HotkeyWorkbench } from "./hotkey-workbench";
 import { ImageWorkbench } from "./image-workbench";
+import { BackdropWorkbench } from "./backdrop-workbench";
 import { RevealOnHoverWorkbench } from "./reveal-on-hover-workbench";
 import { SplitPanelWorkbench } from "./split-panel-workbench";
 import { StatusIndicatorWorkbench } from "./status-indicator-workbench";
@@ -36,6 +37,7 @@ export const workbenchRegistry = Object.freeze([
   defineWorkbench({ Component: RevealOnHoverWorkbench, id: "reveal-on-hover", label: "Reveal On Hover", sharePath: "/" }),
   defineWorkbench({ Component: HotkeyWorkbench, id: "hotkey", label: "Hotkey", sharePath: "/" }),
   defineWorkbench({ Component: ImageWorkbench, id: "image", label: "Image", sharePath: "/" }),
+  defineWorkbench({ Component: BackdropWorkbench, id: "backdrop", label: "Backdrop", sharePath: "/" }),
 ]);
 
 export type WorkbenchId = (typeof workbenchRegistry)[number]["id"];

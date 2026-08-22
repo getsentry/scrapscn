@@ -190,6 +190,7 @@
   --scraps-status-promotion-pulse: #f000901a;
   --scraps-status-muted-dot: #c0bec6;
   --scraps-status-muted-pulse: #0000200f;
+  --scraps-backdrop-background: #10082845;
 
   /* Canonical Sentry theme aliases accepted by legacy Scraps color props. */
   --scraps-theme-black: #000000;
@@ -368,6 +369,7 @@
   --scraps-status-promotion-pulse: #f800782e;
   --scraps-status-muted-dot: #898294;
   --scraps-status-muted-pulse: #c0a8f81a;
+  --scraps-backdrop-background: #10082080;
 
   --scraps-theme-surface500: #2E2936;
   --scraps-theme-surface400: #24202B;

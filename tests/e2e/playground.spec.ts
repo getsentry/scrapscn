@@ -1090,3 +1090,91 @@ test("configures, restores, and falls back in the Image workbench", async ({ bro
     imageResponsive: "fixed",
   })
 })
+
+test("configures, animates, shares, and restores the Backdrop workbench", async ({ browser, page }) => {
+  await page.setViewportSize({ width: 320, height: 844 })
+  await page.goto(
+    "/?component=backdrop&backdropLayer=drawer&backdropVisible=true&theme=dark&viewport=mobile"
+  )
+
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "backdrop"
+  )
+  const backdrop = page.getByTestId("backdrop-preview").last()
+  await expect(backdrop).toHaveCSS("position", "fixed")
+  await expect(backdrop).toHaveCSS("inset", "0px")
+  await expect(backdrop).toHaveCSS("z-index", "9999")
+  await expect(backdrop).toHaveCSS("background-color", "rgba(16, 8, 32, 0.5)")
+  await expect(backdrop).toHaveCSS("opacity", "1")
+  await backdrop.click({ position: { x: 4, y: 4 } })
+  await expect(page.getByTestId("backdrop-dismissals")).toHaveText("Dismissals: 1")
+  await expect(backdrop).toHaveCount(0)
+  const showBackdrop = page.getByRole("button", { name: "Show backdrop" })
+  await showBackdrop.focus()
+  await page.keyboard.press("Enter")
+  await expect(backdrop).toHaveCount(1)
+  const dismissBackdrop = page.getByRole("button", { name: "Dismiss backdrop" })
+  await dismissBackdrop.focus()
+  await page.keyboard.press("Space")
+  await expect(backdrop).toHaveCount(0)
+  await expect(page.getByTestId("backdrop-dismissals")).toHaveText("Dismissals: 2")
+
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await expect(page.getByLabel("Component or template")).toHaveValue("backdrop")
+  await expect(page.getByLabel("Backdrop layer")).toHaveValue("drawer")
+  await expect(page.getByLabel("Backdrop visible")).not.toBeChecked()
+  await page.getByLabel("Backdrop visible").check()
+  await page.getByLabel("Backdrop layer").selectOption("modal")
+  await expect(backdrop).toHaveCSS("z-index", "10000")
+  await page.getByRole("button", { name: "Switch to light theme" }).click()
+  await expect(backdrop).toHaveCSS("background-color", "rgba(16, 8, 40, 0.27)")
+
+  await page.emulateMedia({ reducedMotion: "reduce" })
+  await page.getByLabel("Backdrop visible").uncheck()
+  await expect(backdrop).toHaveCount(0)
+  await page.getByLabel("Backdrop visible").check()
+  await expect(page.getByTestId("backdrop-preview")).toHaveCSS("opacity", "1")
+
+  await page.getByRole("button", { name: "Share" }).click()
+  const sharedUrl = await page.evaluate(() => navigator.clipboard.readText())
+  expect(sharedUrl).toContain("/?component=backdrop")
+
+  const restoredContext = await browser.newContext({
+    ignoreHTTPSErrors: true,
+    permissions: ["clipboard-read", "clipboard-write"],
+    viewport: { width: 320, height: 844 },
+  })
+  const restoredPage = await restoredContext.newPage()
+  await restoredPage.goto(sharedUrl)
+  await restoredPage.getByRole("button", { name: "Open setup" }).click()
+  await expect(restoredPage.getByLabel("Backdrop layer")).toHaveValue("modal")
+  await expect(restoredPage.getByLabel("Backdrop visible")).toBeChecked()
+  await expect(restoredPage.locator("html")).not.toHaveClass(/dark/)
+  await restoredContext.close()
+
+  await page.getByLabel("Component or template").selectOption("checkbox")
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "checkbox"
+  )
+  await page.goBack()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "backdrop"
+  )
+  await expect(page.getByLabel("Backdrop layer")).toHaveValue("modal")
+  await page.getByRole("button", { name: "Reset" }).click()
+  await expect(page.getByLabel("Backdrop layer")).toHaveValue("modal")
+  await expect(page.getByLabel("Backdrop visible")).toBeChecked()
+  await expect(page.getByTestId("backdrop-dismissals")).toHaveText("Dismissals: 0")
+  expect(
+    await page.evaluate(() =>
+      Object.fromEntries(
+        [...new URL(location.href).searchParams.entries()].filter(([key]) =>
+          key.startsWith("backdrop")
+        )
+      )
+    )
+  ).toEqual({ backdropLayer: "modal", backdropVisible: "true" })
+})

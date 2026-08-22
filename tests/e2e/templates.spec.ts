@@ -13,6 +13,7 @@ test("discovers, serves, and restores templates in production", async ({ page, r
     "Reveal On Hover",
     "Hotkey",
     "Image",
+    "Backdrop",
     "Checkbox settings",
   ])
 

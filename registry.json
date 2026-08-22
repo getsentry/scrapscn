@@ -511,6 +511,25 @@
         { "path": "src/components/ui/separator.tsx", "type": "registry:ui" },
         { "path": "src/components/ui/image.tsx", "type": "registry:ui" }
       ]
+    },
+    {
+      "name": "backdrop",
+      "type": "registry:ui",
+      "title": "Backdrop",
+      "description": "Regular Scraps animated overlay for drawers and modals.",
+      "dependencies": ["framer-motion@12.38.0"],
+      "registryDependencies": [],
+      "cssVars": {
+        "light": {
+          "scraps-backdrop-background": "#10082845"
+        },
+        "dark": {
+          "scraps-backdrop-background": "#10082080"
+        }
+      },
+      "files": [
+        { "path": "src/components/ui/backdrop.tsx", "type": "registry:ui" }
+      ]
     }
   ]
 }

@@ -189,7 +189,8 @@
         "indexPath": "static/app/components/core/backdrop/index.tsx",
         "sourcePaths": [
           "static/app/components/core/backdrop/backdrop.tsx",
-          "static/app/components/core/backdrop/index.tsx"
+          "static/app/components/core/backdrop/index.tsx",
+          "static/app/utils/theme/theme.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -199,22 +200,35 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/backdrop.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "Backdrop"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "backdrop"
+        ],
+        "stories": [
+          "src/components/ui/backdrop.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/backdrop.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/backdrop.test.mjs",
+          "tests/types/backdrop-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=backdrop"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local backdrop implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Backdrop overlay geometry, theme colors, layer values, motion, focused assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component."
       }
     },
     {

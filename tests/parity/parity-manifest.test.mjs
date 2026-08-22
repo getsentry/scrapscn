@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {execFileSync, spawnSync} from 'node:child_process';
-import {mkdtemp, readFile, rm, writeFile} from 'node:fs/promises';
+import {mkdir, mkdtemp, readFile, rm, writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
@@ -35,7 +35,7 @@ test('accepts the pinned 48-module parity inventory', () => {
     cwd: process.cwd(),
     encoding: 'utf8',
   });
-  assert.match(output, /Validated 48 modules: 11 complete, 15 partial, 22 missing/);
+  assert.match(output, /Validated 48 modules: 12 complete, 15 partial, 21 missing/);
 });
 
 test('regenerates the checked-in parity manifest without drift', async () => {
@@ -51,6 +51,40 @@ test('regenerates the checked-in parity manifest without drift', async () => {
     const second = await readFile(generatedPath, 'utf8');
     assert.equal(first, expected);
     assert.equal(second, first);
+  } finally {
+    await rm(temporaryDirectory, {recursive: true});
+  }
+});
+
+test('reads canonical sources from the pinned commit instead of a dirty worktree', async () => {
+  const temporaryDirectory = await mkdtemp(path.join(tmpdir(), 'scrapscn-parity-pinned-'));
+  const sentryClone = path.join(temporaryDirectory, 'sentry');
+  const dirtyThemePath = path.join(
+    sentryClone,
+    'static/app/utils/theme/theme.tsx'
+  );
+  const generatedPath = path.join(temporaryDirectory, 'scraps-parity.json');
+
+  try {
+    execFileSync(
+      'git',
+      ['clone', '--quiet', '--shared', '--no-checkout', path.resolve('../sentry'), sentryClone]
+    );
+    await mkdir(path.dirname(dirtyThemePath), {recursive: true});
+    await writeFile(dirtyThemePath, 'export const motion = "not canonical";\n');
+    execFileSync(process.execPath, [generatorPath], {
+      cwd: process.cwd(),
+      env: {
+        ...process.env,
+        PARITY_MANIFEST_OUTPUT: generatedPath,
+        SENTRY_REPO_PATH: sentryClone,
+      },
+    });
+
+    assert.equal(
+      await readFile(generatedPath, 'utf8'),
+      await readFile('scraps-parity.json', 'utf8')
+    );
   } finally {
     await rm(temporaryDirectory, {recursive: true});
   }

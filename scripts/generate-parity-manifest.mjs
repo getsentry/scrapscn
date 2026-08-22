@@ -1,4 +1,4 @@
-import {access, readFile, readdir, writeFile} from 'node:fs/promises';
+import {access, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 
@@ -12,6 +12,9 @@ import {
 const CANONICAL_COMMIT = 'd91f823d232ddd12a4d2a64554d85fd36df0e278';
 const EXCLUDED_DIRECTORIES = ['overview', 'patterns', 'principles'];
 const canonicalBehaviorDependencies = {
+  backdrop: [
+    'static/app/utils/theme/theme.tsx',
+  ],
   image: [
     'static/app/components/core/layout/styles.tsx',
     'static/app/utils/theme/scraps/theme/base.tsx',
@@ -64,14 +67,12 @@ const canonicalBehaviorDependencies = {
 const sentryRepository = path.resolve(
   process.env.SENTRY_REPO_PATH ?? '../sentry'
 );
-const canonicalRoot = path.join(
-  sentryRepository,
-  'static/app/components/core'
-);
+const canonicalRoot = 'static/app/components/core';
 
 const localModules = {
   alert: ['src/components/ui/alert.tsx'],
   avatar: ['src/components/ui/avatar.tsx'],
+  backdrop: ['src/components/ui/backdrop.tsx'],
   badge: [
     'src/components/ui/badge.tsx',
     'src/components/ui/feature-badge.tsx',
@@ -111,6 +112,7 @@ const localModules = {
 
 const registryItems = {
   alert: ['alert'],
+  backdrop: ['backdrop'],
   badge: ['badge', 'feature-badge', 'tag'],
   button: ['button'],
   dragHandle: ['drag-handle'],
@@ -132,6 +134,8 @@ const registryItems = {
 };
 
 const completionEvidence = {
+  backdrop:
+    'Exact regular Scraps Backdrop overlay geometry, theme colors, layer values, motion, focused assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component.',
   interactionStateLayer:
     'Exact state-layer contract, behavior stories, focused Storybook assertions, and registry publication are present. The canonical module has no Figma component.',
   hotkey:
@@ -183,28 +187,49 @@ const outOfScopeComponents = [
   'src/components/ui/size-context.tsx',
 ];
 
-async function resolveCanonicalSource(moduleDirectory, moduleSpecifier) {
-  const base = path.join(moduleDirectory, moduleSpecifier);
+function readCanonicalFile(repositoryPath) {
+  return execFileSync(
+    'git',
+    ['show', `${CANONICAL_COMMIT}:${repositoryPath}`],
+    {cwd: sentryRepository, encoding: 'utf8'}
+  );
+}
+
+function canonicalPathExists(repositoryPath) {
+  try {
+    execFileSync(
+      'git',
+      ['cat-file', '-e', `${CANONICAL_COMMIT}:${repositoryPath}`],
+      {cwd: sentryRepository, stdio: 'ignore'}
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function resolveCanonicalSource(moduleDirectory, moduleSpecifier) {
+  const base = path.posix.join(moduleDirectory, moduleSpecifier);
   for (const candidate of [
     `${base}.tsx`,
     `${base}.ts`,
-    path.join(base, 'index.tsx'),
-    path.join(base, 'index.ts'),
+    path.posix.join(base, 'index.tsx'),
+    path.posix.join(base, 'index.ts'),
   ]) {
-    try {
-      await access(candidate);
-      return path.relative(sentryRepository, candidate);
-    } catch {}
+    if (canonicalPathExists(candidate)) {
+      return candidate;
+    }
   }
   throw new Error(`Parity manifest source missing: ${moduleSpecifier}`);
 }
 
-async function readCanonicalModule(moduleName) {
-  const moduleDirectory = path.join(canonicalRoot, moduleName);
-  const filenames = await readdir(moduleDirectory);
-  const indexFilename = filenames.includes('index.tsx') ? 'index.tsx' : 'index.ts';
-  const indexPath = path.join(moduleDirectory, indexFilename);
-  const source = await readFile(indexPath, 'utf8');
+function readCanonicalModule(moduleName) {
+  const moduleDirectory = path.posix.join(canonicalRoot, moduleName);
+  const indexFilename = canonicalPathExists(path.posix.join(moduleDirectory, 'index.tsx'))
+    ? 'index.tsx'
+    : 'index.ts';
+  const indexPath = path.posix.join(moduleDirectory, indexFilename);
+  const source = readCanonicalFile(indexPath);
   const sourceFile = ts.createSourceFile(
     indexFilename,
     source,
@@ -212,7 +237,7 @@ async function readCanonicalModule(moduleName) {
     true,
     indexFilename.endsWith('x') ? ts.ScriptKind.TSX : ts.ScriptKind.TS
   );
-  const sourcePaths = new Set([path.relative(sentryRepository, indexPath)]);
+  const sourcePaths = new Set([indexPath]);
 
   for (const statement of sourceFile.statements) {
     if (
@@ -221,13 +246,13 @@ async function readCanonicalModule(moduleName) {
       statement.moduleSpecifier.text.startsWith('.')
     ) {
       sourcePaths.add(
-        await resolveCanonicalSource(moduleDirectory, statement.moduleSpecifier.text)
+        resolveCanonicalSource(moduleDirectory, statement.moduleSpecifier.text)
       );
     }
   }
 
   return {
-    indexPath: path.relative(sentryRepository, indexPath),
+    indexPath,
     sourcePaths: [...sourcePaths, ...(canonicalBehaviorDependencies[moduleName] ?? [])].sort(),
     publicExports: collectParityManifestExports(source, indexFilename),
   };
@@ -254,9 +279,14 @@ if (currentCommit !== CANONICAL_COMMIT) {
   );
 }
 
-const moduleNames = (await readdir(canonicalRoot, {withFileTypes: true}))
-  .filter(entry => entry.isDirectory() && !EXCLUDED_DIRECTORIES.includes(entry.name))
-  .map(entry => entry.name)
+const moduleNames = execFileSync(
+  'git',
+  ['ls-tree', '--name-only', '-d', `${CANONICAL_COMMIT}:${canonicalRoot}`],
+  {cwd: sentryRepository, encoding: 'utf8'}
+)
+  .trim()
+  .split('\n')
+  .filter(name => name && !EXCLUDED_DIRECTORIES.includes(name))
   .sort();
 
 const modules = [];
@@ -332,6 +362,13 @@ for (const moduleName of moduleNames) {
               'tests/parity/image.test.mjs',
               'tests/types/image-types.test.tsx',
             ]
+        : moduleName === 'backdrop'
+          ? [
+              'src/components/ui/backdrop.test.tsx',
+              'tests/e2e/playground.spec.ts',
+              'tests/parity/backdrop.test.mjs',
+              'tests/types/backdrop-types.test.tsx',
+            ]
         : [];
   const completionNote = completionEvidence[moduleName];
 
@@ -362,6 +399,8 @@ for (const moduleName of moduleNames) {
               ? '/?component=hotkey'
               : moduleName === 'image'
                 ? '/?component=image'
+              : moduleName === 'backdrop'
+                ? '/?component=backdrop'
               : moduleName === 'checkbox' ||
                   moduleName === 'interactionStateLayer' ||
                   moduleName === 'layout' ||
