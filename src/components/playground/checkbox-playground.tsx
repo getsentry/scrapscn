@@ -1,14 +1,14 @@
 "use client"
 
-import Link from "next/link"
-import { ArrowDown, ArrowUp, Check, Copy, Moon, Plus, RotateCcw, Sun, Trash2 } from "lucide-react"
-import { usePathname, useSearchParams } from "next/navigation"
+import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronUp, Copy, Moon, Plus, RotateCcw, Settings2, Sun, Trash2 } from "lucide-react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useTheme } from "next-themes"
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react"
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react"
 
 import { SentryPageFrame } from "@/components/playground/sentry-page-frame"
 import { Button } from "@/components/ui/button"
 import { Checkbox, type CheckboxProps } from "@/components/ui/checkbox"
+import { cn } from "@/lib/utils"
 import type { TemplateMetadata } from "@/templates/types"
 
 type CheckedState = "false" | "true" | "indeterminate"
@@ -74,6 +74,12 @@ function getSelectedNotificationIds(value: string | null): NotificationId[] {
   return value.split(",").filter(isNotificationId)
 }
 
+function getNotificationLabel(item: NotificationId, label: string) {
+  return item === "new-issues"
+    ? label || "Untitled notification"
+    : notificationContent[item].label
+}
+
 const subscribeToHydration = () => () => {}
 
 function useHydrated() {
@@ -83,6 +89,7 @@ function useHydrated() {
 /** Renders the first end-to-end component workbench and shareable template. */
 export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMetadata[] }) {
   const pathname = usePathname()
+  const router = useRouter()
   const searchParams = useSearchParams()
   const { resolvedTheme, setTheme: setAppTheme } = useTheme()
   const initialState = useMemo(
@@ -106,14 +113,35 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
   const [size, setSize] = useState<CheckboxSize>(initialState.size)
   const [theme, setTheme] = useState<PlaygroundTheme | null>(initialState.theme)
   const [viewport, setViewport] = useState<PlaygroundViewport>(initialState.viewport)
+  const [setupOpen, setSetupOpen] = useState(false)
   const [copied, setCopied] = useState(false)
   const [submittedState, setSubmittedState] = useState<string | null>(null)
+  const setupIslandRef = useRef<HTMLElement>(null)
+  const setupTriggerRef = useRef<HTMLButtonElement>(null)
+  const restoreSetupFocus = useRef(false)
   const hydrated = useHydrated()
   const currentTheme = theme ?? (hydrated && resolvedTheme === "dark" ? "dark" : "light")
 
   useEffect(() => {
     if (initialState.theme) setAppTheme(initialState.theme)
   }, [initialState.theme, setAppTheme])
+
+  useEffect(() => {
+    if (setupOpen || !restoreSetupFocus.current) return
+    restoreSetupFocus.current = false
+    setupTriggerRef.current?.focus()
+  }, [setupOpen])
+
+  useEffect(() => {
+    if (!setupOpen) return
+    function closeSetupOnOutsidePointer(event: PointerEvent) {
+      if (event.target instanceof Node && setupIslandRef.current?.contains(event.target)) return
+      restoreSetupFocus.current = false
+      setSetupOpen(false)
+    }
+    document.addEventListener("pointerdown", closeSetupOnOutsidePointer, true)
+    return () => document.removeEventListener("pointerdown", closeSetupOnOutsidePointer, true)
+  }, [setupOpen])
 
   function getUrlParams(next: Partial<PlaygroundState>) {
     const params = new URLSearchParams(searchParams.toString())
@@ -172,32 +200,92 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
     if (targetIndex < 0 || targetIndex >= items.length) return
     const nextItems = [...items]
     ;[nextItems[index], nextItems[targetIndex]] = [nextItems[targetIndex], nextItems[index]]
+    updateItems(nextItems)
+  }
+
+  function updateItems(nextItems: NotificationId[]) {
     setItems(nextItems)
     updateUrl({ items: nextItems })
   }
 
+  function closeSetup() {
+    restoreSetupFocus.current = true
+    setSetupOpen(false)
+  }
+
   return (
-    <div className="isolate min-h-dvh bg-muted">
-      <header className="border-b border-foreground/10 bg-background">
-        <div className="mx-auto grid max-w-[100rem] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-4 p-4 sm:flex sm:px-6">
-          <div className="col-span-2 min-w-0 sm:flex-1">
-            <h1 className="text-balance text-lg font-semibold">Scrapscn playground</h1>
-            <p className="text-pretty text-base text-muted-foreground sm:text-sm">Build regular Scraps screens without the monolith.</p>
-          </div>
-          <nav aria-label="Playground sections" className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-base font-medium sm:text-sm">
-            <Link href={`/?${getUrlParams({}).toString()}`} aria-current={pathname === "/" ? "page" : undefined} className="text-muted-foreground hover:text-foreground aria-[current=page]:text-primary">
-              Workbench
-            </Link>
+    <div className="isolate min-h-dvh bg-muted" data-slot="playground-canvas" data-viewport={viewport}>
+      <aside
+        aria-label="Playground controls"
+        className={cn(
+          "fixed left-1/2 z-40 flex -translate-x-1/2 flex-col-reverse overflow-hidden rounded-2xl border border-foreground/10 bg-popover/95 text-popover-foreground shadow-xl backdrop-blur-md [bottom:max(0.75rem,env(safe-area-inset-bottom))]",
+          setupOpen ? "w-[calc(100%-1rem)] max-w-3xl" : "w-14"
+        )}
+        data-slot="playground-island"
+        ref={setupIslandRef}
+        onBlur={(event) => {
+          const nextTarget = event.relatedTarget
+          if (!nextTarget) return
+          if (nextTarget instanceof Node && event.currentTarget.contains(nextTarget)) return
+          restoreSetupFocus.current = false
+          setSetupOpen(false)
+        }}
+        onKeyDown={(event) => {
+          if (event.key !== "Escape" || !setupOpen) return
+          event.preventDefault()
+          closeSetup()
+        }}
+      >
+        <div
+          className={cn(
+            "min-w-0 items-center gap-1 p-1.5",
+            setupOpen
+              ? "grid grid-cols-[minmax(0,1fr)_repeat(4,2.75rem)] sm:flex"
+              : "flex"
+          )}
+          data-slot="playground-toolbar"
+        >
+          {setupOpen && (
+            <>
+          <label className="sr-only" htmlFor="playground-section">Component or template</label>
+          <select
+            id="playground-section"
+            aria-label="Component or template"
+            value={pathname}
+            onChange={(event) => {
+              const destination = event.target.value === "/templates/checkbox-settings"
+                ? templateHref
+                : `${event.target.value}?${getUrlParams({}).toString()}`
+              router.push(destination, { scroll: false })
+            }}
+            className="col-span-full h-11 min-w-0 touch-manipulation rounded-xl border border-input bg-background px-2 text-base font-medium focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:col-auto sm:h-10 sm:flex-1 sm:text-sm"
+          >
+            <option value="/">Workbench</option>
             {templates.map((template) => (
-              <Link key={template.slug} href={template.slug === "checkbox-settings" ? templateHref : `/templates/${template.slug}`} aria-current={pathname === `/templates/${template.slug}` ? "page" : undefined} className="text-muted-foreground hover:text-foreground aria-[current=page]:text-primary">
-                {template.title}
-              </Link>
+              <option key={template.slug} value={`/templates/${template.slug}`}>{template.title}</option>
             ))}
-          </nav>
+          </select>
+          <label className="sr-only" htmlFor="preview-viewport">Preview width</label>
+          <select
+            id="preview-viewport"
+            name="preview-viewport"
+            value={viewport}
+            onChange={(event) => {
+              const value = event.target.value as PlaygroundViewport
+              setViewport(value)
+              updateUrl({ viewport: value })
+            }}
+            className="h-11 w-full shrink-0 touch-manipulation rounded-xl border border-input bg-background px-2 text-base font-medium focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-10 sm:w-24 sm:text-sm"
+          >
+            <option value="desktop">Desktop</option>
+            <option value="mobile">Mobile</option>
+          </select>
           <Button
             type="button"
             variant="ghost"
-            size="icon"
+            size="icon-lg"
+            chonk={false}
+            className="size-11 sm:size-10"
             aria-label={`Switch to ${currentTheme === "dark" ? "light" : "dark"} theme`}
             onClick={() => {
               const nextTheme = currentTheme === "dark" ? "light" : "dark"
@@ -206,22 +294,44 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
               updateUrl({ theme: nextTheme })
             }}
           >
-            {currentTheme === "dark" ? (
-              <Sun className="size-4 shrink-0" aria-hidden="true" />
-            ) : (
-              <Moon className="size-4 shrink-0" aria-hidden="true" />
-            )}
+            {currentTheme === "dark" ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
+          </Button>
+          <Button type="button" variant="ghost" size="icon-lg" chonk={false} className="size-11 sm:size-10" aria-label="Reset" onClick={resetPlayground}>
+            <RotateCcw aria-hidden="true" />
+          </Button>
+          <Button type="button" variant="ghost" size="icon-lg" chonk={false} className="size-11 sm:size-10" aria-label={copied ? "Copied" : "Share"} onClick={copyShareUrl}>
+            {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+          </Button>
+            </>
+          )}
+          <Button
+            type="button"
+            variant={setupOpen ? "secondary" : "ghost"}
+            size="icon-lg"
+            chonk={false}
+            className="size-11 sm:size-10"
+            aria-label={setupOpen ? "Close setup" : "Open setup"}
+            aria-expanded={setupOpen}
+            aria-controls="playground-setup"
+            data-slot="playground-setup-trigger"
+            ref={setupTriggerRef}
+            onClick={setupOpen ? closeSetup : () => setSetupOpen(true)}
+          >
+            <Settings2 aria-hidden="true" />
           </Button>
         </div>
-      </header>
 
-      <div className="mx-auto grid max-w-[100rem] gap-4 p-4 sm:p-6 xl:grid-cols-[18rem_minmax(0,1fr)]">
-        <aside className="rounded-lg border border-foreground/10 bg-background p-4">
-          <div className="grid gap-5">
-            <div className="grid gap-1">
-              <h2 className="text-base font-semibold">Checkbox controls</h2>
-              <p className="text-pretty text-base text-muted-foreground sm:text-sm">Change the public props, then share this exact state.</p>
-            </div>
+        {setupOpen && (
+          <div id="playground-setup" className="max-h-[calc(100dvh-8rem)] overflow-y-auto overscroll-contain border-b border-foreground/10 p-3 sm:max-h-[calc(100dvh-5rem)]">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-sm font-semibold">Checkbox setup</h2>
+                    <p className="text-xs text-muted-foreground">Changes stay in the share URL.</p>
+                  </div>
+                  <ChevronUp className="size-4 text-muted-foreground" aria-hidden="true" />
+                </div>
 
             <label className="grid gap-2 text-base font-medium sm:text-sm">
               Size
@@ -233,7 +343,7 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
                   setSize(value)
                   updateUrl({ size: value })
                 }}
-                className="h-10 rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-8 sm:text-sm"
+                className="h-11 touch-manipulation rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-10 sm:text-sm"
               >
                 <option value="xs">Extra small</option>
                 <option value="sm">Small</option>
@@ -250,25 +360,8 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
                   setLabel(event.target.value)
                   updateUrl({ label: event.target.value })
                 }}
-                className="h-10 rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-8 sm:text-sm"
+                className="h-11 touch-manipulation rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-10 sm:text-sm"
               />
-            </label>
-
-            <label className="grid gap-2 text-base font-medium sm:text-sm">
-              Preview width
-              <select
-                name="preview-viewport"
-                value={viewport}
-                onChange={(event) => {
-                  const value = event.target.value as PlaygroundViewport
-                  setViewport(value)
-                  updateUrl({ viewport: value })
-                }}
-                className="h-10 rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-8 sm:text-sm"
-              >
-                <option value="desktop">Desktop</option>
-                <option value="mobile">Mobile · 390 px</option>
-              </select>
             </label>
 
             <label className="grid gap-2 text-base font-medium sm:text-sm">
@@ -281,7 +374,7 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
                   setChecked(value)
                   updateUrl({ checked: value })
                 }}
-                className="h-10 rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-8 sm:text-sm"
+                className="h-11 touch-manipulation rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-10 sm:text-sm"
               >
                 <option value="false">Unchecked</option>
                 <option value="true">Checked</option>
@@ -289,7 +382,7 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
               </select>
             </label>
 
-            <label className="flex min-h-10 cursor-pointer items-center gap-3 text-base font-medium sm:min-h-8 sm:text-sm">
+            <label className="flex min-h-11 cursor-pointer touch-manipulation items-center gap-3 text-base font-medium sm:min-h-10 sm:text-sm">
               <Checkbox
                 name="disabled-control"
                 checked={disabled}
@@ -300,22 +393,23 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
               />
               Disabled
             </label>
+              </div>
 
-            <div className="grid gap-2 border-t border-foreground/10 pt-4">
+              <div className="grid content-start gap-2 sm:border-l sm:border-foreground/10 sm:pl-4">
               <div className="flex items-center justify-between gap-2">
-                <h3 className="text-sm font-semibold">Template stack</h3>
+                <h2 className="text-sm font-semibold">Template stack</h2>
                 <Button
                   type="button"
                   variant="ghost"
-                  size="icon-sm"
+                  size="icon-lg"
+                  chonk={false}
+                  className="size-11 sm:size-10"
                   aria-label="Add notification"
                   disabled={items.length === defaultNotificationIds.length}
                   onClick={() => {
                     const item = defaultNotificationIds.find((id) => !items.includes(id))
                     if (!item) return
-                    const nextItems = [...items, item]
-                    setItems(nextItems)
-                    updateUrl({ items: nextItems })
+                    updateItems([...items, item])
                   }}
                 >
                   <Plus className="size-4 shrink-0" aria-hidden="true" />
@@ -324,23 +418,23 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
               <ol className="grid gap-1">
                 {items.map((item, index) => (
                   <li key={item} className="flex min-w-0 items-center gap-1 rounded-md border border-foreground/10 px-2 py-1">
-                    <div className="min-w-0 flex-1 truncate text-sm">{item === "new-issues" ? label : notificationContent[item].label}</div>
-                    <Button type="button" variant="ghost" size="icon-xs" aria-label={`Move ${notificationContent[item].label} up`} disabled={index === 0} onClick={() => moveItem(index, -1)}>
+                    <div className="min-w-0 flex-1 truncate text-sm">{getNotificationLabel(item, label)}</div>
+                    <Button type="button" variant="ghost" size="icon-lg" chonk={false} className="size-11 sm:size-10" aria-label={`Move ${getNotificationLabel(item, label)} up`} disabled={index === 0} onClick={() => moveItem(index, -1)}>
                       <ArrowUp className="size-3.5 shrink-0" aria-hidden="true" />
                     </Button>
-                    <Button type="button" variant="ghost" size="icon-xs" aria-label={`Move ${notificationContent[item].label} down`} disabled={index === items.length - 1} onClick={() => moveItem(index, 1)}>
+                    <Button type="button" variant="ghost" size="icon-lg" chonk={false} className="size-11 sm:size-10" aria-label={`Move ${getNotificationLabel(item, label)} down`} disabled={index === items.length - 1} onClick={() => moveItem(index, 1)}>
                       <ArrowDown className="size-3.5 shrink-0" aria-hidden="true" />
                     </Button>
                     <Button
                       type="button"
                       variant="ghost"
-                      size="icon-xs"
-                      aria-label={`Remove ${notificationContent[item].label}`}
+                      size="icon-lg"
+                      chonk={false}
+                      className="size-11 sm:size-10"
+                      aria-label={`Remove ${getNotificationLabel(item, label)}`}
                       disabled={items.length === 1}
                       onClick={() => {
-                        const nextItems = items.filter((id) => id !== item)
-                        setItems(nextItems)
-                        updateUrl({ items: nextItems })
+                        updateItems(items.filter((id) => id !== item))
                       }}
                     >
                       <Trash2 className="size-3.5 shrink-0" aria-hidden="true" />
@@ -348,24 +442,22 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
                   </li>
                 ))}
               </ol>
+              <button
+                type="button"
+                className="mt-1 flex min-h-11 touch-manipulation items-center justify-center gap-1.5 rounded-md text-base font-medium text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring sm:min-h-10 sm:text-sm"
+                onClick={closeSetup}
+              >
+                <ChevronDown className="size-4" aria-hidden="true" />
+                Collapse setup
+              </button>
             </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <Button type="button" variant="outline" chonk={false} onClick={resetPlayground}>
-                <RotateCcw className="size-4 shrink-0" aria-hidden="true" />
-                Reset
-              </Button>
-              <Button type="button" variant="outline" chonk={false} onClick={copyShareUrl}>
-                {copied ? <Check className="size-4 shrink-0" aria-hidden="true" /> : <Copy className="size-4 shrink-0" aria-hidden="true" />}
-                {copied ? "Copied" : "Share"}
-              </Button>
             </div>
           </div>
-        </aside>
+        )}
+      </aside>
 
-        <div aria-labelledby="preview-heading" className="min-w-0">
-          <h2 id="preview-heading" className="sr-only">Template preview</h2>
-          <div className={viewport === "mobile" ? "mx-auto max-w-[390px]" : undefined}>
+      <div className={viewport === "mobile" ? "flex min-h-dvh justify-center bg-muted" : "min-h-dvh"}>
+          <div className={viewport === "mobile" ? "min-h-dvh w-full max-w-[390px] ring-1 ring-foreground/10" : "min-h-dvh w-full"}>
           <SentryPageFrame title="Notification Settings" breadcrumbs={["Settings", "Projects", "Frontend"]}>
             <div className="grid max-w-3xl gap-8">
               <p className="max-w-[65ch] text-pretty text-base text-muted-foreground sm:text-sm">
@@ -378,7 +470,7 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
                   event.preventDefault()
                   const formData = new FormData(event.currentTarget)
                   const selectedItems = items.filter((item) => formData.has(item))
-                  setSubmittedState(selectedItems.length ? `Saved: ${selectedItems.map((item) => item === "new-issues" ? label : notificationContent[item].label).join(", ")}` : "Saved: no email notifications")
+                  setSubmittedState(selectedItems.length ? `Saved: ${selectedItems.map((item) => getNotificationLabel(item, label)).join(", ")}` : "Saved: no email notifications")
                 }}
               >
                 <div className="grid gap-1 border-b border-foreground/10 pb-4">
@@ -387,7 +479,7 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
                 </div>
                 {items.map((item) => {
                   const content = notificationContent[item]
-                  const itemLabel = item === "new-issues" ? label : content.label
+                  const itemLabel = getNotificationLabel(item, label)
                   const checkboxId = `${item}-checkbox`
                   const descriptionId = `${item}-description`
                   const labelId = `${item}-label`
@@ -420,7 +512,7 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
                         />
                       </span>
                       <div className="min-w-0">
-                        <label id={labelId} htmlFor={checkboxId} className="cursor-pointer font-medium">{itemLabel || "Untitled notification"}</label>
+                        <label id={labelId} htmlFor={checkboxId} className="cursor-pointer font-medium">{itemLabel}</label>
                         <p id={descriptionId} className="mt-1 text-base text-muted-foreground sm:text-sm">{content.description}</p>
                       </div>
                     </div>
@@ -435,7 +527,6 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
           </SentryPageFrame>
           </div>
         </div>
-      </div>
     </div>
   )
 }

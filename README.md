@@ -4,6 +4,20 @@ Scrapscn is a local playground for Sentry product interface prototypes. It ports
 
 The canonical source is `static/app/components/core` in `getsentry/sentry`. The current parity baseline is Sentry commit `d91f823d232ddd12a4d2a64554d85fd36df0e278`.
 
+## Parity inventory
+
+[`scraps-parity.json`](scraps-parity.json) is the machine-readable inventory for all 48 regular Scraps modules. It records the pinned canonical source files and public exports, mapped local files, registry items, stories, tests, Figma nodes, playground routes, and completion state.
+
+Run `pnpm parity:validate` to check the inventory. The command fails when:
+
+- A regular Scraps module or public export differs from the pinned contract.
+- A claimed local file, registry item, or Figma node is invalid.
+- The recorded local exports no longer match the implementation.
+- A local UI component is neither mapped to a regular Scraps module nor marked as out of scope.
+- A module is marked complete without its required machine-checkable artifacts and exports.
+
+Run `pnpm parity:generate` only when you intentionally refresh the inventory from a local `getsentry/sentry` checkout at the pinned commit. Set `SENTRY_REPO_PATH` if that checkout is not at `../sentry`.
+
 ## Start a prototype
 
 You need Node.js 24 or later and pnpm.
@@ -15,7 +29,7 @@ pnpm dev
 
 Open the URL printed by Next.js. The homepage is the playground. It needs no Sentry monolith, account, database, environment variable, or external service.
 
-Use the left controls to change the Checkbox props, reorder the form rows, switch theme or preview width, and reset the page. Select **Checkbox settings** to open the direct template route. Select **Share** to copy an absolute URL that restores the current review state.
+The preview fills the viewport. Open the floating setup island at the bottom of the page to change Checkbox props, reorder form rows, switch theme or preview width, and reset the page. The island closes when you press Escape, move focus into the preview, or click outside it. Select **Checkbox settings** to open the direct template route. Select **Share** to copy an absolute URL that restores the current review state.
 
 ## Create a template
 

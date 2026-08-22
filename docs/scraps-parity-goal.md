@@ -34,7 +34,7 @@ The goal does not require:
 
 ## Baseline
 
-Scrapcn currently has:
+At the original baseline, Scrapcn had:
 
 - 28 local UI implementation files.
 - 17 of the 48 regular Scraps modules represented in some form.
@@ -49,6 +49,8 @@ Scrapcn currently has:
 - Ten existing legacy Code Connect mappings in the monolith: Alert, FeatureBadge, Tag, Button, Checkbox, Radio, Slider, Switch, TextArea, and Tooltip. They point to published components in the Sentry “🐦 Components” Figma library and provide initial node URLs and property mappings, but they import the CSS-in-JS implementations and use the legacy React parser format.
 - No generated `public/r/*.json` registry artifacts and no registry build command.
 - A hosted registry URL that redirects unauthenticated requests to Vercel SSO. The shadcn CLI cannot use this as a public registry transport.
+
+The current local checkpoint adds the playground, reusable page frame, Checkbox vertical slice, template workflow, and a machine-readable parity inventory. `pnpm parity:validate` reports 0 complete, 17 partial, and 31 missing modules. A partial module has mapped local code but has not passed every exact contract, behavior, visual, registry, and Figma gate.
 
 An existing file or a similar name is not proof of parity. Current examples include Button, Alert, Slider, TextArea, Badge, Avatar, Input, Link, Select, Tabs, and Tooltip APIs that differ from their canonical Scraps APIs.
 
@@ -199,7 +201,7 @@ The first slice proves the delivery system. It does not attempt broad component 
 ### Slice contents
 
 1. **Checkbox parity:** Port the canonical `Checkbox` and `CheckboxProps` contract. Cover `xs`, `sm`, and `md`; default `sm`; unchecked, checked, and indeterminate values; controlled changes; disabled and read-only behavior; refs; native form submission; labels; focus; and keyboard behavior.
-2. **Playground homepage:** Replace the marketing landing page at `/` with a product-shaped playground. Its shell has component and template navigation, a canvas, light and dark controls, desktop and mobile viewport controls, and reset behavior.
+2. **Playground homepage:** Replace the marketing landing page at `/` with a full-viewport preview canvas. A floating, collapsible setup island provides component and template navigation, light and dark controls, desktop and mobile viewport controls, and reset behavior without wrapping the preview in separate playground chrome.
 3. **Checkbox workbench:** Add a Checkbox entry with live controls for size, checked value, disabled state, and label. Add, remove, and reorder several Checkbox examples in a stack to prove the composition model without building a general visual editor.
 4. **Minimal page frame:** Add a reusable local `PageFrame` with a sidebar, top bar, breadcrumbs, title, action slot, and content slot. It can use semantic HTML and local Tailwind layout until the full Scraps layout module is ported.
 5. **Template workflow:** Add the template scaffold command and automatic discovery. Use it to create a `checkbox-settings` template that renders several labeled Checkboxes in a native form and shows the submitted form state.

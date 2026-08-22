@@ -30,25 +30,26 @@ type Story = StoryObj<typeof meta>
 export const EndToEndWorkflow: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const templateLink = canvas.getByRole("link", { name: "Checkbox settings" })
+    const setupButton = canvas.getByRole("button", { name: "Open setup" })
 
-    await expect(templateLink).toHaveAttribute("href", expect.stringContaining("/templates/checkbox-settings?"))
+    await expect(canvas.queryByRole("textbox", { name: "Label" })).not.toBeInTheDocument()
+    await userEvent.click(setupButton)
+    await expect(canvas.getByRole("combobox", { name: "Component or template" })).toHaveValue("/")
+    await expect(canvas.getByRole("button", { name: "Close setup" })).toHaveAttribute("aria-expanded", "true")
     await userEvent.selectOptions(canvas.getByRole("combobox", { name: "Preview width" }), "mobile")
     await userEvent.clear(canvas.getByRole("textbox", { name: "Label" }))
     await userEvent.type(canvas.getByRole("textbox", { name: "Label" }), "Notify the incident team")
     await expect(canvas.getByText("Notify the incident team", { selector: "form label" })).toBeVisible()
 
-    await userEvent.click(canvas.getByRole("button", { name: "Move Alert me about new issues down" }))
+    await userEvent.click(canvas.getByRole("button", { name: "Move Notify the incident team down" }))
     await userEvent.click(canvas.getByRole("button", { name: "Remove Weekly project report" }))
     await expect(canvas.queryByText("Weekly project report", { selector: "form label" })).not.toBeInTheDocument()
 
+    await userEvent.click(canvas.getByRole("button", { name: "Collapse setup" }))
+    await expect(canvas.queryByRole("textbox", { name: "Label" })).not.toBeInTheDocument()
+    await expect(canvas.getByRole("button", { name: "Open setup" })).toHaveFocus()
     await userEvent.click(canvas.getByRole("button", { name: "Save changes" }))
     await expect(canvas.getByText(/Saved:/)).toBeVisible()
-
-    const updatedHref = templateLink.getAttribute("href")
-    await expect(updatedHref).toContain("viewport=mobile")
-    await expect(updatedHref).toContain("label=Notify+the+incident+team")
-    await expect(updatedHref).not.toContain("weekly-reports")
   },
 }
 
@@ -74,6 +75,7 @@ export const RestoredTemplateUrl: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole("button", { name: "Open setup" }))
     const form = canvasElement.querySelector("form")
 
     await expect(canvas.getByRole("textbox", { name: "Label" })).toHaveValue("")

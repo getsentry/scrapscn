@@ -2,8 +2,9 @@ import { expect, test } from "playwright/test"
 
 test("discovers, serves, and restores templates in production", async ({ page, request }) => {
   await page.goto("/")
-  const templateLinks = page.getByRole("navigation", { name: "Playground sections" }).getByRole("link")
-  await expect(templateLinks).toHaveCount(2)
+  await page.getByRole("button", { name: "Open setup" }).click()
+  const sectionOptions = page.getByLabel("Component or template").locator("option")
+  await expect(sectionOptions).toHaveText(["Workbench", "Checkbox settings"])
 
   const response = await request.get("/templates/checkbox-settings")
   expect(response.status()).toBe(200)
@@ -11,10 +12,12 @@ test("discovers, serves, and restores templates in production", async ({ page, r
   await page.reload()
 
   await expect(page.getByRole("heading", { name: "Notification Settings" })).toBeVisible()
+  await page.getByRole("button", { name: "Open setup" }).click()
   await expect(page.getByLabel("Size")).toHaveValue("md")
   await expect(page.getByLabel("Label")).toHaveValue("Escalation alerts")
   await expect(page.getByLabel("Preview width")).toHaveValue("mobile")
   await expect(page.locator("html")).toHaveClass(/dark/)
+  await page.getByRole("button", { name: "Close setup" }).click()
 
   const formLabels = await page.locator("form label").allTextContents()
   expect(formLabels).toEqual(["Weekly project report", "Escalation alerts"])

@@ -250,8 +250,8 @@ export function SentryPageFrame({
   title,
 }: SentryPageFrameProps) {
   return (
-    <div className="@container isolate min-h-[44rem] overflow-hidden rounded-lg border border-foreground/10 bg-muted text-foreground">
-      <div className="flex min-h-[44rem]">
+    <div className="@container isolate min-h-dvh overflow-hidden bg-muted text-foreground" data-slot="sentry-page-frame">
+      <div className="flex min-h-dvh">
         <aside aria-label="Primary navigation panel" className="hidden w-[74px] shrink-0 border-r border-foreground/10 @md:flex">
           <PrimaryNavigation activeItem="settings" organization="Acme" />
         </aside>
@@ -288,7 +288,7 @@ export function SentryPageFrame({
             </div>
           </div>
 
-          <main className="min-h-[calc(44rem-53px)] bg-background p-5 @sm:p-6 @md:p-8">
+          <main className="min-h-[calc(100dvh-53px)] bg-background p-5 @sm:p-6 @md:p-8">
             {children}
           </main>
         </div>
