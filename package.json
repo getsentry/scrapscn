@@ -10,11 +10,12 @@
     "lint": "eslint",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "figma:parse": "figma connect parse --exit-on-unreadable-files --skip-update-check",
+    "figma:parse": "node --test tests/figma/*.test.mjs && figma connect parse --exit-on-unreadable-files --skip-update-check",
     "figma:preview": "node scripts/figma-preview.mjs",
     "template:create": "node scripts/create-template.mjs",
     "templates:generate": "node scripts/generate-template-manifest.mjs",
     "test:playground": "pnpm build:next && node scripts/run-playwright.mjs tests/e2e/playground.spec.ts",
+    "test:figma-capture": "pnpm build:next && node scripts/test-production-capture.mjs && node scripts/run-playwright.mjs tests/e2e/figma-capture-production.spec.ts && SCRAPSCN_E2E_MODE=development node scripts/run-playwright.mjs tests/e2e/figma-capture.spec.ts",
     "test:templates": "node --test tests/templates/*.test.mjs && pnpm templates:generate && node scripts/test-templates.mjs && pnpm build:next && node scripts/run-playwright.mjs tests/e2e/templates.spec.ts",
     "test": "vitest run"
   },

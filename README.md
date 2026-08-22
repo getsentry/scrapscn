@@ -59,7 +59,7 @@ FIGMA_ACCESS_TOKEN=... pnpm figma:preview
 
 Never commit the token. Before publication, confirm in Dev Mode that size, checked state, and disabled state produce the expected `@/components/ui/checkbox` import and JSX.
 
-For code to canvas, run the template locally or on a Vercel Preview and use Figma MCP `generate_figma_design`. The result must contain editable layers. For the return trip, change a connected Checkbox property and its label in the Figma test frame, read that frame through Figma MCP, and update the existing `Checkbox` usage. Do not replace it with raw markup.
+For local code to canvas, run the template and use Figma MCP `generate_figma_design`. Its one-time URL includes a `figmacapture` hash that enables the development-only capture script for that visit. Test a Vercel Preview through the separate external-URL capture workflow. Production pages and runtime JavaScript do not load or contain the local capture bootstrap; source maps can retain development source text. The result must contain editable layers. For the return trip, change a connected Checkbox property and its label in the Figma test frame, read that frame through Figma MCP, and update the existing `Checkbox` usage. Do not replace it with raw markup.
 
 The approved Sentry page-frame Figma node is not yet recorded. The local page frame is a source-grounded structural prototype. Do not call it pixel-approved until Design provides a node URL and accepts the comparison.
 
@@ -72,6 +72,7 @@ pnpm build:next
 pnpm build-storybook
 pnpm test:playground
 pnpm test:templates
+pnpm test:figma-capture
 pnpm figma:parse
 pnpm figma:preview
 ```

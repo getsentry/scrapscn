@@ -1,8 +1,9 @@
 import { defineConfig } from "playwright/test"
 
 const serviceName = process.env.SCRAPSCN_E2E_NAME
-if (!serviceName) throw new Error("Run Playwright through pnpm test:playground")
+if (!serviceName) throw new Error("Run Playwright through a package test script")
 const baseURL = `https://${serviceName}.localhost`
+const startScript = process.env.SCRAPSCN_E2E_MODE === "development" ? "dev" : "start"
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -15,7 +16,7 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: `portless ${serviceName} pnpm start`,
+    command: `portless ${serviceName} pnpm ${startScript}`,
     url: baseURL,
     reuseExistingServer: false,
     timeout: 30_000,
