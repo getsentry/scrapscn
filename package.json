@@ -12,12 +12,15 @@
     "build-storybook": "storybook build",
     "figma:parse": "node --test tests/figma/*.test.mjs && figma connect parse --exit-on-unreadable-files --skip-update-check",
     "figma:preview": "node scripts/figma-preview.mjs",
+    "parity:generate": "node scripts/generate-parity-manifest.mjs",
+    "parity:validate": "node scripts/validate-parity-manifest.mjs",
+    "test:parity": "node --test tests/parity/*.test.mjs",
     "template:create": "node scripts/create-template.mjs",
     "templates:generate": "node scripts/generate-template-manifest.mjs",
     "test:playground": "pnpm build:next && node scripts/run-playwright.mjs tests/e2e/playground.spec.ts",
     "test:figma-capture": "pnpm build:next && node scripts/test-production-capture.mjs && node scripts/run-playwright.mjs tests/e2e/figma-capture-production.spec.ts && SCRAPSCN_E2E_MODE=development node scripts/run-playwright.mjs tests/e2e/figma-capture.spec.ts",
     "test:templates": "node --test tests/templates/*.test.mjs && pnpm templates:generate && node scripts/test-templates.mjs && pnpm build:next && node scripts/run-playwright.mjs tests/e2e/templates.spec.ts",
-    "test": "vitest run"
+    "test": "pnpm test:parity && vitest run"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",

@@ -1,0 +1,2132 @@
+{
+  "schemaVersion": 1,
+  "canonical": {
+    "repository": "getsentry/sentry",
+    "commit": "d91f823d232ddd12a4d2a64554d85fd36df0e278",
+    "root": "static/app/components/core",
+    "excludedDirectories": [
+      "overview",
+      "patterns",
+      "principles"
+    ]
+  },
+  "scope": {
+    "targetModuleCount": 48,
+    "outOfScopeLocalComponents": [
+      "src/components/ui/card.tsx",
+      "src/components/ui/command.tsx",
+      "src/components/ui/dialog.tsx",
+      "src/components/ui/dropdown-menu.tsx",
+      "src/components/ui/label.tsx",
+      "src/components/ui/progress.tsx",
+      "src/components/ui/scroll-area.tsx",
+      "src/components/ui/sheet.tsx"
+    ]
+  },
+  "modules": [
+    {
+      "name": "alert",
+      "canonical": {
+        "indexPath": "static/app/components/core/alert/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/alert/alert.tsx",
+          "static/app/components/core/alert/alertLink.tsx",
+          "static/app/components/core/alert/index.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Alert",
+            "AlertLink"
+          ],
+          "types": [
+            "AlertProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/alert.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Alert",
+            "AlertDescription",
+            "AlertLink",
+            "AlertTitle"
+          ],
+          "types": [
+            "AlertLinkProps",
+            "AlertProps"
+          ]
+        },
+        "registryItems": [
+          "alert"
+        ],
+        "stories": [
+          "src/components/ui/alert.stories.tsx"
+        ],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [
+          "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=6943-13522"
+        ],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "avatar",
+      "canonical": {
+        "indexPath": "static/app/components/core/avatar/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/avatar/actorAvatar.tsx",
+          "static/app/components/core/avatar/avatar.tsx",
+          "static/app/components/core/avatar/avatarList.tsx",
+          "static/app/components/core/avatar/docIntegrationAvatar.tsx",
+          "static/app/components/core/avatar/imageAvatar/imageAvatar.tsx",
+          "static/app/components/core/avatar/index.tsx",
+          "static/app/components/core/avatar/letterAvatar/letterAvatar.tsx",
+          "static/app/components/core/avatar/organizationAvatar.tsx",
+          "static/app/components/core/avatar/projectAvatar.tsx",
+          "static/app/components/core/avatar/sentryAppAvatar.tsx",
+          "static/app/components/core/avatar/teamAvatar.tsx",
+          "static/app/components/core/avatar/useAvatar.ts",
+          "static/app/components/core/avatar/userAvatar.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "ActorAvatar",
+            "Avatar",
+            "AvatarList",
+            "CollapsedAvatars",
+            "DocIntegrationAvatar",
+            "ImageAvatar",
+            "LetterAvatar",
+            "OrganizationAvatar",
+            "ProjectAvatar",
+            "SentryAppAvatar",
+            "TeamAvatar",
+            "UserAvatar",
+            "useAvatar"
+          ],
+          "types": [
+            "ActorAvatarProps",
+            "AvatarProps",
+            "BaseAvatarProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/avatar.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Avatar",
+            "AvatarBadge",
+            "AvatarFallback",
+            "AvatarGroup",
+            "AvatarGroupCount",
+            "AvatarImage"
+          ],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "avatarButton",
+      "canonical": {
+        "indexPath": "static/app/components/core/avatarButton/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/avatarButton/avatarButton.tsx",
+          "static/app/components/core/avatarButton/index.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "AvatarButton"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local avatar-button implementation is mapped."
+      }
+    },
+    {
+      "name": "backdrop",
+      "canonical": {
+        "indexPath": "static/app/components/core/backdrop/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/backdrop/backdrop.tsx",
+          "static/app/components/core/backdrop/index.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Backdrop"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local backdrop implementation is mapped."
+      }
+    },
+    {
+      "name": "badge",
+      "canonical": {
+        "indexPath": "static/app/components/core/badge/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/badge/alertBadge.tsx",
+          "static/app/components/core/badge/badge.tsx",
+          "static/app/components/core/badge/deployBadge.tsx",
+          "static/app/components/core/badge/featureBadge.tsx",
+          "static/app/components/core/badge/index.tsx",
+          "static/app/components/core/badge/projectsBadge.tsx",
+          "static/app/components/core/badge/tag.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "AlertBadge",
+            "Badge",
+            "DeployBadge",
+            "FeatureBadge",
+            "ProjectsBadge",
+            "Tag"
+          ],
+          "types": [
+            "FeatureBadgeProps",
+            "TagProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/badge.tsx",
+          "src/components/ui/feature-badge.tsx",
+          "src/components/ui/tag.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Badge",
+            "FeatureBadge",
+            "Tag",
+            "badgeVariants",
+            "tagVariants"
+          ],
+          "types": []
+        },
+        "registryItems": [
+          "badge",
+          "feature-badge",
+          "tag"
+        ],
+        "stories": [
+          "src/components/ui/badge.stories.tsx",
+          "src/components/ui/feature-badge.stories.tsx",
+          "src/components/ui/tag.stories.tsx"
+        ],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [
+          "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3574-5396",
+          "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3574-5698"
+        ],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "breadcrumbList",
+      "canonical": {
+        "indexPath": "static/app/components/core/breadcrumbList/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/breadcrumbList/breadcrumbList.tsx",
+          "static/app/components/core/breadcrumbList/index.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "BreadcrumbList"
+          ],
+          "types": [
+            "BreadcrumbTitleItem"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local breadcrumb-list implementation is mapped."
+      }
+    },
+    {
+      "name": "button",
+      "canonical": {
+        "indexPath": "static/app/components/core/button/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/button/button.tsx",
+          "static/app/components/core/button/buttonBar.tsx",
+          "static/app/components/core/button/index.tsx",
+          "static/app/components/core/button/linkButton.tsx",
+          "static/app/components/core/button/styles.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Button",
+            "ButtonBar",
+            "DO_NOT_USE_getButtonStyles",
+            "LinkButton"
+          ],
+          "types": [
+            "ButtonBarProps",
+            "ButtonProps",
+            "LinkButtonProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/button.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Button",
+            "buttonVariants"
+          ],
+          "types": [
+            "ButtonProps"
+          ]
+        },
+        "registryItems": [
+          "button"
+        ],
+        "stories": [
+          "src/components/ui/button.stories.tsx"
+        ],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [
+          "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=384-2119"
+        ],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "chat",
+      "canonical": {
+        "indexPath": "static/app/components/core/chat/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/chat/assistantActions.tsx",
+          "static/app/components/core/chat/assistantMessage.tsx",
+          "static/app/components/core/chat/index.tsx",
+          "static/app/components/core/chat/messageRow.tsx",
+          "static/app/components/core/chat/spinner.tsx",
+          "static/app/components/core/chat/thinkingBlock.tsx",
+          "static/app/components/core/chat/toolCallIndicator.tsx",
+          "static/app/components/core/chat/userMessage.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "AssistantActions",
+            "AssistantMessage",
+            "MessageRow",
+            "Spinner",
+            "ThinkingBlock",
+            "ToolCallIndicator",
+            "UserMessage"
+          ],
+          "types": [
+            "ToolCallStatus"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local chat implementation is mapped."
+      }
+    },
+    {
+      "name": "checkbox",
+      "canonical": {
+        "indexPath": "static/app/components/core/checkbox/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/checkbox/checkbox.tsx",
+          "static/app/components/core/checkbox/index.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Checkbox"
+          ],
+          "types": [
+            "CheckboxProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/checkbox.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Checkbox"
+          ],
+          "types": [
+            "CheckboxProps"
+          ]
+        },
+        "registryItems": [],
+        "stories": [
+          "src/components/ui/checkbox.stories.tsx"
+        ],
+        "tests": [
+          "tests/e2e/playground.spec.ts",
+          "tests/e2e/templates.spec.ts",
+          "tests/figma/figma-preview.test.mjs"
+        ],
+        "codeConnect": [
+          "src/components/ui/checkbox.figma.ts"
+        ],
+        "figmaNodes": [
+          "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3481-4211"
+        ],
+        "playgroundPath": "/?component=checkbox"
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "chip",
+      "canonical": {
+        "indexPath": "static/app/components/core/chip/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/chip/chip.tsx",
+          "static/app/components/core/chip/index.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Chip"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local chip implementation is mapped."
+      }
+    },
+    {
+      "name": "code",
+      "canonical": {
+        "indexPath": "static/app/components/core/code/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/code/codeBlock.tsx",
+          "static/app/components/core/code/index.tsx",
+          "static/app/components/core/code/inlineCode.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "CodeBlock",
+            "InlineCode",
+            "inlineCodeStyles"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local code implementation is mapped."
+      }
+    },
+    {
+      "name": "compactSelect",
+      "canonical": {
+        "indexPath": "static/app/components/core/compactSelect/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/compactSelect/compactSelect.tsx",
+          "static/app/components/core/compactSelect/composite.tsx",
+          "static/app/components/core/compactSelect/control.tsx",
+          "static/app/components/core/compactSelect/highlightText.tsx",
+          "static/app/components/core/compactSelect/index.tsx",
+          "static/app/components/core/compactSelect/list.tsx",
+          "static/app/components/core/compactSelect/listBox/index.tsx",
+          "static/app/components/core/compactSelect/menuComponents.tsx",
+          "static/app/components/core/compactSelect/styles.tsx",
+          "static/app/components/core/compactSelect/types.tsx",
+          "static/app/components/core/compactSelect/useVirtualizedItems.tsx",
+          "static/app/components/core/compactSelect/utils.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "CompactSelect",
+            "CompositeSelect",
+            "ControlContext",
+            "HighlightText",
+            "LeadWrap",
+            "ListBox",
+            "ListLabel",
+            "ListSeparator",
+            "ListWrap",
+            "MenuComponents",
+            "SectionGroup",
+            "SectionHeader",
+            "SectionSeparator",
+            "SectionTitle",
+            "SectionToggle",
+            "SectionWrap",
+            "SelectFilterContext",
+            "SizeLimitMessage",
+            "TriggerLabel",
+            "getDisabledOptions",
+            "getEscapedKey",
+            "getHiddenOptions",
+            "getItemsWithKeys",
+            "itemIsSectionWithKey",
+            "useVirtualizedItems"
+          ],
+          "types": [
+            "MultipleSelectProps",
+            "SearchMatchResult",
+            "SelectKey",
+            "SelectOption",
+            "SelectOptionOrSection",
+            "SelectOptionOrSectionWithKey",
+            "SelectOptionWithKey",
+            "SelectProps",
+            "SelectSection",
+            "SelectSectionWithKey",
+            "SingleSelectProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local compact-select implementation is mapped."
+      }
+    },
+    {
+      "name": "disclosure",
+      "canonical": {
+        "indexPath": "static/app/components/core/disclosure/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/disclosure/disclosure.tsx",
+          "static/app/components/core/disclosure/index.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Disclosure"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local disclosure implementation is mapped."
+      }
+    },
+    {
+      "name": "dragHandle",
+      "canonical": {
+        "indexPath": "static/app/components/core/dragHandle/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/dragHandle/dragHandle.tsx",
+          "static/app/components/core/dragHandle/index.tsx",
+          "static/app/components/core/dragHandle/useDragMove.tsx",
+          "static/app/components/core/dragHandle/useDragSeparator.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "DRAG_HANDLE_SIZE",
+            "DRAG_SEPARATOR_TARGET_SIZE",
+            "DragHandle",
+            "useDragMove",
+            "useDragSeparator"
+          ],
+          "types": [
+            "DragHandleVariant"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local drag-handle implementation is mapped."
+      }
+    },
+    {
+      "name": "drawer",
+      "canonical": {
+        "indexPath": "static/app/components/core/drawer/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/drawer/components.tsx",
+          "static/app/components/core/drawer/index.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "DrawerBody",
+            "DrawerHeader",
+            "GlobalDrawer",
+            "useDrawer",
+            "useDrawerContentContext"
+          ],
+          "types": [
+            "DrawerConfig",
+            "DrawerOptions"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local drawer implementation is mapped."
+      }
+    },
+    {
+      "name": "emptyState",
+      "canonical": {
+        "indexPath": "static/app/components/core/emptyState/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/emptyState/emptyState.tsx",
+          "static/app/components/core/emptyState/index.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "EmptyState"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local empty-state implementation is mapped."
+      }
+    },
+    {
+      "name": "form",
+      "canonical": {
+        "indexPath": "static/app/components/core/form/index.ts",
+        "sourcePaths": [
+          "static/app/components/core/form/FormSearch.tsx",
+          "static/app/components/core/form/autoSaveContext.tsx",
+          "static/app/components/core/form/autoSaveForm.tsx",
+          "static/app/components/core/form/generatedFieldRegistry.ts",
+          "static/app/components/core/form/index.ts",
+          "static/app/components/core/form/layout/fieldGroup.tsx",
+          "static/app/components/core/form/scrapsForm.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "AutoSaveContextProvider",
+            "AutoSaveForm",
+            "FORM_FIELD_REGISTRY",
+            "FieldGroup",
+            "FormSearch",
+            "defaultFormOptions",
+            "formOptions",
+            "setFieldErrors",
+            "useScrapsForm",
+            "useStore",
+            "withFieldGroup",
+            "withForm"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local form implementation is mapped."
+      }
+    },
+    {
+      "name": "hotkey",
+      "canonical": {
+        "indexPath": "static/app/components/core/hotkey/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/hotkey/hotkey.tsx",
+          "static/app/components/core/hotkey/index.tsx",
+          "static/app/components/core/hotkey/kbd.tsx",
+          "static/app/components/core/hotkey/useHotkeys.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Hotkey",
+            "Kbd",
+            "useHotkeys"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local hotkey implementation is mapped."
+      }
+    },
+    {
+      "name": "image",
+      "canonical": {
+        "indexPath": "static/app/components/core/image/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/image/image.tsx",
+          "static/app/components/core/image/index.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Image"
+          ],
+          "types": [
+            "ImageProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local image implementation is mapped."
+      }
+    },
+    {
+      "name": "info",
+      "canonical": {
+        "indexPath": "static/app/components/core/info/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/info/index.tsx",
+          "static/app/components/core/info/infoText.tsx",
+          "static/app/components/core/info/infoTip.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "DisabledTip",
+            "InfoText",
+            "InfoTip"
+          ],
+          "types": [
+            "InfoTextProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local info implementation is mapped."
+      }
+    },
+    {
+      "name": "input",
+      "canonical": {
+        "indexPath": "static/app/components/core/input/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/input/index.tsx",
+          "static/app/components/core/input/input.tsx",
+          "static/app/components/core/input/inputGroup.tsx",
+          "static/app/components/core/input/numberDragInput.tsx",
+          "static/app/components/core/input/numberInput.tsx",
+          "static/app/components/core/input/useAutosizeInput.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Input",
+            "InputGroup",
+            "NumberDragInput",
+            "NumberInput",
+            "useAutosizeInput"
+          ],
+          "types": [
+            "InputProps",
+            "InputStylesProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/input-group.tsx",
+          "src/components/ui/input.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Input",
+            "InputGroup",
+            "InputGroupAddon",
+            "InputGroupButton",
+            "InputGroupInput",
+            "InputGroupText",
+            "InputGroupTextarea"
+          ],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [
+          "src/components/ui/input.stories.tsx"
+        ],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "interactionStateLayer",
+      "canonical": {
+        "indexPath": "static/app/components/core/interactionStateLayer/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/interactionStateLayer/index.tsx",
+          "static/app/components/core/interactionStateLayer/interactionStateLayer.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "default"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local interaction-state-layer implementation is mapped."
+      }
+    },
+    {
+      "name": "layout",
+      "canonical": {
+        "indexPath": "static/app/components/core/layout/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/layout/container.tsx",
+          "static/app/components/core/layout/flex.tsx",
+          "static/app/components/core/layout/grid.tsx",
+          "static/app/components/core/layout/index.tsx",
+          "static/app/components/core/layout/stack.tsx",
+          "static/app/components/core/layout/styles.tsx",
+          "static/app/components/core/layout/surface.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Container",
+            "ContainerQueryProvider",
+            "Flex",
+            "Grid",
+            "Stack",
+            "Surface",
+            "getBorder",
+            "getMargin",
+            "getRadius",
+            "getSpacing",
+            "rc",
+            "useContainerBreakpoint",
+            "useHasContainerQuery",
+            "useResponsivePropValue"
+          ],
+          "types": [
+            "ContainerProps",
+            "ContainerPropsWithRenderFunction",
+            "FlexProps",
+            "GridProps",
+            "Responsive",
+            "ResponsiveKey",
+            "StackProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local layout implementation is mapped."
+      }
+    },
+    {
+      "name": "link",
+      "canonical": {
+        "indexPath": "static/app/components/core/link/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/link/index.tsx",
+          "static/app/components/core/link/link.tsx",
+          "static/app/components/core/link/linkBehaviorContext.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "ExternalLink",
+            "Link",
+            "LinkBehaviorContextProvider"
+          ],
+          "types": [
+            "LinkProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/link.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Link",
+            "linkVariants"
+          ],
+          "types": []
+        },
+        "registryItems": [
+          "link"
+        ],
+        "stories": [
+          "src/components/ui/link.stories.tsx"
+        ],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "loader",
+      "canonical": {
+        "indexPath": "static/app/components/core/loader/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/loader/indeterminateLoader.tsx",
+          "static/app/components/core/loader/index.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "IndeterminateLoader"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local loader implementation is mapped."
+      }
+    },
+    {
+      "name": "markdown",
+      "canonical": {
+        "indexPath": "static/app/components/core/markdown/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/markdown/index.tsx",
+          "static/app/components/core/markdown/markdown.tsx",
+          "static/app/components/core/markdown/useStreamingAnimation.ts"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Markdown",
+            "streamingAnimationStyles",
+            "useTextDecodeAnimation"
+          ],
+          "types": [
+            "MarkdownProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local markdown implementation is mapped."
+      }
+    },
+    {
+      "name": "menuListItem",
+      "canonical": {
+        "indexPath": "static/app/components/core/menuListItem/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/menuListItem/index.tsx",
+          "static/app/components/core/menuListItem/menuListItem.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "InnerWrap",
+            "LeadingItems",
+            "MenuListItem"
+          ],
+          "types": [
+            "MenuListItemProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local menu-list-item implementation is mapped."
+      }
+    },
+    {
+      "name": "modal",
+      "canonical": {
+        "indexPath": "static/app/components/core/modal/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/modal/components.tsx",
+          "static/app/components/core/modal/index.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "GlobalModal",
+            "ModalBody",
+            "ModalFooter",
+            "makeClosableHeader",
+            "makeCloseButton",
+            "useModal"
+          ],
+          "types": [
+            "ModalTypes"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local modal implementation is mapped."
+      }
+    },
+    {
+      "name": "pagination",
+      "canonical": {
+        "indexPath": "static/app/components/core/pagination/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/pagination/index.tsx",
+          "static/app/components/core/pagination/pagination.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Pagination",
+            "getPaginationCaption"
+          ],
+          "types": [
+            "CursorHandler"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local pagination implementation is mapped."
+      }
+    },
+    {
+      "name": "pictureInPicture",
+      "canonical": {
+        "indexPath": "static/app/components/core/pictureInPicture/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/pictureInPicture/index.tsx",
+          "static/app/components/core/pictureInPicture/pictureInPicture.tsx",
+          "static/app/components/core/pictureInPicture/pictureInPicturePortal.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "PictureInPicturePortal",
+            "PictureInPictureProvider",
+            "usePictureInPicture"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local picture-in-picture implementation is mapped."
+      }
+    },
+    {
+      "name": "quote",
+      "canonical": {
+        "indexPath": "static/app/components/core/quote/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/quote/index.tsx",
+          "static/app/components/core/quote/quote.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Quote"
+          ],
+          "types": [
+            "QuoteProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local quote implementation is mapped."
+      }
+    },
+    {
+      "name": "radio",
+      "canonical": {
+        "indexPath": "static/app/components/core/radio/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/radio/index.tsx",
+          "static/app/components/core/radio/radio.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Radio"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/radio-group.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "RadioGroup",
+            "RadioGroupItem"
+          ],
+          "types": []
+        },
+        "registryItems": [
+          "radio-group"
+        ],
+        "stories": [
+          "src/components/ui/radio-group.stories.tsx"
+        ],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [
+          "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3482-4251"
+        ],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "revealOnHover",
+      "canonical": {
+        "indexPath": "static/app/components/core/revealOnHover/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/revealOnHover/index.tsx",
+          "static/app/components/core/revealOnHover/revealOnHover.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "RevealOnHover"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local reveal-on-hover implementation is mapped."
+      }
+    },
+    {
+      "name": "segmentedControl",
+      "canonical": {
+        "indexPath": "static/app/components/core/segmentedControl/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/segmentedControl/index.tsx",
+          "static/app/components/core/segmentedControl/segmentedControl.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "SegmentedControl"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/segmented-control.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "SegmentedControl",
+            "SegmentedControlItem"
+          ],
+          "types": []
+        },
+        "registryItems": [
+          "segmented-control"
+        ],
+        "stories": [
+          "src/components/ui/segmented-control.stories.tsx"
+        ],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "select",
+      "canonical": {
+        "indexPath": "static/app/components/core/select/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/select/index.tsx",
+          "static/app/components/core/select/option.tsx",
+          "static/app/components/core/select/select.tsx",
+          "static/app/components/core/select/types.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "CheckWrap",
+            "Select",
+            "SelectOption"
+          ],
+          "types": [
+            "ControlProps",
+            "GeneralSelectValue",
+            "SelectValue",
+            "StylesConfig"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/select.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Select",
+            "SelectContent",
+            "SelectGroup",
+            "SelectItem",
+            "SelectLabel",
+            "SelectScrollDownButton",
+            "SelectScrollUpButton",
+            "SelectSeparator",
+            "SelectTrigger",
+            "SelectValue"
+          ],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [
+          "src/components/ui/select.stories.tsx"
+        ],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "separator",
+      "canonical": {
+        "indexPath": "static/app/components/core/separator/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/separator/index.tsx",
+          "static/app/components/core/separator/separator.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Separator"
+          ],
+          "types": [
+            "SeparatorProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/separator.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Separator"
+          ],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "slideOverPanel",
+      "canonical": {
+        "indexPath": "static/app/components/core/slideOverPanel/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/slideOverPanel/index.tsx",
+          "static/app/components/core/slideOverPanel/slideOverPanel.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "SlideOverPanel"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local slide-over-panel implementation is mapped."
+      }
+    },
+    {
+      "name": "slider",
+      "canonical": {
+        "indexPath": "static/app/components/core/slider/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/slider/index.tsx",
+          "static/app/components/core/slider/slider.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Slider"
+          ],
+          "types": [
+            "SliderProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/slider.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Slider"
+          ],
+          "types": [
+            "SliderProps"
+          ]
+        },
+        "registryItems": [
+          "slider"
+        ],
+        "stories": [
+          "src/components/ui/slider.stories.tsx"
+        ],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [
+          "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3538-6616"
+        ],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "slot",
+      "canonical": {
+        "indexPath": "static/app/components/core/slot/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/slot/index.tsx",
+          "static/app/components/core/slot/slot.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "slot",
+            "withSlots"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local slot implementation is mapped."
+      }
+    },
+    {
+      "name": "splitPanel",
+      "canonical": {
+        "indexPath": "static/app/components/core/splitPanel/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/splitPanel/index.tsx",
+          "static/app/components/core/splitPanel/splitPanel.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "SplitPanel"
+          ],
+          "types": [
+            "SplitPanelHandle"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local split-panel implementation is mapped."
+      }
+    },
+    {
+      "name": "statusIndicator",
+      "canonical": {
+        "indexPath": "static/app/components/core/statusIndicator/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/statusIndicator/index.tsx",
+          "static/app/components/core/statusIndicator/statusIndicator.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "StatusIndicator"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local status-indicator implementation is mapped."
+      }
+    },
+    {
+      "name": "switch",
+      "canonical": {
+        "indexPath": "static/app/components/core/switch/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/switch/index.tsx",
+          "static/app/components/core/switch/switch.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Switch"
+          ],
+          "types": [
+            "SwitchProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/switch.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Switch"
+          ],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [
+          "src/components/ui/switch.stories.tsx"
+        ],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [
+          "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3277-4566"
+        ],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "table",
+      "canonical": {
+        "indexPath": "static/app/components/core/table/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/table/index.tsx",
+          "static/app/components/core/table/styles.tsx",
+          "static/app/components/core/table/table.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "COL_WIDTH_MINIMUM",
+            "COL_WIDTH_UNDEFINED",
+            "TABLE_HEAD_ROW_HEIGHT",
+            "Table",
+            "TableResizer",
+            "TableStatusCell"
+          ],
+          "types": [
+            "TableColumnConfig"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/table.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Table",
+            "TableBody",
+            "TableCaption",
+            "TableCell",
+            "TableFooter",
+            "TableHead",
+            "TableHeader",
+            "TableRow"
+          ],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "tabs",
+      "canonical": {
+        "indexPath": "static/app/components/core/tabs/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/tabs/index.tsx",
+          "static/app/components/core/tabs/item.tsx",
+          "static/app/components/core/tabs/tabList.tsx",
+          "static/app/components/core/tabs/tabPanels.tsx",
+          "static/app/components/core/tabs/tabs.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "TabList",
+            "TabPanels",
+            "TabStateProvider",
+            "Tabs"
+          ],
+          "types": [
+            "TabListItemProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/tabs.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Tabs",
+            "TabsContent",
+            "TabsList",
+            "TabsTrigger",
+            "tabsListVariants"
+          ],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [
+          "src/components/ui/tabs.stories.tsx"
+        ],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "text",
+      "canonical": {
+        "indexPath": "static/app/components/core/text/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/text/heading.tsx",
+          "static/app/components/core/text/index.tsx",
+          "static/app/components/core/text/prose.tsx",
+          "static/app/components/core/text/text.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Heading",
+            "Prose",
+            "Text"
+          ],
+          "types": [
+            "HeadingProps",
+            "TextProps",
+            "TextPropsWithRenderFunction"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local text implementation is mapped."
+      }
+    },
+    {
+      "name": "textarea",
+      "canonical": {
+        "indexPath": "static/app/components/core/textarea/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/textarea/index.tsx",
+          "static/app/components/core/textarea/textarea.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "TextArea"
+          ],
+          "types": [
+            "TextAreaProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/textarea.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Textarea"
+          ],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [
+          "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3537-20061"
+        ],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    },
+    {
+      "name": "toast",
+      "canonical": {
+        "indexPath": "static/app/components/core/toast/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/toast/index.tsx",
+          "static/app/components/core/toast/toast.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Toast"
+          ],
+          "types": []
+        }
+      },
+      "local": {
+        "implementationPaths": [],
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "registryItems": [],
+        "stories": [],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "missing",
+        "complete": false,
+        "note": "No local toast implementation is mapped."
+      }
+    },
+    {
+      "name": "tooltip",
+      "canonical": {
+        "indexPath": "static/app/components/core/tooltip/index.tsx",
+        "sourcePaths": [
+          "static/app/components/core/tooltip/index.tsx",
+          "static/app/components/core/tooltip/tooltip.tsx"
+        ],
+        "publicExports": {
+          "runtime": [
+            "Tooltip",
+            "TooltipContext"
+          ],
+          "types": [
+            "TooltipProps"
+          ]
+        }
+      },
+      "local": {
+        "implementationPaths": [
+          "src/components/ui/tooltip.tsx"
+        ],
+        "implementedExports": {
+          "runtime": [
+            "Tooltip",
+            "TooltipContent",
+            "TooltipProvider",
+            "TooltipTrigger"
+          ],
+          "types": []
+        },
+        "registryItems": [
+          "tooltip"
+        ],
+        "stories": [
+          "src/components/ui/tooltip.stories.tsx"
+        ],
+        "tests": [],
+        "codeConnect": [],
+        "figmaNodes": [
+          "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=6775-627"
+        ],
+        "playgroundPath": null
+      },
+      "completion": {
+        "state": "partial",
+        "complete": false,
+        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+      }
+    }
+  ]
+}
