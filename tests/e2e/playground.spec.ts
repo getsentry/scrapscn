@@ -21,6 +21,12 @@ test("shares and restores the Checkbox template workflow", async ({ browser, pag
     "aria-orientation",
     "vertical"
   )
+  await expect(page.getByTestId("slot-playground-outlet")).toContainText(
+    "Portaled Scraps content"
+  )
+  await expect(page.getByTestId("slot-playground-outlet")).not.toContainText(
+    "No utility content"
+  )
 
   const initialCheckbox = page.getByRole("checkbox", { name: "Alert me about new issues" })
   const interactionTarget = initialCheckbox.locator("..")

@@ -199,7 +199,12 @@ for (const parityModule of manifest.modules) {
 assertSortedUnique(manifest.scope.outOfScopeLocalComponents, 'scope.outOfScopeLocalComponents');
 await assertPathsExist(manifest.scope.outOfScopeLocalComponents, 'scope.outOfScopeLocalComponents');
 const localUiFiles = (await readdir('src/components/ui'))
-  .filter(filename => filename.endsWith('.tsx') && !filename.includes('.stories.'))
+  .filter(
+    filename =>
+      filename.endsWith('.tsx') &&
+      !filename.includes('.stories.') &&
+      !filename.includes('.test.')
+  )
   .map(filename => `src/components/ui/${filename}`)
   .sort();
 const classifiedLocalFiles = [

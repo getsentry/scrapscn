@@ -56,6 +56,7 @@ test("layout and separator registry items have an acyclic dependency closure", a
   assert.deepEqual(
     layout.files.map((file) => file.path),
     [
+      "src/components/ui/container-query-context.ts",
       "src/components/ui/layout-style-engine.ts",
       "src/components/ui/layout.tsx",
       "src/components/ui/separator.tsx",
@@ -64,6 +65,7 @@ test("layout and separator registry items have an acyclic dependency closure", a
   assert.deepEqual(
     separator.files.map((file) => file.path),
     [
+      "src/components/ui/container-query-context.ts",
       "src/components/ui/layout-style-engine.ts",
       "src/components/ui/separator.tsx",
     ]

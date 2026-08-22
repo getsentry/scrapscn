@@ -1,5 +1,7 @@
 import isPropValid from "@emotion/is-prop-valid";
 
+import type { ContainerQueryBreakpoint } from "./container-query-context";
+
 export type LayoutSpaceSize =
   | "0"
   | "2xs"
@@ -31,19 +33,7 @@ export type LayoutBorderVariant =
   | "promotion"
   | "none";
 export type LayoutSurfaceVariant = "primary" | "secondary" | "tertiary";
-export type LayoutContainerBreakpoint =
-  | "zero"
-  | "3xs"
-  | "2xs"
-  | "xs"
-  | "sm"
-  | "md"
-  | "lg"
-  | "xl"
-  | "2xl"
-  | "3xl"
-  | "4xl"
-  | "5xl";
+export type LayoutContainerBreakpoint = ContainerQueryBreakpoint;
 export type LayoutViewportBreakpoint =
   | "2xs"
   | "xs"

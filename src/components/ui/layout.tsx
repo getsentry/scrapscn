@@ -24,6 +24,7 @@ import {
 } from "react";
 
 import { Separator, type SeparatorProps } from "./separator";
+import { ContainerQueryContext } from "./container-query-context";
 import {
   combineLayoutClassNames as combineClassNames,
   compileLayoutStyle,
@@ -271,8 +272,6 @@ export type ContainerPropsWithRenderFunction<
       never
     >
   >;
-
-const ContainerQueryContext = createContext<ContainerBreakpoint | null>(null);
 
 function getContentBoxInlineSize(element: Element): number {
   const styles = window.getComputedStyle(element);

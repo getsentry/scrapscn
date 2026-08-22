@@ -9,6 +9,7 @@ import { SentryPageFrame } from "@/components/playground/sentry-page-frame"
 import { Button } from "@/components/ui/button"
 import { Checkbox, type CheckboxProps } from "@/components/ui/checkbox"
 import { Container, Stack } from "@/components/ui/layout"
+import { slot } from "@/components/ui/slot"
 import { cn } from "@/lib/utils"
 import type { TemplateMetadata } from "@/templates/types"
 
@@ -29,6 +30,7 @@ type PlaygroundState = {
 }
 
 const defaultLabel = "Alert me about new issues"
+const PlaygroundSlot = slot(["utility"] as const)
 const defaultNotificationIds: NotificationId[] = ["new-issues", "issue-status", "weekly-reports"]
 const notificationContent: Record<NotificationId, { description: string; label: string }> = {
   "new-issues": {
@@ -471,6 +473,24 @@ export function CheckboxPlayground({ templates = [] }: { templates?: TemplateMet
                   <span className="text-sm text-muted-foreground">Responsive Scraps primitives</span>
                 </Stack>
               </Container>
+              <PlaygroundSlot.Provider>
+                <Container containerType="inline-size" padding="md" border="primary" radius="md" background="primary">
+                  <Stack gap="sm">
+                    <span className="text-sm font-medium">Slot portal proof</span>
+                    <PlaygroundSlot.Outlet name="utility">
+                      {(props, hasConsumers) => (
+                        <div {...props} data-testid="slot-playground-outlet" className="text-sm text-muted-foreground">
+                          <PlaygroundSlot.Fallback>No utility content</PlaygroundSlot.Fallback>
+                          {hasConsumers ? "Custom utility connected" : "Waiting for utility"}
+                        </div>
+                      )}
+                    </PlaygroundSlot.Outlet>
+                  </Stack>
+                </Container>
+                <PlaygroundSlot name="utility">
+                  <span data-testid="slot-playground-content">Portaled Scraps content</span>
+                </PlaygroundSlot>
+              </PlaygroundSlot.Provider>
               <form
                 aria-labelledby="email-heading"
                 className="grid"

@@ -20,7 +20,8 @@
       "src/components/ui/label.tsx",
       "src/components/ui/progress.tsx",
       "src/components/ui/scroll-area.tsx",
-      "src/components/ui/sheet.tsx"
+      "src/components/ui/sheet.tsx",
+      "src/components/ui/size-context.tsx"
     ]
   },
   "modules": [
@@ -1761,7 +1762,9 @@
       "canonical": {
         "indexPath": "static/app/components/core/slot/index.tsx",
         "sourcePaths": [
+          "static/app/components/core/sizeContext.tsx",
           "static/app/components/core/slot/index.tsx",
+          "static/app/components/core/slot/knownContexts.ts",
           "static/app/components/core/slot/slot.tsx"
         ],
         "publicExports": {
@@ -1773,22 +1776,34 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/slot.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "slot",
+            "withSlots"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "slot"
+        ],
+        "stories": [
+          "src/components/ui/slot.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/slot.test.tsx",
+          "tests/parity/slot.test.mjs"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=checkbox"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local slot implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps typed portal slot contract, logical size and container-query context bridge, focused assertions, and registry publication are present. The canonical module has no Figma component."
       }
     },
     {

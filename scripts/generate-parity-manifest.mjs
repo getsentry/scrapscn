@@ -11,6 +11,12 @@ import {
 
 const CANONICAL_COMMIT = 'd91f823d232ddd12a4d2a64554d85fd36df0e278';
 const EXCLUDED_DIRECTORIES = ['overview', 'patterns', 'principles'];
+const canonicalBehaviorDependencies = {
+  slot: [
+    'static/app/components/core/sizeContext.tsx',
+    'static/app/components/core/slot/knownContexts.ts',
+  ],
+};
 const sentryRepository = path.resolve(
   process.env.SENTRY_REPO_PATH ?? '../sentry'
 );
@@ -40,6 +46,7 @@ const localModules = {
   segmentedControl: ['src/components/ui/segmented-control.tsx'],
   select: ['src/components/ui/select.tsx'],
   separator: ['src/components/ui/separator.tsx'],
+  slot: ['src/components/ui/slot.tsx'],
   slider: ['src/components/ui/slider.tsx'],
   switch: ['src/components/ui/switch.tsx'],
   table: ['src/components/ui/table.tsx'],
@@ -55,6 +62,7 @@ const registryItems = {
   interactionStateLayer: ['interaction-state-layer'],
   layout: ['layout'],
   separator: ['separator'],
+  slot: ['slot'],
   link: ['link'],
   radio: ['radio-group'],
   segmentedControl: ['segmented-control'],
@@ -69,6 +77,8 @@ const completionEvidence = {
     'Exact regular Scraps layout exports, responsive container and viewport cascade, focused assertions, and registry publication are present. The canonical module has no Figma component.',
   separator:
     'Exact regular Scraps native hr separator contract, focused assertions, and registry publication are present. The canonical module has no Figma component.',
+  slot:
+    'Exact regular Scraps typed portal slot contract, logical size and container-query context bridge, focused assertions, and registry publication are present. The canonical module has no Figma component.',
 };
 
 const figmaNodes = {
@@ -95,6 +105,7 @@ const outOfScopeComponents = [
   'src/components/ui/progress.tsx',
   'src/components/ui/scroll-area.tsx',
   'src/components/ui/sheet.tsx',
+  'src/components/ui/size-context.tsx',
 ];
 
 async function resolveCanonicalSource(moduleDirectory, moduleSpecifier) {
@@ -142,7 +153,7 @@ async function readCanonicalModule(moduleName) {
 
   return {
     indexPath: path.relative(sentryRepository, indexPath),
-    sourcePaths: [...sourcePaths].sort(),
+    sourcePaths: [...sourcePaths, ...(canonicalBehaviorDependencies[moduleName] ?? [])].sort(),
     publicExports: collectParityManifestExports(source, indexFilename),
   };
 }
@@ -196,6 +207,8 @@ for (const moduleName of moduleNames) {
           ]
         : moduleName === 'layout' || moduleName === 'separator'
           ? ['tests/parity/layout-separator.test.mjs']
+          : moduleName === 'slot'
+            ? ['src/components/ui/slot.test.tsx', 'tests/parity/slot.test.mjs']
         : [];
   const completionNote = completionEvidence[moduleName];
 
@@ -212,7 +225,7 @@ for (const moduleName of moduleNames) {
         moduleName === 'checkbox' ? ['src/components/ui/checkbox.figma.ts'] : [],
       figmaNodes: [...(figmaNodes[moduleName] ?? [])].sort(),
       playgroundPath:
-        moduleName === 'checkbox' || moduleName === 'interactionStateLayer' || moduleName === 'layout' || moduleName === 'separator'
+        moduleName === 'checkbox' || moduleName === 'interactionStateLayer' || moduleName === 'layout' || moduleName === 'separator' || moduleName === 'slot'
           ? '/?component=checkbox'
           : null,
     },
