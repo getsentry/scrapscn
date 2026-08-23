@@ -35,7 +35,7 @@ test('accepts the pinned 48-module parity inventory', () => {
     cwd: process.cwd(),
     encoding: 'utf8',
   });
-  assert.match(output, /Validated 48 modules: 14 complete, 15 partial, 19 missing/);
+  assert.match(output, /Validated 48 modules: 15 complete, 15 partial, 18 missing/);
 });
 
 test('regenerates the checked-in parity manifest without drift', async () => {

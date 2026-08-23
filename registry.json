@@ -225,6 +225,27 @@
       ]
     },
     {
+      "name": "quote",
+      "type": "registry:ui",
+      "title": "Quote",
+      "description": "Regular Scraps semantic extended quotation with an optional source attribution and citation.",
+      "registryDependencies": [
+        "https://scrapscn.sentry.dev/r/layout.json",
+        "https://scrapscn.sentry.dev/r/text.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/quote.module.css",
+          "type": "registry:file",
+          "target": "src/components/ui/quote.module.css"
+        },
+        {
+          "path": "src/components/ui/quote.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "drag-handle",
       "type": "registry:ui",
       "title": "Drag Handle",

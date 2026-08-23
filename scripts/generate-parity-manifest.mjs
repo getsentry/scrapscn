@@ -41,6 +41,26 @@ const canonicalBehaviorDependencies = {
     'static/app/utils/theme/scraps/tokens/typography.tsx',
     'static/app/utils/useHoverOverlay.tsx',
   ],
+  quote: [
+    'static/app/components/core/layout/container.tsx',
+    'static/app/components/core/layout/flex.tsx',
+    'static/app/components/core/layout/index.tsx',
+    'static/app/components/core/layout/stack.tsx',
+    'static/app/components/core/layout/styles.tsx',
+    'static/app/components/core/quote/quote.mdx',
+    'static/app/components/core/text/index.tsx',
+    'static/app/components/core/text/styles.tsx',
+    'static/app/components/core/text/text.tsx',
+    'static/app/utils/theme/index.tsx',
+    'static/app/utils/theme/scraps/theme/base.tsx',
+    'static/app/utils/theme/scraps/theme/dark.tsx',
+    'static/app/utils/theme/scraps/theme/light.tsx',
+    'static/app/utils/theme/scraps/tokens/color.tsx',
+    'static/app/utils/theme/scraps/tokens/size.tsx',
+    'static/app/utils/theme/scraps/tokens/typography.tsx',
+    'static/app/utils/theme/theme.tsx',
+    'static/app/utils/theme/types.tsx',
+  ],
   text: [
     'static/less/fonts.less',
     'static/app/components/core/hotkey/kbd.tsx',
@@ -125,6 +145,7 @@ const localModules = {
     'src/components/ui/code-messages.tsx',
     'src/components/ui/code.tsx',
   ],
+  quote: ['src/components/ui/quote.tsx'],
   text: [
     'src/components/ui/text.tsx',
     'src/components/ui/heading.tsx',
@@ -168,6 +189,7 @@ const registryItems = {
   badge: ['badge', 'feature-badge', 'tag'],
   button: ['button'],
   code: ['code'],
+  quote: ['quote'],
   text: ['text'],
   dragHandle: ['drag-handle'],
   interactionStateLayer: ['interaction-state-layer'],
@@ -192,6 +214,8 @@ const completionEvidence = {
     'Exact regular Scraps Backdrop overlay geometry, theme colors, layer values, motion, focused assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component.',
   code:
     'Exact regular Scraps CodeBlock, InlineCode, reusable inline style recipe, translatable copy messages, Prism language loading, Sentry source notice, executable Storybook state assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component.',
+  quote:
+    'Exact regular Scraps Quote semantic structure, rail geometry, optional citation source, server-component evidence, focused assertions, workbench, and dependency-based registry delivery are present. The canonical module has no Figma component.',
   text:
     'Regular Scraps Text, Heading, and Prose contracts, responsive presentation, inline code and keycap prose composition, focused assertions, workbench, and registry delivery are present. The canonical module has no Figma component.',
   interactionStateLayer:
@@ -436,6 +460,14 @@ for (const moduleName of moduleNames) {
               'tests/parity/code.test.mjs',
               'tests/types/code-types.test.tsx',
             ]
+        : moduleName === 'quote'
+          ? [
+              'src/app/evidence/quote-server/page.tsx',
+              'src/components/ui/quote.test.tsx',
+              'tests/e2e/playground.spec.ts',
+              'tests/parity/quote.test.mjs',
+              'tests/types/quote-types.test.tsx',
+            ]
         : moduleName === 'text'
           ? [
               'src/components/ui/text.test.tsx',
@@ -476,8 +508,10 @@ for (const moduleName of moduleNames) {
                 ? '/?component=image'
               : moduleName === 'backdrop'
                 ? '/?component=backdrop'
-              : moduleName === 'code'
-                ? '/?component=code'
+          : moduleName === 'code'
+            ? '/?component=code'
+            : moduleName === 'quote'
+              ? '/?component=quote'
               : moduleName === 'text'
                 ? '/?component=text'
               : moduleName === 'checkbox' ||

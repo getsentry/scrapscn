@@ -1,5 +1,62 @@
 import { expect, test } from "playwright/test"
 
+test("configures, shares, restores, and proves the Quote workbench", async ({ browser, page }) => {
+  const serverCases = [
+    { caption: null, cite: null, id: "absent", label: null },
+    { caption: "–", cite: null, id: "empty", label: null },
+    { caption: "–", cite: "https://example.com/href-only", id: "href-only", label: null },
+    { caption: "– Ada", cite: null, id: "author-only", label: null },
+    { caption: "– , Notes", cite: null, id: "label-only", label: "Notes" },
+    { caption: "– Ada, Notes", cite: "https://example.com/full", id: "full", label: "Notes" },
+  ] as const
+
+  await page.goto("/evidence/quote-server")
+  for (const quoteCase of serverCases) {
+    const fixture = page.getByTestId(`server-quote-${quoteCase.id}`)
+    await expect(fixture.locator("figure")).toHaveCount(1)
+    await expect(fixture.locator('hr[aria-orientation="vertical"]')).toHaveCount(1)
+    await expect(fixture.locator("blockquote")).toHaveText("Server-rendered regular Scraps quotation.")
+    if (quoteCase.cite === null) {
+      await expect(fixture.locator("blockquote")).not.toHaveAttribute("cite")
+    } else {
+      await expect(fixture.locator("blockquote")).toHaveAttribute("cite", quoteCase.cite)
+    }
+    if (quoteCase.caption === null) {
+      await expect(fixture.locator("figcaption")).toHaveCount(0)
+    } else {
+      await expect(fixture.locator("figcaption")).toHaveText(quoteCase.caption)
+    }
+    if (quoteCase.label === null) {
+      await expect(fixture.locator("figcaption cite")).toHaveCount(0)
+    } else {
+      await expect(fixture.locator("figcaption cite")).toHaveText(quoteCase.label)
+    }
+  }
+
+  await page.goto("/?component=quote&quoteAuthor=Ada&quoteBody=Typed+quote&quoteHref=https%3A%2F%2Fexample.com&quoteLabel=Notes&quoteSource=true")
+  const preview = page.getByTestId("quote-preview")
+  await expect(preview.getByRole("blockquote")).toHaveAttribute("cite", "https://example.com")
+  await expect(preview.locator("figcaption cite")).toHaveText("Notes")
+  await expect(preview.locator("hr")).toHaveCSS("border-left-width", "1px")
+  await expect(preview.locator("blockquote")).toHaveCSS("padding-left", "28px")
+
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await page.getByLabel("Body").fill("Shared quote")
+  await page.getByLabel("Show source").uncheck()
+  await expect(preview.locator("figcaption")).toHaveCount(0)
+  await page.getByRole("button", { name: "Share" }).click()
+  const sharedUrl = await page.evaluate(() => navigator.clipboard.readText())
+  expect(sharedUrl).toContain("component=quote")
+  expect(sharedUrl).toContain("quoteSource=false")
+
+  const secondContext = await browser.newContext({ permissions: ["clipboard-read", "clipboard-write"] })
+  const secondPage = await secondContext.newPage()
+  await secondPage.goto(sharedUrl)
+  await expect(secondPage.getByTestId("quote-preview").getByRole("blockquote")).toHaveText("Shared quote")
+  await expect(secondPage.getByTestId("quote-preview").locator("figcaption")).toHaveCount(0)
+  await secondContext.close()
+})
+
 test("shares and restores the Checkbox template workflow", async ({ browser, page }) => {
   await page.goto("/")
   const viewport = page.viewportSize()

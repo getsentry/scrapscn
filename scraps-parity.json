@@ -1549,8 +1549,26 @@
       "canonical": {
         "indexPath": "static/app/components/core/quote/index.tsx",
         "sourcePaths": [
+          "static/app/components/core/layout/container.tsx",
+          "static/app/components/core/layout/flex.tsx",
+          "static/app/components/core/layout/index.tsx",
+          "static/app/components/core/layout/stack.tsx",
+          "static/app/components/core/layout/styles.tsx",
           "static/app/components/core/quote/index.tsx",
-          "static/app/components/core/quote/quote.tsx"
+          "static/app/components/core/quote/quote.mdx",
+          "static/app/components/core/quote/quote.tsx",
+          "static/app/components/core/text/index.tsx",
+          "static/app/components/core/text/styles.tsx",
+          "static/app/components/core/text/text.tsx",
+          "static/app/utils/theme/index.tsx",
+          "static/app/utils/theme/scraps/theme/base.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/scraps/tokens/typography.tsx",
+          "static/app/utils/theme/theme.tsx",
+          "static/app/utils/theme/types.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -1562,22 +1580,38 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/quote.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "Quote"
+          ],
+          "types": [
+            "QuoteProps"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "quote"
+        ],
+        "stories": [
+          "src/components/ui/quote.stories.tsx"
+        ],
+        "tests": [
+          "src/app/evidence/quote-server/page.tsx",
+          "src/components/ui/quote.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/quote.test.mjs",
+          "tests/types/quote-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=quote"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local quote implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Quote semantic structure, rail geometry, optional citation source, server-component evidence, focused assertions, workbench, and dependency-based registry delivery are present. The canonical module has no Figma component."
       }
     },
     {
