@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite"
-import { expect, within } from "storybook/test"
+import { expect, userEvent, waitFor, within } from "storybook/test"
 
 import { FeatureBadge } from "./feature-badge"
 
@@ -36,7 +36,18 @@ export const CustomTooltip: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // The badge exposes its rollout stage via aria-label.
-    expect(canvas.getByLabelText("new")).toBeInTheDocument()
+    const badge = canvas.getByLabelText("new")
+    expect(badge).toBeInTheDocument()
+    await userEvent.hover(badge)
+    const tooltip = await within(canvasElement.ownerDocument.body).findByRole("tooltip")
+    await expect(tooltip).toHaveAttribute("data-side", "right")
+    await userEvent.unhover(badge)
+    await waitFor(
+      () =>
+        expect(
+          within(canvasElement.ownerDocument.body).queryByRole("tooltip")
+        ).not.toBeInTheDocument(),
+      { timeout: 2000 }
+    )
   },
 }

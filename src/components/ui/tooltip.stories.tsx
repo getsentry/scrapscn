@@ -1,101 +1,94 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite"
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { useState } from "react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
-import { Button } from "./button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./tooltip"
+import { Button } from "./button";
+import { Tooltip, TooltipContext } from "./tooltip";
 
 const meta = {
-  title: "Components/Tooltip",
+  title: "Scraps/Tooltip",
   component: Tooltip,
-  decorators: [
-    (Story) => (
-      <TooltipProvider>
-        <Story />
-      </TooltipProvider>
-    ),
-  ],
-} satisfies Meta<typeof Tooltip>
+  parameters: { layout: "padded" },
+} satisfies Meta<typeof Tooltip>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
-    <Tooltip>
-      <TooltipTrigger render={<Button variant="outline">Hover me</Button>} />
-      <TooltipContent>This is a helpful tooltip</TooltipContent>
+    <Tooltip delay={0} skipWrapper title="Helpful text">
+      <Button>Hover me</Button>
     </Tooltip>
   ),
-}
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.hover(canvas.getByRole("button", { name: "Hover me" }));
+    const tooltip = await within(canvasElement.ownerDocument.body).findByRole("tooltip", {
+      name: "Helpful text",
+    });
+    await expect(tooltip.querySelector("svg")).not.toBeNull();
+    await expect(["top", "bottom"]).toContain(tooltip.getAttribute("data-side"));
+  },
+};
 
 export const Positions: Story = {
   render: () => (
-    <div className="flex w-fit flex-col items-center gap-12 p-12">
-      {(["top", "right", "bottom", "left"] as const).map((side) => (
-        <Tooltip key={side} defaultOpen>
-          <TooltipTrigger
-            render={<Button variant="outline">{side}</Button>}
-          />
-          <TooltipContent side={side}>{side} tooltip</TooltipContent>
+    <div className="grid grid-cols-2 gap-24 p-24">
+      {(["top", "right", "bottom", "left"] as const).map((position) => (
+        <Tooltip forceVisible key={position} position={position} skipWrapper title={`${position} tooltip`}>
+          <Button variant="outline">{position}</Button>
         </Tooltip>
       ))}
     </div>
   ),
-}
+};
 
-export const CustomWidth: Story = {
+export const OverflowOnly: Story = {
   render: () => (
-    <div className="flex gap-3">
-      <Tooltip>
-        <TooltipTrigger render={<Button variant="outline">Default width</Button>} />
-        <TooltipContent>
-          This tooltip has a long message that wraps to multiple lines by default.
-        </TooltipContent>
-      </Tooltip>
-      <Tooltip>
-        <TooltipTrigger render={<Button variant="outline">Narrow</Button>} />
-        <TooltipContent className="max-w-[150px]">
-          This tooltip has a long message constrained to a narrower width.
-        </TooltipContent>
-      </Tooltip>
-    </div>
-  ),
-}
-
-export const RichContent: Story = {
-  render: () => (
-    <Tooltip>
-      <TooltipTrigger render={<Button variant="outline">Rich content</Button>} />
-      <TooltipContent>
-        <div className="space-y-1">
-          <p className="font-medium">Spike detected</p>
-          <p className="text-popover-foreground/80">
-            TypeError reported 2,847 times in the last hour.
-          </p>
-        </div>
-      </TooltipContent>
+    <Tooltip delay={0} showOnlyOnOverflow title="The complete project name">
+      <span className="block w-32 truncate" data-overflowing="true">
+        an-extremely-long-project-name
+      </span>
     </Tooltip>
   ),
-}
+  play: async ({ canvasElement }) => {
+    const trigger = within(canvasElement).getByText("an-extremely-long-project-name");
+    await userEvent.hover(trigger);
+    const tooltip = await within(canvasElement.ownerDocument.body).findByRole("tooltip");
+    await waitFor(() => expect(tooltip).toBeVisible());
+    await expect(trigger).toHaveAttribute("aria-describedby");
+    await userEvent.unhover(trigger);
+    await waitFor(
+      () =>
+        expect(
+          within(canvasElement.ownerDocument.body).queryByRole("tooltip")
+        ).not.toBeInTheDocument(),
+      { timeout: 2000 }
+    );
+  },
+};
 
-export const WithKeybind: Story = {
-  name: "With keyboard shortcut",
-  render: () => (
-    <Tooltip>
-      <TooltipTrigger render={<Button variant="outline">Search</Button>} />
-      <TooltipContent>
-        Open command palette
-        <kbd
-          data-slot="kbd"
-          className="ml-1 inline-flex h-4 items-center rounded-sm bg-foreground/10 px-1 text-[10px]"
-        >
-          ⌘K
-        </kbd>
-      </TooltipContent>
-    </Tooltip>
-  ),
-}
+export const ContextPortal: Story = {
+  render: () => {
+    const [container, setContainer] = useState<HTMLDivElement | null>(null);
+    return (
+      <div>
+        <div data-testid="tooltip-story-portal" ref={setContainer} />
+        {container ? (
+          <TooltipContext.Provider value={{ container }}>
+            <Tooltip forceVisible title="Portaled into this story">
+              Context trigger
+            </Tooltip>
+          </TooltipContext.Provider>
+        ) : null}
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const portal = within(canvasElement).getByTestId("tooltip-story-portal");
+    const tooltip = await within(portal).findByRole("tooltip", {
+      name: "Portaled into this story",
+    });
+    await expect(portal).toContainElement(tooltip);
+  },
+};

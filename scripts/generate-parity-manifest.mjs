@@ -182,6 +182,27 @@ const canonicalBehaviorDependencies = {
     'static/app/views/navigation/constants.tsx',
     'static/app/views/navigation/useTopOffset.tsx',
   ],
+  tooltip: [
+    'package.json',
+    'static/app/components/core/tooltip/tooltip.figma.tsx',
+    'static/app/components/core/tooltip/tooltip.mdx',
+    'static/app/components/core/tooltip/tooltip.spec.tsx',
+    'static/app/components/overlay.tsx',
+    'static/app/components/overlayArrow.tsx',
+    'static/app/utils/theme/index.tsx',
+    'static/app/utils/theme/scraps/theme/base.tsx',
+    'static/app/utils/theme/scraps/theme/dark.tsx',
+    'static/app/utils/theme/scraps/theme/light.tsx',
+    'static/app/utils/theme/scraps/tokens/color.tsx',
+    'static/app/utils/theme/scraps/tokens/size.tsx',
+    'static/app/utils/theme/scraps/tokens/typography.tsx',
+    'static/app/utils/theme/theme.tsx',
+    'static/app/utils/theme/types.tsx',
+    'static/app/utils/useHoverOverlay.spec.tsx',
+    'static/app/utils/useHoverOverlay.timing.spec.tsx',
+    'static/app/utils/useHoverOverlay.tsx',
+    'static/app/utils/useStableMergeRef.ts',
+  ],
 };
 const sentryRepository = path.resolve(
   process.env.SENTRY_REPO_PATH ?? '../sentry'
@@ -552,6 +573,13 @@ for (const moduleName of moduleNames) {
               'tests/parity/slide-over-panel.test.mjs',
               'tests/types/slide-over-panel-types.test.tsx',
             ]
+        : moduleName === 'tooltip'
+          ? [
+              'src/components/ui/tooltip.test.tsx',
+              'tests/e2e/playground.spec.ts',
+              'tests/parity/tooltip.test.mjs',
+              'tests/types/tooltip-types.test.tsx',
+            ]
         : moduleName === 'quote'
           ? [
               'src/app/evidence/quote-server/page.tsx',
@@ -602,6 +630,8 @@ for (const moduleName of moduleNames) {
                 ? '/?component=backdrop'
                 : moduleName === 'slideOverPanel'
                   ? '/?component=slide-over-panel'
+                : moduleName === 'tooltip'
+                  ? '/?component=tooltip'
           : moduleName === 'code'
             ? '/?component=code'
             : moduleName === 'emptyState'
@@ -634,6 +664,8 @@ for (const moduleName of moduleNames) {
             ? 'The local Loader implementation, template-backed workbench, server evidence, focused tests, and local registry item are present. The shared hosted Layout and Text registry dependencies are protected, so public dependency installation is not verified. No canonical Loader Figma node is recorded.'
             : moduleName === 'slideOverPanel'
               ? 'The local SlideOverPanel implementation, navigation-offset environment seam, boundary context, deferred-content workbench, focused tests, and self-contained local registry item are present. The hosted registry endpoint is protected, so public installation is not verified. No canonical Figma node is recorded.'
+            : moduleName === 'tooltip'
+              ? 'The local Tooltip API, positioning, delay group, overflow observation, motion, workbench, focused tests, and self-contained registry item are present. The canonical Figma node and Code Connect mapping have not been verified.'
           : implementationPaths.length > 0
           ? 'A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed.'
           : `No local ${kebabName} implementation is mapped.`),

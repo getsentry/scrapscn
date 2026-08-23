@@ -2524,8 +2524,27 @@
       "canonical": {
         "indexPath": "static/app/components/core/tooltip/index.tsx",
         "sourcePaths": [
+          "package.json",
           "static/app/components/core/tooltip/index.tsx",
-          "static/app/components/core/tooltip/tooltip.tsx"
+          "static/app/components/core/tooltip/tooltip.figma.tsx",
+          "static/app/components/core/tooltip/tooltip.mdx",
+          "static/app/components/core/tooltip/tooltip.spec.tsx",
+          "static/app/components/core/tooltip/tooltip.tsx",
+          "static/app/components/overlay.tsx",
+          "static/app/components/overlayArrow.tsx",
+          "static/app/utils/theme/index.tsx",
+          "static/app/utils/theme/scraps/theme/base.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/scraps/tokens/typography.tsx",
+          "static/app/utils/theme/theme.tsx",
+          "static/app/utils/theme/types.tsx",
+          "static/app/utils/useHoverOverlay.spec.tsx",
+          "static/app/utils/useHoverOverlay.timing.spec.tsx",
+          "static/app/utils/useHoverOverlay.tsx",
+          "static/app/utils/useStableMergeRef.ts"
         ],
         "publicExports": {
           "runtime": [
@@ -2544,11 +2563,11 @@
         "implementedExports": {
           "runtime": [
             "Tooltip",
-            "TooltipContent",
-            "TooltipProvider",
-            "TooltipTrigger"
+            "TooltipContext"
           ],
-          "types": []
+          "types": [
+            "TooltipProps"
+          ]
         },
         "registryItems": [
           "tooltip"
@@ -2556,17 +2575,22 @@
         "stories": [
           "src/components/ui/tooltip.stories.tsx"
         ],
-        "tests": [],
+        "tests": [
+          "src/components/ui/tooltip.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/tooltip.test.mjs",
+          "tests/types/tooltip-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [
           "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=6775-627"
         ],
-        "playgroundPath": null
+        "playgroundPath": "/?component=tooltip"
       },
       "completion": {
         "state": "partial",
         "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "note": "The local Tooltip API, positioning, delay group, overflow observation, motion, workbench, focused tests, and self-contained registry item are present. The canonical Figma node and Code Connect mapping have not been verified."
       }
     }
   ]

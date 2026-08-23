@@ -39,9 +39,19 @@
       "name": "tooltip",
       "type": "registry:ui",
       "title": "Tooltip",
-      "description": "Surfaced tooltip overlay built on Base UI.",
-      "dependencies": ["@base-ui/react"],
+      "description": "Regular Scraps collision-aware tooltip with shared delays, overflow detection, and interactive content.",
+      "dependencies": [
+        "@base-ui/react@1.5.0",
+        "@emotion/react@11.14.0",
+        "@fontsource/rubik@5.2.8",
+        "framer-motion@12.38.0"
+      ],
       "files": [
+        {
+          "path": "src/components/ui/tooltip.module.css",
+          "type": "registry:file",
+          "target": "src/components/ui/tooltip.module.css"
+        },
         {
           "path": "src/components/ui/tooltip.tsx",
           "type": "registry:ui"

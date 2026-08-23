@@ -1,5 +1,115 @@
 import { expect, test } from "playwright/test"
 
+test("configures, shares, and restores the regular Scraps Tooltip workbench", async ({ browser, page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" })
+  await page.goto("/?component=tooltip&tooltipHoverable=true&tooltipOverflow=false&tooltipPosition=top&tooltipTitle=Issue+details&tooltipVisible=false")
+  const preview = page.getByTestId("tooltip-preview")
+  const trigger = preview.getByRole("button", { name: "Inspect issue" })
+  await trigger.hover()
+  const tooltip = page.getByRole("tooltip", { name: "Issue details" })
+  await expect(tooltip).toBeVisible()
+  await expect(tooltip).toHaveAttribute("data-side", "top")
+  await expect(tooltip.locator("svg")).toHaveCSS("width", "16px")
+  await expect(tooltip.locator("svg")).toHaveCSS("height", "8px")
+  await expect(tooltip.locator("polygon")).toHaveCount(3)
+  await expect(tooltip.locator("..")).toHaveCSS("z-index", "10003")
+  await expect(tooltip).toHaveCSS("max-width", "225px")
+  await expect(tooltip).toHaveCSS("font-size", "12px")
+  await expect(tooltip).toHaveCSS("padding", "8px 12px")
+
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await page.getByLabel("Tooltip title").fill("Shared tooltip")
+  await page.getByLabel("Tooltip position").selectOption("right")
+  await page.getByLabel("Force visible").check()
+  await page.getByLabel("Overflow-only trigger").check()
+  await page.getByLabel("Preview width").selectOption("mobile")
+  await expect(page.locator('[data-slot="sentry-page-frame"]')).toHaveCSS("width", "390px")
+  const sharedTooltip = preview.getByRole("tooltip", { name: "Shared tooltip" })
+  await expect(sharedTooltip).toBeVisible()
+  const previewBox = await preview.boundingBox()
+  const tooltipBox = await sharedTooltip.boundingBox()
+  expect(previewBox).not.toBeNull()
+  expect(tooltipBox).not.toBeNull()
+  expect(tooltipBox!.x).toBeGreaterThanOrEqual(previewBox!.x)
+  expect(tooltipBox!.x + tooltipBox!.width).toBeLessThanOrEqual(previewBox!.x + previewBox!.width)
+  expect(tooltipBox!.y).toBeGreaterThanOrEqual(previewBox!.y)
+  expect(tooltipBox!.y + tooltipBox!.height).toBeLessThanOrEqual(previewBox!.y + previewBox!.height)
+  await page.getByRole("button", { name: "Share" }).click()
+  const sharedUrl = await page.evaluate(() => navigator.clipboard.readText())
+  expect(sharedUrl).toContain("component=tooltip")
+  expect(sharedUrl).toContain("tooltipPosition=right")
+  expect(sharedUrl).toContain("tooltipVisible=true")
+  expect(sharedUrl).toContain("tooltipOverflow=true")
+  expect(sharedUrl).toContain("viewport=mobile")
+
+  const restored = await browser.newPage()
+  await restored.goto(sharedUrl)
+  await expect(restored.getByRole("tooltip", { name: "Shared tooltip" })).toBeVisible()
+  await restored.close()
+
+  await page.reload()
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await expect(page.getByLabel("Tooltip position")).toHaveValue("right")
+  await expect(page.getByLabel("Force visible")).toBeChecked()
+  await expect(page.getByLabel("Overflow-only trigger")).toBeChecked()
+  await expect(page.getByLabel("Preview width")).toHaveValue("mobile")
+
+  await page.getByLabel("Component or template").selectOption("checkbox")
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "checkbox")
+  await page.goBack()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "tooltip")
+  await expect(page.getByLabel("Tooltip position")).toHaveValue("right")
+  await expect(page.getByLabel("Preview width")).toHaveValue("mobile")
+  await page.goForward()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "checkbox")
+  await page.goBack()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "tooltip")
+  await page.getByRole("button", { name: "Reset" }).click()
+  await expect(page.getByLabel("Tooltip position")).toHaveValue("top")
+  await expect(page.getByLabel("Force visible")).not.toBeChecked()
+  await expect(page.getByLabel("Preview width")).toHaveValue("desktop")
+})
+
+test("uses measured popup overflow for automatic Tooltip placement", async ({ page }) => {
+  await page.setViewportSize({ width: 500, height: 300 })
+  await page.goto("/?component=tooltip&tooltipPosition=auto&tooltipTitle=This+tooltip+is+wide+enough+to+overflow+the+largest+raw+gap&tooltipVisible=true")
+  const preview = page.getByTestId("tooltip-preview")
+  const trigger = preview.getByRole("button", { name: "Inspect issue" })
+  await preview.evaluate((element) => {
+    Object.assign((element as HTMLElement).style, {
+      inset: "0",
+      minHeight: "300px",
+      overflow: "visible",
+      position: "fixed",
+      width: "500px",
+      zIndex: "20000",
+    })
+  })
+  await trigger.evaluate((element) => {
+    Object.assign((element as HTMLElement).style, {
+      left: "150px",
+      position: "fixed",
+      top: "130px",
+    })
+  })
+  const tooltip = page.getByRole("tooltip")
+  const positioner = tooltip.locator("..")
+  await expect(positioner).toHaveAttribute("data-requested-side", "bottom")
+  await expect(tooltip).toHaveAttribute("data-side", "bottom")
+
+  const geometry = await Promise.all([
+    trigger.boundingBox(),
+    tooltip.boundingBox(),
+  ])
+  expect(geometry[0]).not.toBeNull()
+  expect(geometry[1]).not.toBeNull()
+  const rawRightGap = 500 - (geometry[0]!.x + geometry[0]!.width)
+  const rawBottomGap = 300 - (geometry[0]!.y + geometry[0]!.height)
+  expect(rawRightGap).toBeGreaterThan(rawBottomGap)
+  expect(geometry[1]!.width + 8 + 12).toBeGreaterThan(rawRightGap)
+  expect(geometry[1]!.height + 8 + 12).toBeLessThan(rawBottomGap)
+})
+
 test("configures, shares, reloads, restores history, and resets the Loader template", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" })
   await page.goto("/evidence/loader-server")

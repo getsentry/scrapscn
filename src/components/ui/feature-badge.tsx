@@ -3,12 +3,7 @@ import { Bug, FlaskConical, Radio } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Tag, type tagVariants } from "@/components/ui/tag"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip } from "@/components/ui/tooltip"
 import type { VariantProps } from "class-variance-authority"
 
 type FeatureType = "alpha" | "beta" | "new" | "experimental" | "debug"
@@ -49,26 +44,17 @@ function FeatureBadge({
   title?: React.ReactNode
 }) {
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <Tag
-              variant={variantMap[type]}
-              role="img"
-              aria-label={type}
-              className={cn("w-5 justify-center px-0", className)}
-              {...props}
-            >
-              {iconMap[type]}
-            </Tag>
-          }
-        />
-        <TooltipContent side="right">
-          {title ?? defaultTitles[type]}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip delay={0} position="right" title={title ?? defaultTitles[type]} skipWrapper>
+      <Tag
+        variant={variantMap[type]}
+        role="img"
+        aria-label={type}
+        className={cn("w-5 justify-center px-0", className)}
+        {...props}
+      >
+        {iconMap[type]}
+      </Tag>
+    </Tooltip>
   )
 }
 
