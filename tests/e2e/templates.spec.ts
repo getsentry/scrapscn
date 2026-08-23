@@ -17,6 +17,7 @@ test("discovers, serves, and restores templates in production", async ({ page, r
     "Code",
     "Empty State",
     "Loader",
+    "Slide Over Panel",
     "Text",
     "Quote",
     "Checkbox settings",

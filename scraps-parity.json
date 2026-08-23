@@ -13,6 +13,7 @@
   "scope": {
     "targetModuleCount": 48,
     "outOfScopeLocalComponents": [
+      "src/components/ui/boundary-context.tsx",
       "src/components/ui/card.tsx",
       "src/components/ui/command.tsx",
       "src/components/ui/dialog.tsx",
@@ -21,7 +22,8 @@
       "src/components/ui/progress.tsx",
       "src/components/ui/scroll-area.tsx",
       "src/components/ui/sheet.tsx",
-      "src/components/ui/size-context.tsx"
+      "src/components/ui/size-context.tsx",
+      "src/components/ui/slide-over-panel-environment.tsx"
     ]
   },
   "modules": [
@@ -1934,8 +1936,19 @@
       "canonical": {
         "indexPath": "static/app/components/core/slideOverPanel/index.tsx",
         "sourcePaths": [
+          "static/app/components/core/boundaryContext.tsx",
           "static/app/components/core/slideOverPanel/index.tsx",
-          "static/app/components/core/slideOverPanel/slideOverPanel.tsx"
+          "static/app/components/core/slideOverPanel/slideOverPanel.tsx",
+          "static/app/utils/theme/scraps/theme/base.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/scraps/tokens/typography.tsx",
+          "static/app/utils/theme/theme.tsx",
+          "static/app/utils/theme/types.tsx",
+          "static/app/views/navigation/constants.tsx",
+          "static/app/views/navigation/useTopOffset.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -1945,22 +1958,35 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/slide-over-panel.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "SlideOverPanel"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "slide-over-panel"
+        ],
+        "stories": [
+          "src/components/ui/slide-over-panel.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/slide-over-panel.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/slide-over-panel.test.mjs",
+          "tests/types/slide-over-panel-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=slide-over-panel"
       },
       "completion": {
-        "state": "missing",
+        "state": "partial",
         "complete": false,
-        "note": "No local slide-over-panel implementation is mapped."
+        "note": "The local SlideOverPanel implementation, navigation-offset environment seam, boundary context, deferred-content workbench, focused tests, and self-contained local registry item are present. The hosted registry endpoint is protected, so public installation is not verified. No canonical Figma node is recorded."
       }
     },
     {

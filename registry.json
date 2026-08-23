@@ -274,6 +274,32 @@
       ]
     },
     {
+      "name": "slide-over-panel",
+      "type": "registry:ui",
+      "title": "Slide Over Panel",
+      "description": "Regular Scraps complementary panel with deferred opening content and responsive placements.",
+      "dependencies": ["framer-motion@12.38.0"],
+      "registryDependencies": [],
+      "cssVars": {
+        "light": {
+          "scraps-slide-over-background": "#ffffff",
+          "scraps-slide-over-content": "#302e36",
+          "scraps-slide-over-shadow": "0px 4px 0px 2px #10103008, 0px 1px 0px 1px #10103008"
+        },
+        "dark": {
+          "scraps-slide-over-background": "#393442",
+          "scraps-slide-over-content": "#e7e5ea",
+          "scraps-slide-over-shadow": "0px 4px 0px 2px #0000181a, 0px 1px 0px 1px #0000181a"
+        }
+      },
+      "files": [
+        { "path": "src/components/ui/boundary-context.tsx", "type": "registry:file", "target": "src/components/ui/boundary-context.tsx" },
+        { "path": "src/components/ui/slide-over-panel.module.css", "type": "registry:file", "target": "src/components/ui/slide-over-panel.module.css" },
+        { "path": "src/components/ui/slide-over-panel-environment.tsx", "type": "registry:file", "target": "src/components/ui/slide-over-panel-environment.tsx" },
+        { "path": "src/components/ui/slide-over-panel.tsx", "type": "registry:ui" }
+      ]
+    },
+    {
       "name": "drag-handle",
       "type": "registry:ui",
       "title": "Drag Handle",

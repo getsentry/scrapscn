@@ -169,6 +169,19 @@ const canonicalBehaviorDependencies = {
     'static/app/utils/theme/scraps/theme/light.tsx',
     'static/app/utils/theme/scraps/tokens/size.tsx',
   ],
+  slideOverPanel: [
+    'static/app/components/core/boundaryContext.tsx',
+    'static/app/utils/theme/theme.tsx',
+    'static/app/utils/theme/scraps/theme/base.tsx',
+    'static/app/utils/theme/scraps/theme/dark.tsx',
+    'static/app/utils/theme/scraps/theme/light.tsx',
+    'static/app/utils/theme/scraps/tokens/color.tsx',
+    'static/app/utils/theme/scraps/tokens/size.tsx',
+    'static/app/utils/theme/scraps/tokens/typography.tsx',
+    'static/app/utils/theme/types.tsx',
+    'static/app/views/navigation/constants.tsx',
+    'static/app/views/navigation/useTopOffset.tsx',
+  ],
 };
 const sentryRepository = path.resolve(
   process.env.SENTRY_REPO_PATH ?? '../sentry'
@@ -193,6 +206,7 @@ const localModules = {
   ],
   emptyState: ['src/components/ui/empty-state.tsx'],
   loader: ['src/components/ui/loader.tsx'],
+  slideOverPanel: ['src/components/ui/slide-over-panel.tsx'],
   quote: ['src/components/ui/quote.tsx'],
   text: [
     'src/components/ui/text.tsx',
@@ -239,6 +253,7 @@ const registryItems = {
   code: ['code'],
   emptyState: ['empty-state'],
   loader: ['loader'],
+  slideOverPanel: ['slide-over-panel'],
   quote: ['quote'],
   text: ['text'],
   dragHandle: ['drag-handle'],
@@ -309,6 +324,7 @@ const figmaNodes = {
 };
 
 const outOfScopeComponents = [
+  'src/components/ui/boundary-context.tsx',
   'src/components/ui/card.tsx',
   'src/components/ui/command.tsx',
   'src/components/ui/dialog.tsx',
@@ -318,6 +334,7 @@ const outOfScopeComponents = [
   'src/components/ui/scroll-area.tsx',
   'src/components/ui/sheet.tsx',
   'src/components/ui/size-context.tsx',
+  'src/components/ui/slide-over-panel-environment.tsx',
 ];
 
 function readCanonicalFile(repositoryPath) {
@@ -528,6 +545,13 @@ for (const moduleName of moduleNames) {
               'tests/parity/loader.test.mjs',
               'tests/types/loader-types.test.tsx',
             ]
+        : moduleName === 'slideOverPanel'
+          ? [
+              'src/components/ui/slide-over-panel.test.tsx',
+              'tests/e2e/playground.spec.ts',
+              'tests/parity/slide-over-panel.test.mjs',
+              'tests/types/slide-over-panel-types.test.tsx',
+            ]
         : moduleName === 'quote'
           ? [
               'src/app/evidence/quote-server/page.tsx',
@@ -574,8 +598,10 @@ for (const moduleName of moduleNames) {
               ? '/?component=hotkey'
               : moduleName === 'image'
                 ? '/?component=image'
-              : moduleName === 'backdrop'
+                : moduleName === 'backdrop'
                 ? '/?component=backdrop'
+                : moduleName === 'slideOverPanel'
+                  ? '/?component=slide-over-panel'
           : moduleName === 'code'
             ? '/?component=code'
             : moduleName === 'emptyState'
@@ -606,6 +632,8 @@ for (const moduleName of moduleNames) {
           ? 'The local EmptyState implementation, workbench, focused tests, and intended registry dependency URLs are present. Figma, Code Connect, and installation from the protected shared registry have not been verified.'
           : moduleName === 'loader'
             ? 'The local Loader implementation, template-backed workbench, server evidence, focused tests, and local registry item are present. The shared hosted Layout and Text registry dependencies are protected, so public dependency installation is not verified. No canonical Loader Figma node is recorded.'
+            : moduleName === 'slideOverPanel'
+              ? 'The local SlideOverPanel implementation, navigation-offset environment seam, boundary context, deferred-content workbench, focused tests, and self-contained local registry item are present. The hosted registry endpoint is protected, so public installation is not verified. No canonical Figma node is recorded.'
           : implementationPaths.length > 0
           ? 'A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed.'
           : `No local ${kebabName} implementation is mapped.`),

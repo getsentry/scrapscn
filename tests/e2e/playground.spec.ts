@@ -111,6 +111,153 @@ test("cycles Loader messages in production", async ({ page }) => {
   await expect(preview).toContainText("Checking your filters", { timeout: 11_000 })
 })
 
+test("configures, shares, reloads, restores history, and resets the Slide Over Panel workbench", async ({ browser, page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" })
+  await page.setViewportSize({ width: 1280, height: 720 })
+  await page.goto("/?component=slide-over-panel&slideOpen=true&slidePosition=right&slideMode=passive&slideTopOffsetViewport=desktop&slideSuperuser=true&slideWidth=36rem&slideContent=Shared+panel&theme=dark&viewport=mobile")
+  const preview = page.getByTestId("slide-over-panel-preview")
+  const panel = preview.locator('[data-test-id="slide-over-panel-preview-panel"]')
+  await expect(panel).toHaveAttribute("role", "complementary")
+  await expect(panel).toHaveAttribute("mode", "passive")
+  await expect(panel).not.toHaveAttribute("position")
+  await expect(panel).not.toHaveAttribute("panelwidth")
+  await expect(panel).not.toHaveAttribute("data-position")
+  await expect(panel).not.toHaveAttribute("data-mode")
+  await expect(panel).toHaveCSS("top", "77px")
+  await expect(panel).toHaveCSS("width", "576px")
+  await expect(panel).toHaveCSS("background-color", "rgb(57, 52, 66)")
+  await expect(panel).toHaveCSS("color", "rgb(231, 229, 234)")
+  await expect(panel).toHaveCSS("box-shadow", "rgba(0, 0, 24, 0.1) 0px 4px 0px 2px, rgba(0, 0, 24, 0.1) 0px 1px 0px 1px")
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await page.getByLabel("Panel position").selectOption("left")
+  await page.getByLabel("Panel width").fill("32rem")
+  await page.getByLabel("Panel content").fill("Restored panel")
+  await page.getByLabel("Panel top offset viewport").selectOption("mobile")
+  await expect(panel).toHaveCSS("top", "72px")
+  await expect(page.getByLabel("Preview width")).toHaveValue("mobile")
+  await page.getByRole("button", { name: "Share" }).click()
+  const sharedUrl = await page.evaluate(() => navigator.clipboard.readText())
+  expect(sharedUrl).toContain("component=slide-over-panel")
+  expect(sharedUrl).toContain("slidePosition=left")
+  expect(sharedUrl).toContain("slideTopOffsetViewport=mobile")
+  expect(sharedUrl).toContain("slideSuperuser=true")
+  expect(sharedUrl).toContain("viewport=mobile")
+  const restored = await browser.newPage()
+  await restored.goto(sharedUrl)
+  await expect(restored.locator('[data-test-id="slide-over-panel-preview-panel"]')).toHaveCSS("top", "72px")
+  await expect(restored.getByTestId("slide-over-panel-preview")).toContainText("Restored panel")
+  await restored.close()
+  await page.reload()
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await expect(page.getByLabel("Panel content")).toHaveValue("Restored panel")
+  await expect(page.getByLabel("Panel top offset viewport")).toHaveValue("mobile")
+  await expect(page.getByLabel("Show superuser warning")).toBeChecked()
+
+  await page.getByLabel("Component or template").selectOption("checkbox")
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "checkbox")
+  await page.goBack()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "slide-over-panel")
+  await expect(page.getByRole("button", { name: "Close setup" })).toBeVisible()
+  await expect(page.getByLabel("Panel content")).toHaveValue("Restored panel")
+  await page.getByRole("button", { name: "Reset" }).click()
+  await expect(page.getByLabel("Panel position")).toHaveValue("right")
+  await expect(page.getByLabel("Panel top offset viewport")).toHaveValue("auto")
+  await expect(page.getByLabel("Show superuser warning")).not.toBeChecked()
+  await expect(page.getByLabel("Panel open")).toBeChecked()
+  await expect(page.getByLabel("Preview width")).toHaveValue("desktop")
+  await expect(page.locator("html")).not.toHaveClass(/dark/)
+})
+
+test("keeps exact Slide Over Panel geometry and placement behavior at its responsive boundaries", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" })
+
+  for (const width of [639, 640, 799]) {
+    await page.setViewportSize({ width, height: 720 })
+    await page.goto("/?component=slide-over-panel&slideOpen=true&slidePosition=right&slideMode=blocking&slideTopOffsetViewport=auto&slideSuperuser=false&slideWidth=50vw")
+    const panel = page.locator('[data-test-id="slide-over-panel-preview-panel"]')
+    await expect(panel).toHaveCSS("position", "fixed")
+    await expect(panel).toHaveCSS("top", "16px")
+    await expect(panel).toHaveCSS("right", "0px")
+    await expect(panel).toHaveCSS("bottom", "16px")
+    await expect(panel).toHaveCSS("left", "16px")
+    await expect(panel).toHaveCSS("width", `${width - 16}px`)
+  }
+
+  await page.setViewportSize({ width: 800, height: 720 })
+  await page.goto("/?component=slide-over-panel&slideOpen=true&slidePosition=right&slideMode=blocking&slideTopOffsetViewport=auto&slideSuperuser=false&slideWidth=50vw")
+  const panel = page.locator('[data-test-id="slide-over-panel-preview-panel"]')
+  await expect(panel).toHaveCSS("top", "0px")
+  await expect(panel).toHaveCSS("bottom", "0px")
+  await expect(panel).toHaveCSS("left", "400px")
+  await expect(panel).toHaveCSS("width", "400px")
+  await page.getByRole("button", { name: "Open setup" }).click()
+
+  const cases = [
+    { mode: "blocking", position: "right", positionCss: "fixed", top: "0px", width: "400px" },
+    { mode: "passive", position: "right", positionCss: "fixed", top: "48px", width: "400px" },
+    { mode: "blocking", position: "left", positionCss: "relative", top: "0px", width: "450px" },
+    { mode: "passive", position: "left", positionCss: "relative", top: "48px", width: "450px" },
+    { mode: "blocking", position: "bottom", positionCss: "sticky", top: "16px", width: null },
+    { mode: "passive", position: "bottom", positionCss: "sticky", top: "48px", width: null },
+    { mode: "blocking", position: "unspecified", positionCss: "relative", top: "0px", width: "450px" },
+    { mode: "passive", position: "unspecified", positionCss: "relative", top: "48px", width: "450px" },
+  ] as const
+
+  for (const geometryCase of cases) {
+    await page.getByLabel("Panel position").selectOption(geometryCase.position)
+    await page.getByLabel("Panel mode").selectOption(geometryCase.mode)
+    await expect(panel).toHaveAttribute("mode", geometryCase.mode)
+    await expect(panel).toHaveCSS("position", geometryCase.positionCss)
+    await expect(panel).toHaveCSS("top", geometryCase.top)
+    if (geometryCase.width !== null) await expect(panel).toHaveCSS("width", geometryCase.width)
+  }
+
+  await page.setViewportSize({ width: 1280, height: 720 })
+  await page.getByLabel("Panel position").selectOption("right")
+  await page.getByLabel("Panel mode").selectOption("passive")
+  await page.getByLabel("Panel top offset viewport").selectOption("auto")
+  await expect(panel).toHaveCSS("top", "53px")
+  await page.getByLabel("Show superuser warning").check()
+  await expect(panel).toHaveCSS("top", "77px")
+  await page.getByLabel("Panel top offset viewport").selectOption("mobile")
+  await expect(panel).toHaveCSS("top", "72px")
+})
+
+test("uses external AnimatePresence for a real spring exit and a reduced-motion close", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" })
+  await page.setViewportSize({ width: 1280, height: 720 })
+  await page.goto("/?component=slide-over-panel&slideOpen=true&slidePosition=right&slideMode=blocking")
+  const panel = page.locator('[data-test-id="slide-over-panel-preview-panel"]')
+  await expect(panel).toBeVisible()
+
+  const springExit = await page.evaluate(async () => {
+    const drawer = document.querySelector<HTMLElement>('[data-test-id="slide-over-panel-preview-panel"]')
+    const close = [...document.querySelectorAll<HTMLButtonElement>("button")].find(button => button.textContent === "Close panel")
+    if (!drawer || !close) throw new Error("The panel fixture is missing")
+    close.click()
+    const samples: Array<{ opacity: string; transform: string }> = []
+    for (let frame = 0; frame < 120 && drawer.isConnected; frame += 1) {
+      await new Promise<void>(resolve => requestAnimationFrame(() => resolve()))
+      if (drawer.isConnected) {
+        const styles = getComputedStyle(drawer)
+        samples.push({ opacity: styles.opacity, transform: styles.transform })
+      }
+    }
+    return { connected: drawer.isConnected, samples }
+  })
+  expect(springExit.connected).toBe(false)
+  expect(springExit.samples.length).toBeGreaterThan(1)
+  expect(springExit.samples.some(({ opacity }) => Number(opacity) > 0 && Number(opacity) < 1)).toBe(true)
+  expect(springExit.samples.some(({ transform }) => transform !== "none" && !transform.endsWith(", 0, 0)"))).toBe(true)
+  await expect(panel).toHaveCount(0)
+
+  await page.emulateMedia({ reducedMotion: "reduce" })
+  await page.getByRole("button", { name: "Open panel" }).click()
+  await expect(panel).toBeVisible()
+  await page.getByRole("button", { name: "Close panel" }).click()
+  await expect(panel).toHaveCount(0, { timeout: 500 })
+})
+
 test("configures, shares, and restores the Empty State workbench", async ({ browser, page }) => {
   await page.goto("/evidence/empty-state-server")
   await expect(page.getByTestId("empty-state-server").getByRole("heading", { name: "No results" })).toBeVisible()
