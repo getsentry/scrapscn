@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 
+import "./roboto-mono.css";
 import styles from "./hotkey.module.css";
 
 type Variant = "embossed" | "debossed";

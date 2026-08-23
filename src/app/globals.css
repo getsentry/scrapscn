@@ -7,7 +7,7 @@
 @theme inline {
   /* Fonts */
   --font-sans: "Rubik", system-ui, sans-serif;
-  --font-mono: "Roboto Mono", ui-monospace, monospace;
+  --font-mono: "Roboto Mono Variable", "Roboto Mono", ui-monospace, monospace;
   --font-heading: "Dammit Sans", var(--font-sans);
 
   /* Core semantic colors */
@@ -191,6 +191,13 @@
   --scraps-status-muted-dot: #c0bec6;
   --scraps-status-muted-pulse: #0000200f;
   --scraps-backdrop-background: #10082845;
+  --scraps-content-primary: #302e36;
+  --scraps-content-secondary: #6a6772;
+  --scraps-content-accent: #653de9;
+  --scraps-content-promotion: #c8007e;
+  --scraps-content-danger: #d50000;
+  --scraps-content-warning: #a45200;
+  --scraps-content-success: #008900;
   --scraps-inline-code-content: #c8007e;
   --scraps-inline-code-background: #f000901a;
   --scraps-inline-code-neutral-content: #302e36;
@@ -394,6 +401,13 @@
   --scraps-status-muted-dot: #898294;
   --scraps-status-muted-pulse: #c0a8f81a;
   --scraps-backdrop-background: #10082080;
+  --scraps-content-primary: #e7e5ea;
+  --scraps-content-secondary: #b5b0bd;
+  --scraps-content-accent: #aba8f8;
+  --scraps-content-promotion: #ea95b9;
+  --scraps-content-danger: #f6938c;
+  --scraps-content-warning: #ffce00;
+  --scraps-content-success: #5ece73;
   --scraps-inline-code-content: #ea95b9;
   --scraps-inline-code-background: #f800782e;
   --scraps-inline-code-neutral-content: #e7e5ea;

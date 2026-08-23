@@ -15,6 +15,7 @@ test("discovers, serves, and restores templates in production", async ({ page, r
     "Image",
     "Backdrop",
     "Code",
+    "Text",
     "Checkbox settings",
   ])
 

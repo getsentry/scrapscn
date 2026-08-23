@@ -19,6 +19,7 @@
     "templates:generate": "node scripts/generate-template-manifest.mjs",
     "test:playground": "pnpm build:next && node scripts/run-playwright.mjs tests/e2e/playground.spec.ts",
     "test:figma-capture": "pnpm build:next && node scripts/test-production-capture.mjs && node scripts/run-playwright.mjs tests/e2e/figma-capture-production.spec.ts && SCRAPSCN_E2E_MODE=development node scripts/run-playwright.mjs tests/e2e/figma-capture.spec.ts",
+    "test:production-assets": "pnpm build:next && pnpm build-storybook && node --test tests/production/*.test.mjs",
     "test:templates": "node --test tests/templates/*.test.mjs && pnpm templates:generate && node scripts/test-templates.mjs && pnpm build:next && node scripts/run-playwright.mjs tests/e2e/templates.spec.ts",
     "test": "pnpm test:parity && vitest run"
   },
@@ -26,7 +27,7 @@
     "@base-ui/react": "^1.5.0",
     "@emotion/is-prop-valid": "^1.4.0",
     "@emotion/serialize": "1.3.3",
-    "@fontsource/roboto-mono": "^5.2.9",
+    "@fontsource-variable/roboto-mono": "5.2.9",
     "@fontsource/rubik": "^5.2.8",
     "@react-aria/interactions": "3.28.1",
     "@react-aria/utils": "3.34.1",

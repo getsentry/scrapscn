@@ -6,7 +6,8 @@
   margin: 0;
   padding: 0 4px;
   color: var(--scraps-hotkey-content-primary);
-  font-family: "Roboto Mono", Monaco, Consolas, "Courier New", monospace;
+  font-family: "Roboto Mono Variable", "Roboto Mono", Monaco, Consolas,
+    "Courier New", monospace;
   font-size: 12px;
   font-weight: 500;
   background: var(--scraps-hotkey-background-primary);

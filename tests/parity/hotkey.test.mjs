@@ -60,6 +60,7 @@ test("publishes the exact self-contained Hotkey registry item", async () => {
   const item = registry.items.find(({ name }) => name === "hotkey");
 
   assert.deepEqual(item.dependencies, [
+    "@fontsource-variable/roboto-mono@5.2.9",
     "@react-aria/utils@3.34.1",
     "@sentry/react@10.70.0",
   ]);
@@ -82,6 +83,11 @@ test("publishes the exact self-contained Hotkey registry item", async () => {
   });
   assert.deepEqual(item.files, [
     {
+      path: "src/components/ui/roboto-mono.css",
+      type: "registry:file",
+      target: "src/components/ui/roboto-mono.css",
+    },
+    {
       path: "src/components/ui/hotkey.module.css",
       type: "registry:file",
       target: "src/components/ui/hotkey.module.css",
@@ -93,6 +99,7 @@ test("publishes the exact self-contained Hotkey registry item", async () => {
 test("keeps the exact maps, Sentry glyph paths, warning, and Kbd geometry", async () => {
   const source = await readFile("src/components/ui/hotkey.tsx", "utf8");
   const styles = await readFile("src/components/ui/hotkey.module.css", "utf8");
+  const fontStyles = await readFile("src/components/ui/roboto-mono.css", "utf8");
 
   assert.match(source, /import \{ isMac \} from "@react-aria\/utils"/);
   assert.match(source, /useSyncExternalStore\(subscribeToPlatform, isMac, \(\) => false\)/);
@@ -113,7 +120,10 @@ test("keeps the exact maps, Sentry glyph paths, warning, and Kbd geometry", asyn
   assert.match(source, /if \(!finalKeys \|\| finalKeys\.length === 0\)/);
   assert.doesNotMatch(source, /finalKeys\.every/);
   assert.match(styles, /height:\s*1\.67em/);
-  assert.match(styles, /font-family:\s*"Roboto Mono", Monaco, Consolas, "Courier New", monospace/);
+  assert.doesNotMatch(styles, /@fontsource-variable\/roboto-mono\/wght\.css/);
+  assert.match(fontStyles, /@fontsource-variable\/roboto-mono\/wght\.css/);
+  assert.match(source, /import "\.\/roboto-mono\.css"/);
+  assert.match(styles, /font-family:\s*"Roboto Mono Variable", "Roboto Mono", Monaco, Consolas,/);
   assert.match(styles, /font-size:\s*12px/);
   assert.match(styles, /border-bottom-width:\s*2px/);
   assert.match(styles, /border-radius:\s*5px/);

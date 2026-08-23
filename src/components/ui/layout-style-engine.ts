@@ -394,7 +394,7 @@ export interface CompiledLayoutStyle {
 
 /** Compiles and hashes canonical CSS so equivalent responsive values dedupe. */
 export function compileLayoutStyle(
-  namespace: "layout" | "separator",
+  namespace: "layout" | "separator" | "text",
   declarations: readonly LayoutCssDeclaration[]
 ): CompiledLayoutStyle {
   if (!declarations.some((declaration) => declaration.value !== undefined)) {

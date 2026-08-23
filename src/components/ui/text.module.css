@@ -1,0 +1,91 @@
+@import "@fontsource/rubik/400.css";
+@import "@fontsource/rubik/500.css";
+
+.text {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-rubik, Rubik), "Avenir Next", sans-serif;
+  text-box-edge: text text;
+  text-box-trim: trim-both;
+}
+
+.primary { color: var(--scraps-content-primary, #302e36); }
+.secondary { color: var(--scraps-content-secondary, #6a6772); }
+.accent { color: var(--scraps-content-accent, #653de9); }
+.promotion { color: var(--scraps-content-promotion, #c8007e); }
+.danger { color: var(--scraps-content-danger, #d50000); }
+.warning { color: var(--scraps-content-warning, #a45200); }
+.success { color: var(--scraps-content-success, #008900); }
+.mono {
+  font-family: var(--font-roboto-mono, "Roboto Mono Variable"), "Roboto Mono",
+    Monaco, Consolas, "Courier New", monospace;
+  font-weight: 425;
+}
+
+.bold { font-weight: 500; }
+.regularSans { font-weight: 400; }
+.regularMono { font-weight: 425; }
+.italic { font-style: italic; }
+.strike { text-decoration: line-through; }
+.underline { text-decoration: underline; }
+.dotted { text-decoration: underline dotted; }
+.strikeUnderline { text-decoration: line-through underline; }
+.strikeDotted { text-decoration: line-through underline dotted; }
+.uppercase { text-transform: uppercase; }
+
+.ellipsis {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.heading { font-weight: 500; }
+.headingInherit { font-weight: inherit; }
+.headingEllipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tabular { font-variant-numeric: tabular-nums; }
+.fraction { font-variant-numeric: diagonal-fractions; }
+.tabularFraction { font-variant-numeric: tabular-nums diagonal-fractions; }
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6,
+.prose p,
+.prose ul:not([role="listbox"], [role="grid"], [role="menu"]),
+.prose ol:not([role="listbox"], [role="grid"], [role="menu"]),
+.prose table,
+.prose dl,
+.prose blockquote,
+.prose form,
+.prose pre,
+.prose :global(.auto-select-text),
+.prose :global(.section),
+.prose [class^="highlight-"] {
+  margin-bottom: 24px;
+}
+
+.prose h1:last-child,
+.prose h2:last-child,
+.prose h3:last-child,
+.prose h4:last-child,
+.prose h5:last-child,
+.prose h6:last-child,
+.prose p:last-child,
+.prose ul:not([role="listbox"], [role="grid"], [role="menu"]):last-child,
+.prose ol:not([role="listbox"], [role="grid"], [role="menu"]):last-child,
+.prose table:last-child,
+.prose dl:last-child,
+.prose blockquote:last-child,
+.prose form:last-child,
+.prose pre:last-child,
+.prose :global(.auto-select-text):last-child,
+.prose :global(.section):last-child,
+.prose [class^="highlight-"]:last-child {
+  margin-bottom: 0;
+}

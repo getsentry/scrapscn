@@ -11,6 +11,7 @@ import {
   type RefObject,
 } from "react";
 
+import "./roboto-mono.css";
 import styles from "./code.module.css";
 import { useCodeMessages, type CodeMessages } from "./code-messages";
 import {

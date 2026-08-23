@@ -1,6 +1,7 @@
 import { serializeStyles, type SerializedStyles } from "@emotion/serialize";
 import type { HTMLProps } from "react";
 
+import "./roboto-mono.css";
 import styles from "./code.module.css";
 
 export { CodeBlock } from "./code-block";

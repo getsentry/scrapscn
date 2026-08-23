@@ -20,8 +20,8 @@ importers:
       '@emotion/serialize':
         specifier: 1.3.3
         version: 1.3.3
-      '@fontsource/roboto-mono':
-        specifier: ^5.2.9
+      '@fontsource-variable/roboto-mono':
+        specifier: 5.2.9
         version: 5.2.9
       '@fontsource/rubik':
         specifier: ^5.2.8
@@ -621,8 +621,8 @@ packages:
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
 
-  '@fontsource/roboto-mono@5.2.9':
-    resolution: {integrity: sha512-iIeSyrRGoM15uIWqXslW1K9UFnUYfnCFNrNoWjXE0huO1L+hM0Jst0KNLuRc7P21xPpGL0bZouzYSX0Em9eyWg==}
+  '@fontsource-variable/roboto-mono@5.2.9':
+    resolution: {integrity: sha512-OzFO2AXlSGcXl/NcXS3CGjImb6rczCByPJ1C+Dzp9kkYOrUPyrGTuAtqPcmA/d+nZGX5oyOWKXLk5BrwVLYqkw==}
 
   '@fontsource/rubik@5.2.8':
     resolution: {integrity: sha512-PIc8QR7FqWPcYhbdRiGff56vQlKqg/ytES1YqecSq1GkgxiH4TBshrFvDEOZ9JonUF9m1qQ+qXxJj7wD5zgXEw==}
@@ -5667,7 +5667,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.11': {}
 
-  '@fontsource/roboto-mono@5.2.9': {}
+  '@fontsource-variable/roboto-mono@5.2.9': {}
 
   '@fontsource/rubik@5.2.8': {}
 

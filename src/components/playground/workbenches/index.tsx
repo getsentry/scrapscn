@@ -12,6 +12,7 @@ import { RevealOnHoverWorkbench } from "./reveal-on-hover-workbench";
 import { SplitPanelWorkbench } from "./split-panel-workbench";
 import { StatusIndicatorWorkbench } from "./status-indicator-workbench";
 import { TableWorkbench } from "./table-workbench";
+import { TextWorkbench } from "./text-workbench";
 
 function defineWorkbench<const Id extends string>(definition: {
   Component: ComponentType<WorkbenchProps>;
@@ -40,6 +41,7 @@ export const workbenchRegistry = Object.freeze([
   defineWorkbench({ Component: ImageWorkbench, id: "image", label: "Image", sharePath: "/" }),
   defineWorkbench({ Component: BackdropWorkbench, id: "backdrop", label: "Backdrop", sharePath: "/" }),
   defineWorkbench({ Component: CodeWorkbench, id: "code", label: "Code", sharePath: "/" }),
+  defineWorkbench({ Component: TextWorkbench, id: "text", label: "Text", sharePath: "/" }),
 ]);
 
 export type WorkbenchId = (typeof workbenchRegistry)[number]["id"];

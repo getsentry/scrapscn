@@ -2224,10 +2224,22 @@
       "canonical": {
         "indexPath": "static/app/components/core/text/index.tsx",
         "sourcePaths": [
+          "static/app/components/core/code/inlineCode.tsx",
+          "static/app/components/core/hotkey/kbd.tsx",
+          "static/app/components/core/layout/index.tsx",
+          "static/app/components/core/layout/styles.tsx",
           "static/app/components/core/text/heading.tsx",
           "static/app/components/core/text/index.tsx",
           "static/app/components/core/text/prose.tsx",
-          "static/app/components/core/text/text.tsx"
+          "static/app/components/core/text/styles.tsx",
+          "static/app/components/core/text/text.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/scraps/tokens/typography.tsx",
+          "static/app/utils/theme/types.tsx",
+          "static/less/fonts.less"
         ],
         "publicExports": {
           "runtime": [
@@ -2243,22 +2255,59 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/heading.tsx",
+          "src/components/ui/kbd-styles.tsx",
+          "src/components/ui/prose.tsx",
+          "src/components/ui/text-style-engine.tsx",
+          "src/components/ui/text.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "Heading",
+            "Prose",
+            "Text",
+            "combineTextClassNames",
+            "createTextStyleResource",
+            "kbdStyles",
+            "resolveFontSize",
+            "resolveLineHeight",
+            "textDeclaration"
+          ],
+          "types": [
+            "BaseTextProps",
+            "HeadingProps",
+            "HeadingSize",
+            "KbdStyleTheme",
+            "ProseProps",
+            "TextPrimitive",
+            "TextProps",
+            "TextPropsWithRenderFunction",
+            "TextSize",
+            "TextVariant"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "text"
+        ],
+        "stories": [
+          "src/components/ui/text.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/text.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/text-ssr.test.mjs",
+          "tests/parity/text.test.mjs",
+          "tests/types/text-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=text"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local text implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Regular Scraps Text, Heading, and Prose contracts, responsive presentation, inline code and keycap prose composition, focused assertions, workbench, and registry delivery are present. The canonical module has no Figma component."
       }
     },
     {

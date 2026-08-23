@@ -455,6 +455,7 @@
       "title": "Hotkey",
       "description": "Regular Scraps platform-aware keyboard shortcut display and document listener.",
       "dependencies": [
+        "@fontsource-variable/roboto-mono@5.2.9",
         "@react-aria/utils@3.34.1",
         "@sentry/react@10.70.0"
       ],
@@ -476,6 +477,11 @@
         }
       },
       "files": [
+        {
+          "path": "src/components/ui/roboto-mono.css",
+          "type": "registry:file",
+          "target": "src/components/ui/roboto-mono.css"
+        },
         {
           "path": "src/components/ui/hotkey.module.css",
           "type": "registry:file",
@@ -539,7 +545,7 @@
       "dependencies": [
         "@base-ui/react@1.5.0",
         "@emotion/serialize@1.3.3",
-        "@fontsource/roboto-mono@5.2.9",
+        "@fontsource-variable/roboto-mono@5.2.9",
         "@fontsource/rubik@5.2.8",
         "@types/prismjs@1.26.0",
         "prismjs@1.30.0"
@@ -608,6 +614,11 @@
           "target": "src/components/ui/SENTRY_SOURCE_NOTICE.md"
         },
         {
+          "path": "src/components/ui/roboto-mono.css",
+          "type": "registry:file",
+          "target": "src/components/ui/roboto-mono.css"
+        },
+        {
           "path": "src/components/ui/code.module.css",
           "type": "registry:file",
           "target": "src/components/ui/code.module.css"
@@ -634,6 +645,61 @@
           "type": "registry:ui"
         },
         { "path": "src/components/ui/prism.ts", "type": "registry:ui" }
+      ]
+    },
+    {
+      "name": "text",
+      "type": "registry:ui",
+      "title": "Text",
+      "description": "Regular Scraps Text, Heading, and Prose primitives.",
+      "dependencies": [
+        "@emotion/is-prop-valid@1.4.0",
+        "@fontsource-variable/roboto-mono@5.2.9"
+      ],
+      "registryDependencies": [
+        "https://scrapscn.sentry.dev/r/code.json"
+      ],
+      "cssVars": {
+        "light": {
+          "scraps-content-primary": "#302e36",
+          "scraps-content-secondary": "#6a6772",
+          "scraps-content-accent": "#653de9",
+          "scraps-content-promotion": "#c8007e",
+          "scraps-content-danger": "#d50000",
+          "scraps-content-warning": "#a45200",
+          "scraps-content-success": "#008900",
+          "scraps-hotkey-background-primary": "#ffffff",
+          "scraps-hotkey-background-secondary": "#f8f8f9",
+          "scraps-hotkey-border-primary": "#dad9de",
+          "scraps-hotkey-content-primary": "#302e36",
+          "scraps-hotkey-content-secondary": "#6a6772"
+        },
+        "dark": {
+          "scraps-content-primary": "#e7e5ea",
+          "scraps-content-secondary": "#b5b0bd",
+          "scraps-content-accent": "#aba8f8",
+          "scraps-content-promotion": "#ea95b9",
+          "scraps-content-danger": "#f6938c",
+          "scraps-content-warning": "#ffce00",
+          "scraps-content-success": "#5ece73",
+          "scraps-hotkey-background-primary": "#2e2936",
+          "scraps-hotkey-background-secondary": "#24202b",
+          "scraps-hotkey-border-primary": "#141119",
+          "scraps-hotkey-content-primary": "#e7e5ea",
+          "scraps-hotkey-content-secondary": "#b5b0bd"
+        }
+      },
+      "files": [
+        { "path": "src/components/ui/roboto-mono.css", "type": "registry:file", "target": "src/components/ui/roboto-mono.css" },
+        { "path": "src/components/ui/text.module.css", "type": "registry:file", "target": "src/components/ui/text.module.css" },
+        { "path": "src/components/ui/container-query-context.ts", "type": "registry:ui" },
+        { "path": "src/components/ui/layout-style-engine.ts", "type": "registry:ui" },
+        { "path": "src/components/ui/kbd-styles.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/text-style-engine.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/text.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/heading.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/prose.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/text-index.ts", "type": "registry:ui" }
       ]
     }
   ]

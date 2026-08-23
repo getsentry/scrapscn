@@ -81,7 +81,7 @@ test("publishes Code as a standalone registry item", async () => {
   assert.deepEqual(code.dependencies, [
     "@base-ui/react@1.5.0",
     "@emotion/serialize@1.3.3",
-    "@fontsource/roboto-mono@5.2.9",
+    "@fontsource-variable/roboto-mono@5.2.9",
     "@fontsource/rubik@5.2.8",
     "@types/prismjs@1.26.0",
     "prismjs@1.30.0",
@@ -94,6 +94,11 @@ test("publishes Code as a standalone registry item", async () => {
       path: "THIRD_PARTY_NOTICES.md",
       type: "registry:file",
       target: "src/components/ui/SENTRY_SOURCE_NOTICE.md",
+    },
+    {
+      path: "src/components/ui/roboto-mono.css",
+      type: "registry:file",
+      target: "src/components/ui/roboto-mono.css",
     },
     {
       path: "src/components/ui/code.module.css",
@@ -286,6 +291,7 @@ test("keeps the exact Code theme and interaction contract", async () => {
   const source = `${await readFile("src/components/ui/code.tsx", "utf8")}\n${await readFile("src/components/ui/code-block.tsx", "utf8")}`;
   const messages = await readFile("src/components/ui/code-messages.tsx", "utf8");
   const styles = await readFile("src/components/ui/code.module.css", "utf8");
+  const fontStyles = await readFile("src/components/ui/roboto-mono.css", "utf8");
   const serverEvidence = await readFile(
     "src/app/evidence/code-server/page.tsx",
     "utf8"
@@ -314,10 +320,11 @@ test("keeps the exact Code theme and interaction contract", async () => {
   assert.match(styles, /font-size-adjust: ex-height 0\.57/);
   assert.match(styles, /--scraps-code-tooltip-arrow-background: #2e2936/);
   assert.match(styles, /\.inlineCode \{\s+margin: 0;\s+padding: 0;/);
-  assert.match(styles, /@fontsource\/roboto-mono\/400\.css/);
-  assert.match(styles, /@fontsource\/roboto-mono\/500\.css/);
+  assert.doesNotMatch(styles, /@fontsource-variable\/roboto-mono\/wght\.css/);
+  assert.match(fontStyles, /@fontsource-variable\/roboto-mono\/wght\.css/);
+  assert.match(source, /import "\.\/roboto-mono\.css"/);
   assert.match(styles, /@fontsource\/rubik\/400\.css/);
-  assert.match(styles, /var\(--font-roboto-mono, "Roboto Mono"\)/);
+  assert.match(styles, /var\(--font-roboto-mono, "Roboto Mono Variable"\)/);
   assert.match(styles, /--scraps-theme-border-primary: #141119/);
   assert.match(styles, /border-radius: clamp\(0\.21em, 0\.28em, 0\.57em\)/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
