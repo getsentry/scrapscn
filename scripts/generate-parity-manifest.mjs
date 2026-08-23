@@ -41,6 +41,27 @@ const canonicalBehaviorDependencies = {
     'static/app/utils/theme/scraps/tokens/typography.tsx',
     'static/app/utils/useHoverOverlay.tsx',
   ],
+  emptyState: [
+    'static/app/components/core/emptyState/emptyState.mdx',
+    'static/app/components/core/layout/container.tsx',
+    'static/app/components/core/layout/flex.tsx',
+    'static/app/components/core/layout/index.tsx',
+    'static/app/components/core/layout/stack.tsx',
+    'static/app/components/core/layout/styles.tsx',
+    'static/app/components/core/text/index.tsx',
+    'static/app/components/core/text/heading.tsx',
+    'static/app/components/core/text/styles.tsx',
+    'static/app/components/core/text/text.tsx',
+    'static/app/utils/theme/index.tsx',
+    'static/app/utils/theme/scraps/theme/base.tsx',
+    'static/app/utils/theme/scraps/theme/dark.tsx',
+    'static/app/utils/theme/scraps/theme/light.tsx',
+    'static/app/utils/theme/scraps/tokens/color.tsx',
+    'static/app/utils/theme/scraps/tokens/size.tsx',
+    'static/app/utils/theme/scraps/tokens/typography.tsx',
+    'static/app/utils/theme/theme.tsx',
+    'static/app/utils/theme/types.tsx',
+  ],
   quote: [
     'static/app/components/core/layout/container.tsx',
     'static/app/components/core/layout/flex.tsx',
@@ -145,6 +166,7 @@ const localModules = {
     'src/components/ui/code-messages.tsx',
     'src/components/ui/code.tsx',
   ],
+  emptyState: ['src/components/ui/empty-state.tsx'],
   quote: ['src/components/ui/quote.tsx'],
   text: [
     'src/components/ui/text.tsx',
@@ -189,6 +211,7 @@ const registryItems = {
   badge: ['badge', 'feature-badge', 'tag'],
   button: ['button'],
   code: ['code'],
+  emptyState: ['empty-state'],
   quote: ['quote'],
   text: ['text'],
   dragHandle: ['drag-handle'],
@@ -250,6 +273,7 @@ const figmaNodes = {
   ],
   button: ['https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=384-2119'],
   checkbox: ['https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3481-4211'],
+  emptyState: ['https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=13363-6895'],
   radio: ['https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3482-4251'],
   slider: ['https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3538-6616'],
   switch: ['https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3277-4566'],
@@ -460,6 +484,14 @@ for (const moduleName of moduleNames) {
               'tests/parity/code.test.mjs',
               'tests/types/code-types.test.tsx',
             ]
+        : moduleName === 'emptyState'
+          ? [
+              'src/app/evidence/empty-state-server/page.tsx',
+              'src/components/ui/empty-state.test.tsx',
+              'tests/e2e/playground.spec.ts',
+              'tests/parity/empty-state.test.mjs',
+              'tests/types/empty-state-types.test.tsx',
+            ]
         : moduleName === 'quote'
           ? [
               'src/app/evidence/quote-server/page.tsx',
@@ -510,6 +542,8 @@ for (const moduleName of moduleNames) {
                 ? '/?component=backdrop'
           : moduleName === 'code'
             ? '/?component=code'
+            : moduleName === 'emptyState'
+              ? '/?component=empty-state'
             : moduleName === 'quote'
               ? '/?component=quote'
               : moduleName === 'text'
@@ -530,7 +564,9 @@ for (const moduleName of moduleNames) {
           : 'missing',
       complete: Boolean(completionNote),
       note: completionNote ??
-        (implementationPaths.length > 0
+        (moduleName === 'emptyState'
+          ? 'The local EmptyState implementation, workbench, focused tests, and intended registry dependency URLs are present. Figma, Code Connect, and installation from the protected shared registry have not been verified.'
+          : implementationPaths.length > 0
           ? 'A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed.'
           : `No local ${kebabName} implementation is mapped.`),
     },

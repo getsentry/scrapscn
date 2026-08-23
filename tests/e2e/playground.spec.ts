@@ -1,5 +1,40 @@
 import { expect, test } from "playwright/test"
 
+test("configures, shares, and restores the Empty State workbench", async ({ browser, page }) => {
+  await page.goto("/evidence/empty-state-server")
+  await expect(page.getByTestId("empty-state-server").getByRole("heading", { name: "No results" })).toBeVisible()
+
+  await page.goto("/?component=empty-state&emptyAction=true&emptyDescription=true&emptyIllustration=true&emptyTitle=No+results&emptyWidth=md")
+  const preview = page.getByTestId("empty-state-preview")
+  const observedWidths = () => preview.evaluate((element) => {
+    const styles = getComputedStyle(element)
+    return {
+      paddedContentBox: element.clientWidth - Number.parseFloat(styles.paddingLeft) - Number.parseFloat(styles.paddingRight),
+      queryContainer: element.querySelector(":scope > div")?.clientWidth,
+    }
+  })
+  await expect(preview.getByRole("heading", { name: "No results" })).toBeVisible()
+  expect(await observedWidths()).toEqual({ paddedContentBox: 576, queryContainer: 576 })
+  await expect(preview.locator('[data-test-id="empty-state"]')).toHaveCSS("flex-direction", "row")
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await page.getByLabel("Empty state container width").selectOption("below-md")
+  expect(await observedWidths()).toEqual({ paddedContentBox: 575, queryContainer: 575 })
+  await expect(preview.locator('[data-test-id="empty-state"]')).toHaveCSS("flex-direction", "column")
+  await page.getByLabel("Show illustration").uncheck()
+  await page.getByLabel("Show description").uncheck()
+  await page.getByLabel("Show action").uncheck()
+  await expect(preview.getByRole("img")).toHaveCount(0)
+  await expect(preview.getByRole("button", { name: "Keep searching" })).toHaveCount(0)
+  await page.getByRole("button", { name: "Share" }).click()
+  const sharedUrl = await page.evaluate(() => navigator.clipboard.readText())
+  expect(sharedUrl).toContain("component=empty-state")
+  expect(sharedUrl).toContain("emptyWidth=below-md")
+  const restored = await browser.newPage()
+  await restored.goto(sharedUrl)
+  await expect(restored.getByTestId("empty-state-preview").getByRole("img")).toHaveCount(0)
+  await restored.close()
+})
+
 test("configures, shares, restores, and proves the Quote workbench", async ({ browser, page }) => {
   const serverCases = [
     { caption: null, cite: null, id: "absent", label: null },

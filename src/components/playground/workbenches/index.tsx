@@ -4,6 +4,7 @@ import type { WorkbenchProps } from "@/components/playground/workbench";
 
 import { CheckboxWorkbench } from "./checkbox-workbench";
 import { CodeWorkbench } from "./code-workbench";
+import { EmptyStateWorkbench } from "./empty-state-workbench";
 import { DragHandleWorkbench } from "./drag-handle-workbench";
 import { HotkeyWorkbench } from "./hotkey-workbench";
 import { ImageWorkbench } from "./image-workbench";
@@ -42,6 +43,7 @@ export const workbenchRegistry = Object.freeze([
   defineWorkbench({ Component: ImageWorkbench, id: "image", label: "Image", sharePath: "/" }),
   defineWorkbench({ Component: BackdropWorkbench, id: "backdrop", label: "Backdrop", sharePath: "/" }),
   defineWorkbench({ Component: CodeWorkbench, id: "code", label: "Code", sharePath: "/" }),
+  defineWorkbench({ Component: EmptyStateWorkbench, id: "empty-state", label: "Empty State", sharePath: "/" }),
   defineWorkbench({ Component: TextWorkbench, id: "text", label: "Text", sharePath: "/" }),
   defineWorkbench({ Component: QuoteWorkbench, id: "quote", label: "Quote", sharePath: "/" }),
 ]);

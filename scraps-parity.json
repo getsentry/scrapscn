@@ -833,8 +833,27 @@
       "canonical": {
         "indexPath": "static/app/components/core/emptyState/index.tsx",
         "sourcePaths": [
+          "static/app/components/core/emptyState/emptyState.mdx",
           "static/app/components/core/emptyState/emptyState.tsx",
-          "static/app/components/core/emptyState/index.tsx"
+          "static/app/components/core/emptyState/index.tsx",
+          "static/app/components/core/layout/container.tsx",
+          "static/app/components/core/layout/flex.tsx",
+          "static/app/components/core/layout/index.tsx",
+          "static/app/components/core/layout/stack.tsx",
+          "static/app/components/core/layout/styles.tsx",
+          "static/app/components/core/text/heading.tsx",
+          "static/app/components/core/text/index.tsx",
+          "static/app/components/core/text/styles.tsx",
+          "static/app/components/core/text/text.tsx",
+          "static/app/utils/theme/index.tsx",
+          "static/app/utils/theme/scraps/theme/base.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/scraps/tokens/typography.tsx",
+          "static/app/utils/theme/theme.tsx",
+          "static/app/utils/theme/types.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -844,22 +863,38 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/empty-state.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "EmptyState"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "empty-state"
+        ],
+        "stories": [
+          "src/components/ui/empty-state.stories.tsx"
+        ],
+        "tests": [
+          "src/app/evidence/empty-state-server/page.tsx",
+          "src/components/ui/empty-state.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/empty-state.test.mjs",
+          "tests/types/empty-state-types.test.tsx"
+        ],
         "codeConnect": [],
-        "figmaNodes": [],
-        "playgroundPath": null
+        "figmaNodes": [
+          "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=13363-6895"
+        ],
+        "playgroundPath": "/?component=empty-state"
       },
       "completion": {
-        "state": "missing",
+        "state": "partial",
         "complete": false,
-        "note": "No local empty-state implementation is mapped."
+        "note": "The local EmptyState implementation, workbench, focused tests, and intended registry dependency URLs are present. Figma, Code Connect, and installation from the protected shared registry have not been verified."
       }
     },
     {

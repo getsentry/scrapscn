@@ -246,6 +246,22 @@
       ]
     },
     {
+      "name": "empty-state",
+      "type": "registry:ui",
+      "title": "Empty State",
+      "description": "Regular Scraps responsive no-content layout with optional illustration, description, and action.",
+      "registryDependencies": [
+        "https://scrapscn.sentry.dev/r/layout.json",
+        "https://scrapscn.sentry.dev/r/text.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/empty-state.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "drag-handle",
       "type": "registry:ui",
       "title": "Drag Handle",
