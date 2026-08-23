@@ -1,5 +1,116 @@
 import { expect, test } from "playwright/test"
 
+test("configures, shares, reloads, restores history, and resets the Loader template", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" })
+  await page.goto("/evidence/loader-server")
+  await expect(page.getByTestId("loader-server").getByRole("progressbar", { name: "Loading" })).toBeVisible()
+  await expect(page.getByTestId("loader-server")).toContainText("Loading on the server")
+
+  await page.goto("/templates/loader-status?loaderMessages=false&loaderVariant=vibrant&loaderWidth=120&theme=dark&viewport=mobile")
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "loader")
+  await expect(page.getByRole("heading", { name: "Loader", exact: true })).toBeVisible()
+  await expect(page.locator('[data-slot="sentry-page-frame"]')).toHaveCSS("width", "390px")
+  const preview = page.getByTestId("loader-preview")
+  const track = preview.getByRole("progressbar", { name: "Loading" })
+  const readVisuals = () => track.evaluate((element) => {
+    const before = getComputedStyle(element, "::before")
+    const mask = element.querySelector<HTMLElement>(":scope > span")
+    const bars = element.querySelectorAll<HTMLElement>("span span")
+    if (!mask || bars.length !== 2) throw new Error("Loader visual layers are missing")
+    return {
+      accentBars: [...bars].map((bar) => getComputedStyle(bar).backgroundColor),
+      maskImage: getComputedStyle(mask).maskImage,
+      maskSize: getComputedStyle(mask).maskSize,
+      trackColor: before.backgroundColor,
+      trackOpacity: before.opacity,
+    }
+  })
+  await expect(track).toBeVisible()
+  await expect(track).toHaveCSS("height", "8px")
+  expect(await readVisuals()).toEqual({
+    accentBars: ["rgb(117, 83, 255)", "rgb(117, 83, 255)"],
+    maskImage: expect.stringContaining("data:image/svg+xml"),
+    maskSize: "16px 8px",
+    trackColor: "rgb(27, 24, 33)",
+    trackOpacity: "1",
+  })
+  await expect(track.locator("span span").first()).toHaveCSS("animation-duration", "2s")
+  await expect(track.locator("span span").nth(1)).toHaveCSS("animation-delay", "0.8s")
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await expect(page.getByLabel("Component or template")).toHaveValue("/templates/loader-status")
+  await expect(page.getByLabel("Loader width")).toHaveValue("120")
+  await expect(page.getByLabel("Show loader messages")).not.toBeChecked()
+  await expect(page.getByLabel("Preview width")).toHaveValue("mobile")
+  await expect(page.locator("html")).toHaveClass(/dark/)
+  await page.getByRole("button", { name: "Switch to light theme" }).click()
+  await expect.poll(readVisuals).toMatchObject({ trackColor: "rgb(230, 230, 233)" })
+  await page.getByRole("button", { name: "Switch to dark theme" }).click()
+  await page.getByLabel("Loader width").selectOption("400")
+  await expect(track).toHaveCSS("width", "400px")
+  await expect(track.locator("span span").first()).toHaveCSS("animation-duration", "2.8s")
+  await expect(track.locator("span span").nth(1)).toHaveCSS("animation-delay", "1.2s")
+  await page.getByLabel("Loader variant").selectOption("monochrome")
+  await page.getByLabel("Show loader messages").check()
+  expect(await readVisuals()).toMatchObject({
+    accentBars: ["rgb(117, 83, 255)", "rgb(117, 83, 255)"],
+    trackColor: "rgb(117, 83, 255)",
+    trackOpacity: "0.2",
+  })
+  await page.getByRole("button", { name: "Share" }).click()
+  const sharedUrl = await page.evaluate(() => navigator.clipboard.readText())
+  expect(sharedUrl).toContain("/templates/loader-status?")
+  expect(sharedUrl).toContain("component=loader")
+  expect(sharedUrl).toContain("loaderMessages=true")
+  expect(sharedUrl).toContain("loaderVariant=monochrome")
+  expect(sharedUrl).toContain("loaderWidth=400")
+  expect(sharedUrl).toContain("theme=dark")
+  expect(sharedUrl).toContain("viewport=mobile")
+
+  await page.reload()
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await expect(page.getByLabel("Loader variant")).toHaveValue("monochrome")
+  await expect(page.getByLabel("Loader width")).toHaveValue("400")
+  await expect(page.getByLabel("Show loader messages")).toBeChecked()
+  await expect(page.getByLabel("Preview width")).toHaveValue("mobile")
+  await expect(page.locator("html")).toHaveClass(/dark/)
+
+  await page.getByLabel("Component or template").selectOption("checkbox")
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "checkbox")
+  await page.goBack()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute("data-component", "loader")
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await expect(page.getByLabel("Loader width")).toHaveValue("400")
+  await page.getByRole("button", { name: "Reset" }).click()
+  await expect(page.getByLabel("Loader variant")).toHaveValue("vibrant")
+  await expect(page.getByLabel("Loader width")).toHaveValue("240")
+  await expect(page.getByLabel("Show loader messages")).toBeChecked()
+  await expect(page.getByLabel("Preview width")).toHaveValue("desktop")
+  await expect(page.locator("html")).not.toHaveClass(/dark/)
+  await expect(page).toHaveURL(/loaderMessages=true/)
+  await expect(page).toHaveURL(/theme=light/)
+  await expect(page).toHaveURL(/viewport=desktop/)
+})
+
+test("keeps Loader progress semantics while reduced motion disables loader animation", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" })
+  await page.goto("/?component=loader&loaderMessages=true")
+  const track = page.getByTestId("loader-preview").getByRole("progressbar", { name: "Loading" })
+  await expect(track).toBeVisible()
+  await expect(track.locator("span span").first()).toHaveCSS("animation-name", "none")
+  await expect(track.locator("span span").nth(1)).toHaveCSS("animation-name", "none")
+  const dots = page.getByTestId("loader-preview").locator("span[aria-hidden] > span")
+  await expect(dots).toHaveCount(3)
+  await expect(dots.first()).toHaveCSS("animation-name", "none")
+  await expect(dots.first()).toHaveCSS("opacity", "1")
+})
+
+test("cycles Loader messages in production", async ({ page }) => {
+  await page.goto("/?component=loader&loaderMessages=true")
+  const preview = page.getByTestId("loader-preview")
+  await expect(preview).toContainText("Loading issues")
+  await expect(preview).toContainText("Checking your filters", { timeout: 11_000 })
+})
+
 test("configures, shares, and restores the Empty State workbench", async ({ browser, page }) => {
   await page.goto("/evidence/empty-state-server")
   await expect(page.getByTestId("empty-state-server").getByRole("heading", { name: "No results" })).toBeVisible()

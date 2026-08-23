@@ -1358,8 +1358,31 @@
       "canonical": {
         "indexPath": "static/app/components/core/loader/index.tsx",
         "sourcePaths": [
+          "package.json",
+          "static/app/components/core/layout/container.tsx",
+          "static/app/components/core/layout/flex.tsx",
+          "static/app/components/core/layout/index.tsx",
+          "static/app/components/core/layout/stack.tsx",
+          "static/app/components/core/layout/styles.tsx",
           "static/app/components/core/loader/indeterminateLoader.tsx",
-          "static/app/components/core/loader/index.tsx"
+          "static/app/components/core/loader/index.tsx",
+          "static/app/components/core/loader/loader.mdx",
+          "static/app/components/core/principles/motion/motion.mdx",
+          "static/app/components/core/separator/index.tsx",
+          "static/app/components/core/separator/separator.tsx",
+          "static/app/components/core/text/index.tsx",
+          "static/app/components/core/text/styles.tsx",
+          "static/app/components/core/text/text.tsx",
+          "static/app/utils/theme/index.tsx",
+          "static/app/utils/theme/scraps/theme/base.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/scraps/tokens/typography.tsx",
+          "static/app/utils/theme/theme.tsx",
+          "static/app/utils/theme/types.tsx",
+          "static/less/fonts.less"
         ],
         "publicExports": {
           "runtime": [
@@ -1369,22 +1392,37 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/loader.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "IndeterminateLoader"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "loader"
+        ],
+        "stories": [
+          "src/components/ui/loader.stories.tsx"
+        ],
+        "tests": [
+          "src/app/evidence/loader-server/page.tsx",
+          "src/components/ui/loader.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/e2e/templates.spec.ts",
+          "tests/parity/loader.test.mjs",
+          "tests/types/loader-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=loader"
       },
       "completion": {
-        "state": "missing",
+        "state": "partial",
         "complete": false,
-        "note": "No local loader implementation is mapped."
+        "note": "The local Loader implementation, template-backed workbench, server evidence, focused tests, and local registry item are present. The shared hosted Layout and Text registry dependencies are protected, so public dependency installation is not verified. No canonical Loader Figma node is recorded."
       }
     },
     {

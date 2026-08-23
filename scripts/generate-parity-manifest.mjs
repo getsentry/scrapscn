@@ -62,6 +62,31 @@ const canonicalBehaviorDependencies = {
     'static/app/utils/theme/theme.tsx',
     'static/app/utils/theme/types.tsx',
   ],
+  loader: [
+    'package.json',
+    'static/app/components/core/layout/container.tsx',
+    'static/app/components/core/layout/flex.tsx',
+    'static/app/components/core/layout/index.tsx',
+    'static/app/components/core/layout/stack.tsx',
+    'static/app/components/core/layout/styles.tsx',
+    'static/app/components/core/loader/loader.mdx',
+    'static/app/components/core/principles/motion/motion.mdx',
+    'static/app/components/core/separator/index.tsx',
+    'static/app/components/core/separator/separator.tsx',
+    'static/app/components/core/text/index.tsx',
+    'static/app/components/core/text/styles.tsx',
+    'static/app/components/core/text/text.tsx',
+    'static/app/utils/theme/index.tsx',
+    'static/app/utils/theme/scraps/theme/base.tsx',
+    'static/app/utils/theme/scraps/theme/dark.tsx',
+    'static/app/utils/theme/scraps/theme/light.tsx',
+    'static/app/utils/theme/scraps/tokens/color.tsx',
+    'static/app/utils/theme/scraps/tokens/size.tsx',
+    'static/app/utils/theme/scraps/tokens/typography.tsx',
+    'static/app/utils/theme/theme.tsx',
+    'static/app/utils/theme/types.tsx',
+    'static/less/fonts.less',
+  ],
   quote: [
     'static/app/components/core/layout/container.tsx',
     'static/app/components/core/layout/flex.tsx',
@@ -167,6 +192,7 @@ const localModules = {
     'src/components/ui/code.tsx',
   ],
   emptyState: ['src/components/ui/empty-state.tsx'],
+  loader: ['src/components/ui/loader.tsx'],
   quote: ['src/components/ui/quote.tsx'],
   text: [
     'src/components/ui/text.tsx',
@@ -212,6 +238,7 @@ const registryItems = {
   button: ['button'],
   code: ['code'],
   emptyState: ['empty-state'],
+  loader: ['loader'],
   quote: ['quote'],
   text: ['text'],
   dragHandle: ['drag-handle'],
@@ -492,6 +519,15 @@ for (const moduleName of moduleNames) {
               'tests/parity/empty-state.test.mjs',
               'tests/types/empty-state-types.test.tsx',
             ]
+        : moduleName === 'loader'
+          ? [
+              'src/app/evidence/loader-server/page.tsx',
+              'src/components/ui/loader.test.tsx',
+              'tests/e2e/playground.spec.ts',
+              'tests/e2e/templates.spec.ts',
+              'tests/parity/loader.test.mjs',
+              'tests/types/loader-types.test.tsx',
+            ]
         : moduleName === 'quote'
           ? [
               'src/app/evidence/quote-server/page.tsx',
@@ -544,6 +580,8 @@ for (const moduleName of moduleNames) {
             ? '/?component=code'
             : moduleName === 'emptyState'
               ? '/?component=empty-state'
+            : moduleName === 'loader'
+              ? '/?component=loader'
             : moduleName === 'quote'
               ? '/?component=quote'
               : moduleName === 'text'
@@ -566,6 +604,8 @@ for (const moduleName of moduleNames) {
       note: completionNote ??
         (moduleName === 'emptyState'
           ? 'The local EmptyState implementation, workbench, focused tests, and intended registry dependency URLs are present. Figma, Code Connect, and installation from the protected shared registry have not been verified.'
+          : moduleName === 'loader'
+            ? 'The local Loader implementation, template-backed workbench, server evidence, focused tests, and local registry item are present. The shared hosted Layout and Text registry dependencies are protected, so public dependency installation is not verified. No canonical Loader Figma node is recorded.'
           : implementationPaths.length > 0
           ? 'A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed.'
           : `No local ${kebabName} implementation is mapped.`),

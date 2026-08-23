@@ -1,7 +1,9 @@
 import { spawn } from "node:child_process"
+import { fileURLToPath } from "node:url"
 
 const serviceName = `scrapscn-e2e-${process.pid}`
-const child = spawn("pnpm", ["exec", "playwright", "test", ...process.argv.slice(2)], {
+const playwrightCli = fileURLToPath(new URL("../node_modules/playwright/cli.js", import.meta.url))
+const child = spawn(process.execPath, [playwrightCli, "test", ...process.argv.slice(2)], {
   env: { ...process.env, SCRAPSCN_E2E_NAME: serviceName },
   stdio: "inherit",
 })

@@ -51,7 +51,7 @@ test("layout and separator registry items have an acyclic dependency closure", a
   const sentryBaseUrl = "https://scrapscn.sentry.dev/r/sentry-base.json";
   assert.deepEqual(layout.registryDependencies, [sentryBaseUrl]);
   assert.deepEqual(separator.registryDependencies, [sentryBaseUrl]);
-  assert.deepEqual(layout.dependencies, ["@emotion/is-prop-valid"]);
+  assert.deepEqual(layout.dependencies, ["@emotion/is-prop-valid@1.4.0"]);
   assert.deepEqual(separator.dependencies, ["@emotion/is-prop-valid"]);
   assert.deepEqual(
     layout.files.map((file) => file.path),

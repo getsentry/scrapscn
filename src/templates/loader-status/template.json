@@ -1,0 +1,6 @@
+{
+  "slug": "loader-status",
+  "title": "Loader status",
+  "description": "Share an indeterminate loading state in a Sentry status panel.",
+  "tags": ["loader", "status", "progress"]
+}

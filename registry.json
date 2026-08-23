@@ -177,7 +177,7 @@
       "type": "registry:ui",
       "title": "Layout",
       "description": "Regular Scraps responsive Container, Flex, Grid, Stack, and Surface primitives.",
-      "dependencies": ["@emotion/is-prop-valid"],
+      "dependencies": ["@emotion/is-prop-valid@1.4.0"],
       "registryDependencies": [
         "https://scrapscn.sentry.dev/r/sentry-base.json"
       ],
@@ -259,6 +259,18 @@
           "path": "src/components/ui/empty-state.tsx",
           "type": "registry:ui"
         }
+      ]
+    },
+    {
+      "name": "loader",
+      "type": "registry:ui",
+      "title": "Indeterminate Loader",
+      "description": "Regular Scraps animated squiggle progress indicator with optional loading messages.",
+      "dependencies": ["@react-aria/utils@3.34.1", "framer-motion@12.38.0"],
+      "registryDependencies": ["https://scrapscn.sentry.dev/r/layout.json", "https://scrapscn.sentry.dev/r/text.json"],
+      "files": [
+        {"path": "src/components/ui/loader.module.css", "type": "registry:file", "target": "src/components/ui/loader.module.css"},
+        {"path": "src/components/ui/loader.tsx", "type": "registry:ui"}
       ]
     },
     {
