@@ -1178,3 +1178,201 @@ test("configures, animates, shares, and restores the Backdrop workbench", async 
     )
   ).toEqual({ backdropLayer: "modal", backdropVisible: "true" })
 })
+
+test("configures, highlights, copies, shares, and restores the Code workbench", async ({ browser, page }) => {
+  await page.goto(
+    "/?component=code&codeCopyButton=true&codeDark=false&codeHeader=filename&codeInlineVariant=accent&codeLanguage=typescript&codeLineHighlight=true&codeMode=block&codeRounded=true&codeSelectable=true&codeSelectedTab=invalid&codeValue=const+answer%3A+number+%3D+42%3B"
+  )
+
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "code"
+  )
+  await expect(page.locator(".token.keyword")).toHaveText("const")
+  const codeBlock = page.locator('[class*="wrapper"]').filter({
+    has: page.getByRole("button", { name: "Copy snippet" }),
+  })
+  await expect(codeBlock).toHaveCSS("background-color", "rgb(248, 248, 249)")
+  await expect(codeBlock.locator("pre")).toHaveCSS("color", "rgb(48, 46, 54)")
+  await expect(codeBlock.locator("code")).toHaveCSS("user-select", "auto")
+  await expect(codeBlock.locator(".line-highlight")).toHaveCount(1)
+
+  const copyButton = page.getByRole("button", { name: "Copy snippet" })
+  await expect(copyButton).toHaveCSS("width", "28px")
+  await expect(copyButton).toHaveCSS("height", "28px")
+  await expect(copyButton).toHaveCSS("border-radius", "5px")
+  await expect(copyButton.locator("svg")).toHaveAttribute("width", "12")
+  await expect(copyButton.locator("svg")).toHaveAttribute("height", "12")
+  await copyButton.focus()
+  await expect(copyButton).toHaveCSS(
+    "box-shadow",
+    "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(117, 83, 255) 0px 0px 0px 2px"
+  )
+  const focusedCopyTooltip = page.getByRole("tooltip", { name: "Copy" })
+  await expect(focusedCopyTooltip).toBeHidden()
+  await page.waitForTimeout(300)
+  await expect(focusedCopyTooltip).toBeHidden()
+  await expect(focusedCopyTooltip).toBeVisible()
+  await copyButton.evaluate((element) => element.blur())
+  await page.waitForTimeout(100)
+  await expect(focusedCopyTooltip).toBeVisible()
+  await expect(focusedCopyTooltip).toBeHidden()
+  await copyButton.hover()
+  await expect(copyButton).toHaveCSS("background-color", "rgba(0, 0, 32, 0.06)")
+  await expect(page.getByRole("tooltip", { name: "Copy" })).toBeVisible()
+  const copyTooltip = page.getByRole("tooltip", { name: "Copy" })
+  await expect(copyTooltip.locator("..")).toHaveCSS("z-index", "10003")
+  const tooltipMotion = await copyTooltip.evaluate((element) => {
+    function readAnimation(attribute: string) {
+      const clone = element.cloneNode(true) as HTMLElement
+      clone.setAttribute(attribute, "")
+      document.body.append(clone)
+      const computed = getComputedStyle(clone)
+      const animation = {
+        delay: computed.animationDelay,
+        duration: computed.animationDuration,
+        name: computed.animationName,
+        timingFunction: computed.animationTimingFunction,
+      }
+      clone.remove()
+      return animation
+    }
+
+    return {
+      enter: readAnimation("data-starting-style"),
+      exit: readAnimation("data-ending-style"),
+    }
+  })
+  expect(tooltipMotion.enter.name).toContain("copy-tooltip-spring-enter")
+  expect(tooltipMotion.enter.duration).toBe("0.2s")
+  expect(tooltipMotion.enter.delay).toBe("0s")
+  expect(tooltipMotion.enter.timingFunction).toContain("linear(")
+  expect(tooltipMotion.exit.name).toContain("copy-tooltip-spring-exit")
+  expect(tooltipMotion.exit.duration).toBe("0.2s")
+  expect(tooltipMotion.exit.delay).toBe("0.1s")
+  expect(tooltipMotion.exit.timingFunction).toContain("linear(")
+  await expect(copyTooltip.locator("svg")).toHaveCSS("width", "16px")
+  await expect(copyTooltip.locator("svg")).toHaveCSS("height", "8px")
+  await expect(copyTooltip.locator("svg polygon")).toHaveCount(3)
+  await page.mouse.down()
+  await expect(copyButton).toHaveCSS("background-color", "rgba(0, 0, 24, 0.1)")
+  await page.mouse.move(0, 0)
+  await page.mouse.up()
+  await expect(copyTooltip).toBeHidden()
+  await copyButton.hover()
+  await expect(copyTooltip).toBeVisible()
+  await copyButton.click()
+  await expect(page.getByTestId("code-copy-count")).toHaveText("Copies: 1")
+  await expect(page.getByRole("tooltip", { name: "Copied" })).toBeVisible()
+  await expect.poll(() => page.evaluate(async () => (await navigator.clipboard.readText()).trim())).toBe(
+    "const answer: number = 42;"
+  )
+
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await expect(page.getByLabel("Component or template")).toHaveValue("code")
+  await page.getByLabel("Header").selectOption("tabs")
+  await page.getByRole("button", { name: "Close setup" }).click()
+  await expect(page.getByRole("button", { name: "React" })).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  )
+  await page.getByRole("button", { name: "Vue" }).click()
+  await expect(page).toHaveURL(/codeSelectedTab=vue/)
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await page.getByLabel("Dark code theme").check()
+  await expect(codeBlock).toHaveCSS("background-color", "rgb(36, 32, 43)")
+  await expect(codeBlock.locator("pre")).toHaveCSS("color", "rgb(231, 229, 234)")
+  await page.keyboard.press("Tab")
+  await copyButton.focus()
+  await expect(copyButton).toHaveCSS(
+    "box-shadow",
+    "rgb(46, 41, 54) 0px 0px 0px 0px, rgb(117, 83, 255) 0px 0px 0px 2px"
+  )
+  await copyButton.evaluate((element) => element.blur())
+  await page.getByRole("button", { name: "Open setup" }).click()
+  await page.getByLabel("Highlight first line").uncheck()
+  await page.getByLabel("Rounded corners").uncheck()
+  await page.getByLabel("Selectable code").uncheck()
+  await page.getByLabel("Language").selectOption("bash")
+  await page.getByLabel("Code value").fill("pnpm test")
+  await expect(codeBlock).toHaveCSS("border-radius", "0px")
+  await expect(codeBlock.locator("code")).toHaveCSS("user-select", "none")
+  await expect(codeBlock.locator(".line-highlight")).toHaveCount(0)
+
+  await page.getByLabel("Code mode").selectOption("inline")
+  await page.getByLabel("Inline variant").selectOption("neutral")
+  const inlineCode = page.getByTestId("inline-code-preview")
+  await expect(inlineCode).toHaveCSS("color", "rgb(48, 46, 54)")
+  await expect(inlineCode).toHaveCSS("background-color", "rgba(0, 0, 32, 0.06)")
+  await page.getByRole("button", { name: "Share" }).click()
+  const sharedUrl = await page.evaluate(() => navigator.clipboard.readText())
+  expect(sharedUrl).toContain("/?component=code")
+
+  const restoredContext = await browser.newContext({
+    ignoreHTTPSErrors: true,
+    permissions: ["clipboard-read", "clipboard-write"],
+  })
+  const restoredPage = await restoredContext.newPage()
+  await restoredPage.goto(sharedUrl)
+  await restoredPage.getByRole("button", { name: "Open setup" }).click()
+  await expect(restoredPage.getByLabel("Code mode")).toHaveValue("inline")
+  await expect(restoredPage.getByLabel("Inline variant")).toHaveValue("neutral")
+  await expect(restoredPage.getByLabel("Code value")).toHaveValue("pnpm test")
+  await restoredContext.close()
+
+  await page.getByLabel("Component or template").selectOption("checkbox")
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "checkbox"
+  )
+  await page.goBack()
+  await expect(page.locator('[data-slot="playground-canvas"]')).toHaveAttribute(
+    "data-component",
+    "code"
+  )
+  await expect(page.getByLabel("Code mode")).toHaveValue("inline")
+  await expect(page.getByLabel("Inline variant")).toHaveValue("neutral")
+  await page.getByRole("button", { name: "Reset" }).click()
+  await expect(page.getByLabel("Code mode")).toHaveValue("block")
+  await expect(page.getByLabel("Language")).toHaveValue("typescript")
+  await expect(page.getByLabel("Header")).toHaveValue("filename")
+  await expect(page.getByTestId("code-copy-count")).toHaveText("Copies: 0")
+  await expect(page.getByTestId("code-highlight-count")).not.toHaveText(
+    "Highlights: 0"
+  )
+  expect(
+    await page.evaluate(() =>
+      Object.fromEntries(
+        [...new URL(location.href).searchParams.entries()].filter(([key]) =>
+          key.startsWith("code")
+        )
+      )
+    )
+  ).toEqual({
+    codeCopyButton: "true",
+    codeDark: "false",
+    codeHeader: "filename",
+    codeInlineVariant: "accent",
+    codeLanguage: "typescript",
+    codeLineHighlight: "true",
+    codeMode: "block",
+    codeRounded: "true",
+    codeSelectable: "true",
+    codeSelectedTab: "react",
+    codeValue: "const event = { status: 'captured' };",
+  })
+
+  const touchContext = await browser.newContext({
+    hasTouch: true,
+    ignoreHTTPSErrors: true,
+    viewport: { width: 320, height: 844 },
+  })
+  const touchPage = await touchContext.newPage()
+  await touchPage.goto("/?component=code")
+  const touchCopyButton = touchPage.getByRole("button", { name: "Copy snippet" })
+  await expect(touchCopyButton).toHaveCSS("min-width", "44px")
+  await expect(touchCopyButton).toHaveCSS("min-height", "44px")
+  await touchPage.emulateMedia({ reducedMotion: "reduce" })
+  await expect(touchCopyButton).toHaveCSS("transition-duration", "0s")
+  await touchContext.close()
+})

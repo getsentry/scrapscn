@@ -3,6 +3,7 @@ import type { ComponentType } from "react";
 import type { WorkbenchProps } from "@/components/playground/workbench";
 
 import { CheckboxWorkbench } from "./checkbox-workbench";
+import { CodeWorkbench } from "./code-workbench";
 import { DragHandleWorkbench } from "./drag-handle-workbench";
 import { HotkeyWorkbench } from "./hotkey-workbench";
 import { ImageWorkbench } from "./image-workbench";
@@ -38,6 +39,7 @@ export const workbenchRegistry = Object.freeze([
   defineWorkbench({ Component: HotkeyWorkbench, id: "hotkey", label: "Hotkey", sharePath: "/" }),
   defineWorkbench({ Component: ImageWorkbench, id: "image", label: "Image", sharePath: "/" }),
   defineWorkbench({ Component: BackdropWorkbench, id: "backdrop", label: "Backdrop", sharePath: "/" }),
+  defineWorkbench({ Component: CodeWorkbench, id: "code", label: "Code", sharePath: "/" }),
 ]);
 
 export type WorkbenchId = (typeof workbenchRegistry)[number]["id"];

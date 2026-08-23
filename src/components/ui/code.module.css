@@ -1,0 +1,415 @@
+@import "@fontsource/roboto-mono/400.css";
+@import "@fontsource/roboto-mono/500.css";
+@import "@fontsource/rubik/400.css";
+
+.inlineCode {
+  margin: 0;
+  padding: 0;
+  margin-inline: -0.15ch;
+  border: 0;
+  border-radius: clamp(0.21em, 0.28em, 0.57em);
+  background: var(--scraps-inline-code-background);
+  color: var(--scraps-inline-code-content);
+  font-family: var(--font-roboto-mono, "Roboto Mono"), monospace;
+  font-size-adjust: ex-height 0.57;
+  padding-inline: 0.3ch;
+  text-box-edge: text text;
+  text-box-trim: trim-both;
+}
+
+.inlineCodeNeutral {
+  background: var(--scraps-inline-code-neutral-background);
+  color: var(--scraps-inline-code-neutral-content);
+}
+
+.wrapper {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+  border-radius: 6px;
+  background: var(--prism-block-background);
+}
+
+.wrapper[data-rounded="false"] {
+  border-radius: 0;
+}
+
+.wrapper pre {
+  width: max-content;
+  min-width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow-x: auto;
+  border-radius: 6px;
+  background: var(--prism-block-background);
+  box-shadow: none;
+  color: var(--prism-base);
+  direction: ltr;
+  font-family: var(--font-roboto-mono, "Roboto Mono"), monospace;
+  font-size: 0.75rem;
+  hyphens: none;
+  padding: 8px 16px;
+  tab-size: 4;
+  text-align: left;
+  text-shadow: none;
+  white-space: pre;
+  word-break: normal;
+  word-spacing: normal;
+}
+
+.wrapper[data-render-inline="true"] pre {
+  padding: 0;
+}
+
+.wrapper pre[data-line] {
+  position: relative;
+}
+
+.wrapper code {
+  position: relative;
+  z-index: 1;
+  background: none;
+  color: var(--prism-base);
+  font: inherit;
+  text-shadow: none;
+  user-select: auto;
+}
+
+.wrapper code[data-disable-user-selection="true"] {
+  user-select: none;
+}
+
+.header {
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--scraps-theme-border-primary);
+  color: var(--prism-base);
+  font-family: var(--font-roboto-mono, "Roboto Mono"), monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  gap: 6px;
+  padding: 4px 4px 0 8px;
+}
+
+.header[data-floating="true"] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: max-content;
+  height: max-content;
+  max-height: 100%;
+  border-bottom: 0;
+  gap: 2px;
+  justify-content: flex-end;
+  padding: 4px;
+}
+
+.filename {
+  display: block;
+  width: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tabs {
+  display: flex;
+  overflow-x: auto;
+  padding: 0;
+}
+
+.tab {
+  box-sizing: border-box;
+  display: block;
+  margin: 0;
+  border: 0;
+  background: none;
+  color: var(--prism-comment);
+  padding: 8px;
+  touch-action: manipulation;
+}
+
+.selectedTab {
+  border-bottom: 3px solid var(--scraps-code-accent);
+  color: var(--prism-base);
+  padding-bottom: 5px;
+}
+
+.headerSpacer {
+  flex-grow: 1;
+}
+
+.copyButton {
+  position: relative;
+  display: inline-grid;
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  min-height: 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--prism-comment);
+  cursor: pointer;
+  opacity: 0;
+  touch-action: manipulation;
+  transition: opacity 100ms ease-out;
+}
+
+.wrapper:hover .copyButton,
+.copyButton:focus-visible,
+.copyButton[data-always-visible="true"] {
+  opacity: 1;
+}
+
+.copyButton:hover {
+  background: var(--scraps-code-button-hover);
+  color: var(--prism-base);
+}
+
+.copyButton:active {
+  background: var(--scraps-code-button-active);
+}
+
+.copyButton:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 0 var(--scraps-code-focus-mask),
+    0 0 0 2px var(--scraps-code-focus);
+}
+
+.copyTooltipPositioner {
+  z-index: 10003;
+}
+
+.copyTooltip {
+  width: max-content;
+  max-width: 225px;
+  border: 1px solid var(--scraps-theme-border-primary);
+  border-radius: 6px;
+  background: var(--scraps-code-tooltip-background);
+  box-shadow: 0 2px 0 var(--scraps-theme-border-primary);
+  color: var(--scraps-code-tooltip-content);
+  font-family: var(--font-rubik, Rubik), sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.2;
+  opacity: 1;
+  overflow-wrap: break-word;
+  padding: 8px 12px;
+  pointer-events: auto;
+  text-align: center;
+  transform: scale(1);
+  transform-origin: var(--transform-origin);
+}
+
+.copyTooltip[data-starting-style] {
+  animation: copy-tooltip-spring-enter 200ms
+    linear(0, 0.5901, 0.9995, 1.0411, 1.0102, 0.9984, 1) both;
+}
+
+.copyTooltip[data-ending-style] {
+  animation: copy-tooltip-spring-exit 200ms
+    linear(0, 0.5901, 0.9995, 1.0411, 1.0102, 0.9984, 1) 100ms both;
+}
+
+@keyframes copy-tooltip-spring-enter {
+  from {
+    transform: scale(1);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes copy-tooltip-spring-exit {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+.copyTooltipArrow {
+  display: block;
+  width: 16px;
+  height: 8px;
+  overflow: visible;
+}
+
+.copyTooltipArrow[data-side="left"] {
+  transform: translateX(50%) rotate(-90deg);
+}
+
+.copyTooltipArrow[data-side="right"] {
+  transform: translateX(-50%) rotate(90deg);
+}
+
+.copyTooltipArrow[data-side="top"] {
+  transform: translateY(50%);
+}
+
+.copyTooltipArrow[data-side="bottom"] {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.copyTooltipArrowBorder {
+  fill: var(--scraps-theme-border-primary);
+}
+
+.copyTooltipArrowSideBorder {
+  display: none;
+  fill: var(--scraps-theme-border-primary);
+}
+
+.copyTooltipArrow[data-side="left"] .copyTooltipArrowSideBorder,
+.copyTooltipArrow[data-side="right"] .copyTooltipArrowSideBorder {
+  display: block;
+}
+
+.copyTooltipArrow[data-side="right"] .copyTooltipArrowSideBorder {
+  transform: translateX(2px);
+}
+
+.copyTooltipArrowFill {
+  fill: var(--scraps-code-tooltip-arrow-background);
+}
+
+.scrollWrapper {
+  height: 100%;
+  overflow-x: auto;
+}
+
+.darkTheme {
+  --scraps-theme-border-primary: #141119;
+  --scraps-code-button-active: #d0b8f821;
+  --scraps-code-button-hover: #c0a8f81a;
+  --scraps-code-focus: #7553ff;
+  --scraps-code-focus-mask: #2e2936;
+  --scraps-code-tooltip-background: #393442;
+  --scraps-code-tooltip-arrow-background: #2e2936;
+  --scraps-code-tooltip-content: #e7e5ea;
+  --prism-base: #e7e5ea;
+  --prism-block-background: #24202b;
+  --prism-comment: #b5b0bd;
+  --prism-function: #aba8f8;
+  --prism-highlight-accent: #c0b0f02e;
+  --prism-highlight-background: #c0a8f81a;
+  --prism-keyword: #f6938c;
+  --prism-operator: #aba8f8;
+  --prism-property: #aba8f8;
+  --prism-punctuation: #e7e5ea;
+  --prism-selector: #5ece73;
+  --prism-variable: #e7e5ea;
+}
+
+.wrapper :global(.namespace) {
+  opacity: 0.7;
+}
+
+.wrapper :global(.token.comment),
+.wrapper :global(.token.prolog),
+.wrapper :global(.token.doctype),
+.wrapper :global(.token.cdata) {
+  color: var(--prism-comment);
+}
+
+.wrapper :global(.token.punctuation) {
+  color: var(--prism-punctuation);
+}
+
+.wrapper :global(.token.property),
+.wrapper :global(.token.tag),
+.wrapper :global(.token.boolean),
+.wrapper :global(.token.number),
+.wrapper :global(.token.constant),
+.wrapper :global(.token.symbol),
+.wrapper :global(.token.deleted) {
+  color: var(--prism-property);
+}
+
+.wrapper :global(.token.selector),
+.wrapper :global(.token.attr-name),
+.wrapper :global(.token.string),
+.wrapper :global(.token.char),
+.wrapper :global(.token.builtin),
+.wrapper :global(.token.inserted) {
+  color: var(--prism-selector);
+}
+
+.wrapper :global(.token.operator),
+.wrapper :global(.token.entity),
+.wrapper :global(.token.url),
+.wrapper :global(.language-css .token.string),
+.wrapper :global(.style .token.string) {
+  background: none;
+  color: var(--prism-operator);
+}
+
+.wrapper :global(.token.atrule),
+.wrapper :global(.token.attr-value),
+.wrapper :global(.token.keyword) {
+  color: var(--prism-keyword);
+}
+
+.wrapper :global(.token.function) {
+  color: var(--prism-function);
+}
+
+.wrapper :global(.token.regex),
+.wrapper :global(.token.important),
+.wrapper :global(.token.variable) {
+  color: var(--prism-variable);
+}
+
+.wrapper :global(.token.important),
+.wrapper :global(.token.bold) {
+  font-weight: 500;
+}
+
+.wrapper :global(.token.italic) {
+  font-style: italic;
+}
+
+.wrapper :global(.token.entity) {
+  cursor: help;
+}
+
+.wrapper :global(.line-highlight) {
+  position: absolute;
+  right: 0;
+  left: -16px;
+  z-index: 0;
+  background: var(--prism-highlight-background);
+  box-shadow: inset 5px 0 0 var(--prism-highlight-accent);
+  line-height: inherit;
+  pointer-events: none;
+  white-space: pre;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copyButton {
+    transition: none;
+  }
+
+  .copyTooltip {
+    animation: none;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .copyButton {
+    min-width: 44px;
+    min-height: 44px;
+    opacity: 1;
+  }
+}

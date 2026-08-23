@@ -15,6 +15,32 @@ const canonicalBehaviorDependencies = {
   backdrop: [
     'static/app/utils/theme/theme.tsx',
   ],
+  code: [
+    'static/app/components/core/button/button.tsx',
+    'static/app/components/core/button/styles.tsx',
+    'static/app/components/core/button/types.tsx',
+    'static/app/components/core/button/useButtonFunctionality.tsx',
+    'static/app/components/core/layout/container.tsx',
+    'static/app/components/core/layout/index.tsx',
+    'static/app/components/core/layout/styles.tsx',
+    'static/app/components/core/tooltip/tooltip.tsx',
+    'static/app/components/overlay.tsx',
+    'static/app/components/overlayArrow.tsx',
+    'static/app/icons/iconCopy.tsx',
+    'static/app/icons/svgIcon.tsx',
+    'static/app/icons/useIconDefaults.tsx',
+    'static/app/locale.tsx',
+    'static/app/styles/global.tsx',
+    'static/app/utils/prism.tsx',
+    'static/app/utils/theme/theme.tsx',
+    'static/app/utils/theme/scraps/theme/base.tsx',
+    'static/app/utils/theme/scraps/theme/dark.tsx',
+    'static/app/utils/theme/scraps/theme/light.tsx',
+    'static/app/utils/theme/scraps/tokens/color.tsx',
+    'static/app/utils/theme/scraps/tokens/size.tsx',
+    'static/app/utils/theme/scraps/tokens/typography.tsx',
+    'static/app/utils/useHoverOverlay.tsx',
+  ],
   image: [
     'static/app/components/core/layout/styles.tsx',
     'static/app/utils/theme/scraps/theme/base.tsx',
@@ -80,6 +106,11 @@ const localModules = {
   ],
   button: ['src/components/ui/button.tsx'],
   checkbox: ['src/components/ui/checkbox.tsx'],
+  code: [
+    'src/components/ui/code-block.tsx',
+    'src/components/ui/code-messages.tsx',
+    'src/components/ui/code.tsx',
+  ],
   dragHandle: [
     'src/components/ui/drag-handle.tsx',
     'src/components/ui/use-drag-move.tsx',
@@ -115,6 +146,7 @@ const registryItems = {
   backdrop: ['backdrop'],
   badge: ['badge', 'feature-badge', 'tag'],
   button: ['button'],
+  code: ['code'],
   dragHandle: ['drag-handle'],
   interactionStateLayer: ['interaction-state-layer'],
   hotkey: ['hotkey'],
@@ -136,6 +168,8 @@ const registryItems = {
 const completionEvidence = {
   backdrop:
     'Exact regular Scraps Backdrop overlay geometry, theme colors, layer values, motion, focused assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component.',
+  code:
+    'Exact regular Scraps CodeBlock, InlineCode, reusable inline style recipe, translatable copy messages, Prism language loading, Sentry source notice, executable Storybook state assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component.',
   interactionStateLayer:
     'Exact state-layer contract, behavior stories, focused Storybook assertions, and registry publication are present. The canonical module has no Figma component.',
   hotkey:
@@ -369,6 +403,15 @@ for (const moduleName of moduleNames) {
               'tests/parity/backdrop.test.mjs',
               'tests/types/backdrop-types.test.tsx',
             ]
+        : moduleName === 'code'
+          ? [
+              'src/components/ui/code.test.tsx',
+              'src/components/ui/prism-concurrent.test.ts',
+              'src/components/ui/prism.test.ts',
+              'tests/e2e/playground.spec.ts',
+              'tests/parity/code.test.mjs',
+              'tests/types/code-types.test.tsx',
+            ]
         : [];
   const completionNote = completionEvidence[moduleName];
 
@@ -401,6 +444,8 @@ for (const moduleName of moduleNames) {
                 ? '/?component=image'
               : moduleName === 'backdrop'
                 ? '/?component=backdrop'
+              : moduleName === 'code'
+                ? '/?component=code'
               : moduleName === 'checkbox' ||
                   moduleName === 'interactionStateLayer' ||
                   moduleName === 'layout' ||

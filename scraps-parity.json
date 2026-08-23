@@ -531,9 +531,33 @@
       "canonical": {
         "indexPath": "static/app/components/core/code/index.tsx",
         "sourcePaths": [
+          "static/app/components/core/button/button.tsx",
+          "static/app/components/core/button/styles.tsx",
+          "static/app/components/core/button/types.tsx",
+          "static/app/components/core/button/useButtonFunctionality.tsx",
           "static/app/components/core/code/codeBlock.tsx",
           "static/app/components/core/code/index.tsx",
-          "static/app/components/core/code/inlineCode.tsx"
+          "static/app/components/core/code/inlineCode.tsx",
+          "static/app/components/core/layout/container.tsx",
+          "static/app/components/core/layout/index.tsx",
+          "static/app/components/core/layout/styles.tsx",
+          "static/app/components/core/tooltip/tooltip.tsx",
+          "static/app/components/overlay.tsx",
+          "static/app/components/overlayArrow.tsx",
+          "static/app/icons/iconCopy.tsx",
+          "static/app/icons/svgIcon.tsx",
+          "static/app/icons/useIconDefaults.tsx",
+          "static/app/locale.tsx",
+          "static/app/styles/global.tsx",
+          "static/app/utils/prism.tsx",
+          "static/app/utils/theme/scraps/theme/base.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/scraps/tokens/typography.tsx",
+          "static/app/utils/theme/theme.tsx",
+          "static/app/utils/useHoverOverlay.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -545,22 +569,46 @@
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/code-block.tsx",
+          "src/components/ui/code-messages.tsx",
+          "src/components/ui/code.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "CodeBlock",
+            "CodeMessagesProvider",
+            "InlineCode",
+            "defaultCodeMessages",
+            "inlineCodeStyles",
+            "useCodeMessages"
+          ],
+          "types": [
+            "CodeMessages"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "code"
+        ],
+        "stories": [
+          "src/components/ui/code.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/code.test.tsx",
+          "src/components/ui/prism-concurrent.test.ts",
+          "src/components/ui/prism.test.ts",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/code.test.mjs",
+          "tests/types/code-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=code"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local code implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps CodeBlock, InlineCode, reusable inline style recipe, translatable copy messages, Prism language loading, Sentry source notice, executable Storybook state assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component."
       }
     },
     {

@@ -530,6 +530,111 @@
       "files": [
         { "path": "src/components/ui/backdrop.tsx", "type": "registry:ui" }
       ]
+    },
+    {
+      "name": "code",
+      "type": "registry:ui",
+      "title": "Code",
+      "description": "Regular Scraps block and inline code with lazy Prism language highlighting.",
+      "dependencies": [
+        "@base-ui/react@1.5.0",
+        "@emotion/serialize@1.3.3",
+        "@fontsource/roboto-mono@5.2.9",
+        "@fontsource/rubik@5.2.8",
+        "@types/prismjs@1.26.0",
+        "prismjs@1.30.0"
+      ],
+      "registryDependencies": [],
+      "cssVars": {
+        "light": {
+          "scraps-theme-border-primary": "#dad9de",
+          "scraps-inline-code-content": "#c8007e",
+          "scraps-inline-code-background": "#f000901a",
+          "scraps-inline-code-neutral-content": "#302e36",
+          "scraps-inline-code-neutral-background": "#0000200f",
+          "scraps-code-accent": "#7553ff",
+          "scraps-code-button-active": "#0000181a",
+          "scraps-code-button-hover": "#0000200f",
+          "scraps-code-focus": "#7553ff",
+          "scraps-code-focus-mask": "#ffffff",
+          "scraps-code-tooltip-background": "#ffffff",
+          "scraps-code-tooltip-arrow-background": "#ffffff",
+          "scraps-code-tooltip-content": "#302e36",
+          "prism-base": "#302e36",
+          "prism-block-background": "#f8f8f9",
+          "prism-comment": "#6a6772",
+          "prism-function": "#653de9",
+          "prism-highlight-accent": "#00002026",
+          "prism-highlight-background": "#0000200f",
+          "prism-keyword": "#d50000",
+          "prism-operator": "#653de9",
+          "prism-property": "#653de9",
+          "prism-punctuation": "#302e36",
+          "prism-selector": "#008900",
+          "prism-variable": "#302e36"
+        },
+        "dark": {
+          "scraps-theme-border-primary": "#141119",
+          "scraps-inline-code-content": "#ea95b9",
+          "scraps-inline-code-background": "#f800782e",
+          "scraps-inline-code-neutral-content": "#e7e5ea",
+          "scraps-inline-code-neutral-background": "#c0a8f81a",
+          "scraps-code-accent": "#7553ff",
+          "scraps-code-button-active": "#d0b8f821",
+          "scraps-code-button-hover": "#c0a8f81a",
+          "scraps-code-focus": "#7553ff",
+          "scraps-code-focus-mask": "#2e2936",
+          "scraps-code-tooltip-background": "#393442",
+          "scraps-code-tooltip-arrow-background": "#2e2936",
+          "scraps-code-tooltip-content": "#e7e5ea",
+          "prism-base": "#e7e5ea",
+          "prism-block-background": "#24202b",
+          "prism-comment": "#b5b0bd",
+          "prism-function": "#aba8f8",
+          "prism-highlight-accent": "#c0b0f02e",
+          "prism-highlight-background": "#c0a8f81a",
+          "prism-keyword": "#f6938c",
+          "prism-operator": "#aba8f8",
+          "prism-property": "#aba8f8",
+          "prism-punctuation": "#e7e5ea",
+          "prism-selector": "#5ece73",
+          "prism-variable": "#e7e5ea"
+        }
+      },
+      "files": [
+        {
+          "path": "THIRD_PARTY_NOTICES.md",
+          "type": "registry:file",
+          "target": "src/components/ui/SENTRY_SOURCE_NOTICE.md"
+        },
+        {
+          "path": "src/components/ui/code.module.css",
+          "type": "registry:file",
+          "target": "src/components/ui/code.module.css"
+        },
+        { "path": "src/components/ui/code-block.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/code-messages.tsx", "type": "registry:ui" },
+        { "path": "src/components/ui/code.tsx", "type": "registry:ui" },
+        {
+          "path": "src/components/ui/prism-language-loaders.ts",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/prism-language-reloaders.d.ts",
+          "type": "registry:file",
+          "target": "src/components/ui/prism-language-reloaders.d.ts"
+        },
+        {
+          "path": "src/components/ui/prism-language-reloaders.js",
+          "type": "registry:file",
+          "target": "src/components/ui/prism-language-reloaders.js"
+        },
+        {
+          "path": "src/components/ui/prism-plugin.d.ts",
+          "type": "registry:ui"
+        },
+        { "path": "src/components/ui/prism.ts", "type": "registry:ui" }
+      ]
     }
   ]
 }
