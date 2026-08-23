@@ -152,6 +152,7 @@
   --border: oklch(0.926 0.004 286.3);             /* #E6E6E9 */
   --input: oklch(0.888 0.007 295.4);              /* #DAD9DE */
   --ring: oklch(0.580 0.241 285.2);               /* #7553FF (blurple) */
+  --scraps-link-disabled: #878490;
   --checkbox-border: #DAD9DE;
   --checkbox-checked: #7553FF;
   --checkbox-checked-chonk: #5827D6;
@@ -368,6 +369,7 @@
   --border: oklch(0.383 0.026 303.4);             /* #46404F */
   --input: oklch(0.432 0.029 301.3);              /* #534D5E */
   --ring: oklch(0.580 0.241 285.2);               /* Blurple */
+  --scraps-link-disabled: #958e9f;
   --checkbox-border: #141119;
   --checkbox-checked: #7553FF;
   --checkbox-checked-chonk: #120539;

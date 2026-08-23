@@ -203,6 +203,18 @@ const canonicalBehaviorDependencies = {
     'static/app/utils/useHoverOverlay.tsx',
     'static/app/utils/useStableMergeRef.ts',
   ],
+  link: [
+    'package.json',
+    'static/app/components/core/button/types.tsx',
+    'static/app/components/core/link/link.spec.tsx',
+    'static/app/components/core/link/link.mdx',
+    'static/app/components/core/trackingContext.tsx',
+    'static/app/utils/theme/scraps/theme/base.tsx',
+    'static/app/utils/theme/scraps/theme/dark.tsx',
+    'static/app/utils/theme/scraps/theme/light.tsx',
+    'static/app/utils/theme/scraps/tokens/color.tsx',
+    'static/app/utils/theme/theme.tsx',
+  ],
 };
 const sentryRepository = path.resolve(
   process.env.SENTRY_REPO_PATH ?? '../sentry'
@@ -249,7 +261,11 @@ const localModules = {
   hotkey: ['src/components/ui/hotkey.tsx'],
   image: ['src/components/ui/image.tsx'],
   layout: ['src/components/ui/layout.tsx'],
-  link: ['src/components/ui/link.tsx'],
+  link: [
+    'src/components/ui/link-behavior-context.tsx',
+    'src/components/ui/link.tsx',
+    'src/components/ui/tracking-context.tsx',
+  ],
   radio: ['src/components/ui/radio-group.tsx'],
   revealOnHover: ['src/components/ui/reveal-on-hover.tsx'],
   segmentedControl: ['src/components/ui/segmented-control.tsx'],
@@ -314,6 +330,8 @@ const completionEvidence = {
     'Exact regular Scraps drag handle contract, pointer and keyboard behavior, focused assertions, and registry publication are present. The canonical module has no Figma component.',
   layout:
     'Exact regular Scraps layout exports, responsive container and viewport cascade, focused assertions, and registry publication are present. The canonical module has no Figma component.',
+  link:
+    'Exact regular Scraps Link, ExternalLink, behavior-provider, tracking, focus, disabled, router, focused assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component.',
   separator:
     'Exact regular Scraps native hr separator contract, focused assertions, and registry publication are present. The canonical module has no Figma component.',
   slot:
@@ -351,6 +369,7 @@ const outOfScopeComponents = [
   'src/components/ui/dialog.tsx',
   'src/components/ui/dropdown-menu.tsx',
   'src/components/ui/label.tsx',
+  'src/components/ui/link-playground-adapter.tsx',
   'src/components/ui/progress.tsx',
   'src/components/ui/scroll-area.tsx',
   'src/components/ui/sheet.tsx',
@@ -580,6 +599,13 @@ for (const moduleName of moduleNames) {
               'tests/parity/tooltip.test.mjs',
               'tests/types/tooltip-types.test.tsx',
             ]
+        : moduleName === 'link'
+          ? [
+              'src/components/ui/link.test.tsx',
+              'tests/e2e/playground.spec.ts',
+              'tests/parity/link.test.mjs',
+              'tests/types/link-types.test.tsx',
+            ]
         : moduleName === 'quote'
           ? [
               'src/app/evidence/quote-server/page.tsx',
@@ -632,6 +658,8 @@ for (const moduleName of moduleNames) {
                   ? '/?component=slide-over-panel'
                 : moduleName === 'tooltip'
                   ? '/?component=tooltip'
+                  : moduleName === 'link'
+                    ? '/?component=link'
           : moduleName === 'code'
             ? '/?component=code'
             : moduleName === 'emptyState'

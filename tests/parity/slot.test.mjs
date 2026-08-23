@@ -30,7 +30,7 @@ test("slot keeps the regular Scraps portal and context bridge contract", async (
     "static/app/components/core/slot/knownContexts.ts",
     "static/app/components/core/slot/slot.tsx",
   ]);
-  assert.deepEqual(registryItem.dependencies, ["@sentry/react"]);
+  assert.deepEqual(registryItem.dependencies, ["@sentry/react@10.69.0"]);
   assert.deepEqual(
     registryItem.files.map(({ path }) => path),
     [

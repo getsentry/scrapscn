@@ -19,6 +19,7 @@
       "src/components/ui/dialog.tsx",
       "src/components/ui/dropdown-menu.tsx",
       "src/components/ui/label.tsx",
+      "src/components/ui/link-playground-adapter.tsx",
       "src/components/ui/progress.tsx",
       "src/components/ui/scroll-area.tsx",
       "src/components/ui/sheet.tsx",
@@ -1312,9 +1313,19 @@
       "canonical": {
         "indexPath": "static/app/components/core/link/index.tsx",
         "sourcePaths": [
+          "package.json",
+          "static/app/components/core/button/types.tsx",
           "static/app/components/core/link/index.tsx",
+          "static/app/components/core/link/link.mdx",
+          "static/app/components/core/link/link.spec.tsx",
           "static/app/components/core/link/link.tsx",
-          "static/app/components/core/link/linkBehaviorContext.tsx"
+          "static/app/components/core/link/linkBehaviorContext.tsx",
+          "static/app/components/core/trackingContext.tsx",
+          "static/app/utils/theme/scraps/theme/base.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/theme.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -1329,14 +1340,24 @@
       },
       "local": {
         "implementationPaths": [
-          "src/components/ui/link.tsx"
+          "src/components/ui/link-behavior-context.tsx",
+          "src/components/ui/link.tsx",
+          "src/components/ui/tracking-context.tsx"
         ],
         "implementedExports": {
           "runtime": [
+            "ExternalLink",
             "Link",
-            "linkVariants"
+            "LinkBehaviorContextProvider",
+            "TrackingContextProvider",
+            "useClickTracking",
+            "useLinkBehavior"
           ],
-          "types": []
+          "types": [
+            "AnalyticsProps",
+            "LinkProps",
+            "TrackingProps"
+          ]
         },
         "registryItems": [
           "link"
@@ -1344,15 +1365,20 @@
         "stories": [
           "src/components/ui/link.stories.tsx"
         ],
-        "tests": [],
+        "tests": [
+          "src/components/ui/link.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/link.test.mjs",
+          "tests/types/link-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=link"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Link, ExternalLink, behavior-provider, tracking, focus, disabled, router, focused assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component."
       }
     },
     {

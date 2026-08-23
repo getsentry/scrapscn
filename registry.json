@@ -173,11 +173,23 @@
       "name": "link",
       "type": "registry:ui",
       "title": "Link",
-      "description": "Styled anchor with accent/muted variants and an external option.",
-      "dependencies": ["class-variance-authority"],
+      "description": "Regular Scraps router Link, ExternalLink, and Link behavior context.",
+      "dependencies": ["@sentry/react@10.69.0", "@types/history@3.2.5", "react-router-dom@6.30.3"],
+      "cssVars": {
+        "light": { "scraps-link-disabled": "#878490" },
+        "dark": { "scraps-link-disabled": "#958e9f" }
+      },
       "files": [
         {
+          "path": "src/components/ui/link-behavior-context.tsx",
+          "type": "registry:ui"
+        },
+        {
           "path": "src/components/ui/link.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/tracking-context.tsx",
           "type": "registry:ui"
         }
       ]
@@ -373,7 +385,7 @@
       "type": "registry:ui",
       "title": "Slot",
       "description": "Regular Scraps typed portal slots with outlet fallbacks and logical size and container-query context bridging.",
-      "dependencies": ["@sentry/react"],
+      "dependencies": ["@sentry/react@10.69.0"],
       "files": [
         {
           "path": "src/components/ui/container-query-context.ts",
@@ -542,7 +554,7 @@
       "dependencies": [
         "@fontsource-variable/roboto-mono@5.2.9",
         "@react-aria/utils@3.34.1",
-        "@sentry/react@10.70.0"
+        "@sentry/react@10.69.0"
       ],
       "registryDependencies": [],
       "cssVars": {

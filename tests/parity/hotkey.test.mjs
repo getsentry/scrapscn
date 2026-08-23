@@ -62,7 +62,7 @@ test("publishes the exact self-contained Hotkey registry item", async () => {
   assert.deepEqual(item.dependencies, [
     "@fontsource-variable/roboto-mono@5.2.9",
     "@react-aria/utils@3.34.1",
-    "@sentry/react@10.70.0",
+    "@sentry/react@10.69.0",
   ]);
   assert.deepEqual(item.registryDependencies, []);
   assert.deepEqual(item.cssVars, {

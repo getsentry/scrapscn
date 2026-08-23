@@ -18,6 +18,7 @@ import { QuoteWorkbench } from "./quote-workbench";
 import { LoaderWorkbench } from "./loader-workbench";
 import { SlideOverPanelWorkbench } from "./slide-over-panel-workbench";
 import { TooltipWorkbench } from "./tooltip-workbench";
+import { LinkWorkbench } from "./link-workbench";
 
 function defineWorkbench<const Id extends string>(definition: {
   Component: ComponentType<WorkbenchProps>;
@@ -50,6 +51,7 @@ export const workbenchRegistry = Object.freeze([
   defineWorkbench({ Component: LoaderWorkbench, id: "loader", label: "Loader", sharePath: "/templates/loader-status" }),
   defineWorkbench({ Component: SlideOverPanelWorkbench, id: "slide-over-panel", label: "Slide Over Panel", sharePath: "/" }),
   defineWorkbench({ Component: TooltipWorkbench, id: "tooltip", label: "Tooltip", sharePath: "/" }),
+  defineWorkbench({ Component: LinkWorkbench, id: "link", label: "Link", sharePath: "/" }),
   defineWorkbench({ Component: TextWorkbench, id: "text", label: "Text", sharePath: "/" }),
   defineWorkbench({ Component: QuoteWorkbench, id: "quote", label: "Quote", sharePath: "/" }),
 ]);
