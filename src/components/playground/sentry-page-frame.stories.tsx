@@ -23,6 +23,7 @@ export const DesktopShellContract: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const documentCanvas = within(canvasElement.ownerDocument.body);
     const primaryNavigation = canvas.getByRole("navigation", { name: "Primary navigation" });
     const secondaryNavigation = canvas.getByRole("navigation", { name: "Secondary navigation" });
     const activePrimaryLink = within(primaryNavigation).getByRole("link", { name: "Settings" });
@@ -40,6 +41,50 @@ export const DesktopShellContract: Story = {
       canvas.getByRole("heading", { level: 1, name: "Notification Settings" }),
     ).toBeVisible();
     await expect(canvas.getByRole("button", { name: "Save changes" })).toBeVisible();
+
+    await userEvent.click(canvas.getByRole("button", { name: "Toggle organization menu" }));
+    const organizationMenu = await documentCanvas.findByRole("menu");
+    await waitFor(() => expect(organizationMenu).toBeVisible());
+    await expect(within(organizationMenu).getByText("Acme")).toBeVisible();
+    await expect(
+      within(organizationMenu).getByRole("menuitem", { name: "Organization Settings" }),
+    ).toBeVisible();
+    await expect(
+      within(organizationMenu).getByRole("menuitem", { name: "Switch Organization" }),
+    ).toBeVisible();
+    await userEvent.keyboard("{Escape}");
+
+    await userEvent.click(canvas.getByRole("button", { name: "User menu" }));
+    const userMenu = await documentCanvas.findByRole("menu");
+    await waitFor(() => expect(userMenu).toBeVisible());
+    await expect(within(userMenu).getByText("sergiy@acme.example")).toBeVisible();
+    await expect(within(userMenu).getByRole("menuitem", { name: "User Settings" })).toBeVisible();
+    await expect(within(userMenu).getByRole("menuitem", { name: "Sign Out" })).toBeVisible();
+    await userEvent.keyboard("{Escape}");
+
+    await userEvent.click(canvas.getByRole("button", { name: "Collapse" }));
+    await expect(
+      canvas.queryByRole("navigation", { name: "Secondary navigation" }),
+    ).not.toBeInTheDocument();
+    const expand = canvas.getByRole("button", { name: "Expand" });
+    await expect(expand).toBeVisible();
+    await expect(expand).toHaveFocus();
+    await userEvent.click(expand);
+    const restoredSecondaryNavigation = canvas.getByRole("navigation", {
+      name: "Secondary navigation",
+    });
+    await expect(restoredSecondaryNavigation).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "Collapse" })).toHaveFocus();
+
+    within(restoredSecondaryNavigation).getByRole("link", { name: "Alert Settings" }).focus();
+    await userEvent.keyboard("{Control>}b{/Control}");
+    const keyboardExpand = canvas.getByRole("button", { name: "Expand" });
+    await expect(keyboardExpand).toBeVisible();
+    await expect(keyboardExpand).toHaveFocus();
+    await userEvent.keyboard("{Control>}b{/Control}");
+    const keyboardCollapse = canvas.getByRole("button", { name: "Collapse" });
+    await expect(keyboardCollapse).toBeVisible();
+    await expect(keyboardCollapse).toHaveFocus();
   },
 };
 
@@ -67,6 +112,40 @@ export const MobileShellContract: Story = {
     await expect(
       within(mobileNavigation).getByRole("link", { name: "Alert Settings" }),
     ).toHaveAttribute("aria-current", "page");
+    const hiddenSecondaryNavigation = canvas.getByRole("navigation", {
+      hidden: true,
+      name: "Secondary navigation",
+    });
+    await userEvent.keyboard("{Control>}b{/Control}");
+    await expect(hiddenSecondaryNavigation).toBeInTheDocument();
+
+    const organizationTrigger = within(mobileNavigation).getByRole("button", {
+      name: "Toggle organization menu",
+    });
+    await userEvent.click(organizationTrigger);
+    const organizationMenu = await documentCanvas.findByRole("menu");
+    await waitFor(() => expect(organizationMenu).toBeVisible());
+    await expect(
+      within(organizationMenu).getByRole("menuitem", { name: "Organization Settings" }),
+    ).toBeVisible();
+    await expect(
+      within(organizationMenu).getByRole("menuitem", { name: "Switch Organization" }),
+    ).toBeVisible();
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(documentCanvas.queryByRole("menu")).not.toBeInTheDocument());
+    await expect(mobileNavigation).toBeVisible();
+    await expect(organizationTrigger).toHaveFocus();
+
+    const userTrigger = within(mobileNavigation).getByRole("button", { name: "User menu" });
+    await userEvent.click(userTrigger);
+    const userMenu = await documentCanvas.findByRole("menu");
+    await waitFor(() => expect(userMenu).toBeVisible());
+    await expect(within(userMenu).getByRole("menuitem", { name: "User Settings" })).toBeVisible();
+    await expect(within(userMenu).getByRole("menuitem", { name: "Sign Out" })).toBeVisible();
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(documentCanvas.queryByRole("menu")).not.toBeInTheDocument());
+    await expect(mobileNavigation).toBeVisible();
+    await expect(userTrigger).toHaveFocus();
 
     await userEvent.keyboard("{Escape}");
     await waitFor(() =>

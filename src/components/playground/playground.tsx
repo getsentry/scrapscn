@@ -26,6 +26,12 @@ import type { TemplateMetadata } from "@/templates/types";
 
 const subscribeToHydration = () => () => {};
 
+type SharedWorkbenchParams = {
+  secondaryNavigationCollapsed?: boolean;
+  theme?: WorkbenchTheme;
+  viewport?: WorkbenchViewport;
+};
+
 function useHydrated() {
   return useSyncExternalStore(
     subscribeToHydration,
@@ -58,6 +64,9 @@ export function Playground({ templates = [] }: { templates?: TemplateMetadata[] 
   const [viewport, setViewport] = useState<WorkbenchViewport>(() =>
     parseWorkbenchViewport(initialParams.get("viewport")),
   );
+  const [secondaryNavigationCollapsed, setSecondaryNavigationCollapsed] = useState(
+    () => initialParams.get("sidebar") === "collapsed",
+  );
   const [setupOpen, setSetupOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const setupIslandRef = useRef<HTMLElement>(null);
@@ -82,6 +91,7 @@ export function Playground({ templates = [] }: { templates?: TemplateMetadata[] 
       setComponent(getWorkbenchDefinitionForPath(nextPath, params.get("component")).id);
       setTheme(nextTheme);
       setViewport(parseWorkbenchViewport(params.get("viewport")));
+      setSecondaryNavigationCollapsed(params.get("sidebar") === "collapsed");
       setAppTheme(nextTheme ?? "system");
     }
 
@@ -107,19 +117,19 @@ export function Playground({ templates = [] }: { templates?: TemplateMetadata[] 
   }, [setupOpen]);
 
   const composeParams = useCallback(
-    (
-      workbenchParams: URLSearchParams,
-      shared?: { theme?: WorkbenchTheme; viewport?: WorkbenchViewport },
-      id = component,
-    ) => {
+    (workbenchParams: URLSearchParams, shared?: SharedWorkbenchParams, id = component) => {
       const params = new URLSearchParams();
       params.set("component", id);
       appendParams(params, workbenchParams);
       params.set("theme", shared?.theme ?? currentTheme);
       params.set("viewport", shared?.viewport ?? viewport);
+      params.delete("sidebar");
+      if (shared?.secondaryNavigationCollapsed ?? secondaryNavigationCollapsed) {
+        params.set("sidebar", "collapsed");
+      }
       return params;
     },
-    [component, currentTheme, viewport],
+    [component, currentTheme, secondaryNavigationCollapsed, viewport],
   );
 
   const replaceWorkbenchSearch = useCallback(
@@ -146,7 +156,7 @@ export function Playground({ templates = [] }: { templates?: TemplateMetadata[] 
       {(session) => {
         const activeWorkbench = getWorkbenchDefinition(component);
         const visualCaptureReady = hydrated && resolvedTheme === currentTheme;
-        function updateShared(next: { theme?: WorkbenchTheme; viewport?: WorkbenchViewport }) {
+        function updateShared(next: SharedWorkbenchParams) {
           const params = composeParams(session.serialize(), next);
           window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
         }
@@ -171,8 +181,13 @@ export function Playground({ templates = [] }: { templates?: TemplateMetadata[] 
           const workbenchParams = session.reset();
           setTheme("light");
           setViewport("desktop");
+          setSecondaryNavigationCollapsed(false);
           setAppTheme("light");
-          const params = composeParams(workbenchParams, { theme: "light", viewport: "desktop" });
+          const params = composeParams(workbenchParams, {
+            secondaryNavigationCollapsed: false,
+            theme: "light",
+            viewport: "desktop",
+          });
           window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
         }
 
@@ -349,7 +364,15 @@ export function Playground({ templates = [] }: { templates?: TemplateMetadata[] 
                     : "min-h-dvh w-full"
                 }
               >
-                <SentryPageFrame breadcrumbs={session.breadcrumbs} title={session.title}>
+                <SentryPageFrame
+                  breadcrumbs={session.breadcrumbs}
+                  secondaryNavigationCollapsed={secondaryNavigationCollapsed}
+                  title={session.title}
+                  onSecondaryNavigationCollapsedChange={(collapsed) => {
+                    setSecondaryNavigationCollapsed(collapsed);
+                    updateShared({ secondaryNavigationCollapsed: collapsed });
+                  }}
+                >
                   <div className="grid max-w-3xl gap-8">
                     <p className="max-w-[65ch] text-base text-pretty text-muted-foreground sm:text-sm">
                       {session.description}

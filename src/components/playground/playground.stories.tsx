@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { Playground } from "./playground";
 
@@ -109,5 +109,59 @@ export const RestoredTemplateUrl: Story = {
     await expect(formCheckboxes[1]).toBeChecked();
     await expect(formCanvas.getByText("Untitled notification")).toBeVisible();
     await expect(formCanvas.queryByText("constructor")).not.toBeInTheDocument();
+  },
+};
+
+/** Proves secondary navigation state restores from and writes to the shared URL. */
+export const RestoredCollapsedSidebarUrl: Story = {
+  parameters: {
+    nextjs: {
+      appDirectory: true,
+      navigation: {
+        pathname: "/",
+        query: {
+          component: "checkbox",
+          sidebar: "collapsed",
+          theme: "light",
+          viewport: "desktop",
+        },
+      },
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const initialExpand = canvas.getByRole("button", { name: "Expand" });
+    await expect(initialExpand).toBeVisible();
+    await userEvent.click(initialExpand);
+    await expect(canvas.getByRole("button", { name: "Collapse" })).toBeVisible();
+    await waitFor(() =>
+      expect(new URL(window.location.href).searchParams.has("sidebar")).toBe(false),
+    );
+
+    await userEvent.click(canvas.getByRole("button", { name: "Collapse" }));
+    await expect(canvas.getByRole("button", { name: "Expand" })).toBeVisible();
+    await waitFor(() =>
+      expect(new URL(window.location.href).searchParams.get("sidebar")).toBe("collapsed"),
+    );
+
+    await userEvent.click(canvas.getByRole("button", { name: "Open setup" }));
+    await userEvent.click(canvas.getByRole("button", { name: "Reset" }));
+    await expect(canvas.getByRole("button", { name: "Collapse" })).toBeVisible();
+    await waitFor(() =>
+      expect(new URL(window.location.href).searchParams.has("sidebar")).toBe(false),
+    );
+
+    const collapsedUrl = new URL(window.location.href);
+    collapsedUrl.searchParams.set("sidebar", "collapsed");
+    window.history.pushState(null, "", collapsedUrl);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    await waitFor(() => expect(canvas.getByRole("button", { name: "Expand" })).toBeVisible());
+
+    const expandedUrl = new URL(window.location.href);
+    expandedUrl.searchParams.delete("sidebar");
+    window.history.pushState(null, "", expandedUrl);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    await waitFor(() => expect(canvas.getByRole("button", { name: "Collapse" })).toBeVisible());
   },
 };
