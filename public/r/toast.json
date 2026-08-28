@@ -1,0 +1,50 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toast",
+  "title": "Toast",
+  "description": "Regular Scraps temporary notification with type rails, canonical icons, undo action, and dismissal callback.",
+  "dependencies": [
+    "@sentry/react@10.69.0",
+    "framer-motion@12.38.0"
+  ],
+  "registryDependencies": [
+    "https://scrapscn.sentry.dev/r/button.json",
+    "https://scrapscn.sentry.dev/r/scraps-locale.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/toast.tsx",
+      "content": "\"use client\";\n\nimport * as Sentry from \"@sentry/react\";\nimport { motion, type Transition } from \"framer-motion\";\nimport type { MouseEvent, ReactNode } from \"react\";\n\nimport { t } from \"../../lib/scraps-locale\";\nimport { Button } from \"./button\";\n\ntype IndicatorType = \"loading\" | \"error\" | \"success\" | \"undo\" | \"\";\n\ntype IndicatorOptions = {\n  append?: boolean;\n  disableDismiss?: boolean;\n  duration?: number | null;\n  undo?: () => void;\n};\n\ntype Indicator = {\n  clearId?: null | number;\n  id: string | number;\n  message: ReactNode;\n  options: IndicatorOptions;\n  type: IndicatorType;\n};\n\ninterface ToastProps {\n  indicator: Indicator;\n  onDismiss: (indicator: Indicator, event: MouseEvent) => void;\n}\n\nconst TOAST_TRANSITION = {\n  animate: { opacity: 1, y: 0 },\n  exit: { opacity: 0, y: 70 },\n  initial: { opacity: 0, y: 70 },\n  transition: {\n    damping: 25,\n    stiffness: 450,\n    type: \"spring\",\n  } satisfies Transition,\n};\n\nfunction CheckmarkIcon() {\n  return (\n    <svg\n      data-test-id=\"icon-check-mark\"\n      fill=\"currentColor\"\n      height=\"16px\"\n      role=\"img\"\n      viewBox=\"0 0 16 16\"\n      width=\"16px\"\n    >\n      <path d=\"M13.72 3.22C14.01 2.93 14.49 2.93 14.78 3.22C15.07 3.51 15.07 3.99 14.78 4.28L6.53 12.53C6.24 12.82 5.76 12.82 5.47 12.53L1.22 8.28C0.93 7.99 0.93 7.51 1.22 7.22C1.51 6.93 1.99 6.93 2.28 7.22L6 10.94L13.72 3.22Z\" />\n    </svg>\n  );\n}\n\nfunction WarningIcon() {\n  return (\n    <svg fill=\"currentColor\" height=\"16px\" role=\"img\" viewBox=\"0 0 16 16\" width=\"16px\">\n      <path d=\"M6.81 0.65C7.26 -0.16 8.38 -0.21 8.91 0.5L9.01 0.65L15.66 12.86C16.12 13.69 15.52 14.71 14.57 14.71H1.25C0.3 14.71 -0.3 13.69 0.15 12.86L6.81 0.65ZM1.67 13.21H14.15L7.91 1.77L1.67 13.21ZM7.91 9.71C8.46 9.71 8.91 10.15 8.91 10.71C8.91 11.26 8.46 11.71 7.91 11.71C7.36 11.71 6.91 11.26 6.91 10.71C6.91 10.15 7.36 9.71 7.91 9.71ZM7.91 4.71C8.32 4.71 8.66 5.04 8.66 5.46V7.96C8.66 8.37 8.32 8.71 7.91 8.71C7.5 8.71 7.16 8.37 7.16 7.96V5.46C7.16 5.04 7.5 4.71 7.91 4.71Z\" />\n    </svg>\n  );\n}\n\nfunction RefreshIcon() {\n  return (\n    <svg fill=\"currentColor\" height=\"12px\" role=\"img\" viewBox=\"0 0 16 16\" width=\"12px\">\n      <path d=\"M8 16C3.58 16 0 12.42 0 8C0 3.58 3.58 0 8 0C10.42 0 12.59 1.07 14.05 2.77L15.57 1.25C15.73 1.09 16 1.2 16 1.42V5.75C16 5.89 15.89 6 15.75 6H11.42C11.2 6 11.09 5.73 11.25 5.57L12.99 3.83C11.79 2.41 10 1.5 8 1.5C4.41 1.5 1.5 4.41 1.5 8C1.5 11.59 4.41 14.5 8 14.5C11.37 14.5 14.13 11.95 14.47 8.67C14.51 8.26 14.88 7.96 15.29 8C15.7 8.05 16 8.41 15.96 8.83C15.55 12.86 12.14 16 8 16Z\" />\n    </svg>\n  );\n}\n\nfunction LoadingIndicator() {\n  return (\n    <div className=\"relative m-0\" data-test-id=\"loading-indicator\">\n      <div className=\"relative m-0 size-4 animate-[scraps-toast-spin_0.55s_linear_infinite] rounded-full border-[1.2px] border-[#E6E9EC] border-l-[#6c5fc7] dark:bg-[#272433]\" />\n    </div>\n  );\n}\n\nfunction ToastIcon({ type }: { type: IndicatorType }) {\n  let icon: ReactNode;\n\n  switch (type) {\n    case \"loading\":\n      icon = <LoadingIndicator />;\n      break;\n    case \"success\":\n      icon = <CheckmarkIcon />;\n      break;\n    case \"error\":\n      icon = <WarningIcon />;\n      break;\n    case \"undo\":\n    case \"\":\n      return null;\n    default:\n      Sentry.captureException(new Error(`Unknown toast type: ${type}`));\n      return null;\n  }\n\n  const typeClasses =\n    type === \"success\"\n      ? \"bg-[var(--scraps-toast-success-vibrant)] border-r-[var(--scraps-toast-success-border)] text-[var(--scraps-toast-on-vibrant-dark)]\"\n      : type === \"error\"\n        ? \"bg-[var(--scraps-toast-danger-vibrant)] border-r-[var(--scraps-toast-danger-border)] text-[var(--scraps-toast-on-vibrant-light)]\"\n        : \"bg-[var(--scraps-toast-overlay)] border-r-[var(--scraps-toast-border)]\";\n  return (\n    <div\n      className={`relative flex items-center justify-center border-r px-4 py-3 ${typeClasses}`}\n      data-slot=\"toast-icon\"\n    >\n      {icon}\n    </div>\n  );\n}\n\nexport function Toast({ indicator, onDismiss }: ToastProps) {\n  const typeClasses =\n    indicator.type === \"success\"\n      ? \"border-[var(--scraps-toast-success-border)]\"\n      : indicator.type === \"error\"\n        ? \"border-[var(--scraps-toast-danger-border)]\"\n        : \"border-[var(--scraps-toast-border)]\";\n  const innerClasses =\n    indicator.type === \"success\"\n      ? \"bg-[var(--scraps-toast-success-muted)]\"\n      : indicator.type === \"error\"\n        ? \"bg-[var(--scraps-toast-danger-muted)]\"\n        : \"bg-[var(--scraps-toast-overlay)]\";\n\n  return (\n    <motion.div\n      {...TOAST_TRANSITION}\n      className={`ref-toast ref-${indicator.type} overflow-hidden rounded-[8px] border bg-[var(--scraps-toast-primary)] [box-shadow:var(--scraps-theme-shadow-medium)] ${typeClasses}`}\n      data-test-id={indicator.type ? `toast-${indicator.type}` : \"toast\"}\n      onClick={\n        indicator.options?.disableDismiss ? undefined : (event) => onDismiss(indicator, event)\n      }\n    >\n      <div className={`flex items-stretch ${innerClasses}`} data-slot=\"toast-inner\">\n        <ToastIcon type={indicator.type} />\n        <div className=\"p-3\">\n          <div className=\"block w-auto overflow-hidden leading-[1.2] text-ellipsis whitespace-nowrap\">\n            {indicator.message}\n          </div>\n        </div>\n        {typeof indicator.options.undo === \"function\" ? (\n          <div className=\"flex items-center justify-center px-3\">\n            <Button\n              icon={<RefreshIcon />}\n              size=\"xs\"\n              variant=\"secondary\"\n              onClick={indicator.options.undo}\n            >\n              {t(\"Undo\")}\n            </Button>\n          </div>\n        ) : null}\n      </div>\n    </motion.div>\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "cssVars": {
+    "light": {
+      "scraps-toast-primary": "#fff",
+      "scraps-toast-overlay": "#fff",
+      "scraps-toast-success-muted": "#00b8001c",
+      "scraps-toast-danger-muted": "#f828081c",
+      "scraps-toast-success-vibrant": "#00f261",
+      "scraps-toast-danger-vibrant": "#ff002b",
+      "scraps-toast-border": "#dad9de",
+      "scraps-toast-success-border": "#7cd88a",
+      "scraps-toast-danger-border": "#ff978f",
+      "scraps-toast-on-vibrant-dark": "#000",
+      "scraps-toast-on-vibrant-light": "#fff"
+    },
+    "dark": {
+      "scraps-toast-primary": "#2e2936",
+      "scraps-toast-overlay": "#393442",
+      "scraps-toast-success-muted": "#00f8001f",
+      "scraps-toast-danger-muted": "#f8000033",
+      "scraps-toast-success-vibrant": "#00f261",
+      "scraps-toast-danger-vibrant": "#ff002b",
+      "scraps-toast-border": "#141119",
+      "scraps-toast-success-border": "#00a719",
+      "scraps-toast-danger-border": "#ff002b",
+      "scraps-toast-on-vibrant-dark": "#000",
+      "scraps-toast-on-vibrant-light": "#fff"
+    }
+  },
+  "type": "registry:ui"
+}

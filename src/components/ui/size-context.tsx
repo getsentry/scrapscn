@@ -8,13 +8,7 @@ type SizeVariant = "xs" | "sm" | "md";
 export const SizeContext = createContext<SizeVariant | undefined>(undefined);
 
 /** Provides an inherited xs, sm, or md regular Scraps component size. */
-export function SizeProvider({
-  size,
-  children,
-}: {
-  children: ReactNode;
-  size: SizeVariant;
-}) {
+export function SizeProvider({ size, children }: { children: ReactNode; size: SizeVariant }) {
   return <SizeContext value={size}>{children}</SizeContext>;
 }
 

@@ -1,97 +1,55 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite"
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs"
+import { TabList, TabPanels, Tabs } from "./tabs";
 
 const meta = {
   title: "Components/Tabs",
   component: Tabs,
-} satisfies Meta<typeof Tabs>
+} satisfies Meta<typeof Tabs>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-const sampleTabs = (
-  <>
-    <TabsContent value="overview">Overview panel</TabsContent>
-    <TabsContent value="activity">Activity panel</TabsContent>
-    <TabsContent value="settings">Settings panel</TabsContent>
-  </>
-)
+const items = ["overview", "activity", "feedback", "attachments"] as const;
 
-export const Flat: Story = {
-  render: () => (
-    <Tabs defaultValue="overview" className="w-96">
-      <TabsList>
-        <TabsTrigger value="overview">Overview</TabsTrigger>
-        <TabsTrigger value="activity">Activity</TabsTrigger>
-        <TabsTrigger value="settings">Settings</TabsTrigger>
-      </TabsList>
-      {sampleTabs}
+function Example({
+  orientation = "horizontal",
+  size = "md",
+  variant = "flat",
+}: {
+  orientation?: "horizontal" | "vertical";
+  size?: "md" | "sm" | "xs";
+  variant?: "flat" | "floating";
+}) {
+  return (
+    <Tabs className="w-96" defaultValue="overview" orientation={orientation} size={size}>
+      <TabList variant={variant}>
+        {items.map((item) => (
+          <TabList.Item key={item}>{item}</TabList.Item>
+        ))}
+      </TabList>
+      <TabPanels>
+        {items.map((item) => (
+          <TabPanels.Item key={item}>{item} panel</TabPanels.Item>
+        ))}
+      </TabPanels>
     </Tabs>
-  ),
+  );
 }
 
+export const Flat: Story = { render: () => <Example /> };
 export const Floating: Story = {
-  render: () => (
-    <Tabs defaultValue="overview" className="w-96">
-      <TabsList variant="floating">
-        <TabsTrigger value="overview">Overview</TabsTrigger>
-        <TabsTrigger value="activity">Activity</TabsTrigger>
-        <TabsTrigger value="settings">Settings</TabsTrigger>
-      </TabsList>
-      {sampleTabs}
-    </Tabs>
-  ),
-}
-
+  render: () => <Example variant="floating" />,
+};
+export const Vertical: Story = {
+  render: () => <Example orientation="vertical" />,
+};
 export const Sizes: Story = {
   render: () => (
     <div className="flex flex-col gap-8">
       {(["md", "sm", "xs"] as const).map((size) => (
-        <Tabs key={size} defaultValue="overview" className="w-96">
-          <TabsList size={size}>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-          </TabsList>
-          {sampleTabs}
-        </Tabs>
+        <Example key={size} size={size} />
       ))}
     </div>
   ),
-}
-
-export const Vertical: Story = {
-  render: () => (
-    <Tabs defaultValue="overview" orientation="vertical" className="w-96">
-      <TabsList>
-        <TabsTrigger value="overview">Overview</TabsTrigger>
-        <TabsTrigger value="activity">Activity</TabsTrigger>
-        <TabsTrigger value="settings">Settings</TabsTrigger>
-      </TabsList>
-      {sampleTabs}
-    </Tabs>
-  ),
-}
-
-// Args-driven story so the Controls panel (variant, size) drives a live instance.
-export const Playground: Story = {
-  args: { variant: "flat", size: "md" },
-  argTypes: {
-    variant: { control: "select", options: ["flat", "floating"] },
-    size: { control: "select", options: ["md", "sm", "xs"] },
-  },
-  render: ({ variant, size }) => (
-    <Tabs defaultValue="overview" className="w-96">
-      <TabsList
-        variant={variant as "flat" | "floating"}
-        size={size as "md" | "sm" | "xs"}
-      >
-        <TabsTrigger value="overview">Overview</TabsTrigger>
-        <TabsTrigger value="activity">Activity</TabsTrigger>
-        <TabsTrigger value="settings">Settings</TabsTrigger>
-      </TabsList>
-      {sampleTabs}
-    </Tabs>
-  ),
-}
+};

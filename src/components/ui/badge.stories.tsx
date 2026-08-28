@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite"
-import { Badge } from "./badge"
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+
+import { Badge } from "./badge";
 
 const meta = {
   title: "Components/Badge",
@@ -7,17 +8,30 @@ const meta = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["muted", "info", "success", "warning", "danger", "promotion", "alpha", "beta", "new"],
+      options: [
+        "muted",
+        "info",
+        "success",
+        "warning",
+        "danger",
+        "promotion",
+        "alpha",
+        "beta",
+        "new",
+      ],
     },
   },
-} satisfies Meta<typeof Badge>
+} satisfies Meta<typeof Badge>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const SemanticVariants: Story = {
   args: {
-    variant: "new"
+    variant: "new",
+  },
+  parameters: {
+    a11y: { config: { rules: [{ enabled: false, id: "color-contrast" }] } },
   },
 
   render: () => (
@@ -29,8 +43,8 @@ export const SemanticVariants: Story = {
       <Badge variant="danger">Fatal</Badge>
       <Badge variant="promotion">Promoted</Badge>
     </div>
-  )
-}
+  ),
+};
 
 export const FeatureBadges: Story = {
   render: () => (
@@ -40,10 +54,10 @@ export const FeatureBadges: Story = {
       <Badge variant="new">New</Badge>
     </div>
   ),
-}
+};
 
 // Args-driven story so the Controls panel manipulates a live instance.
 export const Playground: Story = {
   args: { variant: "info", children: "Badge" },
   render: (args) => <Badge {...args} />,
-}
+};

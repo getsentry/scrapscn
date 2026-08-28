@@ -15,9 +15,7 @@ test("records the complete regular Scraps Backdrop delivery", async () => {
     runtime: ["Backdrop"],
     types: [],
   });
-  assert.deepEqual(backdrop.local.implementationPaths, [
-    "src/components/ui/backdrop.tsx",
-  ]);
+  assert.deepEqual(backdrop.local.implementationPaths, ["src/components/ui/backdrop.tsx"]);
   assert.deepEqual(backdrop.local.implementedExports, {
     runtime: ["Backdrop"],
     types: [],
@@ -31,6 +29,7 @@ test("records the complete regular Scraps Backdrop delivery", async () => {
   ]);
   assert.deepEqual(backdrop.local.figmaNodes, []);
   assert.equal(backdrop.local.playgroundPath, "/?component=backdrop");
+  assert.equal(backdrop.completion.state, "complete");
   assert.equal(backdrop.completion.complete, true);
 });
 
@@ -52,15 +51,15 @@ test("publishes the exact standalone Backdrop registry item", async () => {
 test("keeps the exact Backdrop layers, geometry, colors, and motion", async () => {
   const source = await readFile("src/components/ui/backdrop.tsx", "utf8");
 
-  assert.match(source, /widgetBuilderDrawer: 1016/);
-  assert.match(source, /drawer: 9999/);
-  assert.match(source, /modal: 10000/);
+  assert.match(source, /widgetBuilderDrawer: "z-\[1016\]"/);
+  assert.match(source, /drawer: "z-\[9999\]"/);
+  assert.match(source, /modal: "z-\[10000\]"/);
   assert.match(source, /#10082845/);
   assert.match(source, /duration: 0\.24/);
   assert.match(source, /ease: \[0\.72, 0, 0\.16, 1\]/);
   assert.match(source, /useReducedMotion/);
-  assert.match(source, /position: "fixed"/);
-  assert.match(source, /inset: "0"/);
+  assert.match(source, /className=\{`fixed inset-0 bg-/);
+  assert.doesNotMatch(source, /position: "fixed"|inset: "0"|\.module\.css/);
   assert.match(source, /initial=\{/);
   assert.match(source, /animate=\{\{ opacity: 1 \}\}/);
   assert.match(source, /exit=\{\{ opacity: 0 \}\}/);

@@ -1,5 +1,5 @@
-import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { useState } from "react";
 import { expect, userEvent, within } from "storybook/test";
 
 import { DragHandle, type DragHandleVariant } from "./drag-handle";
@@ -35,7 +35,9 @@ function DragHandleDemo({ variant }: { variant?: DragHandleVariant }) {
     <div className="grid gap-2">
       <output data-testid="size">Sized pane: {size}px</output>
       <div className="flex h-32 overflow-hidden rounded-md border border-[var(--scraps-theme-border-primary)]">
-        <div className="shrink-0 bg-card p-3" style={{ flexBasis: `${size}px` }}>Sized</div>
+        <div className="shrink-0 bg-card p-3" style={{ flexBasis: `${size}px` }}>
+          Sized
+        </div>
         <DragHandle
           aria-label="Resize panes"
           isSizedFirst
@@ -45,7 +47,9 @@ function DragHandleDemo({ variant }: { variant?: DragHandleVariant }) {
           value={size}
           variant={variant}
           onDoubleClick={() => setSize(initialSize)}
-          onMove={(delta) => setSize((current) => Math.max(minimum, Math.min(maximum, current + delta)))}
+          onMove={(delta) =>
+            setSize((current) => Math.max(minimum, Math.min(maximum, current + delta)))
+          }
         />
         <div className="flex-1 p-3">Fill</div>
       </div>

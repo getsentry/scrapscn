@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radio",
+  "title": "Radio",
+  "description": "Regular Scraps native radio with exact xs, sm, and md geometry and form behavior.",
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/radio.css",
+      "content": "@keyframes radioGrowIn {\n  0% {\n    opacity: 0;\n    transform: scale(0.75);\n  }\n\n  100% {\n    opacity: 1;\n    transform: scale(1);\n  }\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/radio.css"
+    },
+    {
+      "path": "src/components/ui/radio.tsx",
+      "content": "import { cn } from \"../../lib/utils\";\n\nimport \"./radio.css\";\n\ntype RadioSize = \"xs\" | \"sm\" | \"md\";\n\ninterface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, \"type\" | \"size\"> {\n  ref?: React.Ref<HTMLInputElement>;\n  size?: RadioSize;\n}\n\nconst radioSizes: Record<RadioSize, string> = {\n  xs: \"size-3 after:size-1.5\",\n  sm: \"size-5 after:size-2.5\",\n  md: \"size-6 after:size-3\",\n};\n\nexport function Radio({ className, ref, size = \"md\", ...props }: RadioProps) {\n  return (\n    <input\n      {...props}\n      ref={ref}\n      type=\"radio\"\n      className={cn(\n        \"!m-0 inline-flex shrink-0 cursor-pointer appearance-none items-center justify-center rounded-full !border !border-solid !border-[var(--radio-border)] bg-transparent p-0 outline-none\",\n        \"[transition:border_120ms_cubic-bezier(0.72,0,0.16,1),box-shadow_120ms_cubic-bezier(0.72,0,0.16,1)]\",\n        \"after:block after:rounded-full after:bg-white after:opacity-0 after:content-[''] after:[transition:all_160ms_cubic-bezier(0.72,0,0.16,1)]\",\n        \"focus-visible:![box-shadow:0_0_0_0_var(--scraps-radio-focus-mask),0_0_0_2px_var(--radio-focus)]\",\n        \"checked:!border-[var(--radio-checked-chonk)] checked:bg-[var(--radio-checked)] checked:after:animate-[radioGrowIn_160ms_cubic-bezier(0.72,0,0.16,1)] checked:after:opacity-100\",\n        \"disabled:cursor-not-allowed disabled:opacity-60\",\n        radioSizes[size],\n        className,\n      )}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "cssVars": {
+    "light": {
+      "radio-border": "#dad9de",
+      "radio-checked": "#7553ff",
+      "radio-checked-chonk": "#5827d6",
+      "radio-focus": "#7553ff",
+      "scraps-radio-focus-mask": "#ffffff"
+    },
+    "dark": {
+      "radio-border": "#141119",
+      "radio-checked": "#7553ff",
+      "radio-checked-chonk": "#120539",
+      "radio-focus": "#7553ff",
+      "scraps-radio-focus-mask": "#2e2936"
+    }
+  },
+  "type": "registry:ui"
+}

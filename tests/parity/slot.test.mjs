@@ -20,9 +20,10 @@ test("slot keeps the regular Scraps portal and context bridge contract", async (
   assert.deepEqual(parityModule.local.stories, ["src/components/ui/slot.stories.tsx"]);
   assert.deepEqual(parityModule.local.tests, [
     "src/components/ui/slot.test.tsx",
+    "tests/e2e/playground.spec.ts",
     "tests/parity/slot.test.mjs",
   ]);
-  assert.equal(parityModule.local.playgroundPath, "/?component=checkbox");
+  assert.equal(parityModule.local.playgroundPath, "/?component=slot");
   assert.equal(parityModule.completion.complete, true);
   assert.deepEqual(parityModule.canonical.sourcePaths, [
     "static/app/components/core/sizeContext.tsx",
@@ -37,6 +38,6 @@ test("slot keeps the regular Scraps portal and context bridge contract", async (
       "src/components/ui/container-query-context.ts",
       "src/components/ui/size-context.tsx",
       "src/components/ui/slot.tsx",
-    ]
+    ],
   );
 });

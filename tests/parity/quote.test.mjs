@@ -27,8 +27,14 @@ test("records the complete regular Scraps Quote delivery", async () => {
     "static/app/utils/theme/theme.tsx",
     "static/app/utils/theme/types.tsx",
   ]);
-  assert.deepEqual(quote.canonical.publicExports, { runtime: ["Quote"], types: ["QuoteProps"] });
-  assert.deepEqual(quote.local.implementedExports, { runtime: ["Quote"], types: ["QuoteProps"] });
+  assert.deepEqual(quote.canonical.publicExports, {
+    runtime: ["Quote"],
+    types: ["QuoteProps"],
+  });
+  assert.deepEqual(quote.local.implementedExports, {
+    runtime: ["Quote"],
+    types: ["QuoteProps"],
+  });
   assert.deepEqual(quote.local.registryItems, ["quote"]);
   assert.deepEqual(quote.local.tests, [
     "src/app/evidence/quote-server/page.tsx",
@@ -38,7 +44,9 @@ test("records the complete regular Scraps Quote delivery", async () => {
     "tests/types/quote-types.test.tsx",
   ]);
   assert.equal(quote.local.playgroundPath, "/?component=quote");
+  assert.equal(quote.completion.state, "complete");
   assert.equal(quote.completion.complete, true);
+  assert.match(quote.completion.note, /production browser behavior/);
 });
 
 test("publishes Quote through its complete Layout and Text registry dependencies", async () => {
@@ -48,17 +56,16 @@ test("publishes Quote through its complete Layout and Text registry dependencies
     "https://scrapscn.sentry.dev/r/layout.json",
     "https://scrapscn.sentry.dev/r/text.json",
   ]);
-  assert.deepEqual(quote.files, [
-    { path: "src/components/ui/quote.module.css", type: "registry:file", target: "src/components/ui/quote.module.css" },
-    { path: "src/components/ui/quote.tsx", type: "registry:ui" },
-  ]);
+  assert.deepEqual(quote.files, [{ path: "src/components/ui/quote.tsx", type: "registry:ui" }]);
+  const source = await readFile("src/components/ui/quote.tsx", "utf8");
+  assert.doesNotMatch(source, /\.module\.css|<style\b/);
+  assert.match(source, /top-0 bottom-0 left-0/);
+  assert.match(source, /border-0 border-none/);
+  assert.doesNotMatch(source, /inset-y-0/);
 });
 
 test("keeps Quote available across the Next.js server-component boundary", async () => {
-  const serverPage = await readFile(
-    "src/app/evidence/quote-server/page.tsx",
-    "utf8"
-  );
+  const serverPage = await readFile("src/app/evidence/quote-server/page.tsx", "utf8");
 
   assert.doesNotMatch(serverPage, /["']use client["']/);
   assert.match(serverPage, /import \{ Quote \}/);

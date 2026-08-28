@@ -1,11 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, within } from "storybook/test";
 
-import {
-  Container,
-  useContainerBreakpoint,
-  useHasContainerQuery,
-} from "./layout";
+import { Container, useContainerBreakpoint, useHasContainerQuery } from "./layout";
 import { SizeProvider, useSizeContext } from "./size-context";
 import { slot } from "./slot";
 
@@ -58,14 +54,12 @@ export const PortalWithContextBridge: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByTestId("slot-outlet")).toContainElement(
-      canvas.getByTestId("slot-content")
+      canvas.getByTestId("slot-content"),
     );
     await expect(canvas.queryByTestId("slot-fallback")).not.toBeInTheDocument();
-    await expect(canvas.getByTestId("slot-consumer-state")).toHaveTextContent(
-      "consumer"
-    );
+    await expect(canvas.getByTestId("slot-consumer-state")).toHaveTextContent("consumer");
     await expect(canvas.getByTestId("slot-content")).toHaveTextContent(
-      /Custom header · sm · (zero|3xs|2xs|xs|sm|md|lg|xl|2xl|3xl|4xl|5xl)/
+      /Custom header · sm · (zero|3xs|2xs|xs|sm|md|lg|xl|2xl|3xl|4xl|5xl)/,
     );
   },
 };

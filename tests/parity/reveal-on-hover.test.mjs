@@ -15,9 +15,7 @@ test("records the complete regular Scraps RevealOnHover delivery", async () => {
     runtime: ["RevealOnHover"],
     types: [],
   });
-  assert.deepEqual(reveal.local.implementationPaths, [
-    "src/components/ui/reveal-on-hover.tsx",
-  ]);
+  assert.deepEqual(reveal.local.implementationPaths, ["src/components/ui/reveal-on-hover.tsx"]);
   assert.deepEqual(reveal.local.implementedExports, {
     runtime: ["RevealOnHover"],
     types: [],
@@ -31,6 +29,7 @@ test("records the complete regular Scraps RevealOnHover delivery", async () => {
   ]);
   assert.deepEqual(reveal.local.figmaNodes, []);
   assert.equal(reveal.local.playgroundPath, "/?component=reveal-on-hover");
+  assert.equal(reveal.completion.state, "complete");
   assert.equal(reveal.completion.complete, true);
 });
 
@@ -38,7 +37,7 @@ test("publishes RevealOnHover with its self-contained Layout closure and motion 
   const registry = JSON.parse(await readFile("registry.json", "utf8"));
   const item = registry.items.find(({ name }) => name === "reveal-on-hover");
 
-  assert.deepEqual(item.dependencies, ["@emotion/is-prop-valid@1.4.0"]);
+  assert.deepEqual(item.dependencies, []);
   assert.deepEqual(item.registryDependencies, []);
   assert.deepEqual(item.cssVars, {
     theme: {
@@ -51,28 +50,22 @@ test("publishes RevealOnHover with its self-contained Layout closure and motion 
   assert.deepEqual(item.files, [
     { path: "src/components/ui/container-query-context.ts", type: "registry:ui" },
     { path: "src/components/ui/layout-style-engine.ts", type: "registry:ui" },
+    { path: "src/components/ui/layout-tailwind-candidates.ts", type: "registry:ui" },
+    { path: "src/components/ui/layout-tailwind.ts", type: "registry:ui" },
     { path: "src/components/ui/layout.tsx", type: "registry:ui" },
-    {
-      path: "src/components/ui/reveal-on-hover.module.css",
-      type: "registry:file",
-      target: "src/components/ui/reveal-on-hover.module.css",
-    },
     { path: "src/components/ui/reveal-on-hover.tsx", type: "registry:ui" },
     { path: "src/components/ui/separator.tsx", type: "registry:ui" },
   ]);
 });
 
-test("keeps the exact RevealOnHover capability, visibility, timing, and reduced-motion rules", async () => {
-  const styles = await readFile(
-    "src/components/ui/reveal-on-hover.module.css",
-    "utf8"
-  );
+test("keeps RevealOnHover capability, timing, and motion in Tailwind selectors", async () => {
+  const source = await readFile("src/components/ui/reveal-on-hover.tsx", "utf8");
 
-  assert.match(styles, /\[data-reveal-on-hover\]\[data-reveal-on-hover-visible\]/);
-  assert.match(styles, /@media \(hover: hover\)/);
-  assert.match(styles, /opacity:\s*0;\s*pointer-events:\s*none/);
-  assert.match(styles, /var\(--duration-fast, 120ms\)[\s\S]*var\(--ease-exit, cubic-bezier\(0\.64, 0, 0\.8, 0\)\)/);
-  assert.match(styles, /:hover \[data-reveal-on-hover\],[\s\S]*:focus-within \[data-reveal-on-hover\]/);
-  assert.match(styles, /var\(--duration-moderate, 160ms\)[\s\S]*var\(--ease-enter, cubic-bezier\(0\.24, 1, 0\.32, 1\)\)/);
-  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)[\s\S]*transition:\s*none/);
+  assert.match(source, /@media\(hover:hover\)/);
+  assert.match(source, /duration-\[var\(--duration-fast,120ms\)\]/);
+  assert.match(source, /ease-\[var\(--ease-exit,cubic-bezier\(0\.64,0,0\.8,0\)\)\]/);
+  assert.match(source, /&:is\(:hover,:focus-within\)_\[data-reveal-on-hover\]/);
+  assert.match(source, /duration-\[var\(--duration-moderate,160ms\)\]/);
+  assert.match(source, /motion-reduce:\[&_\[data-reveal-on-hover\]\]:!transition-none/);
+  assert.doesNotMatch(source, /\.module\.css/);
 });

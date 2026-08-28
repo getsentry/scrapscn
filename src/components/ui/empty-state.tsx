@@ -4,15 +4,12 @@ import { Heading } from "./heading";
 import { Flex, Stack, type FlexProps } from "./layout";
 import { Text, type TextProps } from "./text";
 
-type EmptyStateProps = Omit<
-  FlexProps,
-  "children" | "containerType" | "title"
-> & {
+type EmptyStateProps = Omit<FlexProps, "children" | "containerType" | "title"> & {
   title: ReactNode;
   action?: ReactNode;
   description?: ReactNode;
   illustration?: ReactNode;
-}
+};
 
 /** The regular Scraps responsive no-content layout. */
 export function EmptyState({

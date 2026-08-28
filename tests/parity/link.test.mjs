@@ -6,18 +6,21 @@ const registry = JSON.parse(await readFile("registry.json", "utf8"));
 const manifest = JSON.parse(await readFile("scraps-parity.json", "utf8"));
 
 test("Link registry has the exact local closure and type-only history dependency", () => {
-  const item = registry.items.find(candidate => candidate.name === "link");
+  const item = registry.items.find((candidate) => candidate.name === "link");
 
   assert.deepEqual(item.dependencies, [
     "@sentry/react@10.69.0",
     "@types/history@3.2.5",
-    "react-router-dom@6.30.3",
+    "react-router-dom@6.30.6",
   ]);
-  assert.deepEqual(item.files.map(file => file.path), [
-    "src/components/ui/link-behavior-context.tsx",
-    "src/components/ui/link.tsx",
-    "src/components/ui/tracking-context.tsx",
-  ]);
+  assert.deepEqual(
+    item.files.map((file) => file.path),
+    [
+      "src/components/ui/link-behavior-context.tsx",
+      "src/components/ui/link.tsx",
+      "src/components/ui/tracking-context.tsx",
+    ],
+  );
   assert.deepEqual(item.cssVars, {
     light: { "scraps-link-disabled": "#878490" },
     dark: { "scraps-link-disabled": "#958e9f" },
@@ -25,7 +28,7 @@ test("Link registry has the exact local closure and type-only history dependency
 });
 
 test("Link parity record pins the exact source, export, and evidence contract", () => {
-  const link = manifest.modules.find(candidate => candidate.name === "link");
+  const link = manifest.modules.find((candidate) => candidate.name === "link");
 
   assert.deepEqual(link.canonical.sourcePaths, [
     "package.json",

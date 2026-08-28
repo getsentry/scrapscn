@@ -8,12 +8,8 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { build } from "vite";
 
-test("Text responsive and Prose composition resources survive SSR and dedupe in head", async () => {
-  const outputDirectory = await mkdtemp(
-    path.join(process.cwd(), "tests/parity/.text-ssr-")
-  );
-  const outputFile = path.join(outputDirectory, "text.mjs");
-
+test("Text and Prose literal classes survive SSR without runtime styles", async () => {
+  const outputDirectory = await mkdtemp(path.join(process.cwd(), "tests/parity/.text-ssr-"));
   try {
     await build({
       build: {
@@ -28,38 +24,23 @@ test("Text responsive and Prose composition resources survive SSR and dedupe in 
       },
       logLevel: "silent",
     });
-    const { Heading, Prose, Text } = await import(pathToFileURL(outputFile));
-    const responsiveProps = {
-      size: { zero: "xs", md: "lg", "screen:lg": "2xl" },
-    };
-    const markup = renderToStaticMarkup(
-      createElement(
-        "html",
-        null,
-        createElement("head"),
-        createElement(
-          "body",
-          null,
-          createElement(Text, { ...responsiveProps, key: "one" }, "One"),
-          createElement(Text, { ...responsiveProps, key: "two" }, "Two"),
-          createElement(Heading, { as: "h2", key: "heading", size: "4xl" }, "Heading"),
-          createElement(Prose, { key: "prose-one" }, createElement("code", null, "one")),
-          createElement(Prose, { key: "prose-two" }, createElement("kbd", null, "K"))
-        )
-      )
+    const { Heading, Prose, Text } = await import(
+      pathToFileURL(path.join(outputDirectory, "text.mjs"))
     );
-    const [headMarkup, bodyMarkup = ""] = markup.split("<body>");
-    const hrefs = [...headMarkup.matchAll(/data-href="([^"]+)"/g)]
-      .flatMap((match) => match[1]?.split(" ") ?? []);
-
-    assert.equal(hrefs.filter((href) => href.startsWith("scraps-text-")).length, 2);
-    assert.equal(hrefs.filter((href) => href === "scraps-prose-composition").length, 1);
-    assert.doesNotMatch(bodyMarkup, /<style/);
-    assert.match(headMarkup, /@container \(min-width: 576px\)/);
-    assert.match(headMarkup, /@media \(min-width: 1200px\)/);
-    assert.match(headMarkup, /code:not\(pre code\)/);
+    const body = createElement(
+      "body",
+      null,
+      createElement(Text, { size: { zero: "xs", md: "lg", "screen:lg": "2xl" } }, "One"),
+      createElement(Heading, { as: "h2", size: "4xl" }, "Heading"),
+      createElement(Prose, null, createElement("code", null, "one")),
+    );
+    const markup = renderToStaticMarkup(createElement("html", null, createElement("head"), body));
+    assert.match(markup, /\[font-size:var\(--scraps-text-font-size\)\]/);
+    assert.match(markup, /@\[576px\]:\[--scraps-text-font-size:16px\]/);
+    assert.match(markup, /min-\[1200px\]:!\[--scraps-text-font-size:24px\]/);
+    assert.match(markup, /code:not\(pre_code\)/);
+    assert.doesNotMatch(markup, /<style/);
   } finally {
     await rm(outputDirectory, { recursive: true });
   }
 });
-

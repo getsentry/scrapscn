@@ -1,183 +1,169 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
-const canonicalSources = [
-  "static/less/fonts.less",
-  "static/app/components/core/code/inlineCode.tsx",
-  "static/app/components/core/hotkey/kbd.tsx",
-  "static/app/components/core/layout/index.tsx",
-  "static/app/components/core/layout/styles.tsx",
-  "static/app/components/core/text/heading.tsx",
-  "static/app/components/core/text/index.tsx",
-  "static/app/components/core/text/prose.tsx",
-  "static/app/components/core/text/styles.tsx",
-  "static/app/components/core/text/text.tsx",
-  "static/app/utils/theme/scraps/theme/dark.tsx",
-  "static/app/utils/theme/scraps/theme/light.tsx",
-  "static/app/utils/theme/scraps/tokens/color.tsx",
-  "static/app/utils/theme/scraps/tokens/size.tsx",
-  "static/app/utils/theme/scraps/tokens/typography.tsx",
-  "static/app/utils/theme/types.tsx",
-].sort();
+test("the literal Text Tailwind matrix matches its deterministic source", () => {
+  execFileSync(process.execPath, ["scripts/generate-text-tailwind.mjs", "--check"], {
+    cwd: process.cwd(),
+  });
+});
 
-test("records complete Text provenance and the exact public entry point", async () => {
+test("records the complete literal-Tailwind Text closure", async () => {
   const manifest = JSON.parse(await readFile("scraps-parity.json", "utf8"));
   const text = manifest.modules.find(({ name }) => name === "text");
-  const publicEntry = await readFile("src/components/ui/text-index.ts", "utf8");
-
-  assert.deepEqual(text.canonical.sourcePaths, canonicalSources);
-  assert.deepEqual(text.canonical.publicExports, {
-    runtime: ["Heading", "Prose", "Text"],
-    types: ["HeadingProps", "TextProps", "TextPropsWithRenderFunction"],
-  });
-  assert.deepEqual(text.local.implementationPaths, [
-    "src/components/ui/heading.tsx",
-    "src/components/ui/kbd-styles.tsx",
-    "src/components/ui/prose.tsx",
-    "src/components/ui/text-style-engine.tsx",
-    "src/components/ui/text.tsx",
-  ]);
-  assert.equal(text.completion.complete, true);
-  assert.equal(text.local.playgroundPath, "/?component=text");
-  assert.deepEqual(text.local.registryItems, ["text"]);
-  assert.equal(
-    publicEntry,
-    'export type { TextProps, TextPropsWithRenderFunction } from "./text";\n' +
-      'export { Text } from "./text";\n' +
-      'export type { HeadingProps } from "./heading";\n' +
-      'export { Heading } from "./heading";\n' +
-      'export { Prose } from "./prose";\n'
-  );
-});
-
-test("publishes the self-contained Text registry closure and exact theme tokens", async () => {
   const registry = JSON.parse(await readFile("registry.json", "utf8"));
   const item = registry.items.find(({ name }) => name === "text");
-
+  assert.equal(text.completion.state, "complete");
+  assert.equal(text.completion.complete, true);
+  assert.match(text.completion.note, /production browser behavior/);
+  assert.deepEqual(text.local.implementationPaths, [
+    "src/components/ui/heading.tsx",
+    "src/components/ui/prose.tsx",
+    "src/components/ui/text.tsx",
+  ]);
+  assert.deepEqual(text.local.figmaNodes, []);
   assert.deepEqual(item.dependencies, [
-    "@emotion/is-prop-valid@1.4.0",
     "@fontsource-variable/roboto-mono@5.2.9",
+    "@fontsource/rubik@5.2.8",
   ]);
-  assert.deepEqual(item.registryDependencies, [
-    "https://scrapscn.sentry.dev/r/code.json",
-  ]);
-  assert.deepEqual(item.cssVars, {
-    light: {
-      "scraps-content-primary": "#302e36",
-      "scraps-content-secondary": "#6a6772",
-      "scraps-content-accent": "#653de9",
-      "scraps-content-promotion": "#c8007e",
-      "scraps-content-danger": "#d50000",
-      "scraps-content-warning": "#a45200",
-      "scraps-content-success": "#008900",
-      "scraps-hotkey-background-primary": "#ffffff",
-      "scraps-hotkey-background-secondary": "#f8f8f9",
-      "scraps-hotkey-border-primary": "#dad9de",
-      "scraps-hotkey-content-primary": "#302e36",
-      "scraps-hotkey-content-secondary": "#6a6772",
-    },
-    dark: {
-      "scraps-content-primary": "#e7e5ea",
-      "scraps-content-secondary": "#b5b0bd",
-      "scraps-content-accent": "#aba8f8",
-      "scraps-content-promotion": "#ea95b9",
-      "scraps-content-danger": "#f6938c",
-      "scraps-content-warning": "#ffce00",
-      "scraps-content-success": "#5ece73",
-      "scraps-hotkey-background-primary": "#2e2936",
-      "scraps-hotkey-background-secondary": "#24202b",
-      "scraps-hotkey-border-primary": "#141119",
-      "scraps-hotkey-content-primary": "#e7e5ea",
-      "scraps-hotkey-content-secondary": "#b5b0bd",
-    },
-  });
-  assert.deepEqual(item.files, [
-    { path: "src/components/ui/roboto-mono.css", type: "registry:file", target: "src/components/ui/roboto-mono.css" },
-    { path: "src/components/ui/text.module.css", type: "registry:file", target: "src/components/ui/text.module.css" },
-    { path: "src/components/ui/container-query-context.ts", type: "registry:ui" },
-    { path: "src/components/ui/layout-style-engine.ts", type: "registry:ui" },
-    { path: "src/components/ui/kbd-styles.tsx", type: "registry:ui" },
-    { path: "src/components/ui/text-style-engine.tsx", type: "registry:ui" },
-    { path: "src/components/ui/text.tsx", type: "registry:ui" },
-    { path: "src/components/ui/heading.tsx", type: "registry:ui" },
-    { path: "src/components/ui/prose.tsx", type: "registry:ui" },
-    { path: "src/components/ui/text-index.ts", type: "registry:ui" },
-  ]);
+  assert.deepEqual(
+    item.files.map(({ path }) => path),
+    [
+      "src/components/ui/roboto-mono.css",
+      "src/components/ui/rubik.css",
+      "src/components/ui/container-query-context.ts",
+      "src/components/ui/layout-style-engine.ts",
+      "src/components/ui/text-tailwind.ts",
+      "src/components/ui/text.tsx",
+      "src/components/ui/heading.tsx",
+      "src/components/ui/prose.tsx",
+      "src/components/ui/text-index.ts",
+    ],
+  );
+  await access("src/components/ui/text-tailwind.ts");
 });
 
-test("keeps canonical sizes, responsive resources, decoration composition, and React 19 refs", async () => {
+test("uses generated literal candidates without a runtime CSS compiler", async () => {
   const text = await readFile("src/components/ui/text.tsx", "utf8");
   const heading = await readFile("src/components/ui/heading.tsx", "utf8");
   const prose = await readFile("src/components/ui/prose.tsx", "utf8");
-  const engine = await readFile("src/components/ui/text-style-engine.tsx", "utf8");
-  const css = await readFile("src/components/ui/text.module.css", "utf8");
-  const fontStyles = await readFile("src/components/ui/roboto-mono.css", "utf8");
-
-  for (const [token, value] of Object.entries({
-    xs: "11px",
-    sm: "12px",
-    md: "14px",
-    lg: "16px",
-    xl: "20px",
-    "2xl": "24px",
-    "3xl": "32px",
-    "4xl": "40px",
-  })) {
-    const sourceToken = /^\d/.test(token) ? `"${token}"` : token;
-    assert.ok(engine.includes(`${sourceToken}: "${value}"`));
-  }
-  assert.match(engine, /compileLayoutStyle\("text", declarations\)/);
-  assert.match(text, /zero: fallback \?\? getNativeDisplay\(props\.as\)/);
-  assert.match(text, /styles\.strikeDotted/);
-  assert.match(text, /styles\.tabularFraction/);
-  assert.doesNotMatch(text, /forwardRef/);
-  assert.doesNotMatch(heading, /forwardRef/);
-  assert.match(heading, /variant === "inherit" && props\.size === undefined/);
-  assert.match(text, /inherit: undefined/);
-  assert.match(heading, /inherit: undefined/);
-  assert.doesNotMatch(css, /\.inherit\s*\{/);
-  assert.match(css, /\.strikeDotted \{ text-decoration: line-through underline dotted; \}/);
-  assert.match(css, /\.regularMono \{ font-weight: 425; \}/);
-  assert.doesNotMatch(css, /@fontsource-variable\/roboto-mono\/wght\.css/);
-  assert.match(fontStyles, /@fontsource-variable\/roboto-mono\/wght\.css/);
-  assert.match(text, /import "\.\/roboto-mono\.css"/);
-  assert.match(heading, /import "\.\/roboto-mono\.css"/);
-  assert.match(prose, /import "\.\/roboto-mono\.css"/);
-  assert.match(css, /\.mono[\s\S]*font-weight: 425/);
+  const tailwind = await readFile("src/components/ui/text-tailwind.ts", "utf8");
+  assert.match(tailwind, /Generated by scripts\/generate-text-tailwind/);
+  assert.match(tailwind, /\[font-size:var\(--scraps-text-font-size\)\]/);
+  assert.match(tailwind, /min-\[1200px\]:!\[--scraps-text-font-size:24px\]/);
+  assert.match(tailwind, /@\[576px\]:\[--scraps-text-display:none\]/);
+  assert.doesNotMatch(tailwind, /min-\[[^\]]+\]:!\[(?:font-size|line-height|display|text-align):/);
+  assert.match(text, /createTextTailwindClassName/);
+  assert.match(text, /\[text-decoration:line-through_underline\]/);
+  assert.match(text, /\[text-decoration:line-through_underline_dotted\]/);
+  assert.match(text, /\[word-break:normal\]/);
+  assert.match(text, /\[word-break:break-word\]/);
+  assert.doesNotMatch(text, /decoration-\[line-through|break-words|break-normal/);
+  assert.match(text, /export function headingStaticClassName/);
+  assert.match(heading, /headingStaticClassName/);
+  assert.match(heading, /\[font-weight:inherit\]/);
+  assert.doesNotMatch(heading, /font-\[inherit\]/);
+  assert.doesNotMatch(heading, /textStaticClassName/);
+  assert.doesNotMatch(
+    `${text}\n${heading}\n${prose}`,
+    /<style|text\.module\.css|text-style-engine/,
+  );
+  assert.match(
+    prose,
+    /\[&_ul:not\(\[role=listbox\],\[role=grid\],\[role=menu\]\):last-child\]:mb-0/,
+  );
+  assert.match(prose, /code:not\(pre_code\)/);
+  assert.doesNotMatch(
+    prose,
+    /code:not\(pre_code\)\]:text-\[length:inherit\]|code:not\(pre_code\)\]:font-\[425\]/,
+  );
+  assert.match(prose, /\[&_kbd\]:\[font-size:12px\]/);
+  assert.doesNotMatch(prose, /\[&_kbd\]:text-xs/);
 });
 
-test("composes raw Prose code and kbd styles without touching pre code", async () => {
+test("publishes the exact Roboto Mono family without a global Tailwind theme", async () => {
+  const registry = JSON.parse(await readFile("registry.json", "utf8"));
+  const item = registry.items.find(({ name }) => name === "text");
+  const text = await readFile("src/components/ui/text.tsx", "utf8");
   const prose = await readFile("src/components/ui/prose.tsx", "utf8");
-  const kbd = await readFile("src/components/ui/kbd-styles.tsx", "utf8");
-  const inlineCode = await readFile("src/components/ui/code.tsx", "utf8");
 
-  assert.match(prose, /code:not\(pre code\)/);
-  assert.match(prose, /font-weight:425/);
-  assert.match(prose, /inlineCodeStyles\(proseTheme\)\.styles/);
-  assert.match(prose, /kbdStyles\(proseTheme\)\.styles/);
-  assert.match(kbd, /height:1\.67em/);
-  assert.match(kbd, /border-bottom:/);
-  assert.match(inlineCode, /interface InlineCodeTheme/);
+  assert.ok(item.files.some(({ path }) => path === "src/components/ui/text.tsx"));
+  assert.ok(item.files.some(({ path }) => path === "src/components/ui/prose.tsx"));
+  assert.ok(item.files.some(({ path }) => path === "src/components/ui/roboto-mono.css"));
+  assert.ok(item.dependencies.includes("@fontsource-variable/roboto-mono@5.2.9"));
+  assert.match(text, /ROBOTO_MONO_FONT_FAMILY_CLASS_NAMES/);
+  assert.match(text, /Roboto_Mono/);
+  assert.match(text, /Roboto_Mono.*,Monaco,Consolas.*Courier_New.*,monospace/);
+  assert.match(prose, /ROBOTO_MONO_FONT_FAMILY_CLASS_NAMES\.proseInlineCode/);
+  assert.match(prose, /ROBOTO_MONO_FONT_FAMILY_CLASS_NAMES\.proseKbd/);
+  assert.doesNotMatch(`${text}\n${prose}`, /(?:^|["'\s:])font-mono(?:["'\s]|$)/m);
 });
 
-test("documents every canonical Text, Heading, render, responsive, and Prose group", async () => {
-  const stories = await readFile("src/components/ui/text.stories.tsx", "utf8");
-  const names = [...stories.matchAll(/export const (\w+): Story/g)].map((match) => match[1]);
+test("declares the pinned Sentry font families, ranges, and subsets", async () => {
+  const rubik = (await readFile("src/components/ui/rubik.css", "utf8")).replace(/\s+/g, " ");
+  const robotoMono = (await readFile("src/components/ui/roboto-mono.css", "utf8")).replace(
+    /\s+/g,
+    " ",
+  );
 
-  assert.deepEqual(names, [
-    "Sizes",
-    "Variants",
-    "SemanticElements",
-    "TypographyFeatures",
-    "AlignmentAndDensity",
-    "OverflowAndWrapping",
-    "NumericAndMonospaceFeatures",
-    "InheritConsumerOverrides",
-    "ResponsiveContainerAndViewport",
-    "RenderFunctions",
-    "HeadingLevelsAndSizes",
-    "HeadingVariantsAndFeatures",
-    "ProseComposition",
-  ]);
+  assert.equal((rubik.match(/font-family: "Rubik"/g) ?? []).length, 8);
+  assert.equal((rubik.match(/font-weight: 400/g) ?? []).length, 4);
+  assert.equal((rubik.match(/font-weight: 500 600/g) ?? []).length, 4);
+  assert.equal((rubik.match(/font-display: swap/g) ?? []).length, 8);
+  assert.match(
+    rubik,
+    /U\+0000-00FF, U\+0131, U\+0152-0153, U\+02BB-02BC, U\+02C6, U\+02DA, U\+02DC, U\+2000-206F, U\+2074, U\+20AC, U\+2122, U\+2191, U\+2193, U\+2212, U\+2215, U\+FEFF, U\+FFFD/,
+  );
+  assert.match(
+    rubik,
+    /U\+0100-024F, U\+0259, U\+1E00-1EFF, U\+2020, U\+20A0-20AB, U\+20AD-20CF, U\+2113, U\+2C60-2C7F, U\+A720-A7FF/,
+  );
+  assert.match(rubik, /U\+0301, U\+0400-045F, U\+0490-0491, U\+04B0-04B1, U\+2116/);
+  assert.match(
+    rubik,
+    /U\+0460-052F, U\+1C80-1C88, U\+20B4, U\+2DE0-2DFF, U\+A640-A69F, U\+FE2E-FE2F/,
+  );
+
+  assert.equal((robotoMono.match(/font-family: "Roboto Mono"/g) ?? []).length, 6);
+  assert.equal((robotoMono.match(/font-weight: 425 600/g) ?? []).length, 6);
+  assert.equal((robotoMono.match(/font-display: swap/g) ?? []).length, 6);
+  assert.match(
+    robotoMono,
+    /U\+0000-00FF, U\+0131, U\+0152-0153, U\+02BB-02BC, U\+02C6, U\+02DA, U\+02DC, U\+0304, U\+0308, U\+0329, U\+2000-206F, U\+2074, U\+20AC, U\+2122, U\+2191, U\+2193, U\+2212, U\+2215, U\+FEFF, U\+FFFD/,
+  );
+  assert.match(
+    robotoMono,
+    /U\+0100-02AF, U\+0304, U\+0308, U\+0329, U\+1E00-1E9F, U\+1EF2-1EFF, U\+2020, U\+20A0-20AB, U\+20AD-20CF, U\+2113, U\+2C60-2C7F, U\+A720-A7FF/,
+  );
+  assert.match(
+    robotoMono,
+    /U\+0102-0103, U\+0110-0111, U\+0128-0129, U\+0168-0169, U\+01A0-01A1, U\+01AF-01B0, U\+0300-0301, U\+0303-0304, U\+0308-0309, U\+0323, U\+0329, U\+1EA0-1EF9, U\+20AB/,
+  );
+  assert.match(robotoMono, /U\+0370-03FF/);
+  assert.match(robotoMono, /U\+0301, U\+0400-045F, U\+0490-0491, U\+04B0-04B1, U\+2116/);
+  assert.match(
+    robotoMono,
+    /U\+0460-052F, U\+1C80-1C88, U\+20B4, U\+2DE0-2DFF, U\+A640-A69F, U\+FE2E-FE2F/,
+  );
+  assert.doesNotMatch(`${rubik}\n${robotoMono}`, /@import/);
+
+  for (const asset of [
+    "node_modules/@fontsource/rubik/files/rubik-latin-400-normal.woff2",
+    "node_modules/@fontsource/rubik/files/rubik-latin-500-normal.woff2",
+    "node_modules/@fontsource/rubik/files/rubik-latin-ext-400-normal.woff2",
+    "node_modules/@fontsource/rubik/files/rubik-latin-ext-500-normal.woff2",
+    "node_modules/@fontsource/rubik/files/rubik-cyrillic-400-normal.woff2",
+    "node_modules/@fontsource/rubik/files/rubik-cyrillic-500-normal.woff2",
+    "node_modules/@fontsource/rubik/files/rubik-cyrillic-ext-400-normal.woff2",
+    "node_modules/@fontsource/rubik/files/rubik-cyrillic-ext-500-normal.woff2",
+    "node_modules/@fontsource-variable/roboto-mono/files/roboto-mono-latin-wght-normal.woff2",
+    "node_modules/@fontsource-variable/roboto-mono/files/roboto-mono-latin-ext-wght-normal.woff2",
+    "node_modules/@fontsource-variable/roboto-mono/files/roboto-mono-vietnamese-wght-normal.woff2",
+    "node_modules/@fontsource-variable/roboto-mono/files/roboto-mono-greek-wght-normal.woff2",
+    "node_modules/@fontsource-variable/roboto-mono/files/roboto-mono-cyrillic-wght-normal.woff2",
+    "node_modules/@fontsource-variable/roboto-mono/files/roboto-mono-cyrillic-ext-wght-normal.woff2",
+  ]) {
+    await access(asset);
+  }
 });

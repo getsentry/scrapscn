@@ -22,9 +22,7 @@ const defaultLinkBehavior = <T extends LinkProps>() =>
 export const LinkBehaviorContextProvider = LinkBehaviorContext.Provider;
 
 export function useLinkBehavior<T extends LinkProps>(props: T) {
-  const linkBehavior = useContext(
-    LinkBehaviorContext as Context<LinkBehavior<T> | null>
-  );
+  const linkBehavior = useContext(LinkBehaviorContext as Context<LinkBehavior<T> | null>);
 
   if (process.env.NODE_ENV === "production" && !linkBehavior) {
     Sentry.logger.warn("LinkBehaviorContext not found");

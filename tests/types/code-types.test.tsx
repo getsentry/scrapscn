@@ -1,7 +1,6 @@
 import { createRef } from "react";
-import type { SerializedStyles } from "@emotion/serialize";
 
-import { CodeBlock, InlineCode, inlineCodeStyles } from "@/components/ui/code";
+import { CodeBlock, InlineCode } from "@/components/ui/code";
 import {
   CodeMessagesProvider,
   defaultCodeMessages,
@@ -20,12 +19,15 @@ const spanishCodeMessages: CodeMessages = {
 </CodeMessagesProvider>;
 void defaultCodeMessages;
 
-<InlineCode ref={createRef<HTMLElement>()} variant="accent">code</InlineCode>;
+<InlineCode ref={createRef<HTMLElement>()} variant="accent">
+  code
+</InlineCode>;
 <InlineCode variant="neutral">code</InlineCode>;
 // @ts-expect-error InlineCode exposes only canonical variants.
 <InlineCode variant="promotion">code</InlineCode>;
 
 <CodeBlock
+  alwaysShowCopyButton
   dark
   data-render-inline
   disableUserSelection
@@ -37,6 +39,7 @@ void defaultCodeMessages;
   linesToHighlight={[1, 3]}
   selectedTab="react"
   tabs={[{ label: "React", value: "react" }]}
+  wrapMode="wrap"
   onAfterHighlight={(element) => element.focus()}
   onCopy={(code) => code.toUpperCase()}
   onSelectAndCopy={() => undefined}
@@ -45,29 +48,8 @@ void defaultCodeMessages;
   const value = 1
 </CodeBlock>;
 // @ts-expect-error CodeBlock children must be a string.
-<CodeBlock><span>code</span></CodeBlock>;
-
-const serializedInlineCode: SerializedStyles = inlineCodeStyles(
-  {
-    font: { family: { mono: "monospace" } },
-    radius: { "2xs": "3px" },
-    tokens: {
-      background: {
-        transparent: {
-          neutral: { muted: "transparent" },
-          promotion: { muted: "transparent" },
-        },
-      },
-      content: { primary: "black", promotion: "purple" },
-    },
-  },
-  {
-    "aria-label": "Inline code style recipe",
-    id: "inline-code",
-    onClick: (event) => event.currentTarget.focus(),
-    variant: "neutral",
-  }
-);
-void serializedInlineCode;
+<CodeBlock>
+  <span>code</span>
+</CodeBlock>;
 
 export {};

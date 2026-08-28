@@ -27,12 +27,7 @@ function setDocumentDragging(cursor: React.CSSProperties["cursor"] | null) {
 }
 
 /** Handles pointer and arrow-key movement along one separator axis. */
-export function useDragMove({
-  onMove,
-  onMoveEnd,
-  onMoveStart,
-  orientation,
-}: UseDragMoveOptions) {
+export function useDragMove({ onMove, onMoveEnd, onMoveStart, orientation }: UseDragMoveOptions) {
   const [isHeld, setIsHeld] = useState(false);
   const isPointerDragRef = useRef(false);
 
@@ -64,7 +59,7 @@ export function useDragMove({
       onMove(
         event.pointerType === "keyboard"
           ? Math.sign(delta) * (event.shiftKey ? KEYBOARD_STEP_LARGE : KEYBOARD_STEP)
-          : delta
+          : delta,
       );
     },
     onMoveEnd: () => {
@@ -83,7 +78,7 @@ export function useDragMove({
         }
       },
     }),
-    [moveProps, orientation]
+    [moveProps, orientation],
   );
 
   return { isHeld, moveProps: axisMoveProps };

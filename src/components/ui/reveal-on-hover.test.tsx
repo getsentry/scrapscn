@@ -19,7 +19,7 @@ async function render(ui: ReactNode) {
 
 function getButton(container: HTMLElement, name: string) {
   return [...container.querySelectorAll("button")].find(
-    (button) => button.textContent === name || button.getAttribute("aria-label") === name
+    (button) => button.textContent === name || button.getAttribute("aria-label") === name,
   );
 }
 
@@ -38,7 +38,7 @@ describe("RevealOnHover", () => {
         <RevealOnHover.Action>
           <button type="button">Copy</button>
         </RevealOnHover.Action>
-      </RevealOnHover>
+      </RevealOnHover>,
     );
 
     expect(container.textContent).toContain("Label");
@@ -52,7 +52,7 @@ describe("RevealOnHover", () => {
         <RevealOnHover.Action>
           <button type="button">Copy</button>
         </RevealOnHover.Action>
-      </RevealOnHover>
+      </RevealOnHover>,
     );
 
     expect(getButton(container, "Copy")?.closest("[data-reveal-on-hover]")).toBeTruthy();
@@ -65,13 +65,13 @@ describe("RevealOnHover", () => {
         <RevealOnHover.Action visible>
           <button type="button">Copy</button>
         </RevealOnHover.Action>
-      </RevealOnHover>
+      </RevealOnHover>,
     );
 
     expect(
       getButton(container, "Copy")
         ?.closest("[data-reveal-on-hover]")
-        ?.getAttribute("data-reveal-on-hover-visible")
+        ?.getAttribute("data-reveal-on-hover-visible"),
     ).toBe("");
   });
 
@@ -82,7 +82,7 @@ describe("RevealOnHover", () => {
         <RevealOnHover.Action>
           <button type="button">Copy</button>
         </RevealOnHover.Action>
-      </RevealOnHover>
+      </RevealOnHover>,
     );
     const button = getButton(view.container, "Copy");
 
@@ -93,8 +93,8 @@ describe("RevealOnHover", () => {
           <RevealOnHover.Action visible>
             <button type="button">Copy</button>
           </RevealOnHover.Action>
-        </RevealOnHover>
-      )
+        </RevealOnHover>,
+      ),
     );
 
     expect(getButton(view.container, "Copy")).toBe(button);
@@ -107,12 +107,13 @@ describe("RevealOnHover", () => {
         <RevealOnHover.Action>
           <button type="button">Copy</button>
         </RevealOnHover.Action>
-      </RevealOnHover>
+      </RevealOnHover>,
     );
 
     const root = container.querySelector("[data-testid=hover-root]");
     expect(root).not.toBeNull();
-    expect(root?.className).toContain("layout-");
+    expect(root?.className).toContain("[column-gap:8px]");
+    expect(root?.className).toContain("[justify-content:space-between]");
   });
 
   it("keeps an action button clickable", async () => {
@@ -121,9 +122,11 @@ describe("RevealOnHover", () => {
       <RevealOnHover>
         <span>Label</span>
         <RevealOnHover.Action>
-          <button type="button" onClick={onClick}>Copy</button>
+          <button type="button" onClick={onClick}>
+            Copy
+          </button>
         </RevealOnHover.Action>
-      </RevealOnHover>
+      </RevealOnHover>,
     );
 
     getButton(container, "Copy")?.click();
@@ -138,9 +141,11 @@ describe("RevealOnHover", () => {
           <button type="button">Copy</button>
         </RevealOnHover.Action>
         <RevealOnHover.Action>
-          <button aria-label="Delete" type="button">Delete issue</button>
+          <button aria-label="Delete" type="button">
+            Delete issue
+          </button>
         </RevealOnHover.Action>
-      </RevealOnHover>
+      </RevealOnHover>,
     );
 
     expect(getButton(container, "Copy")?.closest("[data-reveal-on-hover]")).toBeTruthy();
@@ -154,7 +159,7 @@ describe("RevealOnHover", () => {
         <RevealOnHover.Action>
           <button type="button">Copy</button>
         </RevealOnHover.Action>
-      </RevealOnHover>
+      </RevealOnHover>,
     );
     const button = getButton(container, "Copy");
 
@@ -173,7 +178,7 @@ describe("RevealOnHover", () => {
             </RevealOnHover.Action>
           </div>
         )}
-      </RevealOnHover>
+      </RevealOnHover>,
     );
 
     const root = container.querySelector("[data-testid=custom-root]");
@@ -191,11 +196,13 @@ describe("RevealOnHover", () => {
           <div className={className}>
             <span>Content</span>
             <RevealOnHover.Action>
-              <button type="button" onClick={onClick}>Copy</button>
+              <button type="button" onClick={onClick}>
+                Copy
+              </button>
             </RevealOnHover.Action>
           </div>
         )}
-      </RevealOnHover>
+      </RevealOnHover>,
     );
 
     getButton(container, "Copy")?.click();

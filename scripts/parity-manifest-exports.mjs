@@ -1,6 +1,6 @@
-import {readFile} from 'node:fs/promises';
+import { readFile } from "node:fs/promises";
 
-import ts from 'typescript';
+import ts from "typescript";
 
 /** Reads the named runtime and type exports that are visible in one TypeScript source file. */
 export function collectParityManifestExports(source, filename) {
@@ -9,7 +9,7 @@ export function collectParityManifestExports(source, filename) {
     source,
     ts.ScriptTarget.Latest,
     true,
-    filename.endsWith('x') ? ts.ScriptKind.TSX : ts.ScriptKind.TS
+    filename.endsWith("x") ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
   );
   const runtime = [];
   const types = [];
@@ -21,14 +21,13 @@ export function collectParityManifestExports(source, filename) {
       ts.isNamedExports(statement.exportClause)
     ) {
       for (const element of statement.exportClause.elements) {
-        const destination =
-          statement.isTypeOnly || element.isTypeOnly ? types : runtime;
+        const destination = statement.isTypeOnly || element.isTypeOnly ? types : runtime;
         destination.push(element.name.text);
       }
       continue;
     }
 
-    if (!statement.modifiers?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword)) {
+    if (!statement.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword)) {
       continue;
     }
 
@@ -61,10 +60,7 @@ export async function collectParityManifestFileExports(paths) {
   const runtime = [];
   const types = [];
   for (const filePath of paths) {
-    const exports = collectParityManifestExports(
-      await readFile(filePath, 'utf8'),
-      filePath
-    );
+    const exports = collectParityManifestExports(await readFile(filePath, "utf8"), filePath);
     runtime.push(...exports.runtime);
     types.push(...exports.types);
   }

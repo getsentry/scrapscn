@@ -3,14 +3,7 @@ import { expect, within } from "storybook/test";
 
 import { StatusIndicator } from "./status-indicator";
 
-const variants = [
-  "accent",
-  "danger",
-  "warning",
-  "success",
-  "promotion",
-  "muted",
-] as const;
+const variants = ["accent", "danger", "warning", "success", "promotion", "muted"] as const;
 
 const meta = {
   title: "Scraps/Status Indicator",
@@ -79,9 +72,7 @@ export const IterationAndAccessibility: Story = {
       "--status-iterations": "infinite",
       "--status-fill": "none",
     });
-    await expect(
-      canvas.getByRole("status", { name: "Authentication Method Active" })
-    ).toHaveStyle({
+    await expect(canvas.getByRole("status", { name: "Authentication Method Active" })).toHaveStyle({
       "--status-iterations": "3",
       "--status-fill": "forwards",
     });

@@ -21,6 +21,7 @@ test("records the complete regular Scraps SplitPanel delivery", async () => {
   ]);
   assert.deepEqual(splitPanel.local.figmaNodes, []);
   assert.equal(splitPanel.local.playgroundPath, "/?component=split-panel");
+  assert.equal(splitPanel.completion.state, "complete");
   assert.equal(splitPanel.completion.complete, true);
 });
 
@@ -29,7 +30,6 @@ test("publishes the full local SplitPanel dependency closure", async () => {
   const item = registry.items.find(({ name }) => name === "split-panel");
   assert.deepEqual(item.registryDependencies, []);
   assert.deepEqual(item.dependencies, [
-    "@emotion/is-prop-valid@1.4.0",
     "@react-aria/interactions@3.28.1",
     "@react-aria/utils@3.34.1",
   ]);
@@ -47,20 +47,20 @@ test("publishes the full local SplitPanel dependency closure", async () => {
   });
   assert.deepEqual(item.files, [
     { path: "src/components/ui/container-query-context.ts", type: "registry:ui" },
-    { path: "src/components/ui/drag-handle.module.css", type: "registry:file", target: "src/components/ui/drag-handle.module.css" },
     { path: "src/components/ui/drag-handle.tsx", type: "registry:ui" },
     { path: "src/components/ui/layout-style-engine.ts", type: "registry:ui" },
+    { path: "src/components/ui/layout-tailwind-candidates.ts", type: "registry:ui" },
+    { path: "src/components/ui/layout-tailwind.ts", type: "registry:ui" },
     { path: "src/components/ui/layout.tsx", type: "registry:ui" },
     { path: "src/components/ui/separator.tsx", type: "registry:ui" },
-    { path: "src/components/ui/split-panel.module.css", type: "registry:file", target: "src/components/ui/split-panel.module.css" },
     { path: "src/components/ui/split-panel.tsx", type: "registry:ui" },
     { path: "src/components/ui/use-drag-move.tsx", type: "registry:ui" },
     { path: "src/components/ui/use-drag-separator.tsx", type: "registry:ui" },
   ]);
 });
 
-test("keeps the iframe drag lock at the canonical triple specificity", async () => {
-  const styles = await readFile("src/components/ui/split-panel.module.css", "utf8");
-  assert.match(styles, /\.root\.root\.root\[data-is-held="true"\] iframe/);
-  assert.match(styles, /pointer-events:\s*none\s*!important/);
+test("keeps the iframe drag lock as a literal important Tailwind selector", async () => {
+  const source = await readFile("src/components/ui/split-panel.tsx", "utf8");
+  assert.match(source, /\[&\[data-is-held=true\]_iframe\]:!pointer-events-none/);
+  assert.doesNotMatch(source, /\.module\.css/);
 });

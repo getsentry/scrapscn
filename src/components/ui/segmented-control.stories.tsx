@@ -1,77 +1,71 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite"
-import { expect, userEvent, within } from "storybook/test"
-import { List, Rows3 } from "lucide-react"
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { Grid2X2, List, Table2 } from "lucide-react";
+import { useState } from "react";
+import { expect, userEvent, within } from "storybook/test";
 
-import { SegmentedControl, SegmentedControlItem } from "./segmented-control"
+import { SegmentedControl } from "./segmented-control";
 
 const meta = {
   title: "Components/SegmentedControl",
   component: SegmentedControl,
-} satisfies Meta<typeof SegmentedControl>
+} satisfies Meta<typeof SegmentedControl>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+interface ControlProps {
+  priority?: "default" | "primary" | "secondary";
+  size?: "xs" | "sm" | "md";
+}
+
+function Control({ priority = "default", size = "md" }: ControlProps) {
+  const [value, setValue] = useState("list");
+
+  return (
+    <SegmentedControl
+      aria-label="View"
+      priority={priority}
+      size={size}
+      value={value}
+      onChange={setValue}
+    >
+      <SegmentedControl.Item key="list" icon={<List aria-hidden="true" />}>
+        List
+      </SegmentedControl.Item>
+      <SegmentedControl.Item key="grid" icon={<Grid2X2 aria-hidden="true" />}>
+        Grid
+      </SegmentedControl.Item>
+      <SegmentedControl.Item key="chart" disabled>
+        Chart
+      </SegmentedControl.Item>
+      <SegmentedControl.Item
+        key="table"
+        aria-label="Table view"
+        icon={<Table2 aria-hidden="true" />}
+        tooltip="Table view"
+      />
+    </SegmentedControl>
+  );
+}
 
 export const Default: Story = {
-  render: () => (
-    <SegmentedControl defaultValue="week" aria-label="Time period">
-      <SegmentedControlItem value="day">Day</SegmentedControlItem>
-      <SegmentedControlItem value="week">Week</SegmentedControlItem>
-      <SegmentedControlItem value="month">Month</SegmentedControlItem>
-    </SegmentedControl>
-  ),
+  render: () => <Control />,
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const month = canvas.getByRole("radio", { name: "Month" })
-    await userEvent.click(month)
-    expect(month).toBeChecked()
+    const canvas = within(canvasElement);
+    const grid = canvas.getByRole("radio", { name: "Grid" });
+    await userEvent.click(grid);
+    await expect(grid).toBeChecked();
   },
-}
+};
 
-export const Sizes: Story = {
+export const VisualAcceptanceMatrix: Story = {
   render: () => (
-    <div className="flex flex-col items-start gap-4">
-      {(["md", "sm", "xs"] as const).map((size) => (
-        <SegmentedControl
-          key={size}
-          size={size}
-          defaultValue="all"
-          aria-label="Filter"
-        >
-          <SegmentedControlItem value="all">All</SegmentedControlItem>
-          <SegmentedControlItem value="unresolved">Unresolved</SegmentedControlItem>
-          <SegmentedControlItem value="ignored">Ignored</SegmentedControlItem>
-        </SegmentedControl>
-      ))}
+    <div className="grid gap-5">
+      {(["md", "sm", "xs"] as const).flatMap((size) =>
+        (["default", "primary", "secondary"] as const).map((priority) => (
+          <Control key={`${size}-${priority}`} priority={priority} size={size} />
+        )),
+      )}
     </div>
   ),
-}
-
-export const WithIcons: Story = {
-  render: () => (
-    <SegmentedControl defaultValue="list" aria-label="View">
-      <SegmentedControlItem value="list">
-        <List /> List
-      </SegmentedControlItem>
-      <SegmentedControlItem value="grid">
-        <Rows3 /> Grid
-      </SegmentedControlItem>
-    </SegmentedControl>
-  ),
-}
-
-// Args-driven story so the Controls panel (size, disabled) drives a live instance.
-export const Playground: Story = {
-  args: { size: "md", disabled: false, "aria-label": "Filter" },
-  argTypes: {
-    size: { control: "select", options: ["md", "sm", "xs"] },
-    disabled: { control: "boolean" },
-  },
-  render: (args) => (
-    <SegmentedControl {...args} defaultValue="all">
-      <SegmentedControlItem value="all">All</SegmentedControlItem>
-      <SegmentedControlItem value="unresolved">Unresolved</SegmentedControlItem>
-      <SegmentedControlItem value="ignored">Ignored</SegmentedControlItem>
-    </SegmentedControl>
-  ),
-}
+};

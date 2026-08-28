@@ -36,7 +36,7 @@ interface ImageWorkbenchState {
 function choose<T extends readonly string[]>(
   values: T,
   value: string | null,
-  fallback: T[number]
+  fallback: T[number],
 ): T[number] {
   return values.find((candidate) => candidate === value) ?? fallback;
 }
@@ -61,11 +61,7 @@ function parseImageWorkbench(params: URLSearchParams): ImageWorkbenchState {
     loading: choose(loadings, params.get("imageLoading"), "lazy"),
     position: choose(positions, params.get("imagePosition"), "center"),
     radius: choose(radii, params.get("imageRadius"), "md"),
-    responsive: choose(
-      responsivePresets,
-      params.get("imageResponsive"),
-      "fixed"
-    ),
+    responsive: choose(responsivePresets, params.get("imageResponsive"), "fixed"),
   };
 }
 
@@ -114,14 +110,8 @@ function ImageSelect<T extends string>({
   );
 }
 
-export function ImageWorkbench({
-  children,
-  onSearchChange,
-  sourceSearch,
-}: WorkbenchProps) {
-  const [state, setState] = useState(() =>
-    parseImageWorkbench(new URLSearchParams(sourceSearch))
-  );
+export function ImageWorkbench({ children, onSearchChange, sourceSearch }: WorkbenchProps) {
+  const [state, setState] = useState(() => parseImageWorkbench(new URLSearchParams(sourceSearch)));
   const [didFallback, setDidFallback] = useState(false);
 
   function update(next: ImageWorkbenchState) {
@@ -134,9 +124,7 @@ export function ImageWorkbench({
     <div className="grid gap-4">
       <div>
         <h2 className="text-sm font-semibold">Image setup</h2>
-        <p className="text-xs text-muted-foreground">
-          Changes stay in the share URL.
-        </p>
+        <p className="text-xs text-muted-foreground">Changes stay in the share URL.</p>
       </div>
       <ImageSelect
         label="Aspect ratio"
@@ -180,9 +168,7 @@ export function ImageWorkbench({
           checked={state.broken}
           className="size-5 touch-manipulation"
           type="checkbox"
-          onChange={(event) =>
-            update({ ...state, broken: event.target.checked })
-          }
+          onChange={(event) => update({ ...state, broken: event.target.checked })}
         />
         Use broken source
       </label>
@@ -213,9 +199,7 @@ export function ImageWorkbench({
           setDidFallback(true);
         }}
       />
-      <output data-testid="image-fallback-state">
-        Fallback: {String(didFallback)}
-      </output>
+      <output data-testid="image-fallback-state">Fallback: {String(didFallback)}</output>
     </div>
   );
 

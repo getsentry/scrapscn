@@ -1,17 +1,17 @@
-import type { ComponentType } from "react"
+import type { ComponentType } from "react";
 
 export interface TemplateMetadata {
-  description: string
-  slug: string
-  tags: string[]
-  title: string
+  description: string;
+  slug: string;
+  tags: string[];
+  title: string;
 }
 
 export interface TemplateProps {
-  templates: TemplateMetadata[]
+  templates: TemplateMetadata[];
 }
 
 export interface TemplateDefinition {
-  component: ComponentType<TemplateProps>
-  metadata: TemplateMetadata
+  component: ComponentType<TemplateProps>;
+  metadata: TemplateMetadata;
 }

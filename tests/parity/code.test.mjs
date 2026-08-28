@@ -4,9 +4,10 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
+
 import ts from "typescript";
 
-test("records the complete regular Scraps Code delivery", async () => {
+test("completes the Code consumer contract and excludes only the CSS-in-JS helper", async () => {
   const manifest = JSON.parse(await readFile("scraps-parity.json", "utf8"));
   const code = manifest.modules.find(({ name }) => name === "code");
 
@@ -43,6 +44,10 @@ test("records the complete regular Scraps Code delivery", async () => {
     runtime: ["CodeBlock", "InlineCode", "inlineCodeStyles"],
     types: [],
   });
+  assert.deepEqual(code.canonical.excludedExports, {
+    runtime: ["inlineCodeStyles"],
+    types: [],
+  });
   assert.deepEqual(code.local.implementationPaths, [
     "src/components/ui/code-block.tsx",
     "src/components/ui/code-messages.tsx",
@@ -54,7 +59,6 @@ test("records the complete regular Scraps Code delivery", async () => {
       "CodeMessagesProvider",
       "InlineCode",
       "defaultCodeMessages",
-      "inlineCodeStyles",
       "useCodeMessages",
     ],
     types: ["CodeMessages"],
@@ -72,6 +76,11 @@ test("records the complete regular Scraps Code delivery", async () => {
   assert.deepEqual(code.local.figmaNodes, []);
   assert.equal(code.local.playgroundPath, "/?component=code");
   assert.equal(code.completion.complete, true);
+  assert.equal(code.completion.state, "complete");
+  assert.match(
+    code.completion.note,
+    /inlineCodeStyles exclusion is an Emotion SerializedStyles factory/,
+  );
 });
 
 test("publishes Code as a standalone registry item", async () => {
@@ -79,14 +88,11 @@ test("publishes Code as a standalone registry item", async () => {
   const code = registry.items.find(({ name }) => name === "code");
 
   assert.deepEqual(code.dependencies, [
-    "@base-ui/react@1.5.0",
-    "@emotion/serialize@1.3.3",
     "@fontsource-variable/roboto-mono@5.2.9",
-    "@fontsource/rubik@5.2.8",
     "@types/prismjs@1.26.0",
     "prismjs@1.30.0",
   ]);
-  assert.deepEqual(code.registryDependencies, []);
+  assert.deepEqual(code.registryDependencies, ["https://scrapscn.sentry.dev/r/button.json"]);
   assert.equal(code.cssVars.light["scraps-code-focus-mask"], "#ffffff");
   assert.equal(code.cssVars.dark["scraps-code-focus-mask"], "#2e2936");
   assert.deepEqual(code.files, [
@@ -100,15 +106,13 @@ test("publishes Code as a standalone registry item", async () => {
       type: "registry:file",
       target: "src/components/ui/roboto-mono.css",
     },
-    {
-      path: "src/components/ui/code.module.css",
-      type: "registry:file",
-      target: "src/components/ui/code.module.css",
-    },
     { path: "src/components/ui/code-block.tsx", type: "registry:ui" },
     { path: "src/components/ui/code-messages.tsx", type: "registry:ui" },
     { path: "src/components/ui/code.tsx", type: "registry:ui" },
-    { path: "src/components/ui/prism-language-loaders.ts", type: "registry:ui" },
+    {
+      path: "src/components/ui/prism-language-loaders.ts",
+      type: "registry:ui",
+    },
     {
       path: "src/components/ui/prism-language-reloaders.d.ts",
       type: "registry:file",
@@ -127,55 +131,46 @@ test("publishes Code as a standalone registry item", async () => {
 test("ships the Sentry source terms with the Code registry item", async () => {
   const notice = await readFile("THIRD_PARTY_NOTICES.md", "utf8");
 
+  assert.match(notice, /Copyright 2008-2024 Functional Software, Inc\. dba Sentry/);
+  assert.match(notice, /Functional Source License, Version 1\.1, Apache 2\.0 Future License/);
   assert.match(
     notice,
-    /Copyright 2008-2024 Functional Software, Inc\. dba Sentry/
-  );
-  assert.match(
-    notice,
-    /Functional Source License, Version 1\.1, Apache 2\.0 Future License/
-  );
-  assert.match(
-    notice,
-    /https:\/\/github\.com\/getsentry\/sentry\/blob\/d91f823d232ddd12a4d2a64554d85fd36df0e278\/LICENSE\.md/
+    /https:\/\/github\.com\/getsentry\/sentry\/blob\/046a07857f36741bb60d070abe2191d08da76d24\/LICENSE\.md/,
   );
   assert.match(notice, /static\/app\/icons\/iconCopy\.tsx/);
 
-  const temporaryDirectory = await mkdtemp(
-    path.join(tmpdir(), "scrapscn-code-notice-")
-  );
+  const temporaryDirectory = await mkdtemp(path.join(tmpdir(), "scrapscn-code-notice-"));
   try {
     execFileSync(
       "pnpm",
       ["exec", "shadcn", "build", "registry.json", "--output", temporaryDirectory],
-      { cwd: process.cwd(), stdio: "pipe" }
+      { cwd: process.cwd(), stdio: "pipe" },
     );
     const builtItem = JSON.parse(
-      await readFile(path.join(temporaryDirectory, "code.json"), "utf8")
+      await readFile(path.join(temporaryDirectory, "code.json"), "utf8"),
     );
     const builtNotice = builtItem.files.find(
-      ({ target }) => target === "src/components/ui/SENTRY_SOURCE_NOTICE.md"
+      ({ target }) => target === "src/components/ui/SENTRY_SOURCE_NOTICE.md",
+    );
+    const builtCodeBlock = builtItem.files.find(
+      ({ path: filePath }) => filePath === "src/components/ui/code-block.tsx",
     );
 
     assert.equal(builtNotice?.content, notice);
+    assert.equal(
+      builtCodeBlock?.content,
+      await readFile("src/components/ui/code-block.tsx", "utf8"),
+    );
   } finally {
     await rm(temporaryDirectory, { recursive: true });
   }
 });
 
 test("regenerates the explicit Prism language loader map without drift", async () => {
-  const temporaryDirectory = await mkdtemp(
-    path.join(tmpdir(), "scrapscn-prism-loaders-")
-  );
+  const temporaryDirectory = await mkdtemp(path.join(tmpdir(), "scrapscn-prism-loaders-"));
   const outputPath = path.join(temporaryDirectory, "prism-language-loaders.ts");
-  const reloaderOutputPath = path.join(
-    temporaryDirectory,
-    "prism-language-reloaders.js"
-  );
-  const reloaderTypesOutputPath = path.join(
-    temporaryDirectory,
-    "prism-language-reloaders.d.ts"
-  );
+  const reloaderOutputPath = path.join(temporaryDirectory, "prism-language-reloaders.js");
+  const reloaderTypesOutputPath = path.join(temporaryDirectory, "prism-language-reloaders.d.ts");
 
   try {
     execFileSync(process.execPath, ["scripts/generate-prism-loaders.mjs"], {
@@ -189,19 +184,17 @@ test("regenerates the explicit Prism language loader map without drift", async (
     });
     assert.equal(
       await readFile(outputPath, "utf8"),
-      await readFile("src/components/ui/prism-language-loaders.ts", "utf8")
+      await readFile("src/components/ui/prism-language-loaders.ts", "utf8"),
     );
     assert.equal(
       await readFile(reloaderOutputPath, "utf8"),
-      await readFile("src/components/ui/prism-language-reloaders.js", "utf8")
+      await readFile("src/components/ui/prism-language-reloaders.js", "utf8"),
     );
     assert.equal(
       await readFile(reloaderTypesOutputPath, "utf8"),
-      await readFile("src/components/ui/prism-language-reloaders.d.ts", "utf8")
+      await readFile("src/components/ui/prism-language-reloaders.d.ts", "utf8"),
     );
-    const prismLicense = (
-      await readFile("node_modules/prismjs/LICENSE", "utf8")
-    ).trim();
+    const prismLicense = (await readFile("node_modules/prismjs/LICENSE", "utf8")).trim();
     const reloaderSource = await readFile(reloaderOutputPath, "utf8");
     assert.ok(reloaderSource.startsWith(`/*!\n${prismLicense}\n*/\n`));
     assert.doesNotMatch(reloaderSource, /https?:\/\//);
@@ -210,7 +203,7 @@ test("regenerates the explicit Prism language loader map without drift", async (
       reloaderSource,
       ts.ScriptTarget.ESNext,
       true,
-      ts.ScriptKind.JS
+      ts.ScriptKind.JS,
     );
     const dynamicCodeCalls = [];
     function findDynamicCodeCalls(node) {
@@ -231,33 +224,24 @@ test("regenerates the explicit Prism language loader map without drift", async (
 });
 
 test("compiles the built registry Prism files in an allowJs consumer", async () => {
-  const temporaryDirectory = await mkdtemp(
-    path.join(process.cwd(), ".scrapscn-code-consumer-")
-  );
+  const temporaryDirectory = await mkdtemp(path.join(process.cwd(), ".scrapscn-code-consumer-"));
   const registryOutput = path.join(temporaryDirectory, "registry");
   const consumerSource = path.join(temporaryDirectory, "src", "components", "ui");
 
   try {
-    execFileSync(
-      "pnpm",
-      ["exec", "shadcn", "build", "registry.json", "--output", registryOutput],
-      { cwd: process.cwd(), stdio: "pipe" }
-    );
-    const code = JSON.parse(
-      await readFile(path.join(registryOutput, "code.json"), "utf8")
-    );
+    execFileSync("pnpm", ["exec", "shadcn", "build", "registry.json", "--output", registryOutput], {
+      cwd: process.cwd(),
+      stdio: "pipe",
+    });
+    const code = JSON.parse(await readFile(path.join(registryOutput, "code.json"), "utf8"));
     const prismFiles = code.files.filter(({ path: filePath }) =>
-      path.basename(filePath).startsWith("prism")
+      path.basename(filePath).startsWith("prism"),
     );
     await mkdir(consumerSource, { recursive: true });
     await Promise.all(
       prismFiles.map(({ content, path: filePath, target }) =>
-        writeFile(
-          path.join(temporaryDirectory, target ?? filePath),
-          content,
-          "utf8"
-        )
-      )
+        writeFile(path.join(temporaryDirectory, target ?? filePath), content, "utf8"),
+      ),
     );
     await writeFile(
       path.join(temporaryDirectory, "tsconfig.json"),
@@ -274,13 +258,13 @@ test("compiles the built registry Prism files in an allowJs consumer", async () 
         },
         include: ["src/**/*"],
       }),
-      "utf8"
+      "utf8",
     );
 
     execFileSync(
       "pnpm",
       ["exec", "tsc", "--project", path.join(temporaryDirectory, "tsconfig.json")],
-      { cwd: process.cwd(), stdio: "pipe" }
+      { cwd: process.cwd(), stdio: "pipe" },
     );
   } finally {
     await rm(temporaryDirectory, { recursive: true });
@@ -288,14 +272,14 @@ test("compiles the built registry Prism files in an allowJs consumer", async () 
 });
 
 test("keeps the exact Code theme and interaction contract", async () => {
-  const source = `${await readFile("src/components/ui/code.tsx", "utf8")}\n${await readFile("src/components/ui/code-block.tsx", "utf8")}`;
+  const source = `${await readFile(
+    "src/components/ui/code.tsx",
+    "utf8",
+  )}\n${await readFile("src/components/ui/code-block.tsx", "utf8")}`;
   const messages = await readFile("src/components/ui/code-messages.tsx", "utf8");
-  const styles = await readFile("src/components/ui/code.module.css", "utf8");
+  const tooltipSource = await readFile("src/components/ui/tooltip.tsx", "utf8");
   const fontStyles = await readFile("src/components/ui/roboto-mono.css", "utf8");
-  const serverEvidence = await readFile(
-    "src/app/evidence/code-server/page.tsx",
-    "utf8"
-  );
+  const serverEvidence = await readFile("src/app/evidence/code-server/page.tsx", "utf8");
 
   assert.match(source, /variant = "accent"/);
   assert.match(source, /useCodeMessages/);
@@ -306,64 +290,57 @@ test("keeps the exact Code theme and interaction contract", async () => {
   assert.match(messages, /copyTooltip: "Copy"/);
   assert.match(source, /isRounded = true/);
   assert.match(source, /navigator\.clipboard/);
-  assert.match(source, /serializeStyles/);
-  assert.match(source, /props\?: InlineCodeProps/);
-  assert.match(source, /collisionPadding=\{12\}/);
-  assert.match(source, /arrowPadding=\{4\}/);
-  assert.match(source, /fallbackAxisSide: "none"/);
+  assert.doesNotMatch(
+    source,
+    /@emotion|serializeStyles|inlineCodeStyles|\.module\.css|TooltipPrimitive/,
+  );
+  assert.match(source, /rounded-\[clamp\(0\.21em,0\.28em,0\.57em\)\]/);
+  assert.match(source, /import \{ Button \} from "\.\/button"/);
+  assert.match(source, /tooltipProps=\{\{/);
+  assert.match(source, /position: "left"/);
+  assert.match(tooltipSource, /collisionPadding=\{COLLISION_PADDING\}/);
   assert.match(source, /onCopy\?\.\(copiedCode\)/);
   assert.match(source, /Prism\.highlightElement/);
+  assert.match(source, /M1 4\.75C1 3\.78 1\.78 3 2\.75 3L4 3L4 1\.75/);
+  assert.match(source, /\[font-size-adjust:ex-height_0\.57\]/);
+  assert.match(source, /\[--scraps-code-tooltip-arrow-background:#2e2936\]/);
+  assert.match(fontStyles, /font-family: "Roboto Mono"/);
+  assert.match(fontStyles, /font-weight: 425 600/);
+  assert.match(
+    fontStyles,
+    /@fontsource-variable\/roboto-mono\/files\/roboto-mono-latin-wght-normal\.woff2/,
+  );
+  assert.match(source, /import "\.\/roboto-mono\.css"/);
   assert.match(
     source,
-    /M1 4\.75C1 3\.78 1\.78 3 2\.75 3L4 3L4 1\.75/
+    /\[font-family:var\(--font-roboto-mono,'Roboto_Mono_Variable'\),'Roboto_Mono',monospace\]/,
   );
-  assert.match(styles, /font-size-adjust: ex-height 0\.57/);
-  assert.match(styles, /--scraps-code-tooltip-arrow-background: #2e2936/);
-  assert.match(styles, /\.inlineCode \{\s+margin: 0;\s+padding: 0;/);
-  assert.doesNotMatch(styles, /@fontsource-variable\/roboto-mono\/wght\.css/);
-  assert.match(fontStyles, /@fontsource-variable\/roboto-mono\/wght\.css/);
-  assert.match(source, /import "\.\/roboto-mono\.css"/);
-  assert.match(styles, /@fontsource\/rubik\/400\.css/);
-  assert.match(styles, /var\(--font-roboto-mono, "Roboto Mono Variable"\)/);
-  assert.match(styles, /--scraps-theme-border-primary: #141119/);
-  assert.match(styles, /border-radius: clamp\(0\.21em, 0\.28em, 0\.57em\)/);
-  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.match(styles, /@media \(hover: none\), \(pointer: coarse\)/);
-  assert.match(styles, /min-width: 44px/);
-  assert.match(styles, /background: var\(--scraps-code-button-hover\)/);
-  assert.match(styles, /background: var\(--scraps-code-button-active\)/);
-  assert.match(styles, /width: 28px/);
-  assert.match(styles, /height: 28px/);
-  assert.match(styles, /border-radius: 5px/);
+  assert.doesNotMatch(source, /font-mono/);
+  assert.match(source, /\[--scraps-theme-border-primary:#141119\]/);
+  assert.match(source, /rounded-\[clamp\(0\.21em,0\.28em,0\.57em\)\]/);
+  assert.match(source, /motion-reduce:transition-none/);
+  assert.match(source, /touch-manipulation/);
+  assert.match(source, /\[@media\(hover:none\)\]:min-h-11/);
+  assert.match(source, /\[@media\(pointer:coarse\)\]:min-w-11/);
+  assert.match(source, /\[--scraps-button-transparent-hover:var\(--scraps-code-button-hover\)\]/);
+  assert.match(source, /\[--scraps-button-transparent-active:var\(--scraps-code-button-active\)\]/);
+  assert.match(source, /size="xs"/);
+  assert.match(source, /variant="transparent"/);
+  assert.match(source, /hasFloatingHeader \? floatingHeaderClasses : regularHeaderClasses/);
+  assert.match(source, /selectedTab === value\s+\? selectedTabClasses\s+: unselectedTabClasses/);
+  assert.match(source, /\[border-width:0_0_3px_0\]/);
+  assert.match(source, /\[--prism-token-function:var\(--prism-function\)\]/);
   assert.match(
-    styles,
-    /0 0 0 0 var\(--scraps-code-focus-mask\),\s+0 0 0 2px var\(--scraps-code-focus\)/
+    source,
+    /var\(--prism-token-variable,var\(--prism-token-function,var\(--prism-token-keyword/,
   );
-  assert.match(styles, /z-index: 10003/);
-  assert.match(styles, /width: 16px/);
-  assert.match(styles, /height: 8px/);
-  assert.match(
-    styles,
-    /copy-tooltip-spring-enter 200ms\s+linear\(0, 0\.5901, 0\.9995, 1\.0411, 1\.0102, 0\.9984, 1\) both/
-  );
-  assert.match(
-    styles,
-    /copy-tooltip-spring-exit 200ms\s+linear\(0, 0\.5901, 0\.9995, 1\.0411, 1\.0102, 0\.9984, 1\) 100ms both/
-  );
-  assert.match(styles, /@keyframes copy-tooltip-spring-enter/);
-  assert.match(styles, /@keyframes copy-tooltip-spring-exit/);
+  assert.match(source, /\[--background:var\(--scraps-code-focus-mask\)\]/);
+  assert.match(source, /\[--ring:var\(--scraps-code-focus\)\]/);
   assert.match(source, /height="12"/);
-  assert.match(source, /points="-2,0 16,0 8,5\.8 6,5\.8"/);
-  assert.match(source, /mayBeAnimatingOut/);
-  assert.match(source, /const removedOpenMember = openTooltipGroupMembers\.delete/);
-  assert.match(source, /const tooltipOpenDelay = 400/);
-  assert.match(source, /const tooltipCloseDelay = 150/);
-  assert.doesNotMatch(source, /setIsTooltipGroupWarm/);
-  assert.match(source, /timeout=\{tooltipGroupTimeout\}/);
-  assert.match(source, /event\.stopPropagation\(\)/);
-  assert.match(source, /TooltipPrimitive\.Portal/);
-  assert.match(source, /TooltipPrimitive\.Positioner/);
-  assert.match(source, /TooltipPrimitive\.Arrow/);
+  assert.doesNotMatch(source, /tooltipGroupListeners|tooltipOpenDelay|CopyTooltipArrow/);
+  await assert.rejects(readFile("src/components/ui/code.module.css", "utf8"), {
+    code: "ENOENT",
+  });
   assert.doesNotMatch(serverEvidence, /["']use client["']/);
-  assert.match(serverEvidence, /inlineCodeStyles\(/);
+  assert.doesNotMatch(serverEvidence, /inlineCodeStyles|@emotion/);
 });

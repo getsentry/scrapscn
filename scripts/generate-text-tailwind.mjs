@@ -1,0 +1,262 @@
+import { readFile, writeFile } from "node:fs/promises";
+
+const outputPath = "src/components/ui/text-tailwind.ts";
+const layoutEnginePath = "src/components/ui/layout-style-engine.ts";
+
+const propertyValues = {
+  "font-size": ["11px", "12px", "14px", "16px", "20px", "24px", "32px", "40px", "inherit"],
+  "line-height": ["1", "1.4", "inherit"],
+  display: ["inline", "block", "inline-block", "none"],
+  "text-align": ["left", "center", "right", "justify"],
+};
+
+const properties = Object.keys(propertyValues);
+
+const containerBreakpoints = [
+  ["zero", "0px"],
+  ["3xs", "320px"],
+  ["2xs", "384px"],
+  ["xs", "448px"],
+  ["sm", "512px"],
+  ["md", "576px"],
+  ["lg", "640px"],
+  ["xl", "768px"],
+  ["2xl", "896px"],
+  ["3xl", "1024px"],
+  ["4xl", "1152px"],
+  ["5xl", "1280px"],
+];
+
+const screenBreakpoints = [
+  ["screen:2xs", "2xs", "0px"],
+  ["screen:xs", "xs", "500px"],
+  ["screen:sm", "sm", "800px"],
+  ["screen:md", "md", "992px"],
+  ["screen:lg", "lg", "1200px"],
+  ["screen:xl", "xl", "1440px"],
+  ["screen:2xl", "2xl", "2560px"],
+];
+
+function parseStringArray(source, name) {
+  const match = source.match(new RegExp(`export const ${name}[^=]*= \\[(.*?)\\];`, "s"));
+  if (!match) {
+    throw new Error(`Cannot read ${name} from ${layoutEnginePath}`);
+  }
+  return [...match[1].matchAll(/"([^"]+)"/g)].map((candidate) => candidate[1]);
+}
+
+function parseViewportOrder(source) {
+  const match = source.match(/export const LAYOUT_VIEWPORT_ORDER[\s\S]*?= \[(.*?)\];/s);
+  if (!match) {
+    throw new Error(`Cannot read LAYOUT_VIEWPORT_ORDER from ${layoutEnginePath}`);
+  }
+  return [...match[1].matchAll(/\{ key: "([^"]+)", token: "([^"]+)" \}/g)].map((candidate) => [
+    candidate[1],
+    candidate[2],
+  ]);
+}
+
+function parseThemeMap(source, name) {
+  const match = source.match(new RegExp(`\\n  ${name}: \\{(.*?)\\n  \\},`, "s"));
+  if (!match) {
+    throw new Error(`Cannot read ${name} theme values from ${layoutEnginePath}`);
+  }
+  return new Map(
+    [...match[1].matchAll(/(?:"([^"]+)"|([\w]+)): "([^"]+)",/g)].map((candidate) => [
+      candidate[1] ?? candidate[2],
+      candidate[3],
+    ]),
+  );
+}
+
+async function assertBreakpointSource() {
+  const source = await readFile(layoutEnginePath, "utf8");
+  const containerOrder = parseStringArray(source, "LAYOUT_CONTAINER_ORDER");
+  const viewportOrder = parseViewportOrder(source);
+  const containerTheme = parseThemeMap(source, "container");
+  const viewportTheme = parseThemeMap(source, "breakpoints");
+
+  const actualContainer = containerOrder.map((key) => [key, containerTheme.get(key)]);
+  const actualViewport = viewportOrder.map(([key, token]) => [
+    key,
+    token,
+    viewportTheme.get(token),
+  ]);
+
+  if (JSON.stringify(actualContainer) !== JSON.stringify(containerBreakpoints)) {
+    throw new Error("Layout container breakpoints changed. Update the Text Tailwind generator.");
+  }
+
+  if (JSON.stringify(actualViewport) !== JSON.stringify(screenBreakpoints)) {
+    throw new Error("Layout viewport breakpoints changed. Update the Text Tailwind generator.");
+  }
+}
+
+function textVariable(property) {
+  return `--scraps-text-${property}`;
+}
+
+function candidates(property, prefix = "") {
+  const variable = textVariable(property);
+  return Object.fromEntries(
+    propertyValues[property].map((value) => [value, `${prefix}[${variable}:${value}]`]),
+  );
+}
+
+function renderRecord(record, indentation) {
+  const prefix = " ".repeat(indentation);
+  const entries = Object.entries(record).map(
+    ([key, value]) => `${prefix}  ${JSON.stringify(key)}: ${JSON.stringify(value)},`,
+  );
+  return ["{", ...entries, `${prefix}}`].join("\n");
+}
+
+function renderPropertyMatrix() {
+  return properties
+    .map((property) => {
+      const variable = textVariable(property);
+      const container = Object.fromEntries(
+        containerBreakpoints
+          .slice(1)
+          .map(([key, size]) => [key, candidates(property, `@[${size}]:`)]),
+      );
+      const screen = Object.fromEntries(
+        screenBreakpoints.map(([key, , size]) => [key, candidates(property, `min-[${size}]:!`)]),
+      );
+
+      return [
+        `  ${JSON.stringify(property)}: {`,
+        `    reader: ${JSON.stringify(`[${property}:var(${variable})]`)},`,
+        `    base: ${renderRecord(candidates(property), 4)},`,
+        "    container: {",
+        ...Object.entries(container).map(
+          ([key, value]) => `      ${JSON.stringify(key)}: ${renderRecord(value, 6)},`,
+        ),
+        "    },",
+        "    screen: {",
+        ...Object.entries(screen).map(
+          ([key, value]) => `      ${JSON.stringify(key)}: ${renderRecord(value, 6)},`,
+        ),
+        "    },",
+        "  },",
+      ].join("\n");
+    })
+    .join("\n");
+}
+
+function generateSource() {
+  const propertyUnion = properties.map((property) => `  | ${JSON.stringify(property)}`).join("\n");
+
+  return `// Generated by scripts/generate-text-tailwind.mjs. Edit the generator property list instead.
+import {
+  LAYOUT_CONTAINER_ORDER,
+  LAYOUT_VIEWPORT_ORDER,
+  type LayoutResponsive,
+  type LayoutResponsiveBreakpoint,
+  type LayoutResponsiveKey,
+} from "./layout-style-engine";
+
+export type TextTailwindProperty =
+${propertyUnion};
+
+export interface TextTailwindDeclaration {
+  property: TextTailwindProperty;
+  value: LayoutResponsive<unknown> | undefined;
+  resolve: (
+    value: unknown,
+    breakpoint: LayoutResponsiveBreakpoint | undefined
+  ) => string | undefined;
+}
+
+type BreakpointClasses = Record<string, string>;
+
+interface PropertyClasses {
+  reader: string;
+  base: BreakpointClasses;
+  container: Record<string, BreakpointClasses>;
+  screen: Record<string, BreakpointClasses>;
+}
+
+const propertyClasses = {
+${renderPropertyMatrix()}
+} satisfies Record<TextTailwindProperty, PropertyClasses>;
+
+function isResponsiveValue(
+  value: LayoutResponsive<unknown> | undefined
+): value is Partial<Record<LayoutResponsiveKey, unknown>> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/** Produces literal Tailwind classes for the finite Text property values. */
+export function createTextTailwindClassName(
+  declarations: readonly TextTailwindDeclaration[]
+): string | undefined {
+  const classes: string[] = [];
+
+  for (const declaration of declarations) {
+    if (declaration.value === undefined) continue;
+
+    const property: PropertyClasses = propertyClasses[declaration.property];
+    const responsiveValue = isResponsiveValue(declaration.value)
+      ? declaration.value
+      : undefined;
+    let wroteBase = false;
+
+    const write = (
+      key: LayoutResponsiveKey,
+      breakpoint: LayoutResponsiveBreakpoint | undefined,
+      candidatesAtBreakpoint: BreakpointClasses | undefined
+    ) => {
+      const value = responsiveValue
+        ? responsiveValue[key]
+        : declaration.value;
+      const resolved = declaration.resolve(value, breakpoint);
+      if (resolved === undefined) return;
+
+      if (!wroteBase) {
+        const baseClassName = property.base[resolved];
+        if (baseClassName) {
+          classes.push(property.reader, baseClassName);
+          wroteBase = true;
+        }
+        return;
+      }
+
+      const className = candidatesAtBreakpoint?.[resolved];
+      if (className) classes.push(className);
+    };
+
+    if (!responsiveValue) {
+      write("zero", undefined, undefined);
+      continue;
+    }
+
+    for (const key of LAYOUT_CONTAINER_ORDER) {
+      write(
+        key,
+        key,
+        key === "zero" ? undefined : property.container[key]
+      );
+    }
+
+    for (const { key, token } of LAYOUT_VIEWPORT_ORDER) {
+      write(key, token, property.screen[key]);
+    }
+  }
+
+  const className = [...new Set(classes)].join(" ");
+  return className || undefined;
+}
+`;
+}
+
+await assertBreakpointSource();
+const generated = generateSource();
+
+if (process.argv.includes("--check")) {
+  if ((await readFile(outputPath, "utf8")) !== generated) {
+    throw new Error(`${outputPath} is stale. Run pnpm text:generate.`);
+  }
+} else {
+  await writeFile(outputPath, generated);
+}

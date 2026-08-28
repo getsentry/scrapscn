@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "backdrop",
+  "title": "Backdrop",
+  "description": "Regular Scraps animated overlay for drawers and modals.",
+  "dependencies": [
+    "framer-motion@12.38.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/backdrop.tsx",
+      "content": "\"use client\";\n\nimport { motion, useReducedMotion } from \"framer-motion\";\nimport type { HTMLAttributes, MouseEvent, Ref } from \"react\";\n\ntype BackdropLayer = \"widgetBuilderDrawer\" | \"drawer\" | \"modal\";\n\ninterface BackdropProps extends Omit<\n  HTMLAttributes<HTMLDivElement>,\n  \"className\" | `on${string}` | \"style\"\n> {\n  zIndex: BackdropLayer;\n  ref?: Ref<HTMLDivElement>;\n  \"data-drawer-backdrop\"?: string;\n  \"data-test-id\"?: string;\n  onClick?: (event: MouseEvent<HTMLDivElement>) => void;\n}\n\nconst zIndexByLayer: Record<BackdropLayer, string> = {\n  widgetBuilderDrawer: \"z-[1016]\",\n  drawer: \"z-[9999]\",\n  modal: \"z-[10000]\",\n};\n\n/** Renders the regular Scraps animated overlay behind drawers and modals. */\nexport function Backdrop({ onClick, zIndex, ...props }: BackdropProps) {\n  const reduceMotion = useReducedMotion();\n\n  return (\n    <motion.div\n      id=\"backdrop\"\n      data-overlay\n      {...props}\n      className={`fixed inset-0 bg-[var(--scraps-backdrop-background,#10082845)] ${zIndexByLayer[zIndex]}`}\n      animate={{ opacity: 1 }}\n      exit={{ opacity: 0 }}\n      initial={{ opacity: 0 }}\n      transition={reduceMotion ? { duration: 0 } : { duration: 0.24, ease: [0.72, 0, 0.16, 1] }}\n      onClick={onClick}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "cssVars": {
+    "light": {
+      "scraps-backdrop-background": "#10082845"
+    },
+    "dark": {
+      "scraps-backdrop-background": "#10082080"
+    }
+  },
+  "type": "registry:ui"
+}

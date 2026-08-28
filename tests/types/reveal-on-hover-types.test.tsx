@@ -1,4 +1,4 @@
-import { RevealOnHover } from "@/components/ui/reveal-on-hover"
+import { RevealOnHover } from "@/components/ui/reveal-on-hover";
 
 <>
   <RevealOnHover gap="md">
@@ -20,6 +20,6 @@ import { RevealOnHover } from "@/components/ui/reveal-on-hover"
   <RevealOnHover.Action gap="md">
     <button type="button">Copy</button>
   </RevealOnHover.Action>
-</>
+</>;
 
-export {}
+export {};

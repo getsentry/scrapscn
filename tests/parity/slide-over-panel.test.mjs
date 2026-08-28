@@ -1,8 +1,11 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import test from "node:test";
 
-test("records the local regular Scraps SlideOverPanel delivery without overclaiming", async () => {
+test("records the complete regular Scraps SlideOverPanel Tailwind clone", async () => {
   const manifest = JSON.parse(await readFile("scraps-parity.json", "utf8"));
   const panel = manifest.modules.find(({ name }) => name === "slideOverPanel");
 
@@ -25,17 +28,13 @@ test("records the local regular Scraps SlideOverPanel delivery without overclaim
     runtime: ["SlideOverPanel"],
     types: [],
   });
-  assert.deepEqual(panel.local.implementationPaths, [
-    "src/components/ui/slide-over-panel.tsx",
-  ]);
+  assert.deepEqual(panel.local.implementationPaths, ["src/components/ui/slide-over-panel.tsx"]);
   assert.deepEqual(panel.local.implementedExports, {
     runtime: ["SlideOverPanel"],
     types: [],
   });
   assert.deepEqual(panel.local.registryItems, ["slide-over-panel"]);
-  assert.deepEqual(panel.local.stories, [
-    "src/components/ui/slide-over-panel.stories.tsx",
-  ]);
+  assert.deepEqual(panel.local.stories, ["src/components/ui/slide-over-panel.stories.tsx"]);
   assert.deepEqual(panel.local.tests, [
     "src/components/ui/slide-over-panel.test.tsx",
     "tests/e2e/playground.spec.ts",
@@ -45,9 +44,9 @@ test("records the local regular Scraps SlideOverPanel delivery without overclaim
   assert.deepEqual(panel.local.figmaNodes, []);
   assert.equal(panel.local.playgroundPath, "/?component=slide-over-panel");
   assert.deepEqual(panel.completion, {
-    state: "partial",
-    complete: false,
-    note: "The local SlideOverPanel implementation, navigation-offset environment seam, boundary context, deferred-content workbench, focused tests, and self-contained local registry item are present. The hosted registry endpoint is protected, so public installation is not verified. No canonical Figma node is recorded.",
+    state: "complete",
+    complete: true,
+    note: "Exact regular Scraps SlideOverPanel API, deferred content, motion, navigation offset, boundary context, responsive placement, theme surface, workbench, and standalone registry delivery use literal Tailwind classes. The canonical module has no Figma component.",
   });
 });
 
@@ -61,14 +60,12 @@ test("publishes a self-contained SlideOverPanel registry item with exact theme t
     light: {
       "scraps-slide-over-background": "#ffffff",
       "scraps-slide-over-content": "#302e36",
-      "scraps-slide-over-shadow":
-        "0px 4px 0px 2px #10103008, 0px 1px 0px 1px #10103008",
+      "scraps-slide-over-shadow": "0px 4px 0px 2px #10103008, 0px 1px 0px 1px #10103008",
     },
     dark: {
       "scraps-slide-over-background": "#393442",
       "scraps-slide-over-content": "#e7e5ea",
-      "scraps-slide-over-shadow":
-        "0px 4px 0px 2px #0000181a, 0px 1px 0px 1px #0000181a",
+      "scraps-slide-over-shadow": "0px 4px 0px 2px #0000181a, 0px 1px 0px 1px #0000181a",
     },
   });
   assert.deepEqual(panel.files, [
@@ -76,11 +73,6 @@ test("publishes a self-contained SlideOverPanel registry item with exact theme t
       path: "src/components/ui/boundary-context.tsx",
       type: "registry:file",
       target: "src/components/ui/boundary-context.tsx",
-    },
-    {
-      path: "src/components/ui/slide-over-panel.module.css",
-      type: "registry:file",
-      target: "src/components/ui/slide-over-panel.module.css",
     },
     {
       path: "src/components/ui/slide-over-panel-environment.tsx",
@@ -92,22 +84,38 @@ test("publishes a self-contained SlideOverPanel registry item with exact theme t
       type: "registry:ui",
     },
   ]);
+
+  const temporaryDirectory = await mkdtemp(path.join(tmpdir(), "scrapscn-slide-over-panel-"));
+  try {
+    execFileSync(
+      "pnpm",
+      ["exec", "shadcn", "build", "registry.json", "--output", temporaryDirectory],
+      { cwd: process.cwd(), stdio: "pipe" },
+    );
+    const builtItem = JSON.parse(
+      await readFile(path.join(temporaryDirectory, "slide-over-panel.json"), "utf8"),
+    );
+    const builtSource = builtItem.files.find(
+      ({ path: filePath }) => filePath === "src/components/ui/slide-over-panel.tsx",
+    );
+
+    assert.equal(
+      builtSource?.content,
+      await readFile("src/components/ui/slide-over-panel.tsx", "utf8"),
+    );
+    assert.equal(
+      builtItem.files.some(({ path: filePath }) => filePath.endsWith(".module.css")),
+      false,
+    );
+  } finally {
+    await rm(temporaryDirectory, { recursive: true });
+  }
 });
 
 test("keeps the canonical panel motion, DOM filter, boundary, navigation, and responsive seams", async () => {
   const source = await readFile("src/components/ui/slide-over-panel.tsx", "utf8");
-  const css = await readFile(
-    "src/components/ui/slide-over-panel.module.css",
-    "utf8"
-  );
-  const boundary = await readFile(
-    "src/components/ui/boundary-context.tsx",
-    "utf8"
-  );
-  const environment = await readFile(
-    "src/components/ui/slide-over-panel-environment.tsx",
-    "utf8"
-  );
+  const boundary = await readFile("src/components/ui/boundary-context.tsx", "utf8");
+  const environment = await readFile("src/components/ui/slide-over-panel-environment.tsx", "utf8");
 
   for (const fragment of [
     "useTransition",
@@ -119,8 +127,8 @@ test("keeps the canonical panel motion, DOM filter, boundary, navigation, and re
     "useReducedMotion",
     "stiffness: 1000",
     "damping: 50",
-    "RIGHT_SIDE_PANEL_WIDTH",
-    "LEFT_SIDE_PANEL_WIDTH",
+    "translateX(100%) translateY(0)",
+    "translateX(-100%) translateY(0)",
     "position ? OPEN_STYLES[position] : OPEN_STYLES.right",
     "? COLLAPSED_STYLES[position]",
     "BoundaryContextProvider",
@@ -132,24 +140,26 @@ test("keeps the canonical panel motion, DOM filter, boundary, navigation, and re
   assert.doesNotMatch(source, /data-position|data-mode/);
 
   for (const fragment of [
-    "@media (min-width: 800px)",
-    "top: 16px",
-    "bottom: 16px",
-    "left: 16px",
-    "right: 16px",
+    "min-[800px]:sticky",
+    "top-4",
+    "right-4",
+    "bottom-4",
+    "left-4",
     "50vw",
     "40vw",
     "50vh",
-    "min-width: 450px",
-    "overscroll-behavior: contain",
-    '.panel[mode="passive"]',
-    ".positionUnspecified",
-    "#393442",
-    "#e7e5ea",
-    "0px 4px 0px 2px #0000181a",
+    "min-w-[450px]",
+    "overscroll-contain",
+    "POSITION_CLASSES",
+    "--scraps-slide-over-panel-top",
+    "--scraps-slide-over-panel-width",
+    "--scraps-slide-over-background",
+    "--scraps-slide-over-content",
+    "--scraps-slide-over-shadow",
   ]) {
-    assert.ok(css.includes(fragment), fragment);
+    assert.ok(source.includes(fragment), fragment);
   }
+  assert.doesNotMatch(source, /\.module\.css|@emotion|styled\(/);
   assert.match(boundary, /createContext<string \| null>\(null\)/);
   assert.match(boundary, /BoundaryContext\.Provider/);
   assert.match(boundary, /useContext\(BoundaryContext\)/);

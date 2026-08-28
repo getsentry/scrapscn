@@ -17,5 +17,4 @@ export type ContainerQueryBreakpoint =
   | "5xl";
 
 /** Shares the nearest layout query-container breakpoint with logical descendants. */
-export const ContainerQueryContext =
-  createContext<ContainerQueryBreakpoint | null>(null);
+export const ContainerQueryContext = createContext<ContainerQueryBreakpoint | null>(null);

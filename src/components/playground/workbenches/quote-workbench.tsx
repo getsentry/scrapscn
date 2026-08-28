@@ -44,7 +44,8 @@ function serializeQuoteWorkbench(state: QuoteWorkbenchState): URLSearchParams {
   });
 }
 
-const controlClassName = "h-11 rounded-md border border-input bg-background px-3 text-base sm:h-10 sm:text-sm";
+const controlClassName =
+  "h-11 rounded-md border border-input bg-background px-3 text-base sm:h-10 sm:text-sm";
 
 export function QuoteWorkbench({ children, onSearchChange, sourceSearch }: WorkbenchProps) {
   const [state, setState] = useState(() => parseQuoteWorkbench(new URLSearchParams(sourceSearch)));
@@ -70,19 +71,34 @@ export function QuoteWorkbench({ children, onSearchChange, sourceSearch }: Workb
         </label>
       ))}
       <label className="flex min-h-11 items-center gap-2 text-sm">
-        <input aria-label="Show source" checked={state.showSource} className="size-5 touch-manipulation" type="checkbox" onChange={(event) => update({ ...state, showSource: event.target.checked })} />
+        <input
+          aria-label="Show source"
+          checked={state.showSource}
+          className="size-5 touch-manipulation"
+          type="checkbox"
+          onChange={(event) => update({ ...state, showSource: event.target.checked })}
+        />
         Show source attribution
       </label>
     </div>
   );
   const source = state.showSource
-    ? { author: state.author || undefined, href: state.href || undefined, label: state.label || undefined }
+    ? {
+        author: state.author || undefined,
+        href: state.href || undefined,
+        label: state.label || undefined,
+      }
     : undefined;
   return children({
     breadcrumbs: ["Components", "Quote"],
     controls,
-    description: "Test the regular Scraps semantic quotation, rail geometry, and optional source attribution.",
-    preview: <div className="max-w-2xl rounded-md border border-border p-6" data-testid="quote-preview"><Quote source={source}>{state.body}</Quote></div>,
+    description:
+      "Test the regular Scraps semantic quotation, rail geometry, and optional source attribution.",
+    preview: (
+      <div className="max-w-2xl rounded-md border border-border p-6" data-testid="quote-preview">
+        <Quote source={source}>{state.body}</Quote>
+      </div>
+    ),
     reset: () => {
       const next = defaultState();
       setState(next);

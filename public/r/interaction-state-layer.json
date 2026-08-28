@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "interaction-state-layer",
+  "title": "Interaction State Layer",
+  "description": "Regular Scraps interaction overlay for hover, press, selected, and expanded states.",
+  "registryDependencies": [
+    "sentry-base"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/interaction-state-layer.tsx",
+      "content": "import * as React from \"react\";\n\nimport { cn } from \"../../lib/utils\";\n\ninterface InteractionStateLayerProps extends React.HTMLAttributes<HTMLElement> {\n  as?: React.ElementType;\n  color?: string;\n  hasSelectedBackground?: boolean;\n  higherOpacity?: boolean;\n  isHovered?: boolean;\n  isPressed?: boolean;\n}\n\nfunction resolveInteractionStateLayerColor(color: string) {\n  if (/^[-_a-zA-Z][-_a-zA-Z0-9]*$/.test(color)) {\n    return `var(--scraps-theme-${color}, var(--${color}, ${color}))`;\n  }\n\n  return color;\n}\n\n/** Renders the regular Scraps interaction state overlay without forwarding state props to the DOM. */\nfunction InteractionStateLayer({\n  as: Element = \"span\",\n  color,\n  hasSelectedBackground = true,\n  higherOpacity = false,\n  isHovered,\n  isPressed,\n  className,\n  style,\n  children,\n  ...htmlProps\n}: InteractionStateLayerProps) {\n  const layerStyle = color ? { color: resolveInteractionStateLayerColor(color), ...style } : style;\n\n  return (\n    <Element\n      {...htmlProps}\n      role=\"presentation\"\n      color={color}\n      className={cn(\n        \"pointer-events-none absolute top-1/2 left-1/2 box-content size-full -translate-x-1/2 -translate-y-1/2 rounded-[inherit] border-current bg-current text-current opacity-0 [border:inherit]\",\n        \"[&[data-is-hovered=true]]:opacity-[var(--interaction-state-layer-hover-opacity)]\",\n        \"[*:hover:not(:focus-visible)>_&[data-is-hovered=undefined]]:opacity-[var(--interaction-state-layer-hover-opacity)]\",\n        \"[&[data-is-pressed=true]]:!opacity-[var(--interaction-state-layer-press-opacity)]\",\n        \"[*:active>_&[data-is-pressed=undefined]]:!opacity-[var(--interaction-state-layer-press-opacity)]\",\n        \"[*[aria-expanded=true]>_&[data-is-pressed=undefined][data-has-selected-background=true]]:!opacity-[var(--interaction-state-layer-press-opacity)]\",\n        \"[*[aria-selected=true]>_&[data-is-pressed=undefined][data-has-selected-background=true]]:!opacity-[var(--interaction-state-layer-press-opacity)]\",\n        \"[*:disabled_&[data-is-hovered][data-is-pressed][data-has-selected-background]]:!opacity-0\",\n        \"[*[aria-disabled=true]_&[data-is-hovered][data-is-pressed][data-has-selected-background]]:!opacity-0\",\n        className,\n      )}\n      data-has-selected-background={hasSelectedBackground}\n      data-is-hovered={isHovered === undefined ? \"undefined\" : isHovered}\n      data-is-pressed={isPressed === undefined ? \"undefined\" : isPressed}\n      style={\n        {\n          ...layerStyle,\n          \"--interaction-state-layer-hover-opacity\": higherOpacity ? 0.085 : 0.06,\n          \"--interaction-state-layer-press-opacity\": higherOpacity ? 0.12 : 0.09,\n        } as React.CSSProperties\n      }\n    >\n      {children}\n    </Element>\n  );\n}\n\nexport { InteractionStateLayer as default };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

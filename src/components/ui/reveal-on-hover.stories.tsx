@@ -22,10 +22,14 @@ function Row({ dark = false }: { dark?: boolean }) {
       >
         <span>{dark ? "Dark issue row" : "Light issue row"}</span>
         <RevealOnHover.Action>
-          <button className="touch-manipulation" type="button">Copy</button>
+          <button className="touch-manipulation" type="button">
+            Copy
+          </button>
         </RevealOnHover.Action>
         <RevealOnHover.Action visible>
-          <button className="touch-manipulation" type="button">Delete</button>
+          <button className="touch-manipulation" type="button">
+            Delete
+          </button>
         </RevealOnHover.Action>
       </RevealOnHover>
     </div>
@@ -66,7 +70,9 @@ export const CustomRoot: Story = {
         >
           <span>Grid content</span>
           <RevealOnHover.Action>
-            <button className="touch-manipulation" type="button">Copy</button>
+            <button className="touch-manipulation" type="button">
+              Copy
+            </button>
           </RevealOnHover.Action>
         </article>
       )}

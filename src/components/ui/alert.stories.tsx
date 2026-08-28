@@ -1,147 +1,87 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite"
-import { expect, userEvent, within } from "storybook/test"
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { MemoryRouter } from "react-router-dom";
+import { expect, fn, userEvent, within } from "storybook/test";
 
-import { Button } from "./button"
-import { Alert, AlertDescription, AlertLink, AlertTitle } from "./alert"
+import { Alert, AlertLink } from "./alert";
 
 const meta = {
   title: "Components/Alert",
   component: Alert,
+  args: { children: "This is an informational message", variant: "info" },
+  decorators: [
+    (Story) => (
+      <MemoryRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
+  parameters: {
+    a11y: { config: { rules: [{ enabled: false, id: "svg-img-alt" }] } },
+  },
   argTypes: {
     variant: {
       control: "select",
-      options: ["info", "warning", "danger", "success", "muted"],
+      options: ["muted", "info", "warning", "success", "danger"],
     },
   },
-} satisfies Meta<typeof Alert>
+} satisfies Meta<typeof Alert>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const AllVariants: Story = {
+export const Playground: Story = {};
+
+export const Variants: Story = {
   render: () => (
-    <div className="space-y-3 w-full max-w-2xl">
-      <Alert variant="info">
-        <AlertTitle>SDK update available</AlertTitle>
-        <AlertDescription>Upgrade to @sentry/nextjs 8.x for smaller bundles.</AlertDescription>
-      </Alert>
-      <Alert variant="danger">
-        <AlertTitle>Spike detected</AlertTitle>
-        <AlertDescription>TypeError reported 2,847 times in the last hour.</AlertDescription>
-      </Alert>
-      <Alert variant="warning">
-        <AlertTitle>Quota warning</AlertTitle>
-        <AlertDescription>You have used 87% of your monthly error quota.</AlertDescription>
-      </Alert>
-      <Alert variant="success">
-        <AlertTitle>All clear</AlertTitle>
-        <AlertDescription>No new issues in the last 24 hours.</AlertDescription>
-      </Alert>
-      <Alert variant="muted">
-        <AlertTitle>Tip</AlertTitle>
-        <AlertDescription>Set up release tracking to correlate deploys with new issues.</AlertDescription>
-      </Alert>
-    </div>
+    <Alert.Container>
+      <Alert variant="muted">This is a muted alert</Alert>
+      <Alert variant="info">This is an info alert</Alert>
+      <Alert variant="warning">This is a warning alert</Alert>
+      <Alert variant="success">This is a success alert</Alert>
+      <Alert variant="danger">This is a danger alert</Alert>
+    </Alert.Container>
   ),
-}
+};
 
-export const NoIcon: Story = {
-  render: () => (
-    <Alert variant="info" showIcon={false}>
-      <AlertTitle>No icon variant</AlertTitle>
-      <AlertDescription>Icons can be hidden with showIcon=false.</AlertDescription>
-    </Alert>
-  ),
-}
-
-export const System: Story = {
-  name: "System banner",
-  render: () => (
-    <Alert variant="warning" system>
-      <AlertTitle>Scheduled maintenance</AlertTitle>
-      <AlertDescription>
-        Ingestion may be delayed between 02:00–03:00 UTC.
-      </AlertDescription>
-    </Alert>
-  ),
-}
-
-export const TrailingItems: Story = {
+export const Composition: Story = {
   render: () => (
     <Alert
-      variant="danger"
-      trailingItems={
-        <Button variant="ghost" size="sm">
-          View issue
-        </Button>
-      }
+      variant="warning"
+      expand={<div data-expanded-content>Additional diagnostic details.</div>}
+      trailingItems={<Alert.Button variant="transparent">Review</Alert.Button>}
     >
-      <AlertTitle>Spike detected</AlertTitle>
-      <AlertDescription>TypeError reported 2,847 times in the last hour.</AlertDescription>
+      Click the alert or disclosure button to expand it.
     </Alert>
   ),
-}
+};
 
-export const Expandable: Story = {
-  render: () => (
-    <Alert
-      variant="info"
-      expand={
-        <p>
-          The stack trace points to a null deref in <code>parseUser()</code>.
-          This block is revealed when expanded.
-        </p>
-      }
-    >
-      <AlertTitle>SDK update available</AlertTitle>
-      <AlertDescription>Upgrade to @sentry/nextjs 8.x for smaller bundles.</AlertDescription>
-    </Alert>
-  ),
-}
-
-// Interaction test kept separate from the display story above so the canvas
-// doesn't auto-expand/collapse ("flash") when you're just viewing Expandable.
-export const ExpandInteraction: Story = {
-  tags: ["!autodocs"],
-  ...Expandable,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    expect(canvas.queryByText(/revealed when expanded/i)).toBeNull()
-    await userEvent.click(canvas.getByRole("button", { name: "Expand" }))
-    expect(canvas.getByText(/revealed when expanded/i)).toBeVisible()
-    await userEvent.click(canvas.getByRole("button", { name: "Collapse" }))
-    expect(canvas.queryByText(/revealed when expanded/i)).toBeNull()
+export const Interaction: Story = {
+  args: {
+    children: "Expandable alert",
+    expand: <div>Additional diagnostic details.</div>,
+    handleExpandChange: fn(),
+    variant: "info",
   },
-}
-
-export const Link: Story = {
-  render: () => (
-    <AlertLink variant="info" href="https://docs.sentry.io" openInNewTab>
-      <AlertTitle>Read the docs</AlertTitle>
-      <AlertDescription>Learn how to configure release tracking.</AlertDescription>
-    </AlertLink>
-  ),
-}
-
-// Args-driven story so the Controls panel (variant, system, showIcon) drives a live instance.
-export const Playground: Story = {
-  args: { variant: "info", system: false, showIcon: true },
-  argTypes: {
-    variant: {
-      control: "select",
-      options: ["info", "warning", "danger", "success", "muted"],
-    },
-    system: { control: "boolean" },
-    showIcon: { control: "boolean" },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    expect(canvas.queryByText("Additional diagnostic details.")).toBeNull();
+    await userEvent.click(canvas.getByText("Expandable alert"));
+    expect(canvas.getByText("Additional diagnostic details.")).toBeVisible();
+    expect(args.handleExpandChange).toHaveBeenCalledWith(true);
+    await userEvent.click(canvas.getByText("Additional diagnostic details."));
+    expect(canvas.getByText("Additional diagnostic details.")).toBeVisible();
   },
-  render: (args) => (
-    <div className="w-full max-w-2xl">
-      <Alert {...args}>
-        <AlertTitle>SDK update available</AlertTitle>
-        <AlertDescription>
-          Upgrade to @sentry/nextjs 8.x for smaller bundles.
-        </AlertDescription>
-      </Alert>
-    </div>
+};
+
+export const Links: Story = {
+  render: () => (
+    <AlertLink.Container>
+      <AlertLink variant="info" to="/settings">
+        Internal alert link
+      </AlertLink>
+      <AlertLink variant="success" href="https://docs.sentry.io" openInNewTab>
+        External alert link
+      </AlertLink>
+    </AlertLink.Container>
   ),
-}
+};

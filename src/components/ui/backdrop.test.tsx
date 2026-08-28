@@ -31,8 +31,8 @@ describe("Backdrop", () => {
     ["modal", "10000"],
   ] as const)("uses the canonical %s layer", async (zIndex, expected) => {
     const container = await render(<Backdrop zIndex={zIndex} />);
-    expect(container.querySelector<HTMLElement>("[data-overlay]")?.style.zIndex).toBe(
-      expected
+    expect(container.querySelector<HTMLElement>("[data-overlay]")?.className).toContain(
+      `z-[${expected}]`,
     );
   });
 
@@ -43,7 +43,7 @@ describe("Backdrop", () => {
         data-testid="overlay"
         data-test-id="canonical-overlay"
         zIndex="modal"
-      />
+      />,
     );
     const overlay = container.querySelector("[data-overlay]");
 
@@ -56,7 +56,7 @@ describe("Backdrop", () => {
 
   it("lets forwarded native props override canonical attributes", async () => {
     const container = await render(
-      <Backdrop data-overlay="custom" id="consumer-backdrop" zIndex="drawer" />
+      <Backdrop data-overlay="custom" id="consumer-backdrop" zIndex="drawer" />,
     );
     const overlay = container.querySelector("[data-overlay]");
 
@@ -68,9 +68,7 @@ describe("Backdrop", () => {
     const onClick = vi.fn();
     const container = await render(<Backdrop onClick={onClick} zIndex="modal" />);
 
-    container.firstElementChild?.dispatchEvent(
-      new MouseEvent("click", { bubbles: true })
-    );
+    container.firstElementChild?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
 
     expect(onClick).toHaveBeenCalledOnce();
   });
@@ -84,14 +82,12 @@ describe("Backdrop", () => {
     expect(ref.current?.dataset.overlay).toBe("true");
   });
 
-  it("uses the exact fixed overlay geometry and semantic background variable", async () => {
+  it("uses Tailwind for the fixed geometry and semantic background", async () => {
     const container = await render(<Backdrop zIndex="modal" />);
     const overlay = container.querySelector<HTMLElement>("[data-overlay]");
 
-    expect(overlay?.style.background).toBe(
-      "var(--scraps-backdrop-background, #10082845)"
-    );
-    expect(overlay?.style.inset).toBe("0");
-    expect(overlay?.style.position).toBe("fixed");
+    expect(overlay?.className).toContain("fixed");
+    expect(overlay?.className).toContain("inset-0");
+    expect(overlay?.className).toContain("bg-[var(--scraps-backdrop-background,#10082845)]");
   });
 });

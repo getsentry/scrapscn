@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/react";
 import {
   createContext,
   use,
@@ -20,7 +21,6 @@ import {
   type RefObject,
 } from "react";
 import { createPortal } from "react-dom";
-import * as Sentry from "@sentry/react";
 
 import { ContainerQueryContext } from "./container-query-context";
 import { SizeContext } from "./size-context";
@@ -46,10 +46,7 @@ type SlotReducerAction<T extends SlotName> =
   | { name: T; type: "unregister" }
   | { contextBridges: ContextBridge[]; name: T; type: "set context bridges" }
   | { name: T; type: "remove context bridges" };
-type SlotContextValue<T extends SlotName> = [
-  SlotReducerState<T>,
-  Dispatch<SlotReducerAction<T>>,
-];
+type SlotContextValue<T extends SlotName> = [SlotReducerState<T>, Dispatch<SlotReducerAction<T>>];
 
 interface SlotProviderProps {
   children: ReactNode;
@@ -61,10 +58,7 @@ interface SlotConsumerProps<T extends SlotName> {
 }
 
 interface SlotOutletProps<T extends SlotName> {
-  children: (
-    props: { ref: RefCallback<HTMLElement | null> },
-    hasConsumers: boolean
-  ) => ReactNode;
+  children: (props: { ref: RefCallback<HTMLElement | null> }, hasConsumers: boolean) => ReactNode;
   name: T;
 }
 
@@ -79,18 +73,13 @@ type SlotModule<T extends SlotName> = FunctionComponent<SlotConsumerProps<T>> & 
   useSlotOutletRef: () => RefObject<HTMLElement | null>;
 };
 
-function reportSlotWarning(
-  component: "Consumer" | "Fallback" | "Outlet",
-  name: string
-): void {
+function reportSlotWarning(component: "Consumer" | "Fallback" | "Outlet", name: string): void {
   const key = `missing-provider:${component}:${name}`;
   if (reportedSlotWarnings.has(key)) return;
   reportedSlotWarnings.add(key);
 
   if (process.env.NODE_ENV !== "production") {
-    console.warn(
-      `<Slot.${component}> for slot "${name}" rendered without a <Slot.Provider>`
-    );
+    console.warn(`<Slot.${component}> for slot "${name}" rendered without a <Slot.Provider>`);
     return;
   }
   const message = `<Slot.${component}> for slot "${name}" rendered without a <Slot.Provider>`;
@@ -103,10 +92,7 @@ function reportSlotWarning(
   });
 }
 
-function makeSlotReducer<T extends SlotName>(): Reducer<
-  SlotReducerState<T>,
-  SlotReducerAction<T>
-> {
+function makeSlotReducer<T extends SlotName>(): Reducer<SlotReducerState<T>, SlotReducerAction<T>> {
   return (state, action) => {
     const currentSlot = state[action.name];
     switch (action.type) {
@@ -163,9 +149,7 @@ function makeSlotReducer<T extends SlotName>(): Reducer<
 }
 
 function useContextBridges(): ContextBridge[] {
-  const values = KNOWN_BRIDGED_CONTEXTS.map((context) =>
-    use(context as Context<unknown>)
-  );
+  const values = KNOWN_BRIDGED_CONTEXTS.map((context) => use(context as Context<unknown>));
   const [previousBridges, setPreviousBridges] = useState<ContextBridge[]>([]);
   const changed =
     previousBridges.length !== KNOWN_BRIDGED_CONTEXTS.length ||
@@ -182,7 +166,7 @@ function useContextBridges(): ContextBridge[] {
 
 function makeSlotConsumer<T extends SlotName>(
   context: Context<SlotContextValue<T> | null>,
-  outletNameContext: Context<T | null>
+  outletNameContext: Context<T | null>,
 ) {
   function SlotConsumer({ name, children }: SlotConsumerProps<T>): ReactNode {
     const slotContext = useContext(context);
@@ -202,9 +186,7 @@ function makeSlotConsumer<T extends SlotName>(
     if (!element) return null;
 
     let content: ReactNode = (
-      <outletNameContext.Provider value={name}>
-        {children}
-      </outletNameContext.Provider>
+      <outletNameContext.Provider value={name}>{children}</outletNameContext.Provider>
     );
     content = (state[name]?.contextBridges ?? [])
       .toReversed()
@@ -212,7 +194,7 @@ function makeSlotConsumer<T extends SlotName>(
         (portaledChildren, bridge) => (
           <bridge.context value={bridge.value}>{portaledChildren}</bridge.context>
         ),
-        content
+        content,
       );
     return createPortal(content, element);
   }
@@ -223,7 +205,7 @@ function makeSlotConsumer<T extends SlotName>(
 
 function makeSlotOutlet<T extends SlotName>(
   context: Context<SlotContextValue<T> | null>,
-  outletNameContext: Context<T | null>
+  outletNameContext: Context<T | null>,
 ) {
   function SlotOutlet({ name, children }: SlotOutletProps<T>): ReactNode {
     const slotContext = useContext(context);
@@ -238,13 +220,9 @@ function makeSlotOutlet<T extends SlotName>(
     const ref = useCallback(
       (element: HTMLElement | null) => {
         if (dispatch === NOOP_DISPATCH) return;
-        dispatch(
-          element
-            ? { type: "register", name, element }
-            : { type: "unregister", name }
-        );
+        dispatch(element ? { type: "register", name, element } : { type: "unregister", name });
       },
-      [dispatch, name]
+      [dispatch, name],
     );
 
     if (!slotContext) {
@@ -264,7 +242,7 @@ function makeSlotOutlet<T extends SlotName>(
 
 function makeSlotFallback<T extends SlotName>(
   context: Context<SlotContextValue<T> | null>,
-  outletNameContext: Context<T | null>
+  outletNameContext: Context<T | null>,
 ) {
   function SlotFallback({ children }: SlotFallbackProps): ReactNode {
     const slotContext = useContext(context);
@@ -285,16 +263,11 @@ function makeSlotFallback<T extends SlotName>(
   return SlotFallback;
 }
 
-function makeSlotProvider<T extends SlotName>(
-  context: Context<SlotContextValue<T> | null>
-) {
+function makeSlotProvider<T extends SlotName>(context: Context<SlotContextValue<T> | null>) {
   const reducer = makeSlotReducer<T>();
   function SlotProvider({ children }: SlotProviderProps): ReactNode {
     const [state, dispatch] = useReducer(reducer, {});
-    const value = useMemo(
-      () => [state, dispatch] as SlotContextValue<T>,
-      [state, dispatch]
-    );
+    const value = useMemo(() => [state, dispatch] as SlotContextValue<T>, [state, dispatch]);
     return <context.Provider value={value}>{children}</context.Provider>;
   }
 
@@ -304,13 +277,13 @@ function makeSlotProvider<T extends SlotName>(
 
 function makeUseSlotOutletRef<T extends SlotName>(
   context: Context<SlotContextValue<T> | null>,
-  outletNameContext: Context<T | null>
+  outletNameContext: Context<T | null>,
 ) {
   return function useSlotOutletRef(): RefObject<HTMLElement | null> {
     const slotContext = useContext(context);
     const name = useContext(outletNameContext);
     const ref = useRef<HTMLElement | null>(null);
-    ref.current = slotContext && name ? slotContext[0][name]?.element ?? null : null;
+    ref.current = slotContext && name ? (slotContext[0][name]?.element ?? null) : null;
     return ref;
   };
 }
@@ -335,10 +308,7 @@ export function withSlots<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TComponent extends ComponentType<any>,
   TSlot extends SlotName,
->(
-  Component: TComponent,
-  slotModule: SlotModule<TSlot>
-): TComponent & { Slot: SlotModule<TSlot> } {
+>(Component: TComponent, slotModule: SlotModule<TSlot>): TComponent & { Slot: SlotModule<TSlot> } {
   const componentWithSlots = Component as TComponent & { Slot: SlotModule<TSlot> };
   componentWithSlots.Slot = slotModule;
   return componentWithSlots;

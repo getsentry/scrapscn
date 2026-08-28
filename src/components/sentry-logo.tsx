@@ -18,20 +18,14 @@ export function SentryWordmark({ className }: { className?: string }) {
         alt="Sentry"
         width={116}
         height={34}
-        className={`size-auto hidden dark:block ${className ?? ""}`}
+        className={`hidden size-auto dark:block ${className ?? ""}`}
         priority
       />
     </>
   );
 }
 
-export function SentryGlyph({
-  className,
-  size = 32,
-}: {
-  className?: string;
-  size?: number;
-}) {
+export function SentryGlyph({ className, size = 32 }: { className?: string; size?: number }) {
   return (
     <>
       <Image
@@ -47,7 +41,7 @@ export function SentryGlyph({
         alt="Sentry"
         width={size}
         height={size}
-        className={`size-auto hidden dark:block ${className ?? ""}`}
+        className={`hidden size-auto dark:block ${className ?? ""}`}
         priority
       />
     </>

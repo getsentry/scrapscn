@@ -19,7 +19,7 @@ export const Basic: Story = {
   args: { alt: "Sentry color study", src: imageSource },
   play: async ({ canvasElement }) => {
     await expect(
-      within(canvasElement).getByRole("img", { name: "Sentry color study" })
+      within(canvasElement).getByRole("img", { name: "Sentry color study" }),
     ).toHaveAttribute("loading", "lazy");
   },
 };
@@ -71,19 +71,12 @@ export const Responsive: Story = {
 
 export const Radius: Story = {
   render: () => (
-    <Image
-      alt="Rounded image"
-      radius={{ zero: "sm", md: "2xl" }}
-      src={imageSource}
-      width="320px"
-    />
+    <Image alt="Rounded image" radius={{ zero: "sm", md: "2xl" }} src={imageSource} width="320px" />
   ),
 };
 
 export const Loading: Story = {
-  render: () => (
-    <Image alt="Eager image" loading="eager" src={imageSource} width="320px" />
-  ),
+  render: () => <Image alt="Eager image" loading="eager" src={imageSource} width="320px" />,
 };
 
 export const ErrorFallback: Story = {

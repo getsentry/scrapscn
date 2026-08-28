@@ -26,9 +26,9 @@ const EXPECTED_DARK_BORDERS = {
 
 function readBorderAliases(cssBlock) {
   return Object.fromEntries(
-    [
-      ...cssBlock.matchAll(/--scraps-theme-border-([a-z]+):\s*(#[0-9a-f]+);/g),
-    ].map(([, name, value]) => [name, value])
+    [...cssBlock.matchAll(/--scraps-theme-border-([a-z]+):\s*(#[0-9a-f]+);/g)].map(
+      ([, name, value]) => [name, value],
+    ),
   );
 }
 
@@ -37,12 +37,6 @@ test("layout border aliases exactly match the pinned light and dark themes", asy
   const darkStart = globals.indexOf(".dark {");
 
   assert.notEqual(darkStart, -1);
-  assert.deepEqual(
-    readBorderAliases(globals.slice(0, darkStart)),
-    EXPECTED_LIGHT_BORDERS
-  );
-  assert.deepEqual(
-    readBorderAliases(globals.slice(darkStart)),
-    EXPECTED_DARK_BORDERS
-  );
+  assert.deepEqual(readBorderAliases(globals.slice(0, darkStart)), EXPECTED_LIGHT_BORDERS);
+  assert.deepEqual(readBorderAliases(globals.slice(darkStart)), EXPECTED_DARK_BORDERS);
 });

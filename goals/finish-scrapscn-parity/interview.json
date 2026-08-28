@@ -1,0 +1,28 @@
+{
+  "stage": "interview",
+  "title": "Finish Scrapscn parity",
+  "goalSlug": "finish-scrapscn-parity",
+  "questions": [
+    {
+      "id": "translation-boundary",
+      "prompt": "What must Tailwind, the monolith, and Figma translation support?",
+      "description": "This choice separates component compatibility from a general source-code compiler.",
+      "answerMode": "single-custom",
+      "recommendedAnswer": "Preserve public component contracts and Figma property vocabulary. Prove registry installation and Code Connect generation on Checkbox, then require later mappings to follow the same checked convention. Do not build a general Emotion-to-Tailwind or Tailwind-to-Emotion source converter.",
+      "recommendedOptionIds": [
+        "contract-mapping"
+      ],
+      "options": [
+        {
+          "id": "contract-mapping",
+          "label": "Contract and Code Connect mapping"
+        },
+        {
+          "id": "source-converter",
+          "label": "General source-code converter"
+        }
+      ],
+      "required": true
+    }
+  ]
+}

@@ -1,34 +1,54 @@
-"use client"
+"use client";
 
-import { useCallback } from "react"
+import { useCallback } from "react";
 
-import { cn } from "@/lib/utils"
-import InteractionStateLayer from "@/components/ui/interaction-state-layer"
+import { cn } from "../../lib/utils";
+import InteractionStateLayer from "./interaction-state-layer";
 
-type CheckboxSize = "xs" | "sm" | "md"
+type CheckboxSize = "xs" | "sm" | "md";
 
 /** Props that match the public API of Sentry's regular Scraps Checkbox. */
-export interface CheckboxProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "checked" | "size"> {
-  checked?: React.InputHTMLAttributes<HTMLInputElement>["checked"] | "indeterminate"
-  ref?: React.Ref<HTMLInputElement>
-  size?: CheckboxSize
+export interface CheckboxProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "checked" | "size"
+> {
+  checked?: React.InputHTMLAttributes<HTMLInputElement>["checked"] | "indeterminate";
+  ref?: React.Ref<HTMLInputElement>;
+  size?: CheckboxSize;
 }
 
-const checkboxSizes: Record<CheckboxSize, { box: string; icon: string; radius: string; strokeWidth: number }> = {
-  xs: { box: "size-3", icon: "size-2.5", radius: "rounded-[2px]", strokeWidth: 1.8 },
-  sm: { box: "size-4", icon: "size-3", radius: "rounded-[4px]", strokeWidth: 1.88 },
-  md: { box: "size-[22px]", icon: "size-[18px]", radius: "rounded-[6px]", strokeWidth: 2.12 },
-}
+const checkboxSizes: Record<
+  CheckboxSize,
+  { box: string; icon: string; radius: string; strokeWidth: number }
+> = {
+  xs: {
+    box: "size-3",
+    icon: "size-2.5",
+    radius: "rounded-[2px]",
+    strokeWidth: 1.8,
+  },
+  sm: {
+    box: "size-4",
+    icon: "size-3",
+    radius: "rounded-[4px]",
+    strokeWidth: 1.88,
+  },
+  md: {
+    box: "size-[22px]",
+    icon: "size-[18px]",
+    radius: "rounded-[6px]",
+    strokeWidth: 2.12,
+  },
+};
 
 function assignRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
   if (typeof ref === "function") {
-    return ref(value)
+    return ref(value);
   } else if (ref) {
-    ref.current = value
+    ref.current = value;
     return () => {
-      ref.current = null
-    }
+      ref.current = null;
+    };
   }
 }
 
@@ -41,26 +61,24 @@ export function Checkbox({
   style,
   ...props
 }: CheckboxProps) {
-  const isIndeterminate = checked === "indeterminate"
+  const isIndeterminate = checked === "indeterminate";
   const setInputRef = useCallback(
     (node: HTMLInputElement | null) => {
-      if (node) node.indeterminate = isIndeterminate
-      return assignRef(ref, node)
+      if (node) node.indeterminate = isIndeterminate;
+      return assignRef(ref, node);
     },
-    [isIndeterminate, ref]
-  )
-  const dimensions = checkboxSizes[size]
-  const isInteractive = !props.disabled && !props.readOnly
+    [isIndeterminate, ref],
+  );
+  const dimensions = checkboxSizes[size];
+  const isInteractive = !props.disabled && !props.readOnly;
 
   return (
     <div
-      data-slot="checkbox"
-      data-size={size}
       className={cn(
         "relative inline-flex justify-start",
         dimensions.radius,
         isInteractive ? "cursor-pointer" : "cursor-auto",
-        className
+        className,
       )}
       style={style}
     >
@@ -68,25 +86,28 @@ export function Checkbox({
         ref={setInputRef}
         checked={!isIndeterminate && checked}
         type="checkbox"
-        className="peer absolute inset-0 z-10 m-0 size-full cursor-[inherit] appearance-none rounded-[inherit] opacity-0 focus-visible:outline-none"
+        className="peer absolute top-0 left-0 m-0 size-full cursor-[inherit] p-0 opacity-0"
         style={style}
         {...props}
       />
       <div
         aria-hidden="true"
         className={cn(
-          "pointer-events-none relative flex items-center justify-center border border-checkbox-border bg-transparent text-inherit",
-          "peer-checked:bg-checkbox-checked peer-checked:text-white peer-indeterminate:bg-checkbox-checked peer-indeterminate:text-white",
-          "peer-focus-visible:shadow-[0_0_0_2px_var(--checkbox-focus)]",
-          "peer-disabled:cursor-not-allowed peer-disabled:opacity-60 peer-aria-disabled:opacity-60 peer-disabled:peer-checked:border-checkbox-checked-chonk peer-disabled:peer-indeterminate:border-checkbox-checked-chonk",
+          "pointer-events-none relative flex items-center justify-center border border-[var(--checkbox-border)] bg-transparent text-inherit",
+          "peer-checked:bg-[var(--checkbox-checked)] peer-checked:text-white peer-indeterminate:bg-[var(--checkbox-checked)] peer-indeterminate:text-white",
+          "peer-focus-visible:[box-shadow:0_0_0_0_var(--scraps-checkbox-focus-mask),0_0_0_2px_var(--checkbox-focus)]",
+          "peer-disabled:cursor-not-allowed peer-disabled:opacity-60 peer-disabled:peer-checked:border-[var(--checkbox-checked-chonk)] peer-disabled:peer-indeterminate:border-[var(--checkbox-checked-chonk)] peer-aria-disabled:opacity-60",
           dimensions.box,
-          dimensions.radius
+          dimensions.radius,
         )}
       >
         {(checked === true || isIndeterminate) && (
           <svg
             viewBox="0 0 16 16"
-            className={cn("shrink-0 fill-none stroke-white [stroke-linecap:round] [stroke-linejoin:round]", dimensions.icon)}
+            className={cn(
+              "shrink-0 fill-none stroke-white [stroke-linecap:round] [stroke-linejoin:round]",
+              dimensions.icon,
+            )}
             strokeWidth={dimensions.strokeWidth}
           >
             {isIndeterminate ? (
@@ -101,5 +122,5 @@ export function Checkbox({
         <InteractionStateLayer higherOpacity={checked === true || isIndeterminate} />
       )}
     </div>
-  )
+  );
 }

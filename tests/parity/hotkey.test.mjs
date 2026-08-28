@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import test from "node:test";
 
 const behaviorDependencies = [
@@ -26,21 +29,24 @@ test("records the complete regular Scraps Hotkey delivery and behavior sources",
   const manifest = JSON.parse(await readFile("scraps-parity.json", "utf8"));
   const hotkey = manifest.modules.find(({ name }) => name === "hotkey");
 
-  assert.deepEqual(hotkey.canonical.sourcePaths, [
-    "static/app/components/core/hotkey/hotkey.tsx",
-    "static/app/components/core/hotkey/index.tsx",
-    "static/app/components/core/hotkey/kbd.tsx",
-    "static/app/components/core/hotkey/useHotkeys.tsx",
-    ...behaviorDependencies,
-  ].sort());
+  assert.deepEqual(
+    hotkey.canonical.sourcePaths,
+    [
+      "static/app/components/core/hotkey/hotkey.tsx",
+      "static/app/components/core/hotkey/index.tsx",
+      "static/app/components/core/hotkey/kbd.tsx",
+      "static/app/components/core/hotkey/useHotkeys.tsx",
+      ...behaviorDependencies,
+    ].sort(),
+  );
   assert.equal("behaviorDependencies" in hotkey.canonical, false);
   assert.deepEqual(hotkey.canonical.publicExports, {
-    runtime: ["Hotkey", "Kbd", "useHotkeys"],
+    runtime: ["Hotkey", "Kbd", "matchesHotkey", "useHotkeys"],
     types: [],
   });
   assert.deepEqual(hotkey.local.implementationPaths, ["src/components/ui/hotkey.tsx"]);
   assert.deepEqual(hotkey.local.implementedExports, {
-    runtime: ["Hotkey", "Kbd", "useHotkeys"],
+    runtime: ["Hotkey", "Kbd", "matchesHotkey", "useHotkeys"],
     types: [],
   });
   assert.deepEqual(hotkey.local.registryItems, ["hotkey"]);
@@ -52,6 +58,7 @@ test("records the complete regular Scraps Hotkey delivery and behavior sources",
   ]);
   assert.deepEqual(hotkey.local.figmaNodes, []);
   assert.equal(hotkey.local.playgroundPath, "/?component=hotkey");
+  assert.equal(hotkey.completion.state, "complete");
   assert.equal(hotkey.completion.complete, true);
 });
 
@@ -87,23 +94,40 @@ test("publishes the exact self-contained Hotkey registry item", async () => {
       type: "registry:file",
       target: "src/components/ui/roboto-mono.css",
     },
-    {
-      path: "src/components/ui/hotkey.module.css",
-      type: "registry:file",
-      target: "src/components/ui/hotkey.module.css",
-    },
     { path: "src/components/ui/hotkey.tsx", type: "registry:ui" },
   ]);
+
+  const directory = await mkdtemp(path.join(tmpdir(), "scrapscn-hotkey-"));
+  try {
+    execFileSync("pnpm", ["exec", "shadcn", "build", "registry.json", "--output", directory], {
+      cwd: process.cwd(),
+      stdio: "pipe",
+    });
+    const builtItem = JSON.parse(await readFile(path.join(directory, "hotkey.json"), "utf8"));
+    for (const filePath of ["src/components/ui/roboto-mono.css", "src/components/ui/hotkey.tsx"]) {
+      assert.equal(
+        builtItem.files.find(({ path: builtPath }) => builtPath === filePath)?.content,
+        await readFile(filePath, "utf8"),
+      );
+    }
+  } finally {
+    await rm(directory, { recursive: true });
+  }
 });
 
 test("keeps the exact maps, Sentry glyph paths, warning, and Kbd geometry", async () => {
   const source = await readFile("src/components/ui/hotkey.tsx", "utf8");
-  const styles = await readFile("src/components/ui/hotkey.module.css", "utf8");
   const fontStyles = await readFile("src/components/ui/roboto-mono.css", "utf8");
 
   assert.match(source, /import \{ isMac \} from "@react-aria\/utils"/);
   assert.match(source, /useSyncExternalStore\(subscribeToPlatform, isMac, \(\) => false\)/);
   assert.match(source, /canonicalizeForPlatform\(keyName, mac\)/);
+  assert.match(
+    source,
+    /export function matchesHotkey\(match: string \| string\[\], event: KeyboardEvent\)/,
+  );
+  assert.match(source, /if \(event\.isComposing\) return false/);
+  assert.match(source, /return \(Array\.isArray\(match\) \? match : \[match\]\)\.some/);
   assert.match(source, /Sentry\.logger\.warn\("Missing key glyph mapping", \{ keyName \}\)/);
   assert.match(source, /eventKey\.charCodeAt\(0\) > 0x7f/);
   assert.match(source, /if \(event\.shiftKey\) return true/);
@@ -116,18 +140,26 @@ test("keeps the exact maps, Sentry glyph paths, warning, and Kbd geometry", asyn
   assert.match(source, /M12\.79 6\.74C13\.08 7\.04/);
   assert.match(source, /<svg[\s\S]*role="img"[\s\S]*viewBox="0 0 16 16"/);
   assert.doesNotMatch(source, /aria-hidden/);
-  assert.match(source, /<kbd aria-label=\{glyph\.label\} className=\{styles\.key\} key=\{index\}>/);
+  assert.match(source, /<kbd aria-label=\{glyph\.label\} className=\{keyClasses\} key=\{index\}>/);
   assert.match(source, /if \(!finalKeys \|\| finalKeys\.length === 0\)/);
   assert.doesNotMatch(source, /finalKeys\.every/);
-  assert.match(styles, /height:\s*1\.67em/);
-  assert.doesNotMatch(styles, /@fontsource-variable\/roboto-mono\/wght\.css/);
-  assert.match(fontStyles, /@fontsource-variable\/roboto-mono\/wght\.css/);
+  assert.match(source, /h-\[1\.67em\]/);
+  assert.match(fontStyles, /font-family: "Roboto Mono"/);
+  assert.match(fontStyles, /font-weight: 425 600/);
+  assert.match(
+    fontStyles,
+    /@fontsource-variable\/roboto-mono\/files\/roboto-mono-latin-wght-normal\.woff2/,
+  );
   assert.match(source, /import "\.\/roboto-mono\.css"/);
-  assert.match(styles, /font-family:\s*"Roboto Mono Variable", "Roboto Mono", Monaco, Consolas,/);
-  assert.match(styles, /font-size:\s*12px/);
-  assert.match(styles, /border-bottom-width:\s*2px/);
-  assert.match(styles, /border-radius:\s*5px/);
-  assert.match(styles, /scale:\s*0\.9/);
+  assert.match(
+    source,
+    /\[font-family:'Roboto_Mono',Monaco,Consolas,'Courier_New',monospace\] text-xs font-medium/,
+  );
+  assert.doesNotMatch(source, /\bfont-mono\b/);
+  assert.match(source, /border-b-2/);
+  assert.match(source, /rounded-\[5px\]/);
+  assert.match(source, /scale-90/);
+  assert.doesNotMatch(source, /\.module\.css/);
 });
 
 test("ports every pinned canonical Hotkey test declaration", async () => {

@@ -40,17 +40,23 @@ const heading: HeadingProps = {
 
 const validUsage = (
   <>
-    <Text as="p" ref={paragraphRef}>Paragraph</Text>
+    <Text as="p" ref={paragraphRef}>
+      Paragraph
+    </Text>
     <Text variant="secondary">Secondary</Text>
     <Text variant="inherit">Inherited</Text>
-    <Text strikethrough underline="dotted">Decorated</Text>
+    <Text strikethrough underline="dotted">
+      Decorated
+    </Text>
     <Heading as="h2" ref={headingRef} size={{ zero: "3xl", "screen:lg": "4xl" }}>
       Heading
     </Heading>
     <Heading variant="accent">
       {({ className }) => <h2 className={className}>Rendered heading</h2>}
     </Heading>
-    <Prose as="section" ref={sectionRef}><p>Body</p></Prose>
+    <Prose as="section" ref={sectionRef}>
+      <p>Body</p>
+    </Prose>
   </>
 );
 
@@ -64,26 +70,62 @@ const dateTime = <Text dateTime="2026-08-23">Invalid</Text>;
 const oversizedText = <Text size="3xl">Invalid</Text>;
 // @ts-expect-error Heading requires a semantic tag in its element form.
 const missingHeadingTag = <Heading>Invalid</Heading>;
-// @ts-expect-error Heading does not support display.
-const headingDisplay = <Heading as="h2" display="none">Invalid</Heading>;
-// @ts-expect-error Heading does not support bold.
-const headingBold = <Heading as="h2" bold>Invalid</Heading>;
-// @ts-expect-error Heading does not support uppercase.
-const headingUppercase = <Heading as="h2" uppercase>Invalid</Heading>;
-// @ts-expect-error Ellipsis owns display.
-const ellipsisDisplay = <Text ellipsis display="block">Invalid</Text>;
-// @ts-expect-error Ellipsis owns white-space wrapping.
-const ellipsisWrap = <Text ellipsis wrap="pre">Invalid</Text>;
+const headingDisplay = (
+  // @ts-expect-error Heading does not support display.
+  <Heading as="h2" display="none">
+    Invalid
+  </Heading>
+);
+const headingBold = (
+  // @ts-expect-error Heading does not support bold.
+  <Heading as="h2" bold>
+    Invalid
+  </Heading>
+);
+const headingUppercase = (
+  // @ts-expect-error Heading does not support uppercase.
+  <Heading as="h2" uppercase>
+    Invalid
+  </Heading>
+);
+const ellipsisDisplay = (
+  // @ts-expect-error Ellipsis owns display.
+  <Text ellipsis display="block">
+    Invalid
+  </Text>
+);
+const ellipsisWrap = (
+  // @ts-expect-error Ellipsis owns white-space wrapping.
+  <Text ellipsis wrap="pre">
+    Invalid
+  </Text>
+);
 // @ts-expect-error The exact API does not accept ellipsis={false}.
 const falseEllipsis = <Text ellipsis={false}>Invalid</Text>;
-// @ts-expect-error Render functions own their element attributes.
-const renderClassName = <Text className="invalid">{({ className }) => <a className={className}>Link</a>}</Text>;
-// @ts-expect-error Render functions cannot select an element.
-const renderAs = <Text as="p">{({ className }) => <p className={className}>Invalid</p>}</Text>;
-// @ts-expect-error Render functions cannot receive a ref.
-const renderRef = <Text ref={paragraphRef}>{({ className }) => <p className={className}>Invalid</p>}</Text>;
-// @ts-expect-error The ref must match the selected Text primitive.
-const wrongTextRef = <Text as="p" ref={createRef<HTMLLabelElement>()}>Invalid</Text>;
+const renderClassName = (
+  // @ts-expect-error Render functions own their element attributes.
+  <Text className="invalid">
+    {({ className }: { className: string }) => <a className={className}>Link</a>}
+  </Text>
+);
+const renderAs = (
+  // @ts-expect-error Render functions cannot select an element.
+  <Text as="p">
+    {({ className }: { className: string }) => <p className={className}>Invalid</p>}
+  </Text>
+);
+const renderRef = (
+  // @ts-expect-error Render functions cannot receive a ref.
+  <Text ref={paragraphRef}>
+    {({ className }: { className: string }) => <p className={className}>Invalid</p>}
+  </Text>
+);
+const wrongTextRef = (
+  // @ts-expect-error The ref must match the selected Text primitive.
+  <Text as="p" ref={createRef<HTMLLabelElement>()}>
+    Invalid
+  </Text>
+);
 
 void [
   label,

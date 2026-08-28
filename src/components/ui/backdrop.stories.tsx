@@ -5,11 +5,15 @@ import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { Backdrop } from "./backdrop";
 
-function BackdropStory({ zIndex = "modal" }: { zIndex?: "widgetBuilderDrawer" | "drawer" | "modal" }) {
+function BackdropStory({
+  zIndex = "modal",
+}: {
+  zIndex?: "widgetBuilderDrawer" | "drawer" | "modal";
+}) {
   const [visible, setVisible] = useState(true);
 
   return (
-    <div className="relative isolate min-h-80 overflow-hidden [transform:translateZ(0)]">
+    <div className="relative isolate min-h-80 [transform:translateZ(0)] overflow-hidden">
       <button
         className="relative z-[10001]"
         type="button"
@@ -18,12 +22,7 @@ function BackdropStory({ zIndex = "modal" }: { zIndex?: "widgetBuilderDrawer" | 
         {visible ? "Dismiss overlay" : "Show overlay"}
       </button>
       <AnimatePresence>
-        {visible ? (
-          <Backdrop
-            zIndex={zIndex}
-            onClick={() => setVisible(false)}
-          />
-        ) : null}
+        {visible ? <Backdrop zIndex={zIndex} onClick={() => setVisible(false)} /> : null}
       </AnimatePresence>
     </div>
   );

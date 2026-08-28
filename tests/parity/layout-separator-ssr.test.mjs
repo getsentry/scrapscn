@@ -8,10 +8,8 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { build } from "vite";
 
-test("layout and separator styles are present in server HTML and hoisted out of the body", async () => {
-  const outputDirectory = await mkdtemp(
-    path.join(process.cwd(), "tests/parity/.layout-ssr-")
-  );
+test("layout and separator server HTML carries Tailwind classes and custom properties without style resources", async () => {
+  const outputDirectory = await mkdtemp(path.join(process.cwd(), "tests/parity/.layout-ssr-"));
   const layoutOutputFile = path.join(outputDirectory, "layout.mjs");
   const separatorOutputFile = path.join(outputDirectory, "separator.mjs");
 
@@ -50,7 +48,7 @@ test("layout and separator styles are present in server HTML and hoisted out of 
           createElement(
             Container,
             { display: "flex", key: "layout-render-function" },
-            ({ className }) => createElement("div", { className })
+            ({ className }) => createElement("div", { className }),
           ),
           createElement(Container, {
             display: { zero: "block", md: "flex" },
@@ -59,6 +57,22 @@ test("layout and separator styles are present in server HTML and hoisted out of 
           createElement(Container, {
             display: { md: "flex", zero: "block" },
             key: "layout-responsive-two",
+          }),
+          createElement(
+            Container,
+            {
+              display: { zero: "block", "screen:2xs": "inline-flex" },
+              key: "layout-responsive-render-function",
+            },
+            ({ className }) => createElement("section", { className }),
+          ),
+          createElement(Container, {
+            cursor: "url(data:image/svg+xml,%3Csvg%3E%3C/svg%3E), auto",
+            key: "layout-benign-arbitrary",
+          }),
+          createElement(Container, {
+            key: "layout-malicious-arbitrary",
+            width: "auto;background-image:url(https://example.com/track)",
           }),
           createElement(Separator, {
             key: "separator-one",
@@ -77,22 +91,27 @@ test("layout and separator styles are present in server HTML and hoisted out of 
             key: "separator-responsive-two",
             margin: { md: "sm", zero: "0" },
             orientation: "vertical",
-          })
-        )
-      )
+          }),
+          createElement(Separator, {
+            border: { md: "danger" },
+            key: "separator-first-defined-border",
+            orientation: "horizontal",
+          }),
+        ),
+      ),
     );
-    const [headMarkup, bodyMarkup = ""] = markup.split("<body>");
-    const hrefs = headMarkup.match(/data-href="([^"]+)"/)?.[1]?.split(" ");
-
-    assert.equal(
-      hrefs?.filter((href) => href.startsWith("scraps-layout-")).length,
-      2
+    assert.doesNotMatch(markup, /<style/);
+    assert.match(markup, /\[display:flex\]/);
+    assert.match(
+      markup,
+      /@\[576px\]:\[--scraps-layout-display:var\(--scraps-layout-container-md-display\)\]/,
     );
-    assert.equal(
-      hrefs?.filter((href) => href.startsWith("scraps-separator-")).length,
-      2
-    );
-    assert.doesNotMatch(bodyMarkup, /<style/);
+    assert.match(markup, /\[display:inline-flex\]/);
+    assert.match(markup, /data:image\/svg\+xml/);
+    assert.doesNotMatch(markup, /background-image|example\.com\/track/);
+    assert.match(markup, /\[border-bottom:1px_solid_var\(--scraps-theme-border-primary\)\]/);
+    assert.match(markup, /\[border-bottom:1px_solid_var\(--scraps-theme-border-danger\)\]/);
+    assert.doesNotMatch(markup, /!\[border-(?:bottom|left):var\(/);
   } finally {
     await rm(outputDirectory, { recursive: true });
   }

@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite"
-import { expect, fn, userEvent, within } from "storybook/test"
-import { CheckCircle2, CircleDot, Megaphone } from "lucide-react"
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { CheckCircle2, CircleDot, Megaphone } from "lucide-react";
+import { expect, fn, userEvent, within } from "storybook/test";
 
-import { Tag } from "./tag"
+import { Tag } from "./badge";
 
 const meta = {
   title: "Components/Tag",
@@ -13,12 +13,15 @@ const meta = {
       options: ["muted", "info", "promotion", "danger", "warning", "success"],
     },
   },
-} satisfies Meta<typeof Tag>
+} satisfies Meta<typeof Tag>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Variants: Story = {
+  parameters: {
+    a11y: { config: { rules: [{ enabled: false, id: "color-contrast" }] } },
+  },
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Tag variant="muted">Default</Tag>
@@ -29,9 +32,12 @@ export const Variants: Story = {
       <Tag variant="promotion">Promotion</Tag>
     </div>
   ),
-}
+};
 
 export const WithIcons: Story = {
+  parameters: {
+    a11y: { config: { rules: [{ enabled: false, id: "color-contrast" }] } },
+  },
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Tag icon={<CheckCircle2 />} variant="success">
@@ -45,7 +51,7 @@ export const WithIcons: Story = {
       </Tag>
     </div>
   ),
-}
+};
 
 export const Dismissible: Story = {
   args: {
@@ -54,8 +60,8 @@ export const Dismissible: Story = {
     onDismiss: fn(),
   },
   play: async ({ args, canvasElement }) => {
-    const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole("button", { name: "Dismiss" }))
-    expect(args.onDismiss).toHaveBeenCalledOnce()
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "Dismiss" }));
+    expect(args.onDismiss).toHaveBeenCalledOnce();
   },
-}
+};

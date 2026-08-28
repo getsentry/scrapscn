@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useMemo,
-  useSyncExternalStore,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useMemo, useSyncExternalStore, type ReactNode } from "react";
 
 export const PRIMARY_HEADER_HEIGHT = 53;
 export const SUPERUSER_MARQUEE_HEIGHT = 24;
@@ -38,7 +32,7 @@ export function SlideOverPanelEnvironmentProvider({
 }: SlideOverPanelEnvironmentProviderProps) {
   const value = useMemo(
     () => ({ isMobile, showSuperuserWarning }),
-    [isMobile, showSuperuserWarning]
+    [isMobile, showSuperuserWarning],
   );
 
   return (
@@ -61,8 +55,7 @@ function subscribeToDesktopMediaQuery(onStoreChange: () => void) {
 }
 
 function getDesktopMediaQuerySnapshot() {
-  return typeof window !== "undefined" &&
-    typeof window.matchMedia === "function"
+  return typeof window !== "undefined" && typeof window.matchMedia === "function"
     ? window.matchMedia(desktopMediaQuery).matches
     : false;
 }
@@ -72,15 +65,11 @@ export function useTopOffset() {
   const matchesDesktop = useSyncExternalStore(
     subscribeToDesktopMediaQuery,
     getDesktopMediaQuerySnapshot,
-    () => false
+    () => false,
   );
   const isMobile = environment.isMobile ?? !matchesDesktop;
-  const superuserOffset = environment.showSuperuserWarning
-    ? SUPERUSER_MARQUEE_HEIGHT
-    : 0;
-  const headerHeight = isMobile
-    ? NAVIGATION_MOBILE_CONTENT_HEIGHT
-    : PRIMARY_HEADER_HEIGHT;
+  const superuserOffset = environment.showSuperuserWarning ? SUPERUSER_MARQUEE_HEIGHT : 0;
+  const headerHeight = isMobile ? NAVIGATION_MOBILE_CONTENT_HEIGHT : PRIMARY_HEADER_HEIGHT;
 
   return {
     barTop: `${superuserOffset}px`,

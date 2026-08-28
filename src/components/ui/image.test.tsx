@@ -1,6 +1,6 @@
 import { act, type ReactNode } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
 import { createRoot, type Root } from "react-dom/client";
+import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { Image } from "./image";
@@ -28,9 +28,7 @@ afterEach(async () => {
 describe("Image", () => {
   it("forwards ref", async () => {
     const ref = { current: null as HTMLImageElement | null };
-    await render(
-      <Image alt="Example Image" ref={ref} src="data:image/svg+xml,example" />
-    );
+    await render(<Image alt="Example Image" ref={ref} src="data:image/svg+xml,example" />);
     expect(ref.current?.tagName).toBe("IMG");
   });
 
@@ -48,7 +46,7 @@ describe("Image", () => {
           }
         }}
         src="data:image/svg+xml,example"
-      />
+      />,
     );
     const mounted = roots.pop();
     expect(mounted?.container).toBe(container);
@@ -57,12 +55,8 @@ describe("Image", () => {
   });
 
   it("renders the image with the src attribute", async () => {
-    const container = await render(
-      <Image alt="Example Image" src="data:image/svg+xml,example" />
-    );
-    expect(container.querySelector("img")?.getAttribute("src")).toBe(
-      "data:image/svg+xml,example"
-    );
+    const container = await render(<Image alt="Example Image" src="data:image/svg+xml,example" />);
+    expect(container.querySelector("img")?.getAttribute("src")).toBe("data:image/svg+xml,example");
   });
 
   it("calls onError callback when image fails to load", async () => {
@@ -73,7 +67,7 @@ describe("Image", () => {
         onError={(event) => {
           event.currentTarget.src = "data:image/svg+xml,fallback";
         }}
-      />
+      />,
     );
     const image = container.querySelector("img");
     image?.dispatchEvent(new Event("error", { bubbles: true }));
@@ -82,11 +76,7 @@ describe("Image", () => {
 
   it("renders with aspect-ratio prop", async () => {
     const container = await render(
-      <Image
-        alt="Example Image"
-        aspectRatio="16 / 9"
-        src="data:image/svg+xml,example"
-      />
+      <Image alt="Example Image" aspectRatio="16 / 9" src="data:image/svg+xml,example" />,
     );
     expect(container.querySelector("img")?.style.aspectRatio).toBe("16 / 9");
   });
@@ -98,7 +88,7 @@ describe("Image", () => {
         height={{ zero: "auto", md: "300px" }}
         src="data:image/svg+xml,example"
         width={{ zero: "100%", md: "400px" }}
-      />
+      />,
     );
     expect(container.querySelector("img")).not.toBeNull();
     const markup = renderToStaticMarkup(
@@ -107,11 +97,11 @@ describe("Image", () => {
         height={{ zero: "auto", md: "300px" }}
         src="data:image/svg+xml,example"
         width={{ zero: "100%", md: "400px" }}
-      />
+      />,
     );
-    expect(markup).toMatch(/width: 100%/);
-    expect(markup).toMatch(/width: 400px/);
-    expect(markup).toMatch(/height: 300px/);
+    expect(markup).toMatch(/--scraps-layout-base-width:100%/);
+    expect(markup).toMatch(/--scraps-layout-container-md-width:400px/);
+    expect(markup).toMatch(/--scraps-layout-container-md-height:300px/);
   });
 
   it("uses native defaults and lets consumer classes and styles win", async () => {
@@ -123,7 +113,7 @@ describe("Image", () => {
         objectPosition="top"
         src="data:image/svg+xml,example"
         style={{ objectFit: "contain" }}
-      />
+      />,
     );
     const image = container.querySelector("img");
     expect(image?.getAttribute("loading")).toBe("lazy");
@@ -132,10 +122,10 @@ describe("Image", () => {
     expect(image?.style.objectPosition).toBe("top");
     expect(image?.hasAttribute("objectFit")).toBe(false);
     const markup = renderToStaticMarkup(
-      <Image alt="Example Image" src="data:image/svg+xml,example" />
+      <Image alt="Example Image" src="data:image/svg+xml,example" />,
     );
-    expect(markup).toMatch(/width: 100%/);
-    expect(markup).toMatch(/height: auto/);
+    expect(markup).toMatch(/--scraps-layout-base-width:100%/);
+    expect(markup).toMatch(/--scraps-layout-base-height:auto/);
   });
 
   it("renders responsive radius and produces stable server markup", () => {
@@ -144,10 +134,10 @@ describe("Image", () => {
         alt="Example Image"
         radius={{ zero: "sm", md: "full" }}
         src="data:image/svg+xml,example"
-      />
+      />,
     );
-    expect(markup).toMatch(/border-radius: 5px/);
-    expect(markup).toMatch(/border-radius: 999px/);
+    expect(markup).toMatch(/--scraps-layout-base-border-radius:5px/);
+    expect(markup).toMatch(/--scraps-layout-container-md-border-radius:999px/);
     expect(markup).toMatch(/loading="lazy"/);
   });
 });

@@ -1,28 +1,18 @@
 "use client";
 
-import type {
-  CSSProperties,
-  ImgHTMLAttributes,
-  Ref,
-} from "react";
+import type { CSSProperties, ImgHTMLAttributes, Ref } from "react";
 
-import { Container, type Responsive } from "./layout";
-import type { LayoutRadiusSize } from "./layout-style-engine";
+import type { Responsive } from "./layout";
+import { LAYOUT_THEME, resolveLayoutRadius, type LayoutRadiusSize } from "./layout-style-engine";
+import { createLayoutTailwindStyle } from "./layout-tailwind";
 
-export interface ImageProps
-  extends Omit<ImgHTMLAttributes<HTMLImageElement>, "height" | "width"> {
+export interface ImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "height" | "width"> {
   alt: string;
   aspectRatio?: CSSProperties["aspectRatio"];
   height?: Responsive<CSSProperties["height"]>;
   loading?: "eager" | "lazy";
   objectFit?: "contain" | "cover";
-  objectPosition?:
-    | "center"
-    | "top"
-    | "bottom"
-    | "left"
-    | "right"
-    | (string & {});
+  objectPosition?: "center" | "top" | "bottom" | "left" | "right" | (string & {});
   radius?: Responsive<LayoutRadiusSize>;
   ref?: Ref<HTMLImageElement>;
   src: string;
@@ -49,23 +39,27 @@ export function Image({
     objectPosition,
     ...style,
   };
+  const { className: layoutClassName, style: layoutStyle } = createLayoutTailwindStyle(
+    [
+      { property: "width", value: width ?? "100%" },
+      { property: "height", value: height ?? "auto" },
+      {
+        property: "border-radius",
+        value: radius,
+        resolve: resolveLayoutRadius,
+      },
+    ],
+    LAYOUT_THEME,
+  );
 
   return (
-    <Container
-      height={height ?? "auto"}
-      radius={radius}
-      width={width ?? "100%"}
-    >
-      {({ className: layoutClassName }) => (
-        // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-        <img
-          {...imageProps}
-          className={[layoutClassName, className].filter(Boolean).join(" ")}
-          loading={loading}
-          ref={ref}
-          style={imageStyle}
-        />
-      )}
-    </Container>
+    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+    <img
+      {...imageProps}
+      className={[layoutClassName, className].filter(Boolean).join(" ")}
+      loading={loading}
+      ref={ref}
+      style={{ ...layoutStyle, ...imageStyle }}
+    />
   );
 }

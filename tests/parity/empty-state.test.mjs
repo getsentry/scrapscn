@@ -28,9 +28,15 @@ test("records the local regular Scraps EmptyState delivery without overclaiming"
     "static/app/utils/theme/theme.tsx",
     "static/app/utils/theme/types.tsx",
   ]);
-  assert.deepEqual(emptyState.canonical.publicExports, { runtime: ["EmptyState"], types: [] });
+  assert.deepEqual(emptyState.canonical.publicExports, {
+    runtime: ["EmptyState"],
+    types: [],
+  });
   assert.deepEqual(emptyState.local.implementationPaths, ["src/components/ui/empty-state.tsx"]);
-  assert.deepEqual(emptyState.local.implementedExports, { runtime: ["EmptyState"], types: [] });
+  assert.deepEqual(emptyState.local.implementedExports, {
+    runtime: ["EmptyState"],
+    types: [],
+  });
   assert.deepEqual(emptyState.local.registryItems, ["empty-state"]);
   assert.deepEqual(emptyState.local.stories, ["src/components/ui/empty-state.stories.tsx"]);
   assert.deepEqual(emptyState.local.tests, [
@@ -44,12 +50,10 @@ test("records the local regular Scraps EmptyState delivery without overclaiming"
   assert.deepEqual(emptyState.local.figmaNodes, [
     "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=13363-6895",
   ]);
-  assert.deepEqual(emptyState.local.codeConnect, []);
-  assert.deepEqual(emptyState.completion, {
-    state: "partial",
-    complete: false,
-    note: "The local EmptyState implementation, workbench, focused tests, and intended registry dependency URLs are present. Figma, Code Connect, and installation from the protected shared registry have not been verified.",
-  });
+  assert.deepEqual(emptyState.local.codeConnect, ["src/components/ui/empty-state.figma.ts"]);
+  assert.equal(emptyState.completion.state, "complete");
+  assert.equal(emptyState.completion.complete, true);
+  assert.match(emptyState.completion.note, /parserless Code Connect/);
 });
 
 test("publishes EmptyState through its Layout and Text seams", async () => {
@@ -59,14 +63,25 @@ test("publishes EmptyState through its Layout and Text seams", async () => {
     "https://scrapscn.sentry.dev/r/layout.json",
     "https://scrapscn.sentry.dev/r/text.json",
   ]);
-  assert.deepEqual(item.files, [{ path: "src/components/ui/empty-state.tsx", type: "registry:ui" }]);
+  assert.deepEqual(item.files, [
+    { path: "src/components/ui/empty-state.tsx", type: "registry:ui" },
+  ]);
 });
 
 test("keeps the canonical EmptyState source contract", async () => {
   const source = await readFile("src/components/ui/empty-state.tsx", "utf8");
   for (const fragment of [
-    'containerType="inline-size"', 'width="100%"', 'flexGrow={1}', 'minWidth={0}',
-    'direction={{ zero: "column", [switchOn]: "row" }}', 'gap={{ zero: "xl", [switchOn]: "2xl" }}',
-    'maxWidth="48ch"', 'textWrap="balance"', 'wrap="wrap"', 'data-test-id="empty-state"', '...props',
-  ]) assert.match(source, new RegExp(fragment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    'containerType="inline-size"',
+    'width="100%"',
+    "flexGrow={1}",
+    "minWidth={0}",
+    'direction={{ zero: "column", [switchOn]: "row" }}',
+    'gap={{ zero: "xl", [switchOn]: "2xl" }}',
+    'maxWidth="48ch"',
+    'textWrap="balance"',
+    'wrap="wrap"',
+    'data-test-id="empty-state"',
+    "...props",
+  ])
+    assert.match(source, new RegExp(fragment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 });

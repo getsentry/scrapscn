@@ -58,14 +58,8 @@ function serializeHotkeyWorkbench(state: HotkeyWorkbenchState) {
 const selectClassName =
   "h-11 rounded-md border border-input bg-background px-3 text-base sm:h-10 sm:text-sm";
 
-export function HotkeyWorkbench({
-  children,
-  onSearchChange,
-  sourceSearch,
-}: WorkbenchProps) {
-  const [state, setState] = useState(() =>
-    parseHotkeyWorkbench(new URLSearchParams(sourceSearch))
-  );
+export function HotkeyWorkbench({ children, onSearchChange, sourceSearch }: WorkbenchProps) {
+  const [state, setState] = useState(() => parseHotkeyWorkbench(new URLSearchParams(sourceSearch)));
   const [matches, setMatches] = useState(0);
   const [lastPrevented, setLastPrevented] = useState<boolean | null>(null);
 
@@ -101,7 +95,11 @@ export function HotkeyWorkbench({
           value={state.value}
           onChange={(event) => update({ ...state, value: parseValue(event.target.value) })}
         >
-          {values.map((value) => <option key={value} value={value}>{value}</option>)}
+          {values.map((value) => (
+            <option key={value} value={value}>
+              {value}
+            </option>
+          ))}
         </select>
       </label>
       <label className="grid gap-1 text-sm">
@@ -116,11 +114,13 @@ export function HotkeyWorkbench({
           <option value="debossed">Debossed</option>
         </select>
       </label>
-      {([
-        ["Hotkey enabled", "enabled"],
-        ["Include text inputs", "includeInputs"],
-        ["Skip prevent default", "skipPreventDefault"],
-      ] as const).map(([label, key]) => (
+      {(
+        [
+          ["Hotkey enabled", "enabled"],
+          ["Include text inputs", "includeInputs"],
+          ["Skip prevent default", "skipPreventDefault"],
+        ] as const
+      ).map(([label, key]) => (
         <label className="flex min-h-11 items-center gap-2 text-sm" key={key}>
           <input
             aria-label={label}
@@ -139,7 +139,9 @@ export function HotkeyWorkbench({
     <div className="grid min-h-52 gap-5 rounded-md border border-border bg-background p-6">
       <div className="flex flex-wrap items-center gap-3">
         <span>Registered shortcut</span>
-        <span data-testid="hotkey-display"><Hotkey value={state.value} variant={state.variant} /></span>
+        <span data-testid="hotkey-display">
+          <Hotkey value={state.value} variant={state.variant} />
+        </span>
         <span>Standalone</span>
         <Kbd variant={state.variant}>Esc</Kbd>
       </div>

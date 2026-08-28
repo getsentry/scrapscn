@@ -1,110 +1,76 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./select"
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+
+import { Select, type SelectValue } from "./select";
+
+const options: SelectValue<string>[] = [
+  { value: "1h", label: "Last hour" },
+  { value: "24h", label: "Last 24 hours" },
+  { value: "7d", label: "Last 7 days" },
+  { value: "14d", label: "Last 14 days" },
+];
 
 const meta = {
   title: "Components/Select",
   component: Select,
-} satisfies Meta<typeof Select>
+} satisfies Meta<typeof Select>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <Select defaultValue="14d">
-      <SelectTrigger aria-label="Time range">
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="1h">Last hour</SelectItem>
-        <SelectItem value="24h">Last 24 hours</SelectItem>
-        <SelectItem value="7d">Last 7 days</SelectItem>
-        <SelectItem value="14d">Last 14 days</SelectItem>
-        <SelectItem value="30d">Last 30 days</SelectItem>
-        <SelectItem value="90d">Last 90 days</SelectItem>
-      </SelectContent>
-    </Select>
-  ),
-}
+  render: () => <Select aria-label="Time range" defaultValue="14d" options={options} />,
+};
 
-export const Small: Story = {
+export const Multiple: Story = {
   render: () => (
-    <Select defaultValue="all">
-      <SelectTrigger size="sm" aria-label="Project">
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="all">All projects</SelectItem>
-        <SelectItem value="frontend">frontend</SelectItem>
-        <SelectItem value="api">api-service</SelectItem>
-      </SelectContent>
-    </Select>
+    <Select
+      aria-label="Time ranges"
+      clearable
+      defaultValue={["1h", "24h"]}
+      multiple
+      options={options}
+    />
   ),
-}
+};
 
-export const MultipleSelects: Story = {
-  name: "Sentry-style filter bar",
+export const Searchable: Story = {
   render: () => (
-    <div className="flex items-center gap-2">
-      <Select defaultValue="all">
-        <SelectTrigger aria-label="Projects">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Projects</SelectItem>
-          <SelectItem value="frontend">frontend</SelectItem>
-          <SelectItem value="api">api-service</SelectItem>
-        </SelectContent>
-      </Select>
-      <Select defaultValue="all">
-        <SelectTrigger aria-label="Environments">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Envs</SelectItem>
-          <SelectItem value="prod">production</SelectItem>
-          <SelectItem value="staging">staging</SelectItem>
-        </SelectContent>
-      </Select>
-      <Select defaultValue="14d">
-        <SelectTrigger aria-label="Time range">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="1h">Last hour</SelectItem>
-          <SelectItem value="24h">Last 24 hours</SelectItem>
-          <SelectItem value="7d">Last 7 days</SelectItem>
-          <SelectItem value="14d">14D</SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
+    <Select aria-label="Find a range" options={options} placeholder="Find a range" searchable />
   ),
-}
+};
 
-// Args-driven story so the Controls panel (size, disabled) drives a live instance.
-export const Playground: Story = {
-  args: { size: "default", disabled: false },
-  argTypes: {
-    size: { control: "select", options: ["sm", "default"] },
-    disabled: { control: "boolean" },
-  },
-  render: ({ size, disabled }) => (
-    <Select defaultValue="14d" disabled={disabled}>
-      <SelectTrigger size={size as "sm" | "default"} aria-label="Time range">
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="1h">Last hour</SelectItem>
-        <SelectItem value="24h">Last 24 hours</SelectItem>
-        <SelectItem value="7d">Last 7 days</SelectItem>
-        <SelectItem value="14d">Last 14 days</SelectItem>
-      </SelectContent>
-    </Select>
+export const Creatable: Story = {
+  render: () => <Select aria-label="Create range" creatable options={options} searchable />,
+};
+
+export const Grouped: Story = {
+  render: () => (
+    <Select
+      aria-label="Grouped ranges"
+      defaultMenuIsOpen
+      options={[
+        { label: "Recent", options: options.slice(0, 2) },
+        { label: "Historic", options: options.slice(2) },
+      ]}
+      searchable
+    />
   ),
-}
+};
+
+export const AsyncCreatable: Story = {
+  render: () => (
+    <Select
+      async
+      aria-label="Async range"
+      cacheOptions
+      creatable
+      defaultOptions={options}
+      loadOptions={async (query) =>
+        options.filter((option) =>
+          option.label?.toString().toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+        )
+      }
+      searchable
+    />
+  ),
+};

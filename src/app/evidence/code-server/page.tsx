@@ -1,22 +1,8 @@
-import { CodeBlock, InlineCode, inlineCodeStyles } from "@/components/ui/code";
-
-const serializedInlineCode = inlineCodeStyles({
-  font: { family: { mono: "monospace" } },
-  radius: { "2xs": "3px" },
-  tokens: {
-    background: {
-      transparent: {
-        neutral: { muted: "transparent" },
-        promotion: { muted: "transparent" },
-      },
-    },
-    content: { primary: "black", promotion: "purple" },
-  },
-});
+import { CodeBlock, InlineCode } from "@/components/ui/code";
 
 export default function CodeServerEvidence() {
   return (
-    <main data-inline-code-style={serializedInlineCode.name}>
+    <main>
       <CodeBlock language="typescript">{"const server = true;"}</CodeBlock>
       <InlineCode>server-safe</InlineCode>
     </main>

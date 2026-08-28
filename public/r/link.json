@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "link",
+  "title": "Link",
+  "description": "Regular Scraps router Link, ExternalLink, and Link behavior context.",
+  "dependencies": [
+    "@sentry/react@10.69.0",
+    "@types/history@3.2.5",
+    "react-router-dom@6.30.6"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/link-behavior-context.tsx",
+      "content": "\"use client\";\n\nimport * as Sentry from \"@sentry/react\";\nimport { createContext, useContext, type Context, type FunctionComponent } from \"react\";\nimport { Link as RouterLink } from \"react-router-dom\";\n\nimport type { LinkProps } from \"./link\";\n\ntype LinkBehavior<T extends LinkProps> = {\n  behavior: (props: T) => T;\n  component: FunctionComponent<T>;\n};\n\nconst LinkBehaviorContext = createContext<LinkBehavior<LinkProps> | null>(null);\n\nconst defaultLinkBehavior = <T extends LinkProps>() =>\n  ({\n    behavior: (props: T) => props,\n    component: RouterLink,\n  }) satisfies LinkBehavior<T>;\n\nexport const LinkBehaviorContextProvider = LinkBehaviorContext.Provider;\n\nexport function useLinkBehavior<T extends LinkProps>(props: T) {\n  const linkBehavior = useContext(LinkBehaviorContext as Context<LinkBehavior<T> | null>);\n\n  if (process.env.NODE_ENV === \"production\" && !linkBehavior) {\n    Sentry.logger.warn(\"LinkBehaviorContext not found\");\n  }\n\n  const { component, behavior } = linkBehavior ?? defaultLinkBehavior<T>();\n  return { Component: component, behavior: () => behavior(props) };\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/link.tsx",
+      "content": "\"use client\";\n\nimport type { LocationDescriptor } from \"history\";\nimport type { AnchorHTMLAttributes, DetailedHTMLProps, HTMLAttributes, RefAttributes } from \"react\";\nimport type { LinkProps as ReactRouterLinkProps } from \"react-router-dom\";\n\nimport { cn } from \"../../lib/utils\";\nimport { useLinkBehavior } from \"./link-behavior-context\";\nimport { useClickTracking, type AnalyticsProps } from \"./tracking-context\";\n\nexport { LinkBehaviorContextProvider } from \"./link-behavior-context\";\n\nexport interface LinkProps\n  extends\n    RefAttributes<HTMLAnchorElement>,\n    AnalyticsProps,\n    Pick<ReactRouterLinkProps, \"replace\" | \"preventScrollReset\" | \"state\" | \"reloadDocument\">,\n    Omit<\n      DetailedHTMLProps<HTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>,\n      \"as\" | \"css\" | \"href\" | \"target\"\n    > {\n  [key: `data-${string}`]: string | undefined;\n  to: LocationDescriptor;\n  disabled?: boolean;\n}\n\nconst baseClassName =\n  \"rounded-[2px] focus-visible:no-underline focus-visible:outline-none focus-visible:shadow-[0_0_0_0_var(--background),0_0_0_2px_var(--ring)]\";\nconst disabledClassName =\n  \"pointer-events-none text-[var(--scraps-link-disabled)] hover:text-[var(--scraps-link-disabled)]\";\n\nfunction linkClassName(className: string | undefined, disabled: boolean | undefined) {\n  return cn(baseClassName, disabled && disabledClassName, className);\n}\n\ntype AnchorProps = AnchorHTMLAttributes<HTMLAnchorElement> &\n  RefAttributes<HTMLAnchorElement> & {\n    disabled?: LinkProps[\"disabled\"];\n  };\n\nfunction Anchor({ className, disabled, ...props }: AnchorProps) {\n  return <a className={linkClassName(className, disabled)} {...props} />;\n}\n\ntype LinkPropsWithButtonBehavior = LinkProps & {\n  busy?: boolean;\n  variant?: string;\n};\n\nfunction removeNonRouterProps(props: LinkPropsWithButtonBehavior) {\n  const linkProps = { ...props };\n  Reflect.deleteProperty(linkProps, \"analyticsEventKey\");\n  Reflect.deleteProperty(linkProps, \"analyticsEventName\");\n  Reflect.deleteProperty(linkProps, \"analyticsParams\");\n  Reflect.deleteProperty(linkProps, \"busy\");\n  Reflect.deleteProperty(linkProps, \"variant\");\n  return linkProps;\n}\n\nfunction removeRouterProps(props: ReturnType<typeof removeNonRouterProps>) {\n  Reflect.deleteProperty(props, \"preventScrollReset\");\n  Reflect.deleteProperty(props, \"reloadDocument\");\n  Reflect.deleteProperty(props, \"replace\");\n  Reflect.deleteProperty(props, \"state\");\n  Reflect.deleteProperty(props, \"to\");\n  return props;\n}\n\nfunction LinkBase(props: LinkPropsWithButtonBehavior) {\n  const { Component, behavior } = useLinkBehavior(props);\n  const propsWithBehavior = behavior();\n  const { handleClick } = useClickTracking(propsWithBehavior, \"link\");\n\n  if (props.disabled) {\n    const restProps = removeRouterProps(removeNonRouterProps(props));\n    return <Anchor {...restProps} />;\n  }\n\n  const linkProps = removeNonRouterProps(propsWithBehavior);\n  return <Component {...linkProps} onClick={handleClick} />;\n}\n\nexport function Link({ className, ...props }: LinkProps) {\n  return <LinkBase {...props} className={linkClassName(className, props.disabled)} />;\n}\n\ninterface ExternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {\n  disabled?: LinkProps[\"disabled\"];\n  openInNewTab?: boolean;\n}\n\nexport function ExternalLink({ openInNewTab = true, ...props }: ExternalLinkProps) {\n  if (openInNewTab) {\n    return <Anchor {...props} target=\"_blank\" rel=\"noreferrer noopener\" />;\n  }\n\n  return <Anchor {...props} href={props.href} />;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/ui/tracking-context.tsx",
+      "content": "\"use client\";\n\nimport { createContext, useContext, type MouseEvent, type ReactNode } from \"react\";\n\nexport interface AnalyticsProps {\n  analyticsEventKey?: string;\n  analyticsEventName?: string;\n  analyticsParams?: Record<string, unknown>;\n}\n\ntype ClickTrackingType = \"button\" | \"link\";\n\nexport type TrackingProps = AnalyticsProps &\n  Record<string, unknown> & {\n    clickType: ClickTrackingType;\n  };\n\ntype TrackableElement = HTMLAnchorElement | HTMLButtonElement;\n\ntype TrackableProps<Element extends TrackableElement> = AnalyticsProps & {\n  \"aria-label\"?: string;\n  busy?: boolean;\n  children?: ReactNode;\n  disabled?: boolean;\n  onClick?: (event: MouseEvent<Element>) => void;\n  variant?: string;\n};\n\nconst TrackingContext = createContext<() => (props: TrackingProps) => void>(() => () => {});\n\nexport const TrackingContextProvider = TrackingContext.Provider;\n\nexport function useClickTracking<Element extends TrackableElement>(\n  props: TrackableProps<Element>,\n  clickType: ClickTrackingType,\n) {\n  const clickTracking = useContext(TrackingContext)();\n  const accessibleLabel =\n    props[\"aria-label\"] ?? (typeof props.children === \"string\" ? props.children : undefined);\n\n  function handleClick(event: MouseEvent<Element>) {\n    if (props.disabled || props.busy) {\n      event.preventDefault();\n      event.stopPropagation();\n      return;\n    }\n\n    clickTracking({\n      \"aria-label\": accessibleLabel || \"\",\n      analyticsEventKey: props.analyticsEventKey,\n      analyticsEventName: props.analyticsEventName,\n      analyticsParams: {\n        variant: props.variant,\n        ...props.analyticsParams,\n      },\n      clickType,\n    });\n    props.onClick?.(event);\n  }\n\n  return { handleClick };\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "cssVars": {
+    "light": {
+      "scraps-link-disabled": "#878490"
+    },
+    "dark": {
+      "scraps-link-disabled": "#958e9f"
+    }
+  },
+  "type": "registry:ui"
+}

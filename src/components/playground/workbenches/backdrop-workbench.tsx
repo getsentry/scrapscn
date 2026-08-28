@@ -39,13 +39,9 @@ function serializeBackdropWorkbench(state: BackdropWorkbenchState) {
 const selectClassName =
   "h-11 rounded-md border border-input bg-background px-3 text-base sm:h-10 sm:text-sm";
 
-export function BackdropWorkbench({
-  children,
-  onSearchChange,
-  sourceSearch,
-}: WorkbenchProps) {
+export function BackdropWorkbench({ children, onSearchChange, sourceSearch }: WorkbenchProps) {
   const [state, setState] = useState(() =>
-    parseBackdropWorkbench(new URLSearchParams(sourceSearch))
+    parseBackdropWorkbench(new URLSearchParams(sourceSearch)),
   );
   const [dismissals, setDismissals] = useState(0);
 
@@ -74,7 +70,9 @@ export function BackdropWorkbench({
           onChange={(event) => update({ ...state, layer: parseLayer(event.target.value) })}
         >
           {layers.map((layer) => (
-            <option key={layer} value={layer}>{layer}</option>
+            <option key={layer} value={layer}>
+              {layer}
+            </option>
           ))}
         </select>
       </label>
@@ -93,17 +91,13 @@ export function BackdropWorkbench({
 
   const preview = (
     <div
-      className="relative isolate grid min-h-72 place-items-center overflow-hidden rounded-md border border-border [transform:translateZ(0)]"
+      className="relative isolate grid min-h-72 [transform:translateZ(0)] place-items-center overflow-hidden rounded-md border border-border"
       data-testid="backdrop-preview-frame"
     >
       <button
         className="relative z-[10001] rounded-md bg-background px-4 py-3 text-sm shadow-sm"
         type="button"
-        onClick={() =>
-          state.visible
-            ? dismissBackdrop()
-            : update({ ...state, visible: true })
-        }
+        onClick={() => (state.visible ? dismissBackdrop() : update({ ...state, visible: true }))}
       >
         {state.visible ? "Dismiss backdrop" : "Show backdrop"}
       </button>

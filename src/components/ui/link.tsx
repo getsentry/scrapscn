@@ -1,12 +1,7 @@
 "use client";
 
 import type { LocationDescriptor } from "history";
-import type {
-  AnchorHTMLAttributes,
-  DetailedHTMLProps,
-  HTMLAttributes,
-  RefAttributes,
-} from "react";
+import type { AnchorHTMLAttributes, DetailedHTMLProps, HTMLAttributes, RefAttributes } from "react";
 import type { LinkProps as ReactRouterLinkProps } from "react-router-dom";
 
 import { cn } from "../../lib/utils";
@@ -16,12 +11,10 @@ import { useClickTracking, type AnalyticsProps } from "./tracking-context";
 export { LinkBehaviorContextProvider } from "./link-behavior-context";
 
 export interface LinkProps
-  extends RefAttributes<HTMLAnchorElement>,
+  extends
+    RefAttributes<HTMLAnchorElement>,
     AnalyticsProps,
-    Pick<
-      ReactRouterLinkProps,
-      "replace" | "preventScrollReset" | "state" | "reloadDocument"
-    >,
+    Pick<ReactRouterLinkProps, "replace" | "preventScrollReset" | "state" | "reloadDocument">,
     Omit<
       DetailedHTMLProps<HTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>,
       "as" | "css" | "href" | "target"
@@ -88,12 +81,7 @@ function LinkBase(props: LinkPropsWithButtonBehavior) {
 }
 
 export function Link({ className, ...props }: LinkProps) {
-  return (
-    <LinkBase
-      {...props}
-      className={linkClassName(className, props.disabled)}
-    />
-  );
+  return <LinkBase {...props} className={linkClassName(className, props.disabled)} />;
 }
 
 interface ExternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {

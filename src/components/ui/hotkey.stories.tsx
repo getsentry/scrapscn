@@ -1,5 +1,5 @@
-import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { useState } from "react";
 import { expect, userEvent, within } from "storybook/test";
 
 import { Hotkey, Kbd, useHotkeys } from "./hotkey";
@@ -27,9 +27,12 @@ export const DisplayAndVariants: Story = {
   render: () => (
     <div className="grid gap-6 bg-background p-6 text-foreground">
       <div className="flex flex-wrap items-center gap-4">
-        <span>Save</span><Hotkey value="mod+s" />
-        <span>Navigate</span><Hotkey value="shift+right" />
-        <span>Delete</span><Hotkey value={["mod+backspace", "delete"]} />
+        <span>Save</span>
+        <Hotkey value="mod+s" />
+        <span>Navigate</span>
+        <Hotkey value="shift+right" />
+        <span>Delete</span>
+        <Hotkey value={["mod+backspace", "delete"]} />
       </div>
       <div className="flex flex-wrap items-center gap-4 rounded-md bg-card p-4">
         <Hotkey value="mod+k" variant="debossed" />
@@ -45,7 +48,9 @@ export const DisplayAndVariants: Story = {
       ...canvas.queryAllByLabelText("⌘"),
     ];
     await expect(platformModifiers.length).toBeGreaterThan(0);
-    await expect(canvas.getByText("Esc").tagName).toBe("KBD");
+    const escapeKey = canvas.getByText("Esc");
+    await expect(escapeKey.tagName).toBe("KBD");
+    await expect(getComputedStyle(escapeKey).fontFamily).toContain("Roboto Mono");
     await expect(canvasElement.querySelectorAll("kbd").length).toBeGreaterThan(10);
   },
 };
@@ -66,10 +71,31 @@ function ShortcutDemo() {
 
   return (
     <div className="grid max-w-md gap-4 p-6">
-      <div>Press <Hotkey value="mod+k" /></div>
-      <label className="grid gap-1">Text input<input aria-label="Hotkey text input" className="border p-2" /></label>
-      <label><input aria-label="Include inputs" checked={includeInputs} type="checkbox" onChange={(event) => setIncludeInputs(event.target.checked)} /> Include inputs</label>
-      <label><input aria-label="Skip prevent default" checked={skipPreventDefault} type="checkbox" onChange={(event) => setSkipPreventDefault(event.target.checked)} /> Skip prevent default</label>
+      <div>
+        Press <Hotkey value="mod+k" />
+      </div>
+      <label className="grid gap-1">
+        Text input
+        <input aria-label="Hotkey text input" className="border p-2" />
+      </label>
+      <label>
+        <input
+          aria-label="Include inputs"
+          checked={includeInputs}
+          type="checkbox"
+          onChange={(event) => setIncludeInputs(event.target.checked)}
+        />{" "}
+        Include inputs
+      </label>
+      <label>
+        <input
+          aria-label="Skip prevent default"
+          checked={skipPreventDefault}
+          type="checkbox"
+          onChange={(event) => setSkipPreventDefault(event.target.checked)}
+        />{" "}
+        Skip prevent default
+      </label>
       <output data-testid="hotkey-count">Matches: {count}</output>
     </div>
   );

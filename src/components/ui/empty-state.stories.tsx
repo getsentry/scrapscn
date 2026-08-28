@@ -19,12 +19,18 @@ export const Complete: Story = {
   args: {
     action: <Button>Keep searching</Button>,
     description: "Try widening your search or adjusting your filters.",
-    illustration: <div aria-label="Empty box" role="img">□</div>,
+    illustration: (
+      <div aria-label="Empty box" role="img">
+        □
+      </div>
+    ),
     title: "No issues match your search.",
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("heading", { name: "No issues match your search." })).toBeInTheDocument();
+    await expect(
+      canvas.getByRole("heading", { name: "No issues match your search." }),
+    ).toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: "Keep searching" })).toBeInTheDocument();
   },
 };

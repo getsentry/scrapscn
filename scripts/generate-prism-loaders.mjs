@@ -1,41 +1,35 @@
-import {readFile, writeFile} from 'node:fs/promises';
-import {createRequire} from 'node:module';
+import { readFile, writeFile } from "node:fs/promises";
+import { createRequire } from "node:module";
 
-import prismComponents from 'prismjs/components.js';
+import prismComponents from "prismjs/components.js";
 
 const outputPath = new URL(
-  process.env.PRISM_LOADERS_OUTPUT ??
-    '../src/components/ui/prism-language-loaders.ts',
-  import.meta.url
+  process.env.PRISM_LOADERS_OUTPUT ?? "../src/components/ui/prism-language-loaders.ts",
+  import.meta.url,
 );
 const reloaderOutputPath = new URL(
-  process.env.PRISM_RELOADERS_OUTPUT ??
-    '../src/components/ui/prism-language-reloaders.js',
-  import.meta.url
+  process.env.PRISM_RELOADERS_OUTPUT ?? "../src/components/ui/prism-language-reloaders.js",
+  import.meta.url,
 );
 const reloaderTypesOutputPath = new URL(
-  process.env.PRISM_RELOADERS_TYPES_OUTPUT ??
-    '../src/components/ui/prism-language-reloaders.d.ts',
-  import.meta.url
+  process.env.PRISM_RELOADERS_TYPES_OUTPUT ?? "../src/components/ui/prism-language-reloaders.d.ts",
+  import.meta.url,
 );
-const prismLicensePath = new URL(
-  '../node_modules/prismjs/LICENSE',
-  import.meta.url
-);
+const prismLicensePath = new URL("../node_modules/prismjs/LICENSE", import.meta.url);
 const languages = Object.entries(prismComponents.languages)
-  .filter(([language]) => language !== 'meta')
+  .filter(([language]) => language !== "meta")
   .sort(([a], [b]) => a.localeCompare(b));
 
 const require = createRequire(import.meta.url);
 
 function collectPreloadedLanguageHookIndexes() {
-  const Prism = require('prismjs/components/prism-core.js');
+  const Prism = require("prismjs/components/prism-core.js");
   const previousPrism = globalThis.Prism;
   const hookIndexes = {};
   globalThis.Prism = Prism;
 
   try {
-    for (const language of ['markup', 'css', 'clike', 'javascript']) {
+    for (const language of ["markup", "css", "clike", "javascript"]) {
       const languageHookIndexes = {};
       const addHook = Prism.hooks.add;
       Prism.hooks.add = function addOwnedHook(name, callback) {
@@ -75,7 +69,7 @@ function getDependencies(language, stack = []) {
   const cached = dependencyCache.get(language);
   if (cached) return cached;
   if (stack.includes(language)) {
-    throw new Error(`Circular Prism dependency: ${[...stack, language].join(' -> ')}`);
+    throw new Error(`Circular Prism dependency: ${[...stack, language].join(" -> ")}`);
   }
 
   const metadata = metadataByLanguage.get(language);
@@ -85,10 +79,7 @@ function getDependencies(language, stack = []) {
     ...toArray(metadata?.modify),
   ]);
   for (const dependency of [...dependencies]) {
-    for (const transitiveDependency of getDependencies(dependency, [
-      ...stack,
-      language,
-    ])) {
+    for (const transitiveDependency of getDependencies(dependency, [...stack, language])) {
       dependencies.add(transitiveDependency);
     }
   }
@@ -97,71 +88,63 @@ function getDependencies(language, stack = []) {
 }
 
 const modifiers = languages.flatMap(([language, metadata]) =>
-  toArray(metadata.modify).length > 0
-    ? [[language, toArray(metadata.modify)]]
-    : []
+  toArray(metadata.modify).length > 0 ? [[language, toArray(metadata.modify)]] : [],
 );
 
 const loaders = languages
   .map(
     ([language]) =>
       `  ${JSON.stringify(language)}: () => import(${JSON.stringify(
-        `prismjs/components/prism-${language}.min.js`
-      )}),`
+        `prismjs/components/prism-${language}.min.js`,
+      )}),`,
   )
-  .join('\n');
+  .join("\n");
 const dependencies = languages
   .flatMap(([language, metadata]) => {
     const required = toArray(metadata.require);
     if (required.length === 0) return [];
-    return [
-      `  ${JSON.stringify(language)}: ${JSON.stringify(required)},`,
-    ];
+    return [`  ${JSON.stringify(language)}: ${JSON.stringify(required)},`];
   })
-  .join('\n');
+  .join("\n");
 const optionalDependencies = languages
   .flatMap(([language, metadata]) => {
     const optional = toArray(metadata.optional);
     if (optional.length === 0) return [];
     return [`  ${JSON.stringify(language)}: ${JSON.stringify(optional)},`];
   })
-  .join('\n');
+  .join("\n");
 const modifications = languages
   .flatMap(([language, metadata]) => {
     const modified = toArray(metadata.modify);
     if (modified.length === 0) return [];
     return [`  ${JSON.stringify(language)}: ${JSON.stringify(modified)},`];
   })
-  .join('\n');
+  .join("\n");
 const reloadableLanguages = languages.filter(([language]) => {
   const dependencyTree = [language, ...getDependencies(language)];
   const hasOptionalDependency = dependencyTree.some(
-    dependency => toArray(metadataByLanguage.get(dependency)?.optional).length > 0
+    (dependency) => toArray(metadataByLanguage.get(dependency)?.optional).length > 0,
   );
   const affectedLanguages = new Set(dependencyTree);
   const canBeModified = modifiers.some(([, modified]) =>
-    modified.some(target => affectedLanguages.has(target))
+    modified.some((target) => affectedLanguages.has(target)),
   );
   return hasOptionalDependency || canBeModified;
 });
 const reloaders = reloadableLanguages
   .map(
     ([language]) =>
-      `  ${JSON.stringify(language)}: () => import("./prism-language-reloaders.js").then(({ reloadPrismLanguage }) => reloadPrismLanguage(${JSON.stringify(language)})),`
+      `  ${JSON.stringify(language)}: () => import("./prism-language-reloaders.js").then(({ reloadPrismLanguage }) => reloadPrismLanguage(${JSON.stringify(language)})),`,
   )
-  .join('\n');
+  .join("\n");
 const aliases = languages
   .flatMap(([language, metadata]) => {
     if (!metadata.alias) return [];
-    const values = Array.isArray(metadata.alias)
-      ? metadata.alias
-      : [metadata.alias];
-    return values.map(
-      alias => `  ${JSON.stringify(alias)}: ${JSON.stringify(language)},`
-    );
+    const values = Array.isArray(metadata.alias) ? metadata.alias : [metadata.alias];
+    return values.map((alias) => `  ${JSON.stringify(alias)}: ${JSON.stringify(language)},`);
   })
   .sort()
-  .join('\n');
+  .join("\n");
 
 const source = `export type PrismLanguageLoader = () => Promise<unknown>;
 
@@ -196,13 +179,13 @@ const reloaderEntries = await Promise.all(
   reloadableLanguages.map(async ([language]) => {
     const componentPath = new URL(
       `../node_modules/prismjs/components/prism-${language}.min.js`,
-      import.meta.url
+      import.meta.url,
     );
-    const componentSource = await readFile(componentPath, 'utf8');
+    const componentSource = await readFile(componentPath, "utf8");
     return `  ${JSON.stringify(language)}: () => {\n${componentSource}\n  },`;
-  })
+  }),
 );
-const prismLicense = (await readFile(prismLicensePath, 'utf8')).trim();
+const prismLicense = (await readFile(prismLicensePath, "utf8")).trim();
 const reloaderSource = `/*!
 ${prismLicense}
 */
@@ -210,7 +193,7 @@ ${prismLicense}
 import Prism from "prismjs";
 
 const prismLanguageReloaders = {
-${reloaderEntries.join('\n')}
+${reloaderEntries.join("\n")}
 };
 
 const languageHooksKey = Symbol.for("scrapscn.prism.registered-language-hooks");

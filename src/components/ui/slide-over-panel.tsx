@@ -12,11 +12,8 @@ import {
 } from "react";
 
 import { BoundaryContextProvider } from "./boundary-context";
-import styles from "./slide-over-panel.module.css";
 import { useTopOffset } from "./slide-over-panel-environment";
 
-const RIGHT_SIDE_PANEL_WIDTH = "50vw";
-const LEFT_SIDE_PANEL_WIDTH = "40vw";
 const PANEL_HEIGHT = "50vh";
 
 const OPEN_STYLES = {
@@ -31,11 +28,11 @@ const COLLAPSED_STYLES = {
     opacity: 0,
   },
   right: {
-    transform: `translateX(${RIGHT_SIDE_PANEL_WIDTH}) translateY(0)`,
+    transform: "translateX(100%) translateY(0)",
     opacity: 0,
   },
   left: {
-    transform: `translateX(-${LEFT_SIDE_PANEL_WIDTH}) translateY(0)`,
+    transform: "translateX(-100%) translateY(0)",
     opacity: 0,
   },
 };
@@ -52,13 +49,14 @@ interface ChildRenderProps {
 
 type ChildRenderFunction = (renderPropProps: ChildRenderProps) => ReactNode;
 type Position = "right" | "bottom" | "left";
+type Mode = "blocking" | "passive";
 
 type SlideOverPanelProps = {
   children: ReactNode | ChildRenderFunction;
   ariaLabel?: string;
   className?: string;
   "data-test-id"?: string;
-  mode?: "blocking" | "passive";
+  mode?: Mode;
   panelWidth?: string;
   position?: Position;
   ref?: Ref<HTMLDivElement>;
@@ -69,12 +67,35 @@ interface PanelStyle extends CSSProperties {
   "--scraps-slide-over-panel-width"?: string;
 }
 
-function positionClass(position: Position | undefined) {
-  if (position === "bottom") return styles.positionBottom;
-  if (position === "right") return styles.positionRight;
-  if (position === "left") return styles.positionLeft;
-  return styles.positionUnspecified;
-}
+const PANEL_CLASSES =
+  "box-border overflow-auto overscroll-contain pointer-events-auto z-[9999] bg-[var(--scraps-slide-over-background,#fff)] text-left text-[var(--scraps-slide-over-content,#302e36)] [box-shadow:var(--scraps-slide-over-shadow,var(--scraps-theme-shadow-high))]";
+
+const POSITION_CLASSES: Record<Position | "unspecified", Record<Mode, string>> = {
+  bottom: {
+    blocking:
+      "fixed top-4 right-0 bottom-4 left-4 min-[800px]:sticky min-[800px]:right-0 min-[800px]:bottom-0 min-[800px]:left-0 min-[800px]:h-[50vh] min-[800px]:w-full",
+    passive:
+      "fixed top-[var(--scraps-slide-over-panel-top)] right-0 bottom-4 left-4 min-[800px]:sticky min-[800px]:right-0 min-[800px]:bottom-0 min-[800px]:left-0 min-[800px]:h-[50vh] min-[800px]:w-full",
+  },
+  left: {
+    blocking:
+      "fixed top-[var(--scraps-slide-over-panel-top)] right-4 bottom-4 left-0 min-[800px]:relative min-[800px]:top-0 min-[800px]:right-auto min-[800px]:bottom-0 min-[800px]:left-auto min-[800px]:h-full min-[800px]:min-w-[450px] min-[800px]:w-[var(--scraps-slide-over-panel-width,40vw)]",
+    passive:
+      "fixed top-[var(--scraps-slide-over-panel-top)] right-4 bottom-4 left-0 min-[800px]:relative min-[800px]:right-auto min-[800px]:bottom-0 min-[800px]:left-auto min-[800px]:h-[calc(100%-var(--scraps-slide-over-panel-top))] min-[800px]:min-w-[450px] min-[800px]:w-[var(--scraps-slide-over-panel-width,40vw)]",
+  },
+  right: {
+    blocking:
+      "fixed top-4 right-0 bottom-4 left-4 min-[800px]:fixed min-[800px]:top-0 min-[800px]:right-0 min-[800px]:bottom-0 min-[800px]:left-auto min-[800px]:h-full min-[800px]:w-[var(--scraps-slide-over-panel-width,50vw)]",
+    passive:
+      "fixed top-[var(--scraps-slide-over-panel-top)] right-0 bottom-4 left-4 min-[800px]:fixed min-[800px]:right-0 min-[800px]:bottom-0 min-[800px]:left-auto min-[800px]:h-[calc(100%-var(--scraps-slide-over-panel-top))] min-[800px]:w-[var(--scraps-slide-over-panel-width,50vw)]",
+  },
+  unspecified: {
+    blocking:
+      "fixed top-4 right-0 bottom-4 left-4 min-[800px]:relative min-[800px]:top-0 min-[800px]:right-auto min-[800px]:bottom-0 min-[800px]:left-auto min-[800px]:h-full min-[800px]:min-w-[450px] min-[800px]:w-[var(--scraps-slide-over-panel-width,40vw)]",
+    passive:
+      "fixed top-[var(--scraps-slide-over-panel-top)] right-0 bottom-4 left-4 min-[800px]:relative min-[800px]:right-auto min-[800px]:bottom-0 min-[800px]:left-auto min-[800px]:h-[calc(100%-var(--scraps-slide-over-panel-top))] min-[800px]:min-w-[450px] min-[800px]:w-[var(--scraps-slide-over-panel-width,40vw)]",
+  },
+};
 
 export function SlideOverPanel({
   "data-test-id": testId,
@@ -102,14 +123,10 @@ export function SlideOverPanel({
     isOpening: isTransitioning || !isContentVisible,
   };
   const openStyle = position ? OPEN_STYLES[position] : OPEN_STYLES.right;
-  const collapsedStyle = position
-    ? COLLAPSED_STYLES[position]
-    : COLLAPSED_STYLES.right;
+  const collapsedStyle = position ? COLLAPSED_STYLES[position] : COLLAPSED_STYLES.right;
   const panelStyle: PanelStyle = {
     "--scraps-slide-over-panel-top": contentTop,
-    ...(panelWidth === undefined
-      ? {}
-      : { "--scraps-slide-over-panel-width": panelWidth }),
+    ...(panelWidth === undefined ? {} : { "--scraps-slide-over-panel-width": panelWidth }),
   };
   const forwardedMode = { mode };
 
@@ -126,7 +143,7 @@ export function SlideOverPanel({
         role="complementary"
         aria-hidden={false}
         aria-label={ariaLabel ?? "slide out drawer"}
-        className={[styles.panel, positionClass(position), className]
+        className={[PANEL_CLASSES, POSITION_CLASSES[position ?? "unspecified"][mode], className]
           .filter(Boolean)
           .join(" ")}
         data-test-id={testId}

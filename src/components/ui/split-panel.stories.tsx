@@ -1,5 +1,5 @@
-import { useRef } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { useRef } from "react";
 import { expect, fireEvent, userEvent, within } from "storybook/test";
 
 import { SplitPanel, type SplitPanelHandle } from "./split-panel";
@@ -26,7 +26,13 @@ const meta = {
     minSize: 100,
     sized: <div className="size-full p-3">Sized pane</div>,
   },
-  decorators: [Story => <div className="h-60 w-full overflow-hidden rounded-md border"><Story /></div>],
+  decorators: [
+    (Story) => (
+      <div className="h-60 w-full overflow-hidden rounded-md border">
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof SplitPanel>;
 
 export default meta;
@@ -64,7 +70,9 @@ export const HorizontalEnd: Story = {
     const canvas = within(canvasElement);
     const fill = canvas.getByText("Fill pane");
     const sized = canvas.getByText("Sized pane");
-    await expect(fill.compareDocumentPosition(sized) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    await expect(
+      fill.compareDocumentPosition(sized) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
     const separator = canvas.getByRole("separator", { name: "Resize panels" });
     separator.focus();
     await userEvent.keyboard("{ArrowRight}");
@@ -85,7 +93,9 @@ function ImperativeSizeDemo() {
   const panelRef = useRef<SplitPanelHandle>(null);
   return (
     <div className="grid h-full grid-rows-[auto_1fr] gap-2">
-      <button type="button" onClick={() => panelRef.current?.setSize(320, true)}>Set size to 320</button>
+      <button type="button" onClick={() => panelRef.current?.setSize(320, true)}>
+        Set size to 320
+      </button>
       <SplitPanel
         ref={panelRef}
         defaultSize={200}
@@ -121,7 +131,9 @@ export const DoubleClickReset: Story = {
 };
 
 export const SinglePane: Story = {
-  render: () => <SplitPanel defaultSize={200} sized={<div className="size-full p-3">Sized pane</div>} />,
+  render: () => (
+    <SplitPanel defaultSize={200} sized={<div className="size-full p-3">Sized pane</div>} />
+  ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText("Sized pane")).toBeVisible();

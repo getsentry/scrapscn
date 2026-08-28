@@ -6,7 +6,8 @@ import { DragHandle } from "./drag-handle";
 import { useDragMove } from "./use-drag-move";
 import { useDragSeparator } from "./use-drag-separator";
 
-(globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+(globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT =
+  true;
 
 const mountedRoots: Array<{ container: HTMLDivElement; root: Root }> = [];
 
@@ -28,7 +29,7 @@ function findElement(container: ParentNode, testId: string) {
 function dispatchPointer(
   element: EventTarget,
   type: string,
-  { clientX, clientY, pointerId = 1 }: { clientX: number; clientY: number; pointerId?: number }
+  { clientX, clientY, pointerId = 1 }: { clientX: number; clientY: number; pointerId?: number },
 ) {
   const event = new Event(type, { bubbles: true, cancelable: true });
   Object.defineProperties(event, {
@@ -100,8 +101,12 @@ describe("useDragMove", () => {
       handle.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowRight" }));
       handle.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown" }));
       handle.dispatchEvent(new KeyboardEvent("keyup", { bubbles: true, key: "ArrowDown" }));
-      handle.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowUp", shiftKey: true }));
-      handle.dispatchEvent(new KeyboardEvent("keyup", { bubbles: true, key: "ArrowUp", shiftKey: true }));
+      handle.dispatchEvent(
+        new KeyboardEvent("keydown", { bubbles: true, key: "ArrowUp", shiftKey: true }),
+      );
+      handle.dispatchEvent(
+        new KeyboardEvent("keyup", { bubbles: true, key: "ArrowUp", shiftKey: true }),
+      );
     });
 
     expect(events).toEqual(["start", "move:10", "end", "start", "move:-50", "end"]);
@@ -114,7 +119,10 @@ describe("useDragMove", () => {
     }
     const view = await render(<TestHandle />);
     await act(async () => {
-      dispatchPointer(findElement(view.container, "handle"), "pointerdown", { clientX: 0, clientY: 0 });
+      dispatchPointer(findElement(view.container, "handle"), "pointerdown", {
+        clientX: 0,
+        clientY: 0,
+      });
       dispatchPointer(window, "pointermove", { clientX: 1, clientY: 0 });
     });
     expect(document.body.style.pointerEvents).toBe("none");
@@ -135,29 +143,37 @@ describe("useDragSeparator", () => {
     { orientation: "vertical" as const, isSizedFirst: true, value: 200, expected: "n-resize" },
     { orientation: "vertical" as const, isSizedFirst: false, value: 50, expected: "n-resize" },
     { orientation: "vertical" as const, isSizedFirst: false, value: 200, expected: "s-resize" },
-  ])("uses $expected at the $orientation bound for isSizedFirst=$isSizedFirst", async ({
-    expected,
-    isSizedFirst,
-    orientation,
-    value,
-  }) => {
-    function TestSeparator() {
-      const { cursor, separatorProps } = useDragSeparator({
-        isSizedFirst,
-        max: 200,
-        min: 50,
-        onMove: () => {},
-        orientation,
-        value,
-      });
-      return <div {...separatorProps} data-cursor={cursor} data-testid="separator" />;
-    }
-    const view = await render(<TestSeparator />);
-    expect(findElement(view.container, "separator").getAttribute("data-cursor")).toBe(expected);
-  });
+  ])(
+    "uses $expected at the $orientation bound for isSizedFirst=$isSizedFirst",
+    async ({ expected, isSizedFirst, orientation, value }) => {
+      function TestSeparator() {
+        const { cursor, separatorProps } = useDragSeparator({
+          isSizedFirst,
+          max: 200,
+          min: 50,
+          onMove: () => {},
+          orientation,
+          value,
+        });
+        return <div {...separatorProps} data-cursor={cursor} data-testid="separator" />;
+      }
+      const view = await render(<TestSeparator />);
+      expect(findElement(view.container, "separator").getAttribute("data-cursor")).toBe(expected);
+    },
+  );
 
   it("exposes focusable inverted separator semantics and finite values", async () => {
-    function TestSeparator({ isSizedFirst = true, max = 200, min = 50, value = 50 }: { isSizedFirst?: boolean; max?: number; min?: number; value?: number }) {
+    function TestSeparator({
+      isSizedFirst = true,
+      max = 200,
+      min = 50,
+      value = 50,
+    }: {
+      isSizedFirst?: boolean;
+      max?: number;
+      min?: number;
+      value?: number;
+    }) {
       const { cursor, separatorProps } = useDragSeparator({
         isSizedFirst,
         max,
@@ -166,7 +182,9 @@ describe("useDragSeparator", () => {
         orientation: "horizontal",
         value,
       });
-      return <div {...separatorProps} aria-label="Resize" data-cursor={cursor} data-testid="separator" />;
+      return (
+        <div {...separatorProps} aria-label="Resize" data-cursor={cursor} data-testid="separator" />
+      );
     }
     const view = await render(<TestSeparator isSizedFirst={false} />);
     const separator = findElement(view.container, "separator");
@@ -220,7 +238,7 @@ describe("DragHandle", () => {
         onMove={(delta) => events.push(`move:${delta}`)}
         onMoveEnd={() => events.push("end")}
         onMoveStart={() => events.push("start")}
-      />
+      />,
     );
     const handle = view.container.querySelector<HTMLElement>("[role=separator]");
     if (!handle) throw new Error("Missing drag handle");

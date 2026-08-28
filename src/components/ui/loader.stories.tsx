@@ -3,40 +3,56 @@ import { expect, waitFor, within } from "storybook/test";
 
 import { IndeterminateLoader } from "./loader";
 
-const meta = { title: "Scraps/Loader", component: IndeterminateLoader, parameters: { layout: "padded" } } satisfies Meta<typeof IndeterminateLoader>;
+const meta = {
+  title: "Scraps/Loader",
+  component: IndeterminateLoader,
+  parameters: { layout: "padded" },
+} satisfies Meta<typeof IndeterminateLoader>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Vibrant: Story = { args: { "aria-label": "Loading issues" } };
-export const Monochrome: Story = { args: { variant: "monochrome" }, decorators: [(Story) => <div style={{ color: "#7553ff", width: 240 }}><Story /></div>] };
+export const Monochrome: Story = {
+  args: { variant: "monochrome" },
+  decorators: [
+    (Story) => (
+      <div style={{ color: "#7553ff", width: 240 }}>
+        <Story />
+      </div>
+    ),
+  ],
+};
 export const Widths: Story = {
   render: () => (
     <div className="grid gap-6">
-      <div style={{ width: 128 }}><IndeterminateLoader data-testid="small-loader" /></div>
-      <div style={{ width: 240 }}><IndeterminateLoader /></div>
-      <div style={{ width: 400 }}><IndeterminateLoader data-testid="large-loader" /></div>
+      <div style={{ width: 128 }}>
+        <IndeterminateLoader data-testid="small-loader" />
+      </div>
+      <div style={{ width: 123 }}>
+        <IndeterminateLoader data-testid="unaligned-loader" />
+      </div>
+      <div style={{ width: 240 }}>
+        <IndeterminateLoader />
+      </div>
+      <div style={{ width: 400 }}>
+        <IndeterminateLoader data-testid="large-loader" />
+      </div>
     </div>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const smallBars = canvas.getByTestId("small-loader").querySelectorAll<HTMLElement>("span span");
+    const unalignedLoader = canvas.getByTestId("unaligned-loader");
     const largeBars = canvas.getByTestId("large-loader").querySelectorAll<HTMLElement>("span span");
     await waitFor(() => {
       expect(getComputedStyle(smallBars[0]!).animationDuration).toBe("2s");
       expect(getComputedStyle(smallBars[1]!).animationDelay).toBe("0.8s");
+      expect(getComputedStyle(unalignedLoader).width).toBe("120px");
       expect(getComputedStyle(largeBars[0]!).animationDuration).toBe("2.8s");
       expect(getComputedStyle(largeBars[1]!).animationDelay).toBe("1.2s");
     });
   },
 };
-export const Messages: Story = { args: { messages: ["Loading issues", "Checking filters", "Preparing results"] }, render: (args) => <div className="dark" style={{ background: "#24202b", color: "#e7e5ea", padding: 24 }}><IndeterminateLoader {...args} /></div>, play: async ({ canvasElement }) => {
-  const canvas = within(canvasElement);
-  await expect(canvas.getByRole("progressbar", { name: "Loading" })).toBeInTheDocument();
-  const message = canvas.getByText(/Loading issues/);
-  const messageTransition = message.parentElement;
-  if (!messageTransition) throw new Error("Loader message transition is missing");
-  await waitFor(() => expect(getComputedStyle(messageTransition).opacity).toBe("1"));
-} };
 export const LightAndDark: Story = {
   render: () => (
     <div className="grid gap-6">
@@ -45,7 +61,11 @@ export const LightAndDark: Story = {
         <IndeterminateLoader data-testid="dark-vibrant" />
       </div>
       <IndeterminateLoader color="#123456" data-testid="native-color-vibrant" />
-      <IndeterminateLoader data-testid="style-color-monochrome" style={{ color: "#abcdef" }} variant="monochrome" />
+      <IndeterminateLoader
+        data-testid="style-color-monochrome"
+        style={{ color: "#abcdef" }}
+        variant="monochrome"
+      />
     </div>
   ),
   play: async ({ canvasElement }) => {
@@ -93,4 +113,3 @@ export const LightAndDark: Story = {
     });
   },
 };
-export const ReducedMotion: Story = { args: { messages: ["Loading"] }, parameters: { chromatic: { disableSnapshot: true } } };

@@ -21,9 +21,7 @@ interface SlideOverPanelWorkbenchState {
   width: string;
 }
 
-function parseSlideOverPanelWorkbench(
-  params: URLSearchParams
-): SlideOverPanelWorkbenchState {
+function parseSlideOverPanelWorkbench(params: URLSearchParams): SlideOverPanelWorkbenchState {
   const position = params.get("slidePosition");
   const topOffsetViewport = params.get("slideTopOffsetViewport");
 
@@ -32,9 +30,7 @@ function parseSlideOverPanelWorkbench(
     mode: params.get("slideMode") === "passive" ? "passive" : "blocking",
     open: params.get("slideOpen") !== "false",
     position:
-      position === "left" ||
-      position === "bottom" ||
-      position === "unspecified"
+      position === "left" || position === "bottom" || position === "unspecified"
         ? position
         : "right",
     showSuperuserWarning: params.get("slideSuperuser") === "true",
@@ -46,9 +42,7 @@ function parseSlideOverPanelWorkbench(
   };
 }
 
-function serializeSlideOverPanelWorkbench(
-  state: SlideOverPanelWorkbenchState
-) {
+function serializeSlideOverPanelWorkbench(state: SlideOverPanelWorkbenchState) {
   return new URLSearchParams({
     slideContent: state.content,
     slideMode: state.mode,
@@ -66,7 +60,7 @@ export function SlideOverPanelWorkbench({
   sourceSearch,
 }: WorkbenchProps) {
   const [state, setState] = useState(() =>
-    parseSlideOverPanelWorkbench(new URLSearchParams(sourceSearch))
+    parseSlideOverPanelWorkbench(new URLSearchParams(sourceSearch)),
   );
 
   function update(next: SlideOverPanelWorkbenchState) {
@@ -78,9 +72,7 @@ export function SlideOverPanelWorkbench({
     <div className="grid gap-4">
       <div>
         <h2 className="text-sm font-semibold">Slide over panel setup</h2>
-        <p className="text-xs text-muted-foreground">
-          Every setup value is in the share URL.
-        </p>
+        <p className="text-xs text-muted-foreground">Every setup value is in the share URL.</p>
       </div>
       <label className="grid gap-1 text-sm">
         Position
@@ -92,11 +84,7 @@ export function SlideOverPanelWorkbench({
             update({
               ...state,
               position:
-                value === "left" ||
-                value === "bottom" ||
-                value === "unspecified"
-                  ? value
-                  : "right",
+                value === "left" || value === "bottom" || value === "unspecified" ? value : "right",
             });
           }}
         >
@@ -131,8 +119,7 @@ export function SlideOverPanelWorkbench({
             const value = event.target.value;
             update({
               ...state,
-              topOffsetViewport:
-                value === "mobile" || value === "desktop" ? value : "auto",
+              topOffsetViewport: value === "mobile" || value === "desktop" ? value : "auto",
             });
           }}
         >
@@ -146,9 +133,7 @@ export function SlideOverPanelWorkbench({
           aria-label="Show superuser warning"
           checked={state.showSuperuserWarning}
           type="checkbox"
-          onChange={(event) =>
-            update({ ...state, showSuperuserWarning: event.target.checked })
-          }
+          onChange={(event) => update({ ...state, showSuperuserWarning: event.target.checked })}
         />
         Add the 24px superuser marquee
       </label>
@@ -181,19 +166,14 @@ export function SlideOverPanelWorkbench({
   );
 
   const forcedMobile =
-    state.topOffsetViewport === "auto"
-      ? undefined
-      : state.topOffsetViewport === "mobile";
+    state.topOffsetViewport === "auto" ? undefined : state.topOffsetViewport === "mobile";
   const position = state.position === "unspecified" ? undefined : state.position;
   const preview = (
     <div
       className="relative min-h-96 overflow-hidden border bg-background"
       data-testid="slide-over-panel-preview"
     >
-      <button
-        type="button"
-        onClick={() => update({ ...state, open: !state.open })}
-      >
+      <button type="button" onClick={() => update({ ...state, open: !state.open })}>
         {state.open ? "Close panel" : "Open panel"}
       </button>
       <SlideOverPanelEnvironmentProvider
@@ -209,9 +189,7 @@ export function SlideOverPanelWorkbench({
               position={position}
             >
               {({ isOpening }) => (
-                <div className="p-6">
-                  {isOpening ? "Opening panel" : state.content}
-                </div>
+                <div className="p-6">{isOpening ? "Opening panel" : state.content}</div>
               )}
             </SlideOverPanel>
           ) : null}

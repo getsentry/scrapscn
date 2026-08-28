@@ -1,30 +1,854 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 3,
   "canonical": {
     "repository": "getsentry/sentry",
-    "commit": "d91f823d232ddd12a4d2a64554d85fd36df0e278",
+    "commit": "a2db8365e2ec17c96b200bface596081c68f12c9",
+    "comparisonBaseCommit": "c1cacbf1cf5e450c2196f104aa2b057e9dbf3a5d",
     "root": "static/app/components/core",
     "excludedDirectories": [
       "overview",
       "patterns",
       "principles"
-    ]
+    ],
+    "inventory": {
+      "componentEntryPoints": [
+        {
+          "name": "alert",
+          "path": "static/app/components/core/alert/index.tsx"
+        },
+        {
+          "name": "avatar",
+          "path": "static/app/components/core/avatar/index.tsx"
+        },
+        {
+          "name": "avatarButton",
+          "path": "static/app/components/core/avatarButton/index.tsx"
+        },
+        {
+          "name": "backdrop",
+          "path": "static/app/components/core/backdrop/index.tsx"
+        },
+        {
+          "name": "badge",
+          "path": "static/app/components/core/badge/index.tsx"
+        },
+        {
+          "name": "breadcrumbList",
+          "path": "static/app/components/core/breadcrumbList/index.tsx"
+        },
+        {
+          "name": "button",
+          "path": "static/app/components/core/button/index.tsx"
+        },
+        {
+          "name": "chat",
+          "path": "static/app/components/core/chat/index.tsx"
+        },
+        {
+          "name": "checkbox",
+          "path": "static/app/components/core/checkbox/index.tsx"
+        },
+        {
+          "name": "chip",
+          "path": "static/app/components/core/chip/index.tsx"
+        },
+        {
+          "name": "code",
+          "path": "static/app/components/core/code/index.tsx"
+        },
+        {
+          "name": "compactSelect",
+          "path": "static/app/components/core/compactSelect/index.tsx"
+        },
+        {
+          "name": "disclosure",
+          "path": "static/app/components/core/disclosure/index.tsx"
+        },
+        {
+          "name": "dragHandle",
+          "path": "static/app/components/core/dragHandle/index.tsx"
+        },
+        {
+          "name": "drawer",
+          "path": "static/app/components/core/drawer/index.tsx"
+        },
+        {
+          "name": "emptyState",
+          "path": "static/app/components/core/emptyState/index.tsx"
+        },
+        {
+          "name": "form",
+          "path": "static/app/components/core/form/index.ts"
+        },
+        {
+          "name": "hotkey",
+          "path": "static/app/components/core/hotkey/index.tsx"
+        },
+        {
+          "name": "image",
+          "path": "static/app/components/core/image/index.tsx"
+        },
+        {
+          "name": "info",
+          "path": "static/app/components/core/info/index.tsx"
+        },
+        {
+          "name": "input",
+          "path": "static/app/components/core/input/index.tsx"
+        },
+        {
+          "name": "interactionStateLayer",
+          "path": "static/app/components/core/interactionStateLayer/index.tsx"
+        },
+        {
+          "name": "layout",
+          "path": "static/app/components/core/layout/index.tsx"
+        },
+        {
+          "name": "link",
+          "path": "static/app/components/core/link/index.tsx"
+        },
+        {
+          "name": "loader",
+          "path": "static/app/components/core/loader/index.tsx"
+        },
+        {
+          "name": "markdown",
+          "path": "static/app/components/core/markdown/index.tsx"
+        },
+        {
+          "name": "menuListItem",
+          "path": "static/app/components/core/menuListItem/index.tsx"
+        },
+        {
+          "name": "modal",
+          "path": "static/app/components/core/modal/index.tsx"
+        },
+        {
+          "name": "pagination",
+          "path": "static/app/components/core/pagination/index.tsx"
+        },
+        {
+          "name": "pictureInPicture",
+          "path": "static/app/components/core/pictureInPicture/index.tsx"
+        },
+        {
+          "name": "quote",
+          "path": "static/app/components/core/quote/index.tsx"
+        },
+        {
+          "name": "radio",
+          "path": "static/app/components/core/radio/index.tsx"
+        },
+        {
+          "name": "revealOnHover",
+          "path": "static/app/components/core/revealOnHover/index.tsx"
+        },
+        {
+          "name": "segmentedControl",
+          "path": "static/app/components/core/segmentedControl/index.tsx"
+        },
+        {
+          "name": "select",
+          "path": "static/app/components/core/select/index.tsx"
+        },
+        {
+          "name": "separator",
+          "path": "static/app/components/core/separator/index.tsx"
+        },
+        {
+          "name": "slideOverPanel",
+          "path": "static/app/components/core/slideOverPanel/index.tsx"
+        },
+        {
+          "name": "slider",
+          "path": "static/app/components/core/slider/index.tsx"
+        },
+        {
+          "name": "slot",
+          "path": "static/app/components/core/slot/index.tsx"
+        },
+        {
+          "name": "splitPanel",
+          "path": "static/app/components/core/splitPanel/index.tsx"
+        },
+        {
+          "name": "statusIndicator",
+          "path": "static/app/components/core/statusIndicator/index.tsx"
+        },
+        {
+          "name": "switch",
+          "path": "static/app/components/core/switch/index.tsx"
+        },
+        {
+          "name": "table",
+          "path": "static/app/components/core/table/index.tsx"
+        },
+        {
+          "name": "tabs",
+          "path": "static/app/components/core/tabs/index.tsx"
+        },
+        {
+          "name": "text",
+          "path": "static/app/components/core/text/index.tsx"
+        },
+        {
+          "name": "textarea",
+          "path": "static/app/components/core/textarea/index.tsx"
+        },
+        {
+          "name": "toast",
+          "path": "static/app/components/core/toast/index.tsx"
+        },
+        {
+          "name": "tooltip",
+          "path": "static/app/components/core/tooltip/index.tsx"
+        }
+      ],
+      "standaloneFiles": [
+        {
+          "path": "boundaryContext.tsx",
+          "kind": "shared-public-api",
+          "reason": "Shared boundary context used by component families.",
+          "publicExports": {
+            "runtime": [
+              "BoundaryContextProvider",
+              "useBoundaryContext"
+            ],
+            "types": []
+          }
+        },
+        {
+          "path": "datetime.spec.tsx",
+          "kind": "test-support",
+          "reason": "Canonical tests for the standalone DateTime API."
+        },
+        {
+          "path": "datetime.tsx",
+          "kind": "public-component-api",
+          "reason": "Public DateTime provider and hooks imported through @sentry/scraps/datetime.",
+          "publicExports": {
+            "runtime": [
+              "DateTimeProvider",
+              "useClockDisplay",
+              "useTimezone"
+            ],
+            "types": [
+              "DateTimeContextValue"
+            ]
+          }
+        },
+        {
+          "path": "overlayTrigger.tsx",
+          "kind": "public-component-api",
+          "reason": "Public trigger component imported through @sentry/scraps/overlayTrigger.",
+          "publicExports": {
+            "runtime": [
+              "OverlayTrigger"
+            ],
+            "types": [
+              "TriggerProps"
+            ]
+          }
+        },
+        {
+          "path": "renderToString.spec.tsx",
+          "kind": "test-support",
+          "reason": "Canonical tests for the standalone render helper."
+        },
+        {
+          "path": "renderToString.tsx",
+          "kind": "explicit-exclusion",
+          "reason": "Emotion-coupled rendering helper documented as a pattern, not a component family.",
+          "publicExports": {
+            "runtime": [
+              "useRenderToString"
+            ],
+            "types": []
+          }
+        },
+        {
+          "path": "sizeContext.tsx",
+          "kind": "shared-public-api",
+          "reason": "Shared size provider and hook used by component families and monolith callers.",
+          "publicExports": {
+            "runtime": [
+              "SizeContext",
+              "SizeProvider",
+              "useSizeContext"
+            ],
+            "types": []
+          }
+        },
+        {
+          "path": "trackingContext.tsx",
+          "kind": "shared-public-api",
+          "reason": "Shared tracking provider and hook used by Button and Link.",
+          "publicExports": {
+            "runtime": [
+              "TrackingContextProvider",
+              "useClickTracking"
+            ],
+            "types": [
+              "AnalyticsProps",
+              "TrackingProps"
+            ]
+          }
+        },
+        {
+          "path": "translationContext.tsx",
+          "kind": "shared-public-api",
+          "reason": "Shared translation provider and hook used by component families.",
+          "publicExports": {
+            "runtime": [
+              "TranslationContextProvider",
+              "useTranslation"
+            ],
+            "types": [
+              "TranslationContextValue"
+            ]
+          }
+        },
+        {
+          "path": "useIsInsideInteractiveElement.ts",
+          "kind": "shared-public-api",
+          "reason": "Shared focus-state hook used by FeatureBadge.",
+          "publicExports": {
+            "runtime": [
+              "useIsInsideInteractiveElement"
+            ],
+            "types": []
+          }
+        },
+        {
+          "path": "useScrollLock.spec.tsx",
+          "kind": "test-support",
+          "reason": "Canonical tests for the shared scroll-lock hook."
+        },
+        {
+          "path": "useScrollLock.tsx",
+          "kind": "shared-public-api",
+          "reason": "Shared scroll-lock hook used by overlays and monolith callers.",
+          "publicExports": {
+            "runtime": [
+              "useScrollLock"
+            ],
+            "types": []
+          }
+        }
+      ],
+      "unclassifiedDirectories": [],
+      "unclassifiedStandaloneFiles": [],
+      "missingClassifiedStandaloneFiles": []
+    }
   },
   "scope": {
-    "targetModuleCount": 48,
+    "discoveredModuleCount": 48,
+    "excludedContractInputs": [
+      {
+        "id": "tooltip.overlayStyle.serializedStyles",
+        "canonicalSymbol": "TooltipProps.overlayStyle",
+        "excludedInput": "SerializedStyles",
+        "targetKind": "union-member",
+        "localInput": "React.CSSProperties",
+        "canonicalEvidencePaths": [
+          "static/app/components/core/tooltip/tooltip.tsx",
+          "static/app/components/replays/breadcrumbs/replayTimelineEvents.tsx"
+        ],
+        "migrationRequirement": "Translate the replay rule into Tailwind or static CSS; changing only the import path is insufficient.",
+        "affectedModules": [
+          "alert",
+          "avatar",
+          "avatarButton",
+          "badge",
+          "breadcrumbList",
+          "button",
+          "compactSelect",
+          "form",
+          "menuListItem",
+          "modal",
+          "segmentedControl",
+          "select",
+          "tabs",
+          "tooltip"
+        ],
+        "evidence": [
+          {
+            "moduleName": "alert",
+            "exportName": "Alert",
+            "trace": "alert.Alert > .Button > parameter props > .tooltipProps > union > .overlayStyle > union"
+          },
+          {
+            "moduleName": "avatar",
+            "exportName": "Avatar",
+            "trace": "avatar.Avatar > parameter __0 > .tooltipOptions > union > .overlayStyle > union"
+          },
+          {
+            "moduleName": "avatarButton",
+            "exportName": "AvatarButton",
+            "trace": "avatarButton.AvatarButton > parameter __0 > .tooltipProps > union > .overlayStyle > union"
+          },
+          {
+            "moduleName": "badge",
+            "exportName": "FeatureBadge",
+            "trace": "badge.FeatureBadge > parameter __0 > .tooltipProps > union > .overlayStyle > union"
+          },
+          {
+            "moduleName": "breadcrumbList",
+            "exportName": "BreadcrumbList",
+            "trace": "breadcrumbList.BreadcrumbList > parameter __0 > .items > type argument 0 > union > .onChange > parameter value > .tooltipOptions > union > .overlayStyle > union"
+          },
+          {
+            "moduleName": "button",
+            "exportName": "Button",
+            "trace": "button.Button > parameter __0 > .tooltipProps > union > .overlayStyle > union"
+          },
+          {
+            "moduleName": "compactSelect",
+            "exportName": "CompactSelect",
+            "trace": "compactSelect.CompactSelect > parameter props > union > .onChange > parameter selectedOption > .tooltipOptions > union > .overlayStyle > union"
+          },
+          {
+            "moduleName": "form",
+            "exportName": "useScrapsForm",
+            "trace": "form.useScrapsForm > return > .SubmitButton > parameter props > .tooltipProps > union > .overlayStyle > union"
+          },
+          {
+            "moduleName": "menuListItem",
+            "exportName": "MenuListItem",
+            "trace": "menuListItem.MenuListItem > parameter props > .tooltipOptions > union > .overlayStyle > union"
+          },
+          {
+            "moduleName": "modal",
+            "exportName": "useModal",
+            "trace": "modal.useModal > return > .openModal > parameter renderer > parameter renderProps > .CloseButton > parameter props > .tooltipProps > union > .overlayStyle > union"
+          },
+          {
+            "moduleName": "segmentedControl",
+            "exportName": "SegmentedControl",
+            "trace": "segmentedControl.SegmentedControl > .Item > parameter props > .tooltipOptions > union > .overlayStyle > union"
+          },
+          {
+            "moduleName": "select",
+            "exportName": "Select",
+            "trace": "select.Select > constraint OptionType > .tooltipOptions > union > .overlayStyle > union"
+          },
+          {
+            "moduleName": "tabs",
+            "exportName": "TabList",
+            "trace": "tabs.TabList > .Item > parameter props > .tooltip > union > .overlayStyle > union"
+          },
+          {
+            "moduleName": "tooltip",
+            "exportName": "Tooltip",
+            "trace": "tooltip.Tooltip > parameter __0 > .overlayStyle > union"
+          }
+        ]
+      },
+      {
+        "id": "modal.modalCss.interpolation",
+        "canonicalSymbol": "ModalOptions.modalCss",
+        "excludedInput": "Interpolation<Theme>",
+        "targetKind": "direct-aliased-reference",
+        "localInput": "Tailwind class string",
+        "canonicalEvidencePaths": [
+          "static/app/components/core/modal/index.tsx",
+          "static/app/actionCreators/modal.tsx"
+        ],
+        "migrationRequirement": "Translate the Emotion interpolation into Tailwind classes or static CSS; changing only the import path is insufficient.",
+        "affectedModules": [
+          "modal"
+        ],
+        "evidence": [
+          {
+            "moduleName": "modal",
+            "exportName": "useModal",
+            "trace": "modal.useModal > return > .openModal > parameter options > union > .modalCss"
+          }
+        ]
+      },
+      {
+        "id": "layout.renderFunction.arbitraryCssProperties",
+        "canonicalSymbol": "ContainerPropsWithRenderFunction",
+        "excludedInput": "React.CSSProperties",
+        "targetKind": "generic-alias-indexed-access-members",
+        "localInput": "Finite render-function fields only",
+        "canonicalEvidencePaths": [
+          "static/app/components/core/layout/container.tsx"
+        ],
+        "migrationRequirement": "Use the ordinary as form or move the dynamic value into the target component static Tailwind or CSS; changing only the import path is insufficient.",
+        "affectedModules": [
+          "layout"
+        ],
+        "evidence": [
+          {
+            "moduleName": "layout",
+            "exportName": "ContainerPropsWithRenderFunction",
+            "trace": "layout.ContainerPropsWithRenderFunction"
+          }
+        ]
+      },
+      {
+        "id": "select.stylesConfig.arbitraryNestedSelectors",
+        "canonicalSymbol": "StylesConfig",
+        "excludedInput": "Open-ended nested CSS selectors",
+        "targetKind": "exported-alias",
+        "localInput": "Flat declarations, pinned nested selectors, or replacement components",
+        "canonicalEvidencePaths": [
+          "static/app/components/core/select/select.tsx"
+        ],
+        "migrationRequirement": "Translate an unrecognized nested selector into literal Tailwind or static CSS; changing only the import path is insufficient for that selector.",
+        "affectedModules": [
+          "select"
+        ],
+        "evidence": [
+          {
+            "moduleName": "select",
+            "exportName": "StylesConfig",
+            "trace": "select.StylesConfig"
+          }
+        ]
+      }
+    ],
     "outOfScopeLocalComponents": [
       "src/components/ui/boundary-context.tsx",
       "src/components/ui/card.tsx",
       "src/components/ui/command.tsx",
+      "src/components/ui/datetime.tsx",
       "src/components/ui/dialog.tsx",
       "src/components/ui/dropdown-menu.tsx",
       "src/components/ui/label.tsx",
       "src/components/ui/link-playground-adapter.tsx",
+      "src/components/ui/overlay-trigger.tsx",
       "src/components/ui/progress.tsx",
       "src/components/ui/scroll-area.tsx",
       "src/components/ui/sheet.tsx",
       "src/components/ui/size-context.tsx",
-      "src/components/ui/slide-over-panel-environment.tsx"
+      "src/components/ui/slide-over-panel-environment.tsx",
+      "src/components/ui/translation-context.tsx",
+      "src/components/ui/use-scroll-lock.tsx"
+    ],
+    "standaloneApiCoverage": [
+      {
+        "canonicalPath": "boundaryContext.tsx",
+        "localPaths": [
+          "src/components/ui/boundary-context.tsx"
+        ],
+        "state": "complete",
+        "note": "The provider and hook preserve the standalone public contract.",
+        "behaviorTest": "provides date-time, boundary, size, and translation values",
+        "testSymbols": [
+          "useBoundaryContext"
+        ],
+        "testPaths": [
+          "src/components/ui/standalone-core.test.tsx",
+          "tests/types/standalone-core-types.test.tsx"
+        ],
+        "canonicalPublicExports": {
+          "runtime": [
+            "BoundaryContextProvider",
+            "useBoundaryContext"
+          ],
+          "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "implementedExports": {
+          "runtime": [
+            "BoundaryContextProvider",
+            "useBoundaryContext"
+          ],
+          "types": []
+        }
+      },
+      {
+        "canonicalPath": "datetime.tsx",
+        "localPaths": [
+          "src/components/ui/datetime.tsx"
+        ],
+        "state": "complete",
+        "note": "The provider and timezone and clock hooks preserve the standalone public contract.",
+        "behaviorTest": "provides date-time, boundary, size, and translation values",
+        "testSymbols": [
+          "DateTimeProvider"
+        ],
+        "testPaths": [
+          "src/components/ui/standalone-core.test.tsx",
+          "tests/types/standalone-core-types.test.tsx"
+        ],
+        "canonicalPublicExports": {
+          "runtime": [
+            "DateTimeProvider",
+            "useClockDisplay",
+            "useTimezone"
+          ],
+          "types": [
+            "DateTimeContextValue"
+          ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "implementedExports": {
+          "runtime": [
+            "DateTimeProvider",
+            "useClockDisplay",
+            "useTimezone"
+          ],
+          "types": [
+            "DateTimeContextValue"
+          ]
+        }
+      },
+      {
+        "canonicalPath": "overlayTrigger.tsx",
+        "localPaths": [
+          "src/components/ui/overlay-trigger.tsx"
+        ],
+        "state": "complete",
+        "note": "The Button and IconButton triggers preserve the public contract through the local Button and CompactSelect context.",
+        "behaviorTest": "applies CompactSelect context to both overlay trigger forms",
+        "testSymbols": [
+          "OverlayTrigger"
+        ],
+        "testPaths": [
+          "src/components/ui/standalone-core.test.tsx",
+          "tests/types/standalone-core-types.test.tsx"
+        ],
+        "canonicalPublicExports": {
+          "runtime": [
+            "OverlayTrigger"
+          ],
+          "types": [
+            "TriggerProps"
+          ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "implementedExports": {
+          "runtime": [
+            "OverlayTrigger"
+          ],
+          "types": [
+            "TriggerProps"
+          ]
+        }
+      },
+      {
+        "canonicalPath": "renderToString.tsx",
+        "excludedExports": {
+          "runtime": [
+            "useRenderToString"
+          ],
+          "types": []
+        },
+        "localPaths": [],
+        "state": "excluded",
+        "note": "This Emotion-coupled pattern helper is outside the component-family migration.",
+        "behaviorTest": null,
+        "testSymbols": [],
+        "testPaths": [],
+        "canonicalPublicExports": {
+          "runtime": [
+            "useRenderToString"
+          ],
+          "types": []
+        },
+        "implementedExports": {
+          "runtime": [],
+          "types": []
+        }
+      },
+      {
+        "canonicalPath": "sizeContext.tsx",
+        "localPaths": [
+          "src/components/ui/size-context.tsx"
+        ],
+        "state": "complete",
+        "note": "The provider, context, and hook preserve the standalone public contract.",
+        "behaviorTest": "provides date-time, boundary, size, and translation values",
+        "testSymbols": [
+          "SizeProvider"
+        ],
+        "testPaths": [
+          "src/components/ui/standalone-core.test.tsx",
+          "tests/types/standalone-core-types.test.tsx"
+        ],
+        "canonicalPublicExports": {
+          "runtime": [
+            "SizeContext",
+            "SizeProvider",
+            "useSizeContext"
+          ],
+          "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "implementedExports": {
+          "runtime": [
+            "SizeContext",
+            "SizeProvider",
+            "useSizeContext"
+          ],
+          "types": []
+        }
+      },
+      {
+        "canonicalPath": "trackingContext.tsx",
+        "localPaths": [
+          "src/components/ui/tracking-context.tsx"
+        ],
+        "state": "complete",
+        "note": "The provider, analytics types, and click-tracking hook preserve the standalone public contract.",
+        "behaviorTest": "tracks clicks through TrackingContextProvider",
+        "testSymbols": [
+          "useClickTracking"
+        ],
+        "testPaths": [
+          "src/components/ui/standalone-core.test.tsx",
+          "tests/types/standalone-core-types.test.tsx"
+        ],
+        "canonicalPublicExports": {
+          "runtime": [
+            "TrackingContextProvider",
+            "useClickTracking"
+          ],
+          "types": [
+            "AnalyticsProps",
+            "TrackingProps"
+          ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "implementedExports": {
+          "runtime": [
+            "TrackingContextProvider",
+            "useClickTracking"
+          ],
+          "types": [
+            "AnalyticsProps",
+            "TrackingProps"
+          ]
+        }
+      },
+      {
+        "canonicalPath": "translationContext.tsx",
+        "localPaths": [
+          "src/components/ui/translation-context.tsx",
+          "src/lib/scraps-locale.ts"
+        ],
+        "state": "complete",
+        "note": "The provider and hook preserve the standalone context contract alongside the application-wide locale adapter.",
+        "behaviorTest": "connects translated components to TranslationContextProvider",
+        "testSymbols": [
+          "TranslationContextProvider"
+        ],
+        "testPaths": [
+          "src/components/ui/standalone-core.test.tsx",
+          "tests/types/standalone-core-types.test.tsx"
+        ],
+        "canonicalPublicExports": {
+          "runtime": [
+            "TranslationContextProvider",
+            "useTranslation"
+          ],
+          "types": [
+            "TranslationContextValue"
+          ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "implementedExports": {
+          "runtime": [
+            "TranslationContextProvider",
+            "configureScrapsLocale",
+            "t",
+            "tct",
+            "useTranslation"
+          ],
+          "types": [
+            "ScrapsLocaleAdapter",
+            "ScrapsTranslationArgument",
+            "ScrapsTranslationComponents",
+            "TranslationContextValue"
+          ]
+        }
+      },
+      {
+        "canonicalPath": "useIsInsideInteractiveElement.ts",
+        "localPaths": [
+          "src/components/ui/use-is-inside-interactive-element.ts"
+        ],
+        "state": "complete",
+        "note": "The standalone hook preserves interactive-ancestor and focus-visible behavior and is used by Badge.",
+        "behaviorTest": "detects an interactive ancestor",
+        "testSymbols": [
+          "useIsInsideInteractiveElement"
+        ],
+        "testPaths": [
+          "src/components/ui/standalone-core.test.tsx",
+          "tests/types/standalone-core-types.test.tsx"
+        ],
+        "canonicalPublicExports": {
+          "runtime": [
+            "useIsInsideInteractiveElement"
+          ],
+          "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "implementedExports": {
+          "runtime": [
+            "useIsInsideInteractiveElement"
+          ],
+          "types": []
+        }
+      },
+      {
+        "canonicalPath": "useScrollLock.tsx",
+        "localPaths": [
+          "src/components/ui/use-scroll-lock.tsx"
+        ],
+        "state": "complete",
+        "note": "The standalone hook preserves shared container locks, body scroll restoration, and acquire, release, and held methods.",
+        "behaviorTest": "supports idempotent acquisition, independent containers, and reacquisition",
+        "testSymbols": [
+          "useScrollLock"
+        ],
+        "testPaths": [
+          "src/components/ui/standalone-core.test.tsx",
+          "tests/types/standalone-core-types.test.tsx"
+        ],
+        "canonicalPublicExports": {
+          "runtime": [
+            "useScrollLock"
+          ],
+          "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
+        },
+        "implementedExports": {
+          "runtime": [
+            "useScrollLock"
+          ],
+          "types": []
+        }
+      }
     ]
   },
   "modules": [
@@ -33,9 +857,28 @@
       "canonical": {
         "indexPath": "static/app/components/core/alert/index.tsx",
         "sourcePaths": [
+          "static/app/components/core/alert/alert.figma.tsx",
+          "static/app/components/core/alert/alert.mdx",
+          "static/app/components/core/alert/alert.spec.tsx",
           "static/app/components/core/alert/alert.tsx",
           "static/app/components/core/alert/alertLink.tsx",
-          "static/app/components/core/alert/index.tsx"
+          "static/app/components/core/alert/index.tsx",
+          "static/app/components/core/button/button.tsx",
+          "static/app/components/core/layout/index.tsx",
+          "static/app/components/core/link/index.tsx",
+          "static/app/components/core/text/index.tsx",
+          "static/app/icons/iconCheckmark.tsx",
+          "static/app/icons/iconChevron.tsx",
+          "static/app/icons/iconInfo.tsx",
+          "static/app/icons/iconNot.tsx",
+          "static/app/icons/iconWarning.tsx",
+          "static/app/icons/svgIcon.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/scraps/tokens/typography.tsx",
+          "static/app/utils/theme/theme.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -45,6 +888,10 @@
           "types": [
             "AlertProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -54,12 +901,9 @@
         "implementedExports": {
           "runtime": [
             "Alert",
-            "AlertDescription",
-            "AlertLink",
-            "AlertTitle"
+            "AlertLink"
           ],
           "types": [
-            "AlertLinkProps",
             "AlertProps"
           ]
         },
@@ -69,17 +913,27 @@
         "stories": [
           "src/components/ui/alert.stories.tsx"
         ],
-        "tests": [],
-        "codeConnect": [],
+        "tests": [
+          "src/components/ui/alert.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/alert.test.mjs",
+          "tests/types/alert-types.test.tsx"
+        ],
+        "codeConnect": [
+          "src/components/ui/alert.figma.ts"
+        ],
         "figmaNodes": [
           "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=6943-13522"
         ],
-        "playgroundPath": null
+        "playgroundPath": "/?component=alert"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Alert and AlertLink consumer contracts, theme tokens, Sentry glyphs, expansion behavior, responsive trailing layout, workbench, focused tests, standalone registry delivery, and local Code Connect mapping use literal Tailwind classes. Alert.Button inherits the shared TooltipProps.overlayStyle portable-contract input exclusion recorded in scope.excludedContractInputs. The mapping preserves the live variant, system, showIcon, expand, information, trailingItems, and trailingSlot Figma vocabulary under the Scrapscn React label.",
+        "excludedContractInputs": [
+          "tooltip.overlayStyle.serializedStyles"
+        ]
       }
     },
     {
@@ -87,19 +941,61 @@
       "canonical": {
         "indexPath": "static/app/components/core/avatar/index.tsx",
         "sourcePaths": [
+          "package.json",
+          "static/app/components/core/avatar/actorAvatar.spec.tsx",
           "static/app/components/core/avatar/actorAvatar.tsx",
+          "static/app/components/core/avatar/avatar.mdx",
+          "static/app/components/core/avatar/avatar.spec.tsx",
           "static/app/components/core/avatar/avatar.tsx",
+          "static/app/components/core/avatar/avatarComponentStyles.tsx",
+          "static/app/components/core/avatar/avatarList.spec.tsx",
           "static/app/components/core/avatar/avatarList.tsx",
           "static/app/components/core/avatar/docIntegrationAvatar.tsx",
+          "static/app/components/core/avatar/imageAvatar/imageAvatar.spec.tsx",
           "static/app/components/core/avatar/imageAvatar/imageAvatar.tsx",
           "static/app/components/core/avatar/index.tsx",
+          "static/app/components/core/avatar/letterAvatar/letterAvatar.spec.tsx",
           "static/app/components/core/avatar/letterAvatar/letterAvatar.tsx",
           "static/app/components/core/avatar/organizationAvatar.tsx",
           "static/app/components/core/avatar/projectAvatar.tsx",
+          "static/app/components/core/avatar/sentryAppAvatar.spec.tsx",
           "static/app/components/core/avatar/sentryAppAvatar.tsx",
+          "static/app/components/core/avatar/teamAvatar.spec.tsx",
           "static/app/components/core/avatar/teamAvatar.tsx",
+          "static/app/components/core/avatar/useAvatar.spec.tsx",
           "static/app/components/core/avatar/useAvatar.ts",
-          "static/app/components/core/avatar/userAvatar.tsx"
+          "static/app/components/core/avatar/userAvatar.spec.tsx",
+          "static/app/components/core/avatar/userAvatar.tsx",
+          "static/app/components/core/badge/index.tsx",
+          "static/app/components/core/badge/tag.tsx",
+          "static/app/components/core/image/image.tsx",
+          "static/app/components/core/tooltip/index.tsx",
+          "static/app/components/core/tooltip/tooltip.tsx",
+          "static/app/components/placeholder.tsx",
+          "static/app/components/platformList.tsx",
+          "static/app/icons/iconGeneric.tsx",
+          "static/app/icons/svgIcon.tsx",
+          "static/app/icons/useIconDefaults.tsx",
+          "static/app/stores/configStore.tsx",
+          "static/app/types/core.tsx",
+          "static/app/types/integrations.tsx",
+          "static/app/types/organization.tsx",
+          "static/app/types/platform.tsx",
+          "static/app/types/project.tsx",
+          "static/app/types/system.tsx",
+          "static/app/types/user.tsx",
+          "static/app/utils.tsx",
+          "static/app/utils/formatters.tsx",
+          "static/app/utils/members/useMembers.tsx",
+          "static/app/utils/theme/scraps/theme/base.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/swatch.tsx",
+          "static/app/utils/theme/theme.tsx",
+          "static/app/utils/useTeamsById.tsx",
+          "static/less/shared-components.less"
         ],
         "publicExports": {
           "runtime": [
@@ -122,34 +1018,62 @@
             "AvatarProps",
             "BaseAvatarProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
         "implementationPaths": [
+          "src/components/ui/avatar-actor-resolver.tsx",
           "src/components/ui/avatar.tsx"
         ],
         "implementedExports": {
           "runtime": [
+            "ActorAvatar",
             "Avatar",
-            "AvatarBadge",
-            "AvatarFallback",
-            "AvatarGroup",
-            "AvatarGroupCount",
-            "AvatarImage"
+            "AvatarList",
+            "CollapsedAvatars",
+            "DocIntegrationAvatar",
+            "ImageAvatar",
+            "LetterAvatar",
+            "OrganizationAvatar",
+            "ProjectAvatar",
+            "SentryAppAvatar",
+            "TeamAvatar",
+            "UserAvatar",
+            "useAvatar"
           ],
-          "types": []
+          "types": [
+            "ActorAvatarProps",
+            "AvatarProps",
+            "BaseAvatarProps"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "avatar"
+        ],
+        "stories": [
+          "src/components/ui/avatar.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/avatar.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/avatar.test.mjs",
+          "tests/types/avatar-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=avatar"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Avatar module exports, discriminated base contract, image and letter resolution, deterministic theme swatches, upload and Gravatar fallback, derived user, team, organization, project and integration avatars, provider-backed actor record resolution, collapsed avatar lists, literal Tailwind styling, workbench, focused tests, production browser behavior, and standalone registry delivery are present. AvatarProps.tooltipOptions inherits the shared TooltipProps.overlayStyle portable-contract input exclusion recorded in scope.excludedContractInputs. The canonical Avatar MDX has no Figma component or Code Connect property vocabulary.",
+        "excludedContractInputs": [
+          "tooltip.overlayStyle.serializedStyles"
+        ]
       }
     },
     {
@@ -157,33 +1081,72 @@
       "canonical": {
         "indexPath": "static/app/components/core/avatarButton/index.tsx",
         "sourcePaths": [
+          "package.json",
+          "static/app/components/core/avatar/avatar.tsx",
+          "static/app/components/core/avatar/avatarComponentStyles.tsx",
+          "static/app/components/core/avatar/imageAvatar/imageAvatar.tsx",
+          "static/app/components/core/avatar/letterAvatar/letterAvatar.tsx",
+          "static/app/components/core/avatar/useAvatar.spec.tsx",
+          "static/app/components/core/avatar/useAvatar.ts",
+          "static/app/components/core/avatarButton/avatarButton.mdx",
+          "static/app/components/core/avatarButton/avatarButton.spec.tsx",
           "static/app/components/core/avatarButton/avatarButton.tsx",
-          "static/app/components/core/avatarButton/index.tsx"
+          "static/app/components/core/avatarButton/index.tsx",
+          "static/app/components/core/button/button.tsx",
+          "static/app/components/core/button/styles.tsx",
+          "static/app/components/core/button/types.tsx",
+          "static/app/components/core/button/useButtonFunctionality.tsx",
+          "static/app/components/core/image/image.tsx",
+          "static/app/components/core/sizeContext.tsx",
+          "static/app/utils/queryClient.tsx",
+          "static/app/utils/theme/swatch.tsx",
+          "static/app/utils/theme/theme.tsx"
         ],
         "publicExports": {
           "runtime": [
             "AvatarButton"
           ],
           "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/avatar-button.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "AvatarButton"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "avatar-button"
+        ],
+        "stories": [
+          "src/components/ui/avatar-button.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/avatar-button.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/e2e/templates.spec.ts",
+          "tests/parity/avatar-button.test.mjs",
+          "tests/types/avatar-button-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=avatar-button"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local avatar-button implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps AvatarButton API, letter and image avatar resolution, deterministic swatches, image sampling, Button behavior, workbench, and standalone registry delivery use literal Tailwind classes. AvatarButton tooltipProps inherit the shared TooltipProps.overlayStyle portable-contract input exclusion recorded in scope.excludedContractInputs. The canonical module has no approved AvatarButton Figma node.",
+        "excludedContractInputs": [
+          "tooltip.overlayStyle.serializedStyles"
+        ]
       }
     },
     {
@@ -199,6 +1162,10 @@
           "runtime": [
             "Backdrop"
           ],
+          "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
           "types": []
         }
       },
@@ -231,7 +1198,7 @@
       "completion": {
         "state": "complete",
         "complete": true,
-        "note": "Exact regular Scraps Backdrop overlay geometry, theme colors, layer values, motion, focused assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component."
+        "note": "Exact regular Scraps Backdrop geometry and theme surface use literal Tailwind classes. Layer values, reduced-motion behavior, focused assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component."
       }
     },
     {
@@ -239,13 +1206,47 @@
       "canonical": {
         "indexPath": "static/app/components/core/badge/index.tsx",
         "sourcePaths": [
+          "package.json",
+          "static/app/components/core/badge/alertBadge.spec.tsx",
           "static/app/components/core/badge/alertBadge.tsx",
+          "static/app/components/core/badge/badge.mdx",
+          "static/app/components/core/badge/badge.snapshots.tsx",
           "static/app/components/core/badge/badge.tsx",
+          "static/app/components/core/badge/deployBadge.spec.tsx",
           "static/app/components/core/badge/deployBadge.tsx",
+          "static/app/components/core/badge/featureBadge.figma.tsx",
+          "static/app/components/core/badge/featureBadge.spec.tsx",
           "static/app/components/core/badge/featureBadge.tsx",
           "static/app/components/core/badge/index.tsx",
           "static/app/components/core/badge/projectsBadge.tsx",
-          "static/app/components/core/badge/tag.tsx"
+          "static/app/components/core/badge/tag.figma.tsx",
+          "static/app/components/core/badge/tag.mdx",
+          "static/app/components/core/badge/tag.spec.tsx",
+          "static/app/components/core/badge/tag.tsx",
+          "static/app/components/core/button/button.tsx",
+          "static/app/components/core/layout/index.tsx",
+          "static/app/components/core/link/index.tsx",
+          "static/app/components/core/tooltip/tooltip.tsx",
+          "static/app/components/core/useIsInsideInteractiveElement.ts",
+          "static/app/components/searchSyntax/mutableSearch.tsx",
+          "static/app/icons/iconAllProjects.tsx",
+          "static/app/icons/iconBroadcast.tsx",
+          "static/app/icons/iconBug.tsx",
+          "static/app/icons/iconCheckmark.tsx",
+          "static/app/icons/iconClose.tsx",
+          "static/app/icons/iconFire.tsx",
+          "static/app/icons/iconIssues.tsx",
+          "static/app/icons/iconLab.tsx",
+          "static/app/icons/iconMyProjects.tsx",
+          "static/app/icons/iconPause.tsx",
+          "static/app/icons/iconWarning.tsx",
+          "static/app/icons/svgIcon.tsx",
+          "static/app/types/release.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/theme.tsx",
+          "static/app/utils/useStableMergeRef.ts",
+          "static/app/views/alerts/types.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -260,46 +1261,60 @@
             "FeatureBadgeProps",
             "TagProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
         "implementationPaths": [
-          "src/components/ui/badge.tsx",
-          "src/components/ui/feature-badge.tsx",
-          "src/components/ui/tag.tsx"
+          "src/components/ui/badge.tsx"
         ],
         "implementedExports": {
           "runtime": [
+            "AlertBadge",
             "Badge",
+            "DeployBadge",
             "FeatureBadge",
-            "Tag",
-            "badgeVariants",
-            "tagVariants"
+            "ProjectsBadge",
+            "Tag"
           ],
-          "types": []
+          "types": [
+            "FeatureBadgeProps",
+            "TagProps"
+          ]
         },
         "registryItems": [
-          "badge",
-          "feature-badge",
-          "tag"
+          "badge"
         ],
         "stories": [
-          "src/components/ui/badge.stories.tsx",
-          "src/components/ui/feature-badge.stories.tsx",
-          "src/components/ui/tag.stories.tsx"
+          "src/components/ui/badge.stories.tsx"
         ],
-        "tests": [],
-        "codeConnect": [],
+        "tests": [
+          "src/components/ui/badge.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/figma/badge-code-connect.test.mjs",
+          "tests/parity/badge.test.mjs",
+          "tests/types/badge-types.test.tsx"
+        ],
+        "codeConnect": [
+          "src/components/ui/feature-badge.figma.ts",
+          "src/components/ui/tag.figma.ts"
+        ],
         "figmaNodes": [
           "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3574-5396",
           "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3574-5698"
         ],
-        "playgroundPath": null
+        "playgroundPath": "/?component=badge"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Badge, Tag, FeatureBadge, AlertBadge, DeployBadge, and ProjectsBadge runtime behavior, literal Tailwind geometry, canonical Sentry icon paths, theme tokens, workbench, focused tests, one self-contained registry item, and parserless canonical Code Connect mappings are present. Focused evidence covers runtime variant errors, React 19 callback-ref cleanup, the complete private Deploy shape, the pinned release-token output oracle, default-only Tag icon sizing, roving role=tab focus, and render-time host locale resolution. The explicit portable-contract input exclusion for TooltipProps.overlayStyle is owner-authorized and recorded in scope.excludedContractInputs. The live FeatureBadge Figma instance currently exposes deprecated and Variant properties instead of the pinned canonical five-value type property, so the mapping preserves the canonical type vocabulary without inventing incompatible runtime props.",
+        "excludedContractInputs": [
+          "tooltip.overlayStyle.serializedStyles"
+        ]
       }
     },
     {
@@ -317,25 +1332,49 @@
           "types": [
             "BreadcrumbTitleItem"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/breadcrumb-list.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "BreadcrumbList"
+          ],
+          "types": [
+            "BreadcrumbTitleItem"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "breadcrumb-list"
+        ],
+        "stories": [
+          "src/components/ui/breadcrumb-list.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/breadcrumb-list.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/breadcrumb-list.test.mjs",
+          "tests/types/breadcrumb-list-types.test.tsx"
+        ],
         "codeConnect": [],
-        "figmaNodes": [],
-        "playgroundPath": null
+        "figmaNodes": [
+          "https://www.figma.com/design/a638AEl7pFxj29zMODCiOB?node-id=1198-17420"
+        ],
+        "playgroundPath": "/?component=breadcrumb-list"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local breadcrumb-list implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps BreadcrumbList parent and title contracts, 512px container-query collapse, project selection, pagination, actions, editable title behavior, workbench, focused tests, local registry item, and canonical MDX Figma resource are present. Breadcrumb button actions inherit the shared TooltipProps.overlayStyle portable-contract input exclusion recorded in scope.excludedContractInputs. The canonical module has no Code Connect mapping or property vocabulary to copy.",
+        "excludedContractInputs": [
+          "tooltip.overlayStyle.serializedStyles"
+        ]
       }
     },
     {
@@ -343,11 +1382,37 @@
       "canonical": {
         "indexPath": "static/app/components/core/button/index.tsx",
         "sourcePaths": [
+          "package.json",
+          "static/app/components/core/button/button.figma.tsx",
+          "static/app/components/core/button/button.mdx",
+          "static/app/components/core/button/button.snapshots.tsx",
+          "static/app/components/core/button/button.spec.tsx",
           "static/app/components/core/button/button.tsx",
+          "static/app/components/core/button/buttonBar.mdx",
           "static/app/components/core/button/buttonBar.tsx",
           "static/app/components/core/button/index.tsx",
+          "static/app/components/core/button/linkButton.mdx",
           "static/app/components/core/button/linkButton.tsx",
-          "static/app/components/core/button/styles.tsx"
+          "static/app/components/core/button/styles.tsx",
+          "static/app/components/core/button/types.tsx",
+          "static/app/components/core/button/useButtonFunctionality.tsx",
+          "static/app/components/core/layout/grid.tsx",
+          "static/app/components/core/layout/index.tsx",
+          "static/app/components/core/layout/styles.tsx",
+          "static/app/components/core/link/index.tsx",
+          "static/app/components/core/link/link.tsx",
+          "static/app/components/core/loader/indeterminateLoader.tsx",
+          "static/app/components/core/sizeContext.tsx",
+          "static/app/components/core/tooltip/tooltip.tsx",
+          "static/app/components/core/trackingContext.tsx",
+          "static/app/icons/svgIcon.tsx",
+          "static/app/icons/useIconDefaults.tsx",
+          "static/app/utils/theme/scraps/theme/base.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/theme.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -361,6 +1426,12 @@
             "ButtonProps",
             "LinkButtonProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [
+            "DO_NOT_USE_getButtonStyles"
+          ],
+          "types": []
         }
       },
       "local": {
@@ -370,10 +1441,13 @@
         "implementedExports": {
           "runtime": [
             "Button",
-            "buttonVariants"
+            "ButtonBar",
+            "LinkButton"
           ],
           "types": [
-            "ButtonProps"
+            "ButtonBarProps",
+            "ButtonProps",
+            "LinkButtonProps"
           ]
         },
         "registryItems": [
@@ -382,17 +1456,27 @@
         "stories": [
           "src/components/ui/button.stories.tsx"
         ],
-        "tests": [],
-        "codeConnect": [],
+        "tests": [
+          "src/components/ui/button.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/button.test.mjs",
+          "tests/types/button-types.test.tsx"
+        ],
+        "codeConnect": [
+          "src/components/ui/button.figma.ts"
+        ],
         "figmaNodes": [
           "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=384-2119"
         ],
-        "playgroundPath": null
+        "playgroundPath": "/?component=button"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Button, LinkButton, and ButtonBar consumer contracts, Tailwind styling, documented states, focused assertions, production playground behavior, standalone registry delivery, and local Code Connect mapping are present. ButtonTooltipProps inherits the shared TooltipProps.overlayStyle portable-contract input exclusion recorded in scope.excludedContractInputs. The mapping preserves the pinned priority, size, state, and Children Figma vocabulary under the Scrapscn React label. The explicit DO_NOT_USE_getButtonStyles exclusion is an Emotion StrictCSSObject helper used only by the monolith implementation and is not part of the portable consumer contract.",
+        "excludedContractInputs": [
+          "tooltip.overlayStyle.serializedStyles"
+        ]
       }
     },
     {
@@ -400,14 +1484,34 @@
       "canonical": {
         "indexPath": "static/app/components/core/chat/index.tsx",
         "sourcePaths": [
+          "static/app/components/copyToClipboardButton.tsx",
+          "static/app/components/core/chat/assistantActions.mdx",
           "static/app/components/core/chat/assistantActions.tsx",
+          "static/app/components/core/chat/assistantMessage.mdx",
           "static/app/components/core/chat/assistantMessage.tsx",
           "static/app/components/core/chat/index.tsx",
+          "static/app/components/core/chat/messageRow.mdx",
           "static/app/components/core/chat/messageRow.tsx",
           "static/app/components/core/chat/spinner.tsx",
+          "static/app/components/core/chat/thinkingBlock.mdx",
+          "static/app/components/core/chat/thinkingBlock.spec.tsx",
           "static/app/components/core/chat/thinkingBlock.tsx",
+          "static/app/components/core/chat/toolCall.tsx",
+          "static/app/components/core/chat/toolCallIndicator.mdx",
           "static/app/components/core/chat/toolCallIndicator.tsx",
-          "static/app/components/core/chat/userMessage.tsx"
+          "static/app/components/core/chat/userMessage.mdx",
+          "static/app/components/core/chat/userMessage.tsx",
+          "static/app/components/core/markdown/useStreamingAnimation.ts",
+          "static/app/icons/iconCheckmark.tsx",
+          "static/app/icons/iconClose.tsx",
+          "static/app/icons/iconCopy.tsx",
+          "static/app/icons/iconSeer.tsx",
+          "static/app/icons/iconThumb.tsx",
+          "static/app/icons/iconWarning.tsx",
+          "static/app/icons/svgIcon.tsx",
+          "static/app/utils/duration/getDuration.tsx",
+          "static/app/utils/formatters.tsx",
+          "static/app/utils/useCopyToClipboard.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -416,31 +1520,61 @@
             "MessageRow",
             "Spinner",
             "ThinkingBlock",
+            "ToolCall",
             "ToolCallIndicator",
             "UserMessage"
           ],
           "types": [
+            "ToolCallReference",
             "ToolCallStatus"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/chat.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "AssistantActions",
+            "AssistantMessage",
+            "MessageRow",
+            "Spinner",
+            "ThinkingBlock",
+            "ToolCall",
+            "ToolCallIndicator",
+            "UserMessage"
+          ],
+          "types": [
+            "ToolCallReference",
+            "ToolCallStatus"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "chat"
+        ],
+        "stories": [
+          "src/components/ui/chat.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/chat.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/e2e/templates.spec.ts",
+          "tests/parity/chat.test.mjs",
+          "tests/types/chat-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=chat"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local chat implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Chat exports, message geometry, feedback and copy behavior, ToolCall details and references, tool status semantics, spinner motion, live and completed thinking behavior, canonical icons, workbench, production browser behavior, and standalone registry delivery use literal Tailwind classes and static global keyframes. The canonical module has no Figma node or Code Connect source."
       }
     },
     {
@@ -458,6 +1592,10 @@
           "types": [
             "CheckboxProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -472,14 +1610,19 @@
             "CheckboxProps"
           ]
         },
-        "registryItems": [],
+        "registryItems": [
+          "checkbox"
+        ],
         "stories": [
           "src/components/ui/checkbox.stories.tsx"
         ],
         "tests": [
+          "src/components/ui/checkbox.test.tsx",
           "tests/e2e/playground.spec.ts",
           "tests/e2e/templates.spec.ts",
-          "tests/figma/figma-preview.test.mjs"
+          "tests/figma/figma-preview.test.mjs",
+          "tests/parity/checkbox.test.mjs",
+          "tests/types/checkbox-types.test.tsx"
         ],
         "codeConnect": [
           "src/components/ui/checkbox.figma.ts"
@@ -490,9 +1633,9 @@
         "playgroundPath": "/?component=checkbox"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Checkbox API, native form behavior, sizes, checked and indeterminate states, disabled treatment, focus ring, interaction layer, workbench, standalone registry delivery, and local Code Connect mapping use literal Tailwind classes. The mapping preserves the live size, checked, and state property vocabulary under the Scrapscn React label."
       }
     },
     {
@@ -500,33 +1643,57 @@
       "canonical": {
         "indexPath": "static/app/components/core/chip/index.tsx",
         "sourcePaths": [
+          "static/app/components/core/chip/chip.snapshots.tsx",
+          "static/app/components/core/chip/chip.spec.tsx",
           "static/app/components/core/chip/chip.tsx",
-          "static/app/components/core/chip/index.tsx"
+          "static/app/components/core/chip/index.tsx",
+          "static/app/icons/iconClose.tsx",
+          "static/app/icons/svgIcon.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx"
         ],
         "publicExports": {
           "runtime": [
             "Chip"
           ],
           "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/chip.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "Chip"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "chip"
+        ],
+        "stories": [
+          "src/components/ui/chip.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/chip.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/chip.test.mjs",
+          "tests/types/chip-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=chip"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local chip implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Chip API, query text, xs, sm, and md geometry, readonly and dismissable discriminated states, exact close icon, workbench, production browser behavior, and standalone registry delivery use literal Tailwind classes. The canonical module has no Figma component."
       }
     },
     {
@@ -569,6 +1736,12 @@
             "inlineCodeStyles"
           ],
           "types": []
+        },
+        "excludedExports": {
+          "runtime": [
+            "inlineCodeStyles"
+          ],
+          "types": []
         }
       },
       "local": {
@@ -583,7 +1756,6 @@
             "CodeMessagesProvider",
             "InlineCode",
             "defaultCodeMessages",
-            "inlineCodeStyles",
             "useCodeMessages"
           ],
           "types": [
@@ -611,7 +1783,7 @@
       "completion": {
         "state": "complete",
         "complete": true,
-        "note": "Exact regular Scraps CodeBlock, InlineCode, reusable inline style recipe, translatable copy messages, Prism language loading, Sentry source notice, executable Storybook state assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component."
+        "note": "Exact regular Scraps InlineCode and CodeBlock consumer contracts, Prism behavior, styling, localization seam, shared Button and Tooltip composition, documented states, focused assertions, production playground behavior, and standalone registry delivery use Tailwind without a CSS-in-JS runtime. The canonical module has no Figma component. The explicit inlineCodeStyles exclusion is an Emotion SerializedStyles factory for styled-component composition, not a portable component export."
       }
     },
     {
@@ -619,18 +1791,34 @@
       "canonical": {
         "indexPath": "static/app/components/core/compactSelect/index.tsx",
         "sourcePaths": [
+          "static/app/components/core/button/button.tsx",
+          "static/app/components/core/checkbox/checkbox.tsx",
+          "static/app/components/core/compactSelect/compactSelect.mdx",
+          "static/app/components/core/compactSelect/compactSelect.spec.tsx",
           "static/app/components/core/compactSelect/compactSelect.tsx",
+          "static/app/components/core/compactSelect/composite.mdx",
+          "static/app/components/core/compactSelect/composite.spec.tsx",
           "static/app/components/core/compactSelect/composite.tsx",
           "static/app/components/core/compactSelect/control.tsx",
+          "static/app/components/core/compactSelect/gridList/index.tsx",
+          "static/app/components/core/compactSelect/gridList/option.tsx",
+          "static/app/components/core/compactSelect/gridList/section.tsx",
+          "static/app/components/core/compactSelect/highlightText.spec.tsx",
           "static/app/components/core/compactSelect/highlightText.tsx",
           "static/app/components/core/compactSelect/index.tsx",
           "static/app/components/core/compactSelect/list.tsx",
+          "static/app/components/core/compactSelect/listBox/index.spec.tsx",
           "static/app/components/core/compactSelect/listBox/index.tsx",
           "static/app/components/core/compactSelect/menuComponents.tsx",
           "static/app/components/core/compactSelect/styles.tsx",
           "static/app/components/core/compactSelect/types.tsx",
           "static/app/components/core/compactSelect/useVirtualizedItems.tsx",
-          "static/app/components/core/compactSelect/utils.tsx"
+          "static/app/components/core/compactSelect/utils.tsx",
+          "static/app/components/core/input/inputGroup.tsx",
+          "static/app/components/core/menuListItem/index.tsx",
+          "static/app/utils/search/fzf.spec.tsx",
+          "static/app/utils/search/fzf.tsx",
+          "static/app/utils/useOverlay.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -673,25 +1861,91 @@
             "SelectSectionWithKey",
             "SingleSelectProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/compact-select-support.tsx",
+          "src/components/ui/compact-select.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "CompactSelect",
+            "CompositeSelect",
+            "ControlContext",
+            "GridList",
+            "HighlightText",
+            "LeadWrap",
+            "ListBox",
+            "ListLabel",
+            "ListSeparator",
+            "ListWrap",
+            "MenuComponents",
+            "SectionGroup",
+            "SectionHeader",
+            "SectionSeparator",
+            "SectionTitle",
+            "SectionToggle",
+            "SectionToggles",
+            "SectionWrap",
+            "SelectFilterContext",
+            "SizeLimitMessage",
+            "TriggerLabel",
+            "getDisabledOptions",
+            "getEscapedKey",
+            "getHiddenOptions",
+            "getItemsWithKeys",
+            "getSearchConfig",
+            "getSelectedOptions",
+            "getSortedItems",
+            "itemIsSectionWithKey",
+            "useVirtualizedItems"
+          ],
+          "types": [
+            "CompactSelectOverlayState",
+            "CompactSelectSize",
+            "ListItemBase",
+            "MultipleSelectProps",
+            "SearchConfig",
+            "SearchMatchResult",
+            "SelectKey",
+            "SelectOption",
+            "SelectOptionOrSection",
+            "SelectOptionOrSectionWithKey",
+            "SelectOptionWithKey",
+            "SelectProps",
+            "SelectSection",
+            "SelectSectionWithKey",
+            "SingleSelectProps"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "compact-select"
+        ],
+        "stories": [
+          "src/components/ui/compact-select.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/compact-select.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/compact-select.test.mjs",
+          "tests/types/compact-select-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=compact-select"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local compact-select implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps CompactSelect and CompositeSelect public exports, controlled single and multiple selection, clear behavior, sections, search, highlighting, custom triggers, list and grid modes, focus, keyboard behavior, disabled options, select-all sections, virtualization, positioning options, menu composition, workbench, focused tests, and standalone registry delivery use literal Tailwind classes. Select option tooltipOptions inherit the shared TooltipProps.overlayStyle portable-contract input exclusion recorded in scope.excludedContractInputs. The canonical module has no Code Connect file or approved component property vocabulary to copy.",
+        "excludedContractInputs": [
+          "tooltip.overlayStyle.serializedStyles"
+        ]
       }
     },
     {
@@ -699,33 +1953,68 @@
       "canonical": {
         "indexPath": "static/app/components/core/disclosure/index.tsx",
         "sourcePaths": [
+          "package.json",
+          "static/app/components/core/button/button.tsx",
+          "static/app/components/core/disclosure/disclosure.mdx",
+          "static/app/components/core/disclosure/disclosure.spec.tsx",
           "static/app/components/core/disclosure/disclosure.tsx",
-          "static/app/components/core/disclosure/index.tsx"
+          "static/app/components/core/disclosure/index.tsx",
+          "static/app/components/core/layout/container.tsx",
+          "static/app/components/core/layout/flex.tsx",
+          "static/app/components/core/layout/index.tsx",
+          "static/app/components/core/layout/stack.tsx",
+          "static/app/components/core/layout/styles.tsx",
+          "static/app/components/core/text/index.tsx",
+          "static/app/components/core/text/text.tsx",
+          "static/app/icons/iconChevron.tsx",
+          "static/app/icons/svgIcon.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/theme.tsx"
         ],
         "publicExports": {
           "runtime": [
             "Disclosure"
           ],
           "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/disclosure.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "Disclosure"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "disclosure"
+        ],
+        "stories": [
+          "src/components/ui/disclosure.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/disclosure.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/disclosure.test.mjs",
+          "tests/types/disclosure-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=disclosure"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local disclosure implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Disclosure compound API, React Aria controlled and uncontrolled state, keyboard behavior, size and outline geometry, canonical chevron path, slots, workbench, production browser behavior, and standalone registry delivery use literal Tailwind classes. The canonical module has no Figma component."
       }
     },
     {
@@ -749,6 +2038,10 @@
           "types": [
             "DragHandleVariant"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -787,7 +2080,7 @@
       "completion": {
         "state": "complete",
         "complete": true,
-        "note": "Exact regular Scraps drag handle contract, pointer and keyboard behavior, focused assertions, and registry publication are present. The canonical module has no Figma component."
+        "note": "Exact regular Scraps drag handle line, target, orientation, ghost, held, focus, and reduced-motion states use literal Tailwind classes. Pointer and keyboard behavior, focused assertions, workbench, and standalone registry delivery are present. The canonical module has no Figma component."
       }
     },
     {
@@ -795,8 +2088,18 @@
       "canonical": {
         "indexPath": "static/app/components/core/drawer/index.tsx",
         "sourcePaths": [
+          "static/app/components/core/backdrop/backdrop.tsx",
           "static/app/components/core/drawer/components.tsx",
-          "static/app/components/core/drawer/index.tsx"
+          "static/app/components/core/drawer/index.spec.tsx",
+          "static/app/components/core/drawer/index.tsx",
+          "static/app/components/core/drawer/useDrawerResizing.tsx",
+          "static/app/components/core/hotkey/useHotkeys.tsx",
+          "static/app/components/core/slideOverPanel/slideOverPanel.tsx",
+          "static/app/components/core/useScrollLock.tsx",
+          "static/app/icons/iconClose.tsx",
+          "static/app/utils/createStorage.tsx",
+          "static/app/utils/localStorage.tsx",
+          "static/app/utils/useSyncedLocalStorageState.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -810,25 +2113,49 @@
             "DrawerConfig",
             "DrawerOptions"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/drawer.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "DrawerBody",
+            "DrawerHeader",
+            "GlobalDrawer",
+            "useDrawer",
+            "useDrawerContentContext"
+          ],
+          "types": [
+            "DrawerConfig",
+            "DrawerOptions"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "drawer"
+        ],
+        "stories": [
+          "src/components/ui/drawer.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/drawer.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/drawer.test.mjs",
+          "tests/types/drawer-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=drawer"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local drawer implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Regular Scraps Drawer is a Tailwind-only provider-scoped controller with blocking and passive modes, shared scroll locking, resizing, header and body composition, workbench, focused tests, and standalone registry delivery. The canonical module has no Code Connect mapping or Figma node."
       }
     },
     {
@@ -863,6 +2190,10 @@
             "EmptyState"
           ],
           "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -888,16 +2219,18 @@
           "tests/parity/empty-state.test.mjs",
           "tests/types/empty-state-types.test.tsx"
         ],
-        "codeConnect": [],
+        "codeConnect": [
+          "src/components/ui/empty-state.figma.ts"
+        ],
         "figmaNodes": [
           "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=13363-6895"
         ],
         "playgroundPath": "/?component=empty-state"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "The local EmptyState implementation, workbench, focused tests, and intended registry dependency URLs are present. Figma, Code Connect, and installation from the protected shared registry have not been verified."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps EmptyState structure, workbench, focused tests, server boundary, registry item, and local parserless Code Connect mapping are present. The mapping preserves the exact pinned MDX branch URL and has no property vocabulary to invent under the Scrapscn React label."
       }
     },
     {
@@ -908,7 +2241,6 @@
           "static/app/components/core/form/FormSearch.tsx",
           "static/app/components/core/form/autoSaveContext.tsx",
           "static/app/components/core/form/autoSaveForm.tsx",
-          "static/app/components/core/form/generatedFieldRegistry.ts",
           "static/app/components/core/form/index.ts",
           "static/app/components/core/form/layout/fieldGroup.tsx",
           "static/app/components/core/form/scrapsForm.tsx"
@@ -917,7 +2249,6 @@
           "runtime": [
             "AutoSaveContextProvider",
             "AutoSaveForm",
-            "FORM_FIELD_REGISTRY",
             "FieldGroup",
             "FormSearch",
             "defaultFormOptions",
@@ -929,25 +2260,58 @@
             "withForm"
           ],
           "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/form-auto-save-context.tsx",
+          "src/components/ui/form-context.ts",
+          "src/components/ui/form-fields.tsx",
+          "src/components/ui/form.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "AutoSaveContextProvider",
+            "AutoSaveForm",
+            "FieldGroup",
+            "FormSearch",
+            "defaultFormOptions",
+            "formOptions",
+            "setFieldErrors",
+            "useScrapsForm",
+            "useStore",
+            "withFieldGroup",
+            "withForm"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "form"
+        ],
+        "stories": [
+          "src/components/ui/form.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/form.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/form.test.mjs",
+          "tests/types/form-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=form"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local form implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Form consumer behavior is present: the 12-export barrel, 94-entry settings-search registry, TanStack form contexts, default validation, RequestError-only backend field mapping, canonical request-error messages, Base/Input/Number/Password/Radio/Range/Select/SelectAsync/Switch/TextArea/Meta/Layout bindings, confirmation lifecycle, auto-save failure recovery, multi-select save timing, focused tests, workbench, and standalone registry item. Bound submit and reset buttons retain the shared TooltipProps.overlayStyle portable-contract input exclusion in scope.excludedContractInputs. The canonical Form module has no Figma node or Code Connect property vocabulary.",
+        "excludedContractInputs": [
+          "tooltip.overlayStyle.serializedStyles"
+        ]
       }
     },
     {
@@ -981,8 +2345,13 @@
           "runtime": [
             "Hotkey",
             "Kbd",
+            "matchesHotkey",
             "useHotkeys"
           ],
+          "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
           "types": []
         }
       },
@@ -994,6 +2363,7 @@
           "runtime": [
             "Hotkey",
             "Kbd",
+            "matchesHotkey",
             "useHotkeys"
           ],
           "types": []
@@ -1017,7 +2387,7 @@
       "completion": {
         "state": "complete",
         "complete": true,
-        "note": "Exact regular Scraps Hotkey, Kbd, and useHotkeys display, platform mapping, layout-aware matching, listener lifecycle, tests, workbench, and self-contained registry delivery are present. The canonical module has no Figma component."
+        "note": "Exact regular Scraps Hotkey, Kbd, and useHotkeys display and behavior contracts use literal Tailwind classes. Platform mapping, listener lifecycle, tests, workbench, and self-contained registry delivery are present. The canonical module has no Figma component."
       }
     },
     {
@@ -1039,6 +2409,10 @@
           "types": [
             "ImageProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -1072,7 +2446,7 @@
       "completion": {
         "state": "complete",
         "complete": true,
-        "note": "Exact regular Scraps Image native contract, responsive dimensions and radius, focused assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component."
+        "note": "Exact regular Scraps Image native element contract, responsive dimensions, object fit, position, aspect ratio, and radius use the literal Tailwind Layout matrix. Focused assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component."
       }
     },
     {
@@ -1081,8 +2455,15 @@
         "indexPath": "static/app/components/core/info/index.tsx",
         "sourcePaths": [
           "static/app/components/core/info/index.tsx",
+          "static/app/components/core/info/infoText.spec.tsx",
           "static/app/components/core/info/infoText.tsx",
-          "static/app/components/core/info/infoTip.tsx"
+          "static/app/components/core/info/infoTip.tsx",
+          "static/app/icons/iconLock.tsx",
+          "static/app/icons/iconQuestion.tsx",
+          "static/app/icons/svgIcon.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/theme.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -1093,25 +2474,47 @@
           "types": [
             "InfoTextProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/info.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "DisabledTip",
+            "InfoText",
+            "InfoTip"
+          ],
+          "types": [
+            "InfoTextProps"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "info"
+        ],
+        "stories": [
+          "src/components/ui/info.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/info.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/e2e/templates.spec.ts",
+          "tests/parity/info.test.mjs",
+          "tests/types/info-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=info"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local info implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps InfoText, InfoTip, and DisabledTip APIs, overflow-only behavior, tooltip integration, focus handling, icon paths and sizes, workbench, production browser behavior, and standalone registry delivery use literal Tailwind classes. The canonical module has no Figma component."
       }
     },
     {
@@ -1119,12 +2522,36 @@
       "canonical": {
         "indexPath": "static/app/components/core/input/index.tsx",
         "sourcePaths": [
+          "package.json",
+          "static/app/components/core/button/button.tsx",
           "static/app/components/core/input/index.tsx",
+          "static/app/components/core/input/input.mdx",
+          "static/app/components/core/input/input.spec.tsx",
           "static/app/components/core/input/input.tsx",
+          "static/app/components/core/input/inputGroup.mdx",
+          "static/app/components/core/input/inputGroup.snapshots.tsx",
+          "static/app/components/core/input/inputGroup.spec.tsx",
           "static/app/components/core/input/inputGroup.tsx",
+          "static/app/components/core/input/inputStyles.tsx",
+          "static/app/components/core/input/numberDragInput.mdx",
           "static/app/components/core/input/numberDragInput.tsx",
+          "static/app/components/core/input/numberInput.mdx",
+          "static/app/components/core/input/numberInput.spec.tsx",
           "static/app/components/core/input/numberInput.tsx",
-          "static/app/components/core/input/useAutosizeInput.tsx"
+          "static/app/components/core/input/otpInput.tsx",
+          "static/app/components/core/input/useAutosizeInput.tsx",
+          "static/app/components/core/textarea/textarea.tsx",
+          "static/app/components/core/tooltip/tooltip.tsx",
+          "static/app/icons/iconArrow.tsx",
+          "static/app/icons/iconChevron.tsx",
+          "static/app/icons/svgIcon.tsx",
+          "static/app/locale.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/scraps/tokens/typography.tsx",
+          "static/app/utils/theme/theme.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -1132,12 +2559,17 @@
             "InputGroup",
             "NumberDragInput",
             "NumberInput",
+            "OTPInput",
             "useAutosizeInput"
           ],
           "types": [
             "InputProps",
             "InputStylesProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -1149,27 +2581,38 @@
           "runtime": [
             "Input",
             "InputGroup",
-            "InputGroupAddon",
-            "InputGroupButton",
-            "InputGroupInput",
-            "InputGroupText",
-            "InputGroupTextarea"
+            "NumberDragInput",
+            "NumberInput",
+            "OTPInput",
+            "useAutosizeInput"
           ],
-          "types": []
+          "types": [
+            "InputProps",
+            "InputStylesProps",
+            "NumberDragInput",
+            "OTPInputProps"
+          ]
         },
-        "registryItems": [],
+        "registryItems": [
+          "input"
+        ],
         "stories": [
           "src/components/ui/input.stories.tsx"
         ],
-        "tests": [],
+        "tests": [
+          "src/components/ui/input.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/input.test.mjs",
+          "tests/types/input-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=input"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Input, InputGroup, NumberInput, NumberDragInput, OTPInput, and useAutosizeInput contracts, native behavior, OTP format and completion behavior, measured compound padding, React Aria number semantics, pointer and keyboard adjustment, autosize cleanup, workbench, production browser behavior, and standalone registry delivery use literal Tailwind classes. The canonical module has no Input-specific Code Connect file or approved Input Figma node."
       }
     },
     {
@@ -1184,6 +2627,10 @@
           "runtime": [
             "default"
           ],
+          "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
           "types": []
         }
       },
@@ -1209,12 +2656,12 @@
         ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": "/?component=checkbox"
+        "playgroundPath": "/?component=interaction-state-layer"
       },
       "completion": {
         "state": "complete",
         "complete": true,
-        "note": "Exact state-layer contract, behavior stories, focused Storybook assertions, and registry publication are present. The canonical module has no Figma component."
+        "note": "Exact state-layer consumer contract and parent hover, press, selection, expansion, and disabled behavior use literal Tailwind selectors. Focused Storybook assertions, registry publication, and the checkbox playground integration are present. The canonical module has no Figma component."
       }
     },
     {
@@ -1256,6 +2703,10 @@
             "ResponsiveKey",
             "StackProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -1296,16 +2747,22 @@
           "src/components/ui/layout.stories.tsx"
         ],
         "tests": [
+          "src/components/ui/layout.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/layout-separator-ssr.test.mjs",
           "tests/parity/layout-separator.test.mjs"
         ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": "/?component=checkbox"
+        "playgroundPath": "/?component=layout"
       },
       "completion": {
         "state": "complete",
         "complete": true,
-        "note": "Exact regular Scraps layout exports, responsive container and viewport cascade, focused assertions, and registry publication are present. The canonical module has no Figma component."
+        "note": "Exact regular Scraps Container, Flex, Grid, Stack, Surface, responsive cascade, container-query behavior, workbench, focused tests, and standalone registry delivery use generated literal Tailwind classes for every finite render-function domain. Ordinary intrinsic elements retain inline CSS-variable support for arbitrary CSSProperties values. The no-wrapper render-function form accepts finite fields and rejects CSS-in-JS-coupled arbitrary fields; migrate those values to an owned element or static Tailwind/CSS in the target component.",
+        "excludedContractInputs": [
+          "layout.renderFunction.arbitraryCssProperties"
+        ]
       }
     },
     {
@@ -1336,6 +2793,10 @@
           "types": [
             "LinkProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -1417,6 +2878,10 @@
             "IndeterminateLoader"
           ],
           "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -1448,9 +2913,9 @@
         "playgroundPath": "/?component=loader"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "The local Loader implementation, template-backed workbench, server evidence, focused tests, and local registry item are present. The shared hosted Layout and Text registry dependencies are protected, so public dependency installation is not verified. No canonical Loader Figma node is recorded."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Loader API, progress semantics, server boundary, workbench, template workflow, production browser behavior, and standalone registry delivery use literal Tailwind classes with static keyframes in plain CSS. The canonical module has no Figma component."
       }
     },
     {
@@ -1458,9 +2923,28 @@
       "canonical": {
         "indexPath": "static/app/components/core/markdown/index.tsx",
         "sourcePaths": [
+          "package.json",
+          "static/app/components/core/checkbox/checkbox.tsx",
+          "static/app/components/core/code/codeBlock.tsx",
+          "static/app/components/core/code/inlineCode.tsx",
+          "static/app/components/core/layout/index.tsx",
+          "static/app/components/core/link/index.tsx",
+          "static/app/components/core/markdown/defaultComponents.tsx",
           "static/app/components/core/markdown/index.tsx",
+          "static/app/components/core/markdown/markdown.mdx",
+          "static/app/components/core/markdown/markdown.spec.tsx",
           "static/app/components/core/markdown/markdown.tsx",
-          "static/app/components/core/markdown/useStreamingAnimation.ts"
+          "static/app/components/core/markdown/token.tsx",
+          "static/app/components/core/markdown/useStreamingAnimation.ts",
+          "static/app/components/core/quote/quote.tsx",
+          "static/app/components/core/separator/separator.tsx",
+          "static/app/components/core/text/index.tsx",
+          "static/app/utils/marked/extensions/index.ts",
+          "static/app/utils/marked/extensions/tag.spec.ts",
+          "static/app/utils/marked/extensions/tag.ts",
+          "static/app/utils/marked/marked.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -1471,25 +2955,76 @@
           "types": [
             "MarkdownProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/markdown-default-components.tsx",
+          "src/components/ui/markdown-token.tsx",
+          "src/components/ui/markdown.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "Checkbox",
+            "DefaultBlockquote",
+            "DefaultCodeBlock",
+            "DefaultEmphasis",
+            "DefaultHeading",
+            "DefaultHorizontalRule",
+            "DefaultHtmlBlock",
+            "DefaultInlineCode",
+            "DefaultLineBreak",
+            "DefaultLink",
+            "DefaultListItem",
+            "DefaultOrderedList",
+            "DefaultParagraph",
+            "DefaultStrikethrough",
+            "DefaultStrong",
+            "DefaultTable",
+            "DefaultTableBody",
+            "DefaultTableCell",
+            "DefaultTableHead",
+            "DefaultTableHeaderCell",
+            "DefaultTableRow",
+            "DefaultTag",
+            "DefaultTaskList",
+            "DefaultTaskListItem",
+            "DefaultText",
+            "DefaultUnorderedList",
+            "Markdown",
+            "MarkdownTokenView",
+            "streamingAnimationStyles",
+            "useTextDecodeAnimation"
+          ],
+          "types": [
+            "MarkdownProps"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "markdown"
+        ],
+        "stories": [
+          "src/components/ui/markdown.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/markdown.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/e2e/templates.spec.ts",
+          "tests/parity/markdown.test.mjs",
+          "tests/types/markdown-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=markdown"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local markdown implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Markdown exports, marked token and custom tag parsing, non-overridable link and HTML safety, component overrides, default composition, grapheme-safe streaming decode behavior, workbench, production browser behavior, and a locally built registry artifact with a validated dependency closure use literal Tailwind classes and static CSS. Hosted registry installation is a separate release gate. The canonical module has no Figma node or Code Connect source."
       }
     },
     {
@@ -1509,25 +3044,50 @@
           "types": [
             "MenuListItemProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/menu-list-item.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "InnerWrap",
+            "LeadingItems",
+            "MenuListItem"
+          ],
+          "types": [
+            "MenuListItemProps"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "menu-list-item"
+        ],
+        "stories": [
+          "src/components/ui/menu-list-item.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/menu-list-item.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/e2e/templates.spec.ts",
+          "tests/parity/menu-list-item.test.mjs",
+          "tests/types/menu-list-item-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=menu-list-item"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local menu-list-item implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps MenuListItem API, states, slots, tooltip, fixed details overlay, workbench, production browser behavior, and standalone registry delivery use literal Tailwind classes. MenuListItemProps.tooltipOptions inherits the shared TooltipProps.overlayStyle portable-contract input exclusion recorded in scope.excludedContractInputs. The canonical module has no MenuListItem Figma node.",
+        "excludedContractInputs": [
+          "tooltip.overlayStyle.serializedStyles"
+        ]
       }
     },
     {
@@ -1535,8 +3095,16 @@
       "canonical": {
         "indexPath": "static/app/components/core/modal/index.tsx",
         "sourcePaths": [
+          "static/app/components/core/backdrop/backdrop.tsx",
+          "static/app/components/core/layout/index.tsx",
           "static/app/components/core/modal/components.tsx",
-          "static/app/components/core/modal/index.tsx"
+          "static/app/components/core/modal/index.spec.tsx",
+          "static/app/components/core/modal/index.tsx",
+          "static/app/components/core/modal/modal.mdx",
+          "static/app/components/core/useScrollLock.tsx",
+          "static/app/icons/iconClose.tsx",
+          "static/app/stores/modalStore.tsx",
+          "static/app/utils/theme/theme.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -1550,25 +3118,53 @@
           "types": [
             "ModalTypes"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/modal.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "GlobalModal",
+            "ModalBody",
+            "ModalFooter",
+            "makeClosableHeader",
+            "makeCloseButton",
+            "useModal"
+          ],
+          "types": [
+            "ModalTypes"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "modal"
+        ],
+        "stories": [
+          "src/components/ui/modal.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/modal.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/modal.test.mjs",
+          "tests/types/modal-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=modal"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local modal implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps GlobalModal singleton render-prop contract, close modes and reasons, focus trap, focus restore, scroll lock, root hiding, responsive motion, nested CompactSelect Escape behavior, workbench, focused tests, and standalone registry delivery use literal Tailwind classes. The returned CloseButton inherits the shared TooltipProps.overlayStyle portable-contract input exclusion recorded in scope.excludedContractInputs. The separate ModalOptions.modalCss Emotion interpolation input is owner-authorized and recorded in scope.excludedContractInputs; local modalCss accepts Tailwind classes only. The canonical module has no Code Connect mapping or Figma node.",
+        "excludedContractInputs": [
+          "modal.modalCss.interpolation",
+          "tooltip.overlayStyle.serializedStyles"
+        ]
       }
     },
     {
@@ -1576,36 +3172,77 @@
       "canonical": {
         "indexPath": "static/app/components/core/pagination/index.tsx",
         "sourcePaths": [
+          "static/app/components/core/button/button.tsx",
+          "static/app/components/core/button/types.tsx",
+          "static/app/components/core/layout/flex.tsx",
+          "static/app/components/core/layout/grid.tsx",
+          "static/app/components/core/layout/index.tsx",
+          "static/app/components/core/layout/styles.tsx",
           "static/app/components/core/pagination/index.tsx",
-          "static/app/components/core/pagination/pagination.tsx"
+          "static/app/components/core/pagination/pagination.mdx",
+          "static/app/components/core/pagination/pagination.spec.tsx",
+          "static/app/components/core/pagination/pagination.tsx",
+          "static/app/icons/iconChevron.tsx",
+          "static/app/icons/svgIcon.tsx",
+          "static/app/locale.tsx",
+          "static/app/utils/cursor.tsx",
+          "static/app/utils/defined.tsx",
+          "static/app/utils/parseLinkHeader.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/theme.tsx",
+          "static/app/utils/useLocation.tsx",
+          "static/app/utils/useNavigate.tsx"
         ],
         "publicExports": {
           "runtime": [
             "Pagination",
-            "getPaginationCaption"
+            "useGetPaginationCaption"
           ],
           "types": [
             "CursorHandler"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/pagination.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
-          "types": []
+          "runtime": [
+            "Pagination",
+            "useGetPaginationCaption"
+          ],
+          "types": [
+            "CursorHandler"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "pagination"
+        ],
+        "stories": [
+          "src/components/ui/pagination.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/pagination.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/pagination.test.mjs",
+          "tests/types/pagination-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=pagination"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local pagination implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Pagination, Link header parsing, cursor caption, button geometry, callback signature, standalone browser navigation, workbench, production browser behavior, and standalone registry delivery use literal Tailwind classes. The canonical module has no Figma component."
       }
     },
     {
@@ -1614,8 +3251,10 @@
         "indexPath": "static/app/components/core/pictureInPicture/index.tsx",
         "sourcePaths": [
           "static/app/components/core/pictureInPicture/index.tsx",
+          "static/app/components/core/pictureInPicture/pictureInPicture.spec.tsx",
           "static/app/components/core/pictureInPicture/pictureInPicture.tsx",
-          "static/app/components/core/pictureInPicture/pictureInPicturePortal.tsx"
+          "static/app/components/core/pictureInPicture/pictureInPicturePortal.tsx",
+          "static/app/types/documentPictureInPicture.d.ts"
         ],
         "publicExports": {
           "runtime": [
@@ -1624,25 +3263,46 @@
             "usePictureInPicture"
           ],
           "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/picture-in-picture-portal.tsx",
+          "src/components/ui/picture-in-picture.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "PictureInPicturePortal",
+            "PictureInPictureProvider",
+            "usePictureInPicture"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "picture-in-picture"
+        ],
+        "stories": [
+          "src/components/ui/picture-in-picture.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/picture-in-picture.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/e2e/templates.spec.ts",
+          "tests/parity/picture-in-picture.test.mjs",
+          "tests/types/picture-in-picture-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=picture-in-picture"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local picture-in-picture implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps PictureInPicture provider, hook, portal, native window lifecycle, synchronous compiled Tailwind CSS transfer into the isolated browser-created document, relative asset resolution, theme synchronization, tooltip container, workbench, production browser behavior, and standalone registry delivery are present without a CSS-in-JS runtime or main-document style injection. The canonical module has no approved PictureInPicture Figma node."
       }
     },
     {
@@ -1678,6 +3338,10 @@
           "types": [
             "QuoteProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -1712,7 +3376,7 @@
       "completion": {
         "state": "complete",
         "complete": true,
-        "note": "Exact regular Scraps Quote semantic structure, rail geometry, optional citation source, server-component evidence, focused assertions, workbench, and dependency-based registry delivery are present. The canonical module has no Figma component."
+        "note": "Exact regular Scraps Quote API, semantics, rail geometry, source variants, server boundary, workbench, production browser behavior, and standalone registry delivery use literal Tailwind classes. The canonical module has no Figma component."
       }
     },
     {
@@ -1728,36 +3392,46 @@
             "Radio"
           ],
           "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
         "implementationPaths": [
-          "src/components/ui/radio-group.tsx"
+          "src/components/ui/radio.tsx"
         ],
         "implementedExports": {
           "runtime": [
-            "RadioGroup",
-            "RadioGroupItem"
+            "Radio"
           ],
           "types": []
         },
         "registryItems": [
-          "radio-group"
+          "radio"
         ],
         "stories": [
-          "src/components/ui/radio-group.stories.tsx"
+          "src/components/ui/radio.stories.tsx"
         ],
-        "tests": [],
-        "codeConnect": [],
+        "tests": [
+          "src/components/ui/radio.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/radio.test.mjs",
+          "tests/types/radio-types.test.tsx"
+        ],
+        "codeConnect": [
+          "src/components/ui/radio.figma.ts"
+        ],
         "figmaNodes": [
           "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3482-4251"
         ],
-        "playgroundPath": null
+        "playgroundPath": "/?component=radio"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Radio API, native form behavior, xs, sm, and md geometry, checked and disabled states, focus treatment, motion, workbench, production browser behavior, standalone registry delivery, and local Code Connect mapping use literal Tailwind classes. The mapping preserves the live size, checked, and state property vocabulary under the Scrapscn React label."
       }
     },
     {
@@ -1773,6 +3447,10 @@
           "runtime": [
             "RevealOnHover"
           ],
+          "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
           "types": []
         }
       },
@@ -1805,7 +3483,7 @@
       "completion": {
         "state": "complete",
         "complete": true,
-        "note": "Exact regular Scraps RevealOnHover render branches, visibility behavior, focused assertions, and registry publication are present. The canonical module has no Figma component."
+        "note": "Exact regular Scraps RevealOnHover render branches, hover and focus visibility, timing, and reduced-motion behavior use literal Tailwind selectors and the Tailwind Layout clone. Focused assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component."
       }
     },
     {
@@ -1813,13 +3491,28 @@
       "canonical": {
         "indexPath": "static/app/components/core/segmentedControl/index.tsx",
         "sourcePaths": [
+          "static/app/components/core/button/styles.tsx",
           "static/app/components/core/segmentedControl/index.tsx",
-          "static/app/components/core/segmentedControl/segmentedControl.tsx"
+          "static/app/components/core/segmentedControl/segmentedControl.mdx",
+          "static/app/components/core/segmentedControl/segmentedControl.spec.tsx",
+          "static/app/components/core/segmentedControl/segmentedControl.tsx",
+          "static/app/components/core/tooltip/tooltip.tsx",
+          "static/app/utils/theme/scraps/theme/base.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/scraps/tokens/typography.tsx",
+          "static/app/utils/theme/theme.tsx"
         ],
         "publicExports": {
           "runtime": [
             "SegmentedControl"
           ],
+          "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
           "types": []
         }
       },
@@ -1829,8 +3522,7 @@
         ],
         "implementedExports": {
           "runtime": [
-            "SegmentedControl",
-            "SegmentedControlItem"
+            "SegmentedControl"
           ],
           "types": []
         },
@@ -1840,15 +3532,23 @@
         "stories": [
           "src/components/ui/segmented-control.stories.tsx"
         ],
-        "tests": [],
+        "tests": [
+          "src/components/ui/segmented-control.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/segmented-control.test.mjs",
+          "tests/types/segmented-control-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=segmented-control"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "SegmentedControl behavior, exact Tailwind styling, workbench, focused tests, and standalone registry delivery are present. The explicit portable-contract input exclusion for TooltipProps.overlayStyle is owner-authorized and recorded in scope.excludedContractInputs. The canonical MDX Figma resource resolves to frame 384:2119 named Button, so it provides no SegmentedControl component or property vocabulary to map.",
+        "excludedContractInputs": [
+          "tooltip.overlayStyle.serializedStyles"
+        ]
       }
     },
     {
@@ -1856,10 +3556,22 @@
       "canonical": {
         "indexPath": "static/app/components/core/select/index.tsx",
         "sourcePaths": [
+          "package.json",
           "static/app/components/core/select/index.tsx",
           "static/app/components/core/select/option.tsx",
+          "static/app/components/core/select/select.mdx",
           "static/app/components/core/select/select.tsx",
-          "static/app/components/core/select/types.tsx"
+          "static/app/components/core/select/types.tsx",
+          "static/app/components/forms/controls/reactSelectWrapper.tsx",
+          "static/app/icons/iconAdd.tsx",
+          "static/app/icons/iconCheckmark.tsx",
+          "static/app/icons/iconChevron.tsx",
+          "static/app/icons/iconClose.tsx",
+          "static/app/icons/svgIcon.tsx",
+          "static/app/types/core.tsx",
+          "static/app/utils/convertFromSelect2Choices.tsx",
+          "static/app/utils/defined.tsx",
+          "static/app/utils/theme/theme.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -1873,40 +3585,55 @@
             "SelectValue",
             "StylesConfig"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
         "implementationPaths": [
+          "src/components/ui/body-scroll-lock.ts",
+          "src/components/ui/select-types.ts",
           "src/components/ui/select.tsx"
         ],
         "implementedExports": {
           "runtime": [
+            "CheckWrap",
             "Select",
-            "SelectContent",
-            "SelectGroup",
-            "SelectItem",
-            "SelectLabel",
-            "SelectScrollDownButton",
-            "SelectScrollUpButton",
-            "SelectSeparator",
-            "SelectTrigger",
-            "SelectValue"
+            "SelectOption"
           ],
-          "types": []
+          "types": [
+            "ControlProps",
+            "GeneralSelectValue",
+            "SelectValue",
+            "StylesConfig"
+          ]
         },
-        "registryItems": [],
+        "registryItems": [
+          "select"
+        ],
         "stories": [
           "src/components/ui/select.stories.tsx"
         ],
-        "tests": [],
+        "tests": [
+          "src/components/ui/select.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/select.test.mjs",
+          "tests/types/select-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=select"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Select exports, discriminated value contracts, controlled and default state, async and creatable behavior, form serialization, keyboard and pointer actions, portal placement, 25 replacement slots, workbench, focused tests, and standalone registry delivery use literal Tailwind classes and pinned theme tokens. Flat StylesConfig declarations and every nested selector pattern used by pinned monolith callers apply to the default DOM. Replacement components receive the complete callback result through getStyles. The open-ended arbitrary nested-selector input is an owner-authorized portable-contract exclusion recorded in scope.excludedContractInputs because applying unknown runtime selectors would require CSS-in-JS or stylesheet injection. SelectValue also inherits the shared TooltipProps.overlayStyle exclusion. The canonical Select MDX resource resolves to the generic Button node, so Select has no Code Connect mapping or Figma property vocabulary.",
+        "excludedContractInputs": [
+          "select.stylesConfig.arbitraryNestedSelectors",
+          "tooltip.overlayStyle.serializedStyles"
+        ]
       }
     },
     {
@@ -1924,6 +3651,10 @@
           "types": [
             "SeparatorProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -1945,16 +3676,19 @@
           "src/components/ui/separator.stories.tsx"
         ],
         "tests": [
+          "src/components/ui/layout.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/layout-separator-ssr.test.mjs",
           "tests/parity/layout-separator.test.mjs"
         ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": "/?component=checkbox"
+        "playgroundPath": "/?component=separator"
       },
       "completion": {
         "state": "complete",
         "complete": true,
-        "note": "Exact regular Scraps native hr separator contract, focused assertions, and registry publication are present. The canonical module has no Figma component."
+        "note": "Exact regular Scraps Separator geometry, directional semantic borders, responsive spacing, Stack orientation behavior, workbench, and standalone registry delivery use the shared literal Tailwind property and breakpoint matrix."
       }
     },
     {
@@ -1980,6 +3714,10 @@
           "runtime": [
             "SlideOverPanel"
           ],
+          "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
           "types": []
         }
       },
@@ -2010,9 +3748,9 @@
         "playgroundPath": "/?component=slide-over-panel"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "The local SlideOverPanel implementation, navigation-offset environment seam, boundary context, deferred-content workbench, focused tests, and self-contained local registry item are present. The hosted registry endpoint is protected, so public installation is not verified. No canonical Figma node is recorded."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps SlideOverPanel API, deferred content, motion, navigation offset, boundary context, responsive placement, theme surface, workbench, and standalone registry delivery use literal Tailwind classes. The canonical module has no Figma component."
       }
     },
     {
@@ -2021,6 +3759,9 @@
         "indexPath": "static/app/components/core/slider/index.tsx",
         "sourcePaths": [
           "static/app/components/core/slider/index.tsx",
+          "static/app/components/core/slider/slider.figma.tsx",
+          "static/app/components/core/slider/slider.mdx",
+          "static/app/components/core/slider/slider.spec.tsx",
           "static/app/components/core/slider/slider.tsx"
         ],
         "publicExports": {
@@ -2030,6 +3771,10 @@
           "types": [
             "SliderProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -2050,17 +3795,24 @@
         "stories": [
           "src/components/ui/slider.stories.tsx"
         ],
-        "tests": [],
-        "codeConnect": [],
+        "tests": [
+          "src/components/ui/slider.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/slider.test.mjs",
+          "tests/types/slider-types.test.tsx"
+        ],
+        "codeConnect": [
+          "src/components/ui/slider.figma.ts"
+        ],
         "figmaNodes": [
           "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3538-6616"
         ],
-        "playgroundPath": null
+        "playgroundPath": "/?component=slider"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Slider API, React Aria behavior, geometry, registry, workbench, focused tests, and local parserless Code Connect mapping are present. The canonical mapping has an exact empty props map, so the local mapping intentionally emits no property access under the Scrapscn React label."
       }
     },
     {
@@ -2078,6 +3830,10 @@
             "slot",
             "withSlots"
           ],
+          "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
           "types": []
         }
       },
@@ -2100,11 +3856,12 @@
         ],
         "tests": [
           "src/components/ui/slot.test.tsx",
+          "tests/e2e/playground.spec.ts",
           "tests/parity/slot.test.mjs"
         ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": "/?component=checkbox"
+        "playgroundPath": "/?component=slot"
       },
       "completion": {
         "state": "complete",
@@ -2129,6 +3886,10 @@
           "types": [
             "SplitPanelHandle"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -2162,7 +3923,7 @@
       "completion": {
         "state": "complete",
         "complete": true,
-        "note": "Exact regular Scraps SplitPanel contract, sizing behavior, focused assertions, and registry publication are present. The canonical module has no Figma component."
+        "note": "Exact regular Scraps SplitPanel contract, pane geometry, sizing, iframe drag lock, and responsive composition use literal Tailwind selectors and the Tailwind Layout clone. Focused assertions, workbench, and self-contained registry delivery are present. The canonical module has no Figma component."
       }
     },
     {
@@ -2181,6 +3942,10 @@
           "runtime": [
             "StatusIndicator"
           ],
+          "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
           "types": []
         }
       },
@@ -2213,7 +3978,7 @@
       "completion": {
         "state": "complete",
         "complete": true,
-        "note": "Exact regular Scraps StatusIndicator animation, accessibility, focused assertions, and registry publication are present. The canonical module has no Figma component."
+        "note": "Exact regular Scraps StatusIndicator geometry, semantic tokens, accessibility, and finite or infinite motion use literal Tailwind classes with a keyframes-only CSS resource. Focused assertions, workbench, and standalone registry delivery are present. The canonical module has no Figma component."
       }
     },
     {
@@ -2222,6 +3987,10 @@
         "indexPath": "static/app/components/core/switch/index.tsx",
         "sourcePaths": [
           "static/app/components/core/switch/index.tsx",
+          "static/app/components/core/switch/switch.figma.tsx",
+          "static/app/components/core/switch/switch.mdx",
+          "static/app/components/core/switch/switch.snapshots.tsx",
+          "static/app/components/core/switch/switch.spec.tsx",
           "static/app/components/core/switch/switch.tsx"
         ],
         "publicExports": {
@@ -2231,6 +4000,10 @@
           "types": [
             "SwitchProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -2241,23 +4014,34 @@
           "runtime": [
             "Switch"
           ],
-          "types": []
+          "types": [
+            "SwitchProps"
+          ]
         },
-        "registryItems": [],
+        "registryItems": [
+          "switch"
+        ],
         "stories": [
           "src/components/ui/switch.stories.tsx"
         ],
-        "tests": [],
-        "codeConnect": [],
+        "tests": [
+          "src/components/ui/switch.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/switch.test.mjs",
+          "tests/types/switch-types.test.tsx"
+        ],
+        "codeConnect": [
+          "src/components/ui/switch.figma.ts"
+        ],
         "figmaNodes": [
           "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3277-4566"
         ],
-        "playgroundPath": null
+        "playgroundPath": "/?component=switch"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Switch API, behavior, visual states, registry, workbench, focused tests, and local parserless Code Connect mapping are present. The mapping preserves exactly the canonical size sm|lg and checked boolean vocabulary under the Scrapscn React label."
       }
     },
     {
@@ -2280,11 +4064,19 @@
             "TABLE_HEAD_ROW_HEIGHT",
             "Table",
             "TableResizer",
-            "TableStatusCell"
+            "TableStatusCell",
+            "emptyCellStyle",
+            "fullWidthCellStyle",
+            "statusCellStyle",
+            "useTableElement"
           ],
           "types": [
             "TableColumnConfig"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -2298,7 +4090,11 @@
             "TABLE_HEAD_ROW_HEIGHT",
             "Table",
             "TableResizer",
-            "TableStatusCell"
+            "TableStatusCell",
+            "emptyCellStyle",
+            "fullWidthCellStyle",
+            "statusCellStyle",
+            "useTableElement"
           ],
           "types": [
             "TableColumnConfig"
@@ -2323,7 +4119,7 @@
       "completion": {
         "state": "complete",
         "complete": true,
-        "note": "Exact regular Scraps Table compound contract, column sizing, resize and sort behavior, focused assertions, and registry publication are present. The canonical module has no Figma component."
+        "note": "Exact regular Scraps Table grid, subgrid, sticky head, divider, sortable header, overflow tooltip, status, resizer styling and behavior, workbench, production browser behavior, and standalone registry delivery use literal Tailwind classes. The canonical module has no Figma component."
       }
     },
     {
@@ -2331,11 +4127,25 @@
       "canonical": {
         "indexPath": "static/app/components/core/tabs/index.tsx",
         "sourcePaths": [
+          "static/app/components/core/compactSelect/index.tsx",
+          "static/app/components/core/layout/index.tsx",
+          "static/app/components/core/link/index.tsx",
           "static/app/components/core/tabs/index.tsx",
           "static/app/components/core/tabs/item.tsx",
+          "static/app/components/core/tabs/tab.tsx",
+          "static/app/components/core/tabs/tabList.snapshots.tsx",
           "static/app/components/core/tabs/tabList.tsx",
           "static/app/components/core/tabs/tabPanels.tsx",
-          "static/app/components/core/tabs/tabs.tsx"
+          "static/app/components/core/tabs/tabs.mdx",
+          "static/app/components/core/tabs/tabs.spec.tsx",
+          "static/app/components/core/tabs/tabs.tsx",
+          "static/app/components/core/tabs/utils.tsx",
+          "static/app/components/core/tooltip/index.tsx",
+          "static/app/icons/iconEllipsis.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/theme.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -2347,6 +4157,10 @@
           "types": [
             "TabListItemProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -2355,27 +4169,38 @@
         ],
         "implementedExports": {
           "runtime": [
-            "Tabs",
-            "TabsContent",
-            "TabsList",
-            "TabsTrigger",
-            "tabsListVariants"
+            "TabList",
+            "TabPanels",
+            "TabStateProvider",
+            "Tabs"
           ],
-          "types": []
+          "types": [
+            "TabListItemProps"
+          ]
         },
-        "registryItems": [],
+        "registryItems": [
+          "tabs"
+        ],
         "stories": [
           "src/components/ui/tabs.stories.tsx"
         ],
-        "tests": [],
+        "tests": [
+          "src/components/ui/tabs.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/tabs.test.mjs",
+          "tests/types/tabs-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=tabs"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Tabs, TabStateProvider, TabList.Item, and TabPanels.Item contracts, controlled and uncontrolled selection, manual keyboard activation, disabled and hidden items, horizontal overflow, links, tooltips, sizes, orientations, variants, workbench, production browser behavior, and standalone registry delivery use literal Tailwind classes and pinned theme tokens. TabListItemProps.tooltip and the legacy internal tooltipProps path inherit the shared TooltipProps.overlayStyle portable-contract input exclusion recorded in scope.excludedContractInputs. The Tabs MDX resource resolves to the generic Button node, so Tabs has no Code Connect mapping or Figma property vocabulary.",
+        "excludedContractInputs": [
+          "tooltip.overlayStyle.serializedStyles"
+        ]
       }
     },
     {
@@ -2411,33 +4236,36 @@
             "TextProps",
             "TextPropsWithRenderFunction"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
         "implementationPaths": [
           "src/components/ui/heading.tsx",
-          "src/components/ui/kbd-styles.tsx",
           "src/components/ui/prose.tsx",
-          "src/components/ui/text-style-engine.tsx",
           "src/components/ui/text.tsx"
         ],
         "implementedExports": {
           "runtime": [
             "Heading",
             "Prose",
+            "ROBOTO_MONO_FONT_FAMILY_CLASS_NAMES",
             "Text",
-            "combineTextClassNames",
-            "createTextStyleResource",
-            "kbdStyles",
-            "resolveFontSize",
-            "resolveLineHeight",
-            "textDeclaration"
+            "headingStaticClassName",
+            "joinTextClassNames",
+            "resolveTextDisplay",
+            "resolveTextFontSize",
+            "resolveTextLineHeight",
+            "textStaticClassName",
+            "textTailwindClassName"
           ],
           "types": [
             "BaseTextProps",
             "HeadingProps",
             "HeadingSize",
-            "KbdStyleTheme",
             "ProseProps",
             "TextPrimitive",
             "TextProps",
@@ -2466,7 +4294,7 @@
       "completion": {
         "state": "complete",
         "complete": true,
-        "note": "Regular Scraps Text, Heading, and Prose contracts, responsive presentation, inline code and keycap prose composition, focused assertions, workbench, and registry delivery are present. The canonical module has no Figma component."
+        "note": "Exact regular Scraps Text, Heading, and Prose consumer contracts use a drift-checked finite literal Tailwind candidate matrix. Typography, responsive container and viewport precedence, deprecated inline styles, raw code and keycap recipes, focused assertions, workbench, production browser behavior, and standalone registry delivery are present. The canonical module has no Figma component."
       }
     },
     {
@@ -2474,8 +4302,18 @@
       "canonical": {
         "indexPath": "static/app/components/core/textarea/index.tsx",
         "sourcePaths": [
+          "package.json",
+          "static/app/components/core/input/inputStyles.tsx",
           "static/app/components/core/textarea/index.tsx",
-          "static/app/components/core/textarea/textarea.tsx"
+          "static/app/components/core/textarea/textarea.figma.tsx",
+          "static/app/components/core/textarea/textarea.spec.tsx",
+          "static/app/components/core/textarea/textarea.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/scraps/tokens/typography.tsx",
+          "static/app/utils/theme/theme.tsx"
         ],
         "publicExports": {
           "runtime": [
@@ -2484,6 +4322,10 @@
           "types": [
             "TextAreaProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -2492,23 +4334,37 @@
         ],
         "implementedExports": {
           "runtime": [
+            "TextArea",
             "Textarea"
           ],
-          "types": []
+          "types": [
+            "TextAreaProps"
+          ]
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
-        "codeConnect": [],
+        "registryItems": [
+          "textarea"
+        ],
+        "stories": [
+          "src/components/ui/textarea.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/textarea.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/parity/textarea.test.mjs",
+          "tests/types/textarea-types.test.tsx"
+        ],
+        "codeConnect": [
+          "src/components/ui/textarea.figma.ts"
+        ],
         "figmaNodes": [
           "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=3537-20061"
         ],
-        "playgroundPath": null
+        "playgroundPath": "/?component=textarea"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "A local implementation exists, but exact contract, behavior, visual, registry, and Figma gates have not all passed."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps TextArea consumer contract, native behavior, xs, sm, and md geometry, width-aware autosizing, monospace and disabled states, workbench, production browser behavior, standalone registry delivery, and local Code Connect mapping use literal Tailwind classes. The mapping preserves the pinned size and state Figma vocabulary under the Scrapscn React label."
       }
     },
     {
@@ -2516,33 +4372,76 @@
       "canonical": {
         "indexPath": "static/app/components/core/toast/index.tsx",
         "sourcePaths": [
+          "static/app/actionCreators/indicator.tsx",
+          "static/app/components/core/button/button.tsx",
+          "static/app/components/core/button/styles.tsx",
+          "static/app/components/core/button/types.tsx",
+          "static/app/components/core/layout/container.tsx",
+          "static/app/components/core/layout/flex.tsx",
+          "static/app/components/core/layout/index.tsx",
           "static/app/components/core/toast/index.tsx",
-          "static/app/components/core/toast/toast.tsx"
+          "static/app/components/core/toast/toast.mdx",
+          "static/app/components/core/toast/toast.tsx",
+          "static/app/components/indicators.spec.tsx",
+          "static/app/components/indicators.tsx",
+          "static/app/components/loadingIndicator.tsx",
+          "static/app/components/textOverflow.tsx",
+          "static/app/icons/iconCheckmark.tsx",
+          "static/app/icons/iconRefresh.tsx",
+          "static/app/icons/iconWarning.tsx",
+          "static/app/icons/svgIcon.tsx",
+          "static/app/icons/useIconDefaults.tsx",
+          "static/app/locale.tsx",
+          "static/app/utils/theme/scraps/theme/base.tsx",
+          "static/app/utils/theme/scraps/theme/dark.tsx",
+          "static/app/utils/theme/scraps/theme/light.tsx",
+          "static/app/utils/theme/scraps/tokens/color.tsx",
+          "static/app/utils/theme/scraps/tokens/size.tsx",
+          "static/app/utils/theme/theme.tsx",
+          "static/less/shared-components.less"
         ],
         "publicExports": {
           "runtime": [
             "Toast"
           ],
           "types": []
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
-        "implementationPaths": [],
+        "implementationPaths": [
+          "src/components/ui/toast.tsx"
+        ],
         "implementedExports": {
-          "runtime": [],
+          "runtime": [
+            "Toast"
+          ],
           "types": []
         },
-        "registryItems": [],
-        "stories": [],
-        "tests": [],
+        "registryItems": [
+          "toast"
+        ],
+        "stories": [
+          "src/components/ui/toast.stories.tsx"
+        ],
+        "tests": [
+          "src/components/ui/toast.test.tsx",
+          "tests/e2e/playground.spec.ts",
+          "tests/e2e/templates.spec.ts",
+          "tests/parity/toast.test.mjs",
+          "tests/types/toast-types.test.tsx"
+        ],
         "codeConnect": [],
         "figmaNodes": [],
-        "playgroundPath": null
+        "playgroundPath": "/?component=toast"
       },
       "completion": {
-        "state": "missing",
-        "complete": false,
-        "note": "No local toast implementation is mapped."
+        "state": "complete",
+        "complete": true,
+        "note": "Exact regular Scraps Toast API, indicator contract, motion, type rails, icons, spinner, dismiss and undo bubbling behavior, host locale delegation, workbench, production browser behavior, and standalone registry delivery use literal Tailwind classes. The Toast MDX URL is the generic Button node, not an approved Toast Figma node."
       }
     },
     {
@@ -2580,6 +4479,10 @@
           "types": [
             "TooltipProps"
           ]
+        },
+        "excludedExports": {
+          "runtime": [],
+          "types": []
         }
       },
       "local": {
@@ -2607,16 +4510,21 @@
           "tests/parity/tooltip.test.mjs",
           "tests/types/tooltip-types.test.tsx"
         ],
-        "codeConnect": [],
+        "codeConnect": [
+          "src/components/ui/tooltip.figma.ts"
+        ],
         "figmaNodes": [
           "https://www.figma.com/design/eTJz6aPgudMY9E6mzyZU0B?node-id=6775-627"
         ],
         "playgroundPath": "/?component=tooltip"
       },
       "completion": {
-        "state": "partial",
-        "complete": false,
-        "note": "The local Tooltip API, positioning, delay group, overflow observation, motion, workbench, focused tests, and self-contained registry item are present. The canonical Figma node and Code Connect mapping have not been verified."
+        "state": "complete",
+        "complete": true,
+        "note": "The local Tooltip API, synchronous disabled reset, positioning, delay group, overflow observation, motion, literal Tailwind styling, workbench, focused tests, production browser behavior, self-contained registry item, and local Code Connect mapping are present. The mapping preserves the pinned Text and position property vocabulary under the Scrapscn React label. CSSProperties overrides remain supported. The explicit portable-contract input exclusion for SerializedStyles is owner-authorized and recorded in scope.excludedContractInputs.",
+        "excludedContractInputs": [
+          "tooltip.overlayStyle.serializedStyles"
+        ]
       }
     }
   ]

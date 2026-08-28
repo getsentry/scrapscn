@@ -21,9 +21,7 @@ function defaultState(): RevealOnHoverWorkbenchState {
   };
 }
 
-function parseRevealOnHoverWorkbench(
-  params: URLSearchParams
-): RevealOnHoverWorkbenchState {
+function parseRevealOnHoverWorkbench(params: URLSearchParams): RevealOnHoverWorkbenchState {
   return {
     actions: params.get("revealActions") !== "false",
     custom: params.get("revealCustom") === "true",
@@ -64,13 +62,9 @@ function Toggle({
   );
 }
 
-export function RevealOnHoverWorkbench({
-  children,
-  onSearchChange,
-  sourceSearch,
-}: WorkbenchProps) {
+export function RevealOnHoverWorkbench({ children, onSearchChange, sourceSearch }: WorkbenchProps) {
   const [state, setState] = useState(() =>
-    parseRevealOnHoverWorkbench(new URLSearchParams(sourceSearch))
+    parseRevealOnHoverWorkbench(new URLSearchParams(sourceSearch)),
   );
   const [clicks, setClicks] = useState(0);
 
@@ -83,9 +77,7 @@ export function RevealOnHoverWorkbench({
     <div className="grid gap-2">
       <div className="mb-2">
         <h2 className="text-sm font-semibold">Reveal On Hover setup</h2>
-        <p className="text-xs text-muted-foreground">
-          Changes stay in the share URL.
-        </p>
+        <p className="text-xs text-muted-foreground">Changes stay in the share URL.</p>
       </div>
       <Toggle
         checked={state.visible}
@@ -136,18 +128,12 @@ export function RevealOnHoverWorkbench({
           )}
         </RevealOnHover>
       ) : (
-        <RevealOnHover
-          data-testid="reveal-flex-root"
-          justify="between"
-          width="100%"
-        >
+        <RevealOnHover data-testid="reveal-flex-root" justify="between" width="100%">
           <span>Issue row</span>
           {action}
         </RevealOnHover>
       )}
-      {state.interactive ? (
-        <output data-testid="reveal-clicks">Clicks: {clicks}</output>
-      ) : null}
+      {state.interactive ? <output data-testid="reveal-clicks">Clicks: {clicks}</output> : null}
     </div>
   );
 

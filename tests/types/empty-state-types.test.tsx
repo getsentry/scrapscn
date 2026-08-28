@@ -5,7 +5,12 @@ import { EmptyState } from "@/components/ui/empty-state";
 const ref = createRef<HTMLDivElement>();
 
 <EmptyState data-test-id="empty" ref={ref} title="No results" />;
-<EmptyState action={<button type="button">Create</button>} description="Adjust filters" illustration={<span>□</span>} title="No results" />;
+<EmptyState
+  action={<button type="button">Create</button>}
+  description="Adjust filters"
+  illustration={<span>□</span>}
+  title="No results"
+/>;
 
 // @ts-expect-error EmptyState owns its child composition.
 <EmptyState title="No results">children</EmptyState>;

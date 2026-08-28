@@ -30,7 +30,6 @@ test("publishes the drag handle with merge-safe theme tokens and a self-containe
 
   assert.deepEqual(dragHandle.registryDependencies, []);
   assert.deepEqual(dragHandle.dependencies, [
-    "@emotion/is-prop-valid",
     "@react-aria/interactions@3.28.1",
     "@react-aria/utils@3.34.1",
   ]);
@@ -49,32 +48,25 @@ test("publishes the drag handle with merge-safe theme tokens and a self-containe
   assert.deepEqual(
     dragHandle.files.map((file) => file.path),
     [
-      "src/components/ui/container-query-context.ts",
-      "src/components/ui/drag-handle.module.css",
       "src/components/ui/drag-handle.tsx",
-      "src/components/ui/layout-style-engine.ts",
-      "src/components/ui/layout.tsx",
-      "src/components/ui/separator.tsx",
       "src/components/ui/use-drag-move.tsx",
       "src/components/ui/use-drag-separator.tsx",
-    ]
+    ],
   );
 });
 
 test("keeps the exact regular Scraps line, target, states, tokens, and motion", async () => {
-  const styles = await readFile("src/components/ui/drag-handle.module.css", "utf8");
+  const source = await readFile("src/components/ui/drag-handle.tsx", "utf8");
 
-  assert.match(styles, /\.dragHandleLine\[data-orientation="horizontal"\]/);
-  assert.match(styles, /\.dragHandleLine\[data-orientation="vertical"\]/);
-  assert.equal(styles.match(/(?:width|height): 24px;/g)?.length, 2);
-  assert.equal(styles.match(/border-(?:left|top): 1px solid var\(--scraps-theme-border-primary\);/g)?.length, 2);
-  assert.equal(styles.match(/(?:width|height): 4px;/g)?.length, 2);
-  assert.equal(styles.match(/z-index: 9999;/g)?.length, 2);
-  assert.doesNotMatch(styles, /z-index: 40;/);
-  assert.match(styles, /\.dragHandleLine:hover::after,[\s\S]*\[data-is-held="true"\]::after[\s\S]*background: var\(--primary\);/);
-  assert.match(styles, /\.dragHandleLine\[data-variant="ghost"\]:hover,[\s\S]*:focus-visible,[\s\S]*\[data-is-held="true"\][\s\S]*border-color: var\(--scraps-theme-border-primary\);/);
-  assert.match(styles, /\.dragHandleLine:focus-visible[\s\S]*outline: 2px solid var\(--ring\);/);
-  assert.match(styles, /transition: background var\(--duration-slow\) var\(--ease-smooth\);/);
-  assert.match(styles, /transition: border-color var\(--duration-slow\) var\(--ease-smooth\);/);
-  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)[\s\S]*transition: none;/);
+  assert.match(source, /data-\[orientation=horizontal\]:before:w-6/);
+  assert.match(source, /data-\[orientation=vertical\]:before:h-6/);
+  assert.match(source, /data-\[orientation=horizontal\]:after:w-1/);
+  assert.match(source, /data-\[orientation=vertical\]:after:h-1/);
+  assert.equal(source.match(/z-\[9999\]/g)?.length, 2);
+  assert.match(source, /hover:after:bg-primary \[&\[data-is-held=true\]\]:after:bg-primary/);
+  assert.match(source, /\[&\[data-variant=ghost\]:focus-visible\]:border-/);
+  assert.match(source, /focus-visible:outline-2 focus-visible:outline-\[var\(--ring\)\]/);
+  assert.match(source, /duration-\[var\(--duration-slow\)\]/);
+  assert.match(source, /motion-reduce:transition-none motion-reduce:after:transition-none/);
+  assert.doesNotMatch(source, /\.module\.css|<Container/);
 });

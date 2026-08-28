@@ -1,0 +1,52 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "status-indicator",
+  "title": "Status Indicator",
+  "description": "Regular Scraps status dot with accessible finite and infinite pulse states.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/status-indicator.css",
+      "content": "@keyframes gentlePulse {\n  0%,\n  100% {\n    transform: scale(1);\n  }\n\n  33% {\n    transform: scale(0.95);\n  }\n\n  67% {\n    transform: scale(1.05);\n  }\n}\n\n@keyframes gentleSpin {\n  0% {\n    opacity: 0;\n    transform: scale(0.9) rotate(0);\n  }\n\n  75% {\n    opacity: 1;\n    transform: scale(1) rotate(1turn);\n  }\n\n  100% {\n    opacity: 0;\n    transform: scale(1.25) rotate(1turn);\n  }\n}\n",
+      "type": "registry:file",
+      "target": "src/components/ui/status-indicator.css"
+    },
+    {
+      "path": "src/components/ui/status-indicator.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nimport { cn } from \"../../lib/utils\";\n\nimport \"./status-indicator.css\";\n\nconst indicatorClasses = cn(\n  \"relative size-2 shrink-0\",\n  \"before:absolute before:-top-0.5 before:-left-0.5 before:size-3 before:rounded-[3px] before:bg-[var(--status-pulse)] before:content-['']\",\n  \"before:animate-[gentleSpin_2.2s_cubic-bezier(0.785,0.135,0.15,0.86)_var(--status-iterations)_var(--status-fill)]\",\n  \"after:absolute after:top-0 after:left-0 after:size-2 after:rounded-[4px] after:bg-[var(--status-dot)] after:content-['']\",\n  \"after:animate-[gentlePulse_2.2s_cubic-bezier(0.445,0.05,0.55,0.95)_var(--status-iterations)_var(--status-fill)]\",\n  \"motion-reduce:before:[transform:scale(1.25)_rotate(1turn)] motion-reduce:before:animate-none motion-reduce:before:opacity-0\",\n  \"motion-reduce:after:scale-100 motion-reduce:after:animate-none\",\n);\n\ntype StatusIndicatorVariant = \"accent\" | \"danger\" | \"warning\" | \"success\" | \"promotion\" | \"muted\";\ntype StatusIndicatorAnimationIterationCount = number | \"infinite\";\n\ninterface StatusIndicatorProps extends React.HTMLAttributes<HTMLSpanElement> {\n  animationIterationCount?: StatusIndicatorAnimationIterationCount;\n  variant: StatusIndicatorVariant;\n}\n\nconst statusIndicatorTokens: Record<StatusIndicatorVariant, { dot: string; pulse: string }> = {\n  accent: {\n    dot: \"var(--scraps-status-accent-dot, #7553ff)\",\n    pulse: \"var(--scraps-status-accent-pulse, #0008f012)\",\n  },\n  danger: {\n    dot: \"var(--scraps-status-danger-dot, #ff002b)\",\n    pulse: \"var(--scraps-status-danger-pulse, #f828081c)\",\n  },\n  warning: {\n    dot: \"var(--scraps-status-warning-dot, #ffce00)\",\n    pulse: \"var(--scraps-status-warning-pulse, #e0b01030)\",\n  },\n  success: {\n    dot: \"var(--scraps-status-success-dot, #00f261)\",\n    pulse: \"var(--scraps-status-success-pulse, #00b8001c)\",\n  },\n  promotion: {\n    dot: \"var(--scraps-status-promotion-dot, #fc5cb4)\",\n    pulse: \"var(--scraps-status-promotion-pulse, #f000901a)\",\n  },\n  muted: {\n    dot: \"var(--scraps-status-muted-dot, #c0bec6)\",\n    pulse: \"var(--scraps-status-muted-pulse, #0000200f)\",\n  },\n};\n\ntype StatusIndicatorStyle = React.CSSProperties & {\n  \"--status-dot\": string;\n  \"--status-fill\": \"forwards\" | \"none\";\n  \"--status-iterations\": StatusIndicatorAnimationIterationCount;\n  \"--status-pulse\": string;\n};\n\n/** Renders the regular Scraps status dot with an accessible finite or infinite pulse. */\nexport function StatusIndicator({\n  animationIterationCount = \"infinite\",\n  variant,\n  className,\n  role,\n  \"aria-label\": ariaLabel,\n  ...spanProps\n}: StatusIndicatorProps) {\n  const tokens = statusIndicatorTokens[variant];\n  const fill = animationIterationCount === \"infinite\" ? \"none\" : \"forwards\";\n  const style: StatusIndicatorStyle = {\n    ...spanProps.style,\n    \"--status-dot\": tokens.dot,\n    \"--status-fill\": fill,\n    \"--status-iterations\": animationIterationCount,\n    \"--status-pulse\": tokens.pulse,\n  };\n\n  return (\n    <span\n      {...spanProps}\n      aria-hidden={!ariaLabel && !role ? true : undefined}\n      aria-label={ariaLabel}\n      className={cn(indicatorClasses, className)}\n      role={role ?? (ariaLabel ? \"img\" : undefined)}\n      style={style}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "cssVars": {
+    "light": {
+      "scraps-status-accent-dot": "#7553ff",
+      "scraps-status-accent-pulse": "#0008f012",
+      "scraps-status-danger-dot": "#ff002b",
+      "scraps-status-danger-pulse": "#f828081c",
+      "scraps-status-warning-dot": "#ffce00",
+      "scraps-status-warning-pulse": "#e0b01030",
+      "scraps-status-success-dot": "#00f261",
+      "scraps-status-success-pulse": "#00b8001c",
+      "scraps-status-promotion-dot": "#fc5cb4",
+      "scraps-status-promotion-pulse": "#f000901a",
+      "scraps-status-muted-dot": "#c0bec6",
+      "scraps-status-muted-pulse": "#0000200f"
+    },
+    "dark": {
+      "scraps-status-accent-dot": "#7553ff",
+      "scraps-status-accent-pulse": "#4828b894",
+      "scraps-status-danger-dot": "#ff002b",
+      "scraps-status-danger-pulse": "#f8000033",
+      "scraps-status-warning-dot": "#ffce00",
+      "scraps-status-warning-pulse": "#e8380029",
+      "scraps-status-success-dot": "#00f261",
+      "scraps-status-success-pulse": "#00f8001f",
+      "scraps-status-promotion-dot": "#ff45a8",
+      "scraps-status-promotion-pulse": "#f800782e",
+      "scraps-status-muted-dot": "#898294",
+      "scraps-status-muted-pulse": "#c0a8f81a"
+    }
+  },
+  "type": "registry:ui"
+}

@@ -21,7 +21,7 @@ function getDragSeparatorCursor(
   orientation: Orientation,
   atMin: boolean,
   atMax: boolean,
-  isSizedFirst: boolean
+  isSizedFirst: boolean,
 ): React.CSSProperties["cursor"] {
   if (orientation === "horizontal") {
     if (atMin) return isSizedFirst ? "e-resize" : "w-resize";
@@ -55,7 +55,7 @@ export function useDragSeparator({
     orientation,
     min !== undefined && value !== undefined && value <= min,
     hasMax && value !== undefined && value >= max,
-    isSizedFirst
+    isSizedFirst,
   );
   return {
     cursor,

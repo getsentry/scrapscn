@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "quote",
+  "title": "Quote",
+  "description": "Regular Scraps semantic extended quotation with an optional source attribution and citation.",
+  "registryDependencies": [
+    "https://scrapscn.sentry.dev/r/layout.json",
+    "https://scrapscn.sentry.dev/r/text.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/quote.tsx",
+      "content": "import { type ReactNode } from \"react\";\n\nimport { Stack, type StackProps } from \"./layout\";\nimport { Text } from \"./text\";\n\nconst CONTENT_CLASS_NAMES = \"m-0 border-0 border-none p-0 pl-7\";\n\ninterface QuoteBaseProps {\n  children: ReactNode;\n  source?: {\n    author?: string;\n    href?: string;\n    label?: string;\n  };\n}\n\n/** The regular Scraps semantic extended quotation with optional source attribution. */\nexport type QuoteProps = QuoteBaseProps & Omit<StackProps<\"blockquote\">, \"children\">;\n\n/** Renders the pinned Scraps figure, citation, and 16px + 12px quote rail geometry. */\nexport function Quote(props: QuoteProps) {\n  const { children, ...spreadProps } = props;\n  return (\n    <Stack gap=\"md\" as=\"figure\" position=\"relative\" {...spreadProps}>\n      <hr\n        aria-orientation=\"vertical\"\n        className=\"absolute top-0 bottom-0 left-0 m-0 ml-3 box-content h-full w-px border-0 border-l border-solid border-l-[var(--scraps-theme-border-primary)] pl-4\"\n      />\n      <blockquote cite={props.source?.href} className={CONTENT_CLASS_NAMES}>\n        {children}\n      </blockquote>\n      {props.source ? (\n        <figcaption className={CONTENT_CLASS_NAMES}>\n          <Text as=\"p\">\n            &ndash;&nbsp;\n            {props.source.author}\n            {props.source.label ? (\n              <>\n                , <cite>{props.source.label}</cite>\n              </>\n            ) : null}\n          </Text>\n        </figcaption>\n      ) : null}\n    </Stack>\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

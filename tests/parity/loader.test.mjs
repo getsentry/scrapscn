@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-test("records the local regular Scraps Loader delivery without overclaiming", async () => {
+test("records the complete regular Scraps Loader delivery", async () => {
   const manifest = JSON.parse(await readFile("scraps-parity.json", "utf8"));
   const loader = manifest.modules.find(({ name }) => name === "loader");
   assert.deepEqual(loader.canonical.sourcePaths, [
@@ -32,9 +32,15 @@ test("records the local regular Scraps Loader delivery without overclaiming", as
     "static/app/utils/theme/types.tsx",
     "static/less/fonts.less",
   ]);
-  assert.deepEqual(loader.canonical.publicExports, { runtime: ["IndeterminateLoader"], types: [] });
+  assert.deepEqual(loader.canonical.publicExports, {
+    runtime: ["IndeterminateLoader"],
+    types: [],
+  });
   assert.deepEqual(loader.local.implementationPaths, ["src/components/ui/loader.tsx"]);
-  assert.deepEqual(loader.local.implementedExports, { runtime: ["IndeterminateLoader"], types: [] });
+  assert.deepEqual(loader.local.implementedExports, {
+    runtime: ["IndeterminateLoader"],
+    types: [],
+  });
   assert.deepEqual(loader.local.registryItems, ["loader"]);
   assert.deepEqual(loader.local.stories, ["src/components/ui/loader.stories.tsx"]);
   assert.deepEqual(loader.local.tests, [
@@ -48,22 +54,53 @@ test("records the local regular Scraps Loader delivery without overclaiming", as
   assert.deepEqual(loader.local.figmaNodes, []);
   assert.equal(loader.local.playgroundPath, "/?component=loader");
   assert.deepEqual(loader.completion, {
-    state: "partial",
-    complete: false,
-    note: "The local Loader implementation, template-backed workbench, server evidence, focused tests, and local registry item are present. The shared hosted Layout and Text registry dependencies are protected, so public dependency installation is not verified. No canonical Loader Figma node is recorded.",
+    state: "complete",
+    complete: true,
+    note: "Exact regular Scraps Loader API, progress semantics, server boundary, workbench, template workflow, production browser behavior, and standalone registry delivery use literal Tailwind classes with static keyframes in plain CSS. The canonical module has no Figma component.",
   });
 });
 
 test("publishes Loader with exact local package seams", async () => {
   const registry = JSON.parse(await readFile("registry.json", "utf8"));
   const item = registry.items.find(({ name }) => name === "loader");
-  assert.deepEqual(item.dependencies, ["@react-aria/utils@3.34.1", "framer-motion@12.38.0"]);
-  assert.deepEqual(item.registryDependencies, ["https://scrapscn.sentry.dev/r/layout.json", "https://scrapscn.sentry.dev/r/text.json"]);
+  assert.deepEqual(item.dependencies, ["@react-aria/utils@3.34.1"]);
+  assert.deepEqual(item.registryDependencies, []);
+  assert.deepEqual(item.files, [
+    {
+      path: "src/components/ui/loader.css",
+      type: "registry:file",
+      target: "src/components/ui/loader.css",
+    },
+    { path: "src/components/ui/loader.tsx", type: "registry:ui" },
+  ]);
 });
 
 test("keeps the canonical Loader visual and timing contract", async () => {
   const source = await readFile("src/components/ui/loader.tsx", "utf8");
-  const css = await readFile("src/components/ui/loader.module.css", "utf8");
-  for (const fragment of ["role=\"progressbar\"", "aria-label=\"Loading\"", "MESSAGE_INTERVAL_MS = 10_000", "mode=\"wait\"", "duration: 0.3", "useReducedMotion", "WIDTH = { MIN: 128, MAX: 400 }", '"--loader-track-color"', "color={color}", "style={trackStyle}"]) assert.ok(source.includes(fragment));
-  for (const fragment of ["round(down, 100% - 16px, 8px) + 16px", "mask-size: 16px 8px", "cubic-bezier(0.4, 0, 0.2, 1)", "left: -35%; right: 100%", "left: -200%; right: 100%", "prefers-reduced-motion: reduce"]) assert.ok(css.includes(fragment));
+  const css = await readFile("src/components/ui/loader.css", "utf8");
+  for (const fragment of [
+    'role="progressbar"',
+    'aria-label="Loading"',
+    "WIDTH = { MIN: 128, MAX: 400 }",
+    '"--loader-track-color"',
+    "color={color}",
+    "style={trackStyle}",
+    "scraps-loader-track-width",
+    "[mask-size:16px_8px]",
+    "cubic-bezier(0.4,0,0.2,1)",
+    "motion-reduce:animate-none",
+  ])
+    assert.ok(source.includes(fragment));
+  for (const fragment of [
+    "@layer utilities",
+    "round(down, 100% - 16px, 8px) + 16px",
+    "loader-indeterminate-slow",
+    "left: -35%",
+    "right: 100%",
+    "loader-indeterminate-fast",
+    "left: -200%",
+  ])
+    assert.ok(css.includes(fragment));
+  assert.doesNotMatch(source, /\.module\.css/);
+  assert.doesNotMatch(source, /<style\b/);
 });

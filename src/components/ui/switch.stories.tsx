@@ -1,58 +1,35 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite"
-import { Switch } from "./switch"
-import { Label } from "./label"
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+
+import { Switch } from "./switch";
 
 const meta = {
   title: "Components/Switch",
   component: Switch,
-} satisfies Meta<typeof Switch>
+} satisfies Meta<typeof Switch>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => <Switch defaultChecked aria-label="Enable feature" />,
-}
+};
 
-export const Unchecked: Story = {
-  render: () => <Switch aria-label="Enable feature" />,
-}
+export const Unchecked: Story = { render: () => <Switch aria-label="Enable feature" /> };
 
-export const Small: Story = {
+export const Sizes: Story = {
   render: () => (
-    <div className="space-y-3">
+    <div className="flex items-center gap-5">
       <div className="flex items-center gap-2">
         <Switch size="sm" defaultChecked id="sm-on" />
-        <Label htmlFor="sm-on">Small checked</Label>
+        <label htmlFor="sm-on">Small checked</label>
       </div>
       <div className="flex items-center gap-2">
-        <Switch size="sm" id="sm-off" />
-        <Label htmlFor="sm-off">Small unchecked</Label>
+        <Switch size="lg" id="lg-off" />
+        <label htmlFor="lg-off">Large unchecked</label>
       </div>
     </div>
   ),
-}
-
-export const WithLabel: Story = {
-  render: () => (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between w-80">
-        <div>
-          <Label htmlFor="autofix">Auto-fix suggestions</Label>
-          <p className="text-xs text-muted-foreground">Let Seer suggest fixes</p>
-        </div>
-        <Switch id="autofix" defaultChecked />
-      </div>
-      <div className="flex items-center justify-between w-80">
-        <div>
-          <Label htmlFor="replay">Session replay</Label>
-          <p className="text-xs text-muted-foreground">Record user sessions</p>
-        </div>
-        <Switch id="replay" />
-      </div>
-    </div>
-  ),
-}
+};
 
 export const Disabled: Story = {
   render: () => (
@@ -61,19 +38,19 @@ export const Disabled: Story = {
       <Switch disabled aria-label="Disabled" />
     </div>
   ),
-}
+};
 
 // Args-driven story so the Controls panel manipulates a live instance.
 export const Playground: Story = {
   args: {
-    size: "default",
+    size: "sm",
     defaultChecked: true,
     disabled: false,
     "aria-label": "Toggle setting",
   },
   argTypes: {
-    size: { control: "select", options: ["sm", "default"] },
+    size: { control: "select", options: ["sm", "lg"] },
     disabled: { control: "boolean" },
   },
   render: (args) => <Switch {...args} />,
-}
+};

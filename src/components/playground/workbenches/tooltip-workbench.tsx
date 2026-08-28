@@ -53,14 +53,8 @@ function serialize(state: TooltipWorkbenchState) {
 const controlClassName =
   "h-11 rounded-md border border-input bg-background px-3 text-base sm:h-10 sm:text-sm";
 
-export function TooltipWorkbench({
-  children,
-  onSearchChange,
-  sourceSearch,
-}: WorkbenchProps) {
-  const [state, setState] = useState(() =>
-    parseState(new URLSearchParams(sourceSearch))
-  );
+export function TooltipWorkbench({ children, onSearchChange, sourceSearch }: WorkbenchProps) {
+  const [state, setState] = useState(() => parseState(new URLSearchParams(sourceSearch)));
   function update(next: TooltipWorkbenchState) {
     setState(next);
     onSearchChange(serialize(next));
@@ -161,9 +155,7 @@ function TooltipPreview({ state }: { state: TooltipWorkbenchState }) {
           skipWrapper
           title={state.title}
         >
-          <Button data-overflowing={state.overflow ? "true" : undefined}>
-            Inspect issue
-          </Button>
+          <Button data-overflowing={state.overflow ? "true" : undefined}>Inspect issue</Button>
         </Tooltip>
       </TooltipContext.Provider>
     </div>

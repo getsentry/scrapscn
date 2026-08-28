@@ -1,0 +1,407 @@
+{
+  "canonicalCommit": "a2db8365e2ec17c96b200bface596081c68f12c9",
+  "reviewedAt": "2026-08-27",
+  "views": ["light-narrow", "light-wide", "dark-narrow", "dark-wide"],
+  "scenarios": {
+    "alert--alert": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Geometry, type, spacing, colors, and controls are acceptable; example composition differs.",
+      "evidenceHash": "f83ba7655930a9dbbad2beb83a1531b653eb184a2eeb0f1c374c3a8fce0e3d27"
+    },
+    "avatar--avatar": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Sizes, shapes, images, overlap, and colors are acceptable; example composition differs.",
+      "evidenceHash": "e47f467a7886a6f563eddb58906fd002bc69dd50a8c8e2bcbd378783e96e95ce"
+    },
+    "avatar-button--avatarbutton": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Size, shape, alignment, and themes are acceptable; example composition differs.",
+      "evidenceHash": "44456e65b429610be56b7537e13e171bb695e900d836017b9035a6deb518fa04"
+    },
+    "badge--badge": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Visual treatment is acceptable; example composition differs. Canonical light success contrast remains a parity constraint.",
+      "evidenceHash": "55aad4d30317cdc63bfea6d85ff0c0e8367ce415a57107a50a9116d97c100ed2"
+    },
+    "breadcrumb-list--breadcrumblist": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Type, icons, separators, spacing, and overflow are acceptable; example composition differs.",
+      "evidenceHash": "44fc34165e434fe73fd5d3fa6cddba40caf58a2c795f1e38e52b153dc691e2e5"
+    },
+    "button--button": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Geometry, labels, spacing, and colors are acceptable; example composition differs.",
+      "evidenceHash": "393a757183bafd707d75bc3bf18d2e8cd8539b232936096f25aa6967fb51d602"
+    },
+    "chat--assistantactions": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Shared controls, type, borders, and colors are acceptable; the local composition is larger.",
+      "evidenceHash": "7c892c9a26432547f44e8c519924e27c6a5fd0855a47f00e6126ef692fc79ad5"
+    },
+    "checkbox--checkbox": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Geometry, selected state, hierarchy, and spacing are acceptable; example composition differs.",
+      "evidenceHash": "48987fa79f9cac490e61ccc35b2a10f253588e9d4fd4228d4b154103b44606d7"
+    },
+    "chip--chip": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Geometry, type, close control, and colors are acceptable; example composition differs.",
+      "evidenceHash": "1a905865402f1b9c38d5ac471d59cdb14fad3a689bb47732560362fabd981e27"
+    },
+    "code--codeblock": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Type, syntax colors, containers, copy control, and spacing are acceptable; example composition differs.",
+      "evidenceHash": "8a9efae0c46a100f2438864c863a02619153ab7887d75fbe24502affc6faa217"
+    },
+    "compact-select--compactselect": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Control and menu styling are acceptable; local state is an open searchable multi-select.",
+      "evidenceHash": "3a468f1fd7446f066791e579214a6d8405292ed0dae4a5727126d299698d09bd"
+    },
+    "disclosure--disclosure": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Type, chevron, indentation, spacing, and themes are acceptable; example composition differs.",
+      "evidenceHash": "d20676a11dedcf8bc328cf0d53f3ceaa5ecd24a8824fb811d7638e15b3fc146c"
+    },
+    "drag-handle--draghandle": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Pane geometry, borders, handle, labels, and colors are acceptable; example composition differs.",
+      "evidenceHash": "c9a68db21da5b8747e3976fc48399be36892ed4a60e32e31e2a9da535ccc5bde"
+    },
+    "drawer--drawer": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Visible drawer styling is acceptable; the local and canonical captures use different states.",
+      "evidenceHash": "f4314673e9406e34c912771500a87588933cee1da53c6a268f43725e0feb3911"
+    },
+    "empty-state--emptystate": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Shared layout and type are acceptable; local examples add illustration and action variants.",
+      "evidenceHash": "ed20e797d805a8c25f8c8acd436374419986c3b902cc9390f31ae98a786898dc"
+    },
+    "form--autosaveform": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Controls, borders, labels, and action styling are acceptable; example composition differs.",
+      "evidenceHash": "9df6ce569e6e3b764afe8ee39691b371bb0ef0ed06ab0584a67c829d6019cfca"
+    },
+    "hotkey--hotkey": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Keycap geometry, type, borders, and themes are acceptable; example composition differs.",
+      "evidenceHash": "dee98d740a9d3338a618abc3a6f2d7743ad3906d0ca315a123d6688c2d4e9480"
+    },
+    "image--image": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Radius, sizing, and surface treatment are acceptable; the examples use different artwork.",
+      "evidenceHash": "f870daa75a9cad167de1cc6cd1a0f954a5492ff1c2e65f567ba39e34f9dd754a"
+    },
+    "info--infotext": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Dotted text, icon geometry, spacing, and colors are acceptable; example composition differs.",
+      "evidenceHash": "8622cfd19edc8132a4d7a067e45145a5f6bc71083f98735fe3f35ef6670667f6"
+    },
+    "input--input": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Geometry, borders, icon spacing, and supporting text are acceptable; example composition differs.",
+      "evidenceHash": "c0963b553304820b65accb5a1ad4de21bb9617e14d8fda6ff5fa5ca7dd46a359"
+    },
+    "layout--container": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Spacing, borders, type, stacking, and surfaces are acceptable; example composition differs.",
+      "evidenceHash": "b5cc917e9f325668255ee654cb3f10c4ff4dc3f52a46c352ac684eec880dc718"
+    },
+    "link--link": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Color, decoration, spacing, and themes are acceptable; example composition differs.",
+      "evidenceHash": "53abe256255dbf7a07a1620d1b50898470946cb6cae26f6db31d32ba0ff9310c"
+    },
+    "loader--loader": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Geometry, stroke, repetition, and contrast are acceptable; example composition differs.",
+      "evidenceHash": "66cb0e471c14a4bb6a80a26f271770212b99fd2be5f480a3f48fd2f461f5680d"
+    },
+    "markdown--markdown": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Headings, prose, code, lists, tables, and links are acceptable; example composition differs.",
+      "evidenceHash": "9ac23a0c4fbfa4c5bbfa85b5e606882109c152e2ae669cb6306aac5081b9a17a"
+    },
+    "menu-list-item--menulistitem": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Insets, state layer, icon, details, and shortcut are acceptable; example composition differs.",
+      "evidenceHash": "62633b74ef9a6df232b977db6199b110b31af802903f590680d1348611733059"
+    },
+    "modal--modal": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Surface, dividers, radius, spacing, overlay, and actions are acceptable; capture state differs.",
+      "evidenceHash": "82615d94b84b7f5d10a2b5261e4010b32c608f34fb2d2a8ce38d0c0483183892"
+    },
+    "pagination--pagination": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Buttons, caption, disabled state, and colors are acceptable; example composition differs.",
+      "evidenceHash": "0e8b663bdca2cd14f0402ca89df028fb9ae5587c29a8e55150dbf12569ec7dd2"
+    },
+    "quote--quote": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Rail, insets, body type, and source treatment are acceptable; example composition differs.",
+      "evidenceHash": "4aa0461a86dc2adf57370a99f69c007dbd38ed727eef1114c194ec82b8ba7562"
+    },
+    "radio--radio": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Ring, selected fill, labels, type, and contrast are acceptable; example composition differs.",
+      "evidenceHash": "f25b4fa8ebd76e9f53b951e60fdddf0c88aa01082a26367de2d99178e2f1ffa9"
+    },
+    "reveal-on-hover--revealonhover": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Row and action styling are acceptable; local captures expose the action.",
+      "evidenceHash": "e8fd4bd5765a5dbd386d08b220f200e0527d00b33721b13a21d78ff0e8e0780b"
+    },
+    "segmented-control--segmentedcontrol": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Geometry, type, spacing, and selection are acceptable; example composition differs.",
+      "evidenceHash": "042442d2fd29df72f232880fa7bc3dda5f8a887446ddbf1fe4393349211bf4e7"
+    },
+    "select--select": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Control and menu styling are acceptable; local captures show an open grouped menu.",
+      "evidenceHash": "a8cdd7c2939af1daf913ced0da00429f4d87871b649e61346db63db5c3e65a60"
+    },
+    "separator--separator": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Line, spacing, hierarchy, and themes are acceptable; example composition differs.",
+      "evidenceHash": "8afe7a85975c69eeebaca65c50be0226e104f78428a72f74cb1e74588e2a8eb3"
+    },
+    "slide-over-panel--slideoverpanel": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Surface, divider, type, and sizing are acceptable; local captures show the open panel.",
+      "evidenceHash": "7e6a16412d0d678c8596ca533591c89849c9ed9922dbfafba23543567b8ac048"
+    },
+    "slider--slider": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Track, fill, thumb, ticks, labels, and themes are acceptable; example composition differs.",
+      "evidenceHash": "d2e7fa9d59b615b593784ce4b52c83d593ad086a6b1db4d396a366dc4158367b"
+    },
+    "split-panel--splitpanel": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Borders, divider, proportions, and themes are acceptable; example composition differs.",
+      "evidenceHash": "7ed206b9b209d8001ea2dc1d3cac998afd3e94d6aeff78636c9d42f197c84cd4"
+    },
+    "status-indicator--statusindicator": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Dot, semantic color, label spacing, and type are acceptable; example composition differs.",
+      "evidenceHash": "27de324b6d94167bd7f0cc0a7aa2205e459fdbd4df04bdd5851eceabde4b94c2"
+    },
+    "switch--switch": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Geometry, icon, borders, labels, and themes are acceptable; example composition differs.",
+      "evidenceHash": "747829a1cc973146608bdd648e6b6e4547d36148abc3b6b25fa509f82337a6dd"
+    },
+    "table--table": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Grid, headers, rows, alignment, type, and colors are acceptable; example composition differs.",
+      "evidenceHash": "1085838d71ed43553de5e7136b51cee375a83d04cc4f819cc6cbecd220ad1e26"
+    },
+    "tabs--tabs": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Spacing, type, active state, overflow control, and themes are acceptable; example composition differs.",
+      "evidenceHash": "4cac8b82dde79129d448dd84300464ddf38f460850ac205692baccc721e073fb"
+    },
+    "text--heading": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Scale, weights, line height, prose, and responsiveness are acceptable; example composition differs.",
+      "evidenceHash": "0ee8885b73c803f0911d63142b9fb7fff51bd86c74a2849aaa57acff29433f86"
+    },
+    "toast--toast": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Local geometry and semantic styling are acceptable; canonical captures do not show a live toast.",
+      "evidenceHash": "90fae0639b54707d9d69bfeb226c2003e58ae5f98cef7a178e194781b623e8fe"
+    },
+    "tooltip--tooltip": {
+      "status": "accepted-composition-deviation",
+      "note": "Reviewed in all four views. Bubble geometry and type are acceptable; local captures show the tooltip open.",
+      "evidenceHash": "0f0ee7eff88eb13bd9f5deb827005e19741e7a3c0a3fdf77becc44be4bd413bb"
+    }
+  },
+  "entries": {
+    "alert": {
+      "status": "approved",
+      "note": "Geometry, typography, spacing, semantic colors, and controls match."
+    },
+    "avatar": {
+      "status": "approved",
+      "note": "Sizes, shapes, initials, image treatment, overlap, and colors match."
+    },
+    "avatar-button": {
+      "status": "approved",
+      "note": "Size, circular shape, centered content, and theme treatment match."
+    },
+    "backdrop": { "status": "source-only", "note": "The canonical catalog has no direct story." },
+    "badge": {
+      "status": "non-blocking-deviation",
+      "note": "Visual treatment matches canonical. The canonical light success color pair is about 4.08:1, so its text contrast remains a documented parity constraint."
+    },
+    "breadcrumb-list": {
+      "status": "approved",
+      "note": "Typography, icons, separators, spacing, and overflow presentation match."
+    },
+    "button": {
+      "status": "approved",
+      "note": "Heights, borders, radii, labels, spacing, and primary colors match."
+    },
+    "chat": {
+      "status": "non-blocking-deviation",
+      "note": "The local composition is larger; shared controls, typography, borders, and colors match."
+    },
+    "checkbox": {
+      "status": "approved",
+      "note": "Geometry, selected state, label hierarchy, and spacing match."
+    },
+    "chip": {
+      "status": "approved",
+      "note": "Height, border, radius, typography, close control, and colors match."
+    },
+    "code": {
+      "status": "approved",
+      "note": "Typography, syntax colors, containers, copy control, and spacing match."
+    },
+    "compact-select": {
+      "status": "non-blocking-deviation",
+      "note": "Local captures show an open searchable multi-select; shared control and menu styling match."
+    },
+    "disclosure": {
+      "status": "approved",
+      "note": "Typography, chevron scale, indentation, spacing, and theme treatment match."
+    },
+    "drag-handle": {
+      "status": "approved",
+      "note": "Pane geometry, borders, handle placement, labels, and colors match."
+    },
+    "drawer": {
+      "status": "non-blocking-deviation",
+      "note": "Local captures show the open drawer; visible drawer styling matches."
+    },
+    "empty-state": {
+      "status": "non-blocking-deviation",
+      "note": "Local captures add illustration and action variants; shared layout and type match."
+    },
+    "form": {
+      "status": "approved",
+      "note": "Control heights, borders, label hierarchy, and primary action match."
+    },
+    "hotkey": {
+      "status": "approved",
+      "note": "Keycap shape, compact typography, borders, and dark treatment match."
+    },
+    "image": {
+      "status": "approved",
+      "note": "Artwork differs; radius, sizing behavior, and surface treatment match."
+    },
+    "info": {
+      "status": "approved",
+      "note": "Dotted text, icon geometry, spacing, and theme colors match."
+    },
+    "input": {
+      "status": "approved",
+      "note": "Height, radius, border contrast, icon spacing, and supporting text match."
+    },
+    "interaction-state-layer": {
+      "status": "source-only",
+      "note": "The canonical catalog has no direct story."
+    },
+    "layout": {
+      "status": "approved",
+      "note": "Spacing, borders, typography, stacking, and surfaces match."
+    },
+    "link": {
+      "status": "approved",
+      "note": "Text color, resting decoration, spacing, and theme behavior match."
+    },
+    "loader": {
+      "status": "approved",
+      "note": "Squiggle geometry, stroke weight, repetition, and contrast match."
+    },
+    "markdown": {
+      "status": "approved",
+      "note": "Headings, prose, code, checklists, tables, and links match."
+    },
+    "menu-list-item": {
+      "status": "approved",
+      "note": "Height, insets, state layer, icon, details text, and shortcut match."
+    },
+    "modal": {
+      "status": "approved",
+      "note": "Open surface, dividers, radius, spacing, overlay, and actions match."
+    },
+    "pagination": {
+      "status": "approved",
+      "note": "Button geometry, caption spacing, disabled treatment, and colors match."
+    },
+    "picture-in-picture": {
+      "status": "source-only",
+      "note": "The canonical catalog has no direct story."
+    },
+    "quote": {
+      "status": "approved",
+      "note": "Rail, inset spacing, body typography, and italic source treatment match."
+    },
+    "radio": {
+      "status": "approved",
+      "note": "Ring size, selected fill, label spacing, typography, and contrast match."
+    },
+    "reveal-on-hover": {
+      "status": "non-blocking-deviation",
+      "note": "Local captures expose the action; row and action styling remain consistent."
+    },
+    "segmented-control": {
+      "status": "approved",
+      "note": "Segment height, borders, radii, typography, spacing, and selection match."
+    },
+    "select": {
+      "status": "non-blocking-deviation",
+      "note": "Local captures show an open grouped menu; visible control and menu styling match."
+    },
+    "separator": {
+      "status": "approved",
+      "note": "Line weight, spacing, content hierarchy, and theme colors match."
+    },
+    "slide-over-panel": {
+      "status": "non-blocking-deviation",
+      "note": "Local captures show the open panel; surface, divider, type, and sizing match."
+    },
+    "slider": {
+      "status": "approved",
+      "note": "Track, fill, thumb, tick marks, labels, and theme colors match."
+    },
+    "slot": { "status": "source-only", "note": "The canonical catalog has no direct story." },
+    "split-panel": {
+      "status": "approved",
+      "note": "Pane borders, divider placement, sizing proportions, and theme treatment match."
+    },
+    "status-indicator": {
+      "status": "approved",
+      "note": "Dot size, semantic color, label spacing, and typography match."
+    },
+    "switch": {
+      "status": "approved",
+      "note": "Control geometry, icon scale, borders, labels, and theme treatment match."
+    },
+    "table": {
+      "status": "approved",
+      "note": "Grid lines, headers, row height, alignment, typography, and colors match."
+    },
+    "tabs": {
+      "status": "approved",
+      "note": "Tab spacing, typography, active underline, overflow control, and themes match."
+    },
+    "text": {
+      "status": "approved",
+      "note": "Type scale, weights, line height, monospace, prose, and responsive behavior match."
+    },
+    "textarea": { "status": "source-only", "note": "The canonical catalog has no direct story." },
+    "toast": {
+      "status": "non-blocking-deviation",
+      "note": "Canonical captures lack a live toast; local geometry and semantic styling are consistent."
+    },
+    "tooltip": {
+      "status": "non-blocking-deviation",
+      "note": "Local captures show the tooltip open; bubble geometry and typography match."
+    }
+  }
+}

@@ -17,7 +17,7 @@ vi.mock("@sentry/react", () => ({
   logger: { warn: loggerWarnMock },
 }));
 
-import { Hotkey, Kbd, useHotkeys } from "./hotkey";
+import { Hotkey, Kbd, matchesHotkey, useHotkeys } from "./hotkey";
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 
@@ -55,11 +55,22 @@ async function mountHotkeys(hotkeys: TestRegistration[]) {
   };
 }
 
-function dispatchKey(key: string, options: KeyboardEventInit = {}, target: Document | HTMLElement = document) {
+function dispatchKey(
+  key: string,
+  options: KeyboardEventInit = {},
+  target: Document | HTMLElement = document,
+) {
   const event = new KeyboardEvent("keydown", {
     bubbles: true,
     cancelable: true,
-    code: key === "/" ? "Slash" : /^[a-z]$/.test(key) ? `Key${key.toUpperCase()}` : /^[0-9]$/.test(key) ? `Digit${key}` : key,
+    code:
+      key === "/"
+        ? "Slash"
+        : /^[a-z]$/.test(key)
+          ? `Key${key.toUpperCase()}`
+          : /^[0-9]$/.test(key)
+            ? `Digit${key}`
+            : key,
     key,
     ...options,
   });
@@ -112,7 +123,7 @@ describe("Hotkey regression evidence", () => {
     expect(icon).not.toBeNull();
     expect(icon?.getAttribute("viewBox")).toBe("0 0 16 16");
     expect(icon?.querySelector("path")?.getAttribute("d")).toBe(
-      "M12 1.25a2.75 2.75 0 1 1 0 5.5h-1.25v2.5H12A2.75 2.75 0 1 1 9.25 12v-1.25h-2.5V12A2.75 2.75 0 1 1 4 9.25h1.25v-2.5H4A2.75 2.75 0 1 1 6.75 4v1.25h2.5V4A2.75 2.75 0 0 1 12 1.25m-8 9.5A1.25 1.25 0 1 0 5.25 12v-1.25zM10.75 12A1.25 1.25 0 1 0 12 10.75h-1.25zm-4-2.75h2.5v-2.5h-2.5zM4 2.75a1.25 1.25 0 1 0 0 2.5h1.25V4c0-.69-.56-1.25-1.25-1.25m8 0c-.69 0-1.25.56-1.25 1.25v1.25H12a1.25 1.25 0 1 0 0-2.5"
+      "M12 1.25a2.75 2.75 0 1 1 0 5.5h-1.25v2.5H12A2.75 2.75 0 1 1 9.25 12v-1.25h-2.5V12A2.75 2.75 0 1 1 4 9.25h1.25v-2.5H4A2.75 2.75 0 1 1 6.75 4v1.25h2.5V4A2.75 2.75 0 0 1 12 1.25m-8 9.5A1.25 1.25 0 1 0 5.25 12v-1.25zM10.75 12A1.25 1.25 0 1 0 12 10.75h-1.25zm-4-2.75h2.5v-2.5h-2.5zM4 2.75a1.25 1.25 0 1 0 0 2.5h1.25V4c0-.69-.56-1.25-1.25-1.25m8 0c-.69 0-1.25.56-1.25 1.25v1.25H12a1.25 1.25 0 1 0 0-2.5",
     );
   });
 
@@ -179,7 +190,7 @@ describe("Hotkey regression evidence", () => {
     vi.stubEnv("NODE_ENV", "development");
 
     await expect(render(<Hotkey value="mysterykey" />)).rejects.toThrow(
-      'Missing key glyph mapping for "mysterykey"'
+      'Missing key glyph mapping for "mysterykey"',
     );
   });
 
@@ -187,7 +198,7 @@ describe("Hotkey regression evidence", () => {
     vi.stubEnv("NODE_ENV", "development");
 
     await expect(render(<Hotkey value={["mod+k", "mysterykey"]} />)).rejects.toThrow(
-      'Missing key glyph mapping for "mysterykey"'
+      'Missing key glyph mapping for "mysterykey"',
     );
   });
 });
@@ -217,7 +228,9 @@ describe("Hotkey canonical display", () => {
     expect(container.querySelector('[aria-label="⌘"]')).not.toBeNull();
     expect(container.querySelector('[aria-label="⌘"]')?.getAttribute("role")).toBeNull();
     expect(container.querySelector('[aria-label="⌘"] svg')?.getAttribute("role")).toBe("img");
-    expect(container.querySelector('[aria-label="⌘"] svg')?.hasAttribute("aria-hidden")).toBe(false);
+    expect(container.querySelector('[aria-label="⌘"] svg')?.hasAttribute("aria-hidden")).toBe(
+      false,
+    );
     expect(container.textContent).toContain("K");
   });
 
@@ -475,5 +488,36 @@ describe("useHotkeys", () => {
     await mountHotkeys([{ callback, match: "k" }]);
     dispatchKey("k", { isComposing: true });
     expect(callback).not.toHaveBeenCalled();
+  });
+});
+
+describe("matchesHotkey", () => {
+  it("rejects composition, accepts alternatives and normalizes tokens", () => {
+    const event = new KeyboardEvent("keydown", {
+      code: "KeyK",
+      ctrlKey: true,
+      key: "k",
+    });
+    const composing = new KeyboardEvent("keydown", {
+      code: "KeyK",
+      ctrlKey: true,
+      isComposing: true,
+      key: "k",
+    });
+
+    expect(matchesHotkey(["meta+j", "CTRL+K"], event)).toBe(true);
+    expect(matchesHotkey("control+k", composing)).toBe(false);
+  });
+
+  it("requires the exact modifier set", () => {
+    const event = new KeyboardEvent("keydown", {
+      altKey: true,
+      code: "KeyK",
+      ctrlKey: true,
+      key: "k",
+    });
+
+    expect(matchesHotkey("ctrl+k", event)).toBe(false);
+    expect(matchesHotkey("ctrl+alt+k", event)).toBe(true);
   });
 });

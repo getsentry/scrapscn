@@ -1,21 +1,25 @@
-import { act, createElement, createRef, type ReactNode } from "react";
+import { act, createRef, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it } from "vitest";
 
+import type { HeadingSize } from "./heading";
+import type { TextSize } from "./text";
 import { Heading, Prose, Text } from "./text-index";
-import styles from "./text.module.css";
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 
-const mounted: Array<{ container: HTMLDivElement; root: ReturnType<typeof createRoot> }> = [];
+const mounted: Array<{
+  container: HTMLDivElement;
+  root: ReturnType<typeof createRoot>;
+}> = [];
 
 function renderDocument(children: ReactNode): string {
   return renderToStaticMarkup(
     <html>
-      {createElement("head")}
+      <head />
       <body>{children}</body>
-    </html>
+    </html>,
   );
 }
 
@@ -27,110 +31,122 @@ afterEach(async () => {
 });
 
 describe("Text", () => {
-  it("uses a span by default and preserves semantic native attributes", () => {
+  it("uses semantic elements, filters styling props, and preserves inline styles", () => {
     const markup = renderToStaticMarkup(
       <>
-        <Text>Default</Text>
-        <Text as="label" htmlFor="field">Label</Text>
-        <Text as="time" dateTime="2026-08-23">Today</Text>
-      </>
+        <Text as="label" htmlFor="field">
+          Label
+        </Text>
+        <Text as="time" dateTime="2026-08-23">
+          Today
+        </Text>
+        <Text
+          align="center"
+          data-test-id="proof"
+          size="lg"
+          style={{ color: "red" }}
+          variant="accent"
+        >
+          Message
+        </Text>
+      </>,
     );
 
-    expect(markup).toContain("<span");
     expect(markup).toContain('for="field"');
     expect(markup).toContain('dateTime="2026-08-23"');
-  });
-
-  it("filters style props while forwarding DOM props and consumer overrides", () => {
-    const markup = renderToStaticMarkup(
-      <Text
-        align="center"
-        className="consumer-class"
-        data-test-id="proof"
-        density="comfortable"
-        size="lg"
-        style={{ color: "red" }}
-        variant="accent"
-      >
-        Message
-      </Text>
-    );
-
     expect(markup).toContain('data-test-id="proof"');
     expect(markup).toContain('style="color:red"');
-    expect(markup).toMatch(/class="[^"]*consumer-class"/);
-    expect(markup).not.toMatch(/\s(?:align|density|size|variant)=/);
+    expect(markup).not.toMatch(/\s(?:align|size|variant)=/);
   });
 
-  it("emits no color class for inherit and keeps consumer color overrides", () => {
-    const markup = renderToStaticMarkup(
-      <>
-        <Text className="consumer-color" variant="inherit">Class color</Text>
-        <Text style={{ color: "rgb(1, 2, 3)" }} variant="inherit">Style color</Text>
-      </>
-    );
-
-    expect(markup).toContain("consumer-color");
-    expect(markup).toContain("color:rgb(1, 2, 3)");
-    for (const colorClass of [
-      styles.primary,
-      styles.secondary,
-      styles.accent,
-      styles.promotion,
-      styles.danger,
-      styles.warning,
-      styles.success,
-    ]) {
-      expect(markup).not.toContain(colorClass);
-    }
-  });
-
-  it("keeps the default-span and explicit-span ellipsis displays distinct", () => {
-    const markup = renderDocument(
-      <>
-        <Text ellipsis>Default span</Text>
-        <Text as="span" ellipsis>Explicit span</Text>
-      </>
-    );
-
-    expect(markup).toContain("display: block;");
-    expect(markup).toContain("display: inline-block;");
-  });
-
-  it("seeds responsive display and keeps container rules before viewport rules", () => {
+  it("uses literal variable candidates without a runtime style resource", () => {
     const markup = renderDocument(
       <Text
-        align="center"
+        align={{ zero: "left", "screen:lg": "right" }}
         display={{ md: "none", "screen:xs": "inline" }}
         size={{ zero: "xs", lg: "xl", "screen:lg": "2xl" }}
       >
         Responsive
-      </Text>
+      </Text>,
     );
 
-    expect(markup).toContain("display: block;");
-    expect(markup).toContain("@container (min-width: 576px)");
-    expect(markup).toContain("@media (min-width: 500px)");
-    expect(markup.indexOf("@container")).toBeLessThan(markup.indexOf("@media"));
-    expect(markup).toContain("font-size: 11px;");
-    expect(markup).toContain("font-size: 20px;");
-    expect(markup).toContain("font-size: 24px;");
+    expect(markup).toContain("[display:var(--scraps-text-display)]");
+    expect(markup).toContain("@[576px]:[--scraps-text-display:none]");
+    expect(markup).toContain("min-[500px]:![--scraps-text-display:inline]");
+    expect(markup).toContain("@[640px]:[--scraps-text-font-size:20px]");
+    expect(markup).toContain("min-[1200px]:![--scraps-text-font-size:24px]");
+    expect(markup).not.toContain("<style");
   });
 
-  it("combines underline, strike, tabular, and fraction styles", () => {
+  it("maps every public size to its generated font-size domain", () => {
+    const sizes = [
+      ["xs", "11px"],
+      ["sm", "12px"],
+      ["md", "14px"],
+      ["lg", "16px"],
+      ["xl", "20px"],
+      ["2xl", "24px"],
+    ] satisfies ReadonlyArray<readonly [TextSize, string]>;
+
+    for (const [size, value] of sizes) {
+      expect(renderToStaticMarkup(<Text size={size}>{size}</Text>)).toContain(
+        `[--scraps-text-font-size:${value}]`,
+      );
+    }
+  });
+
+  it("uses exact decoration and word-break properties", () => {
     const markup = renderToStaticMarkup(
-      <Text fraction strikethrough tabular underline>1/2</Text>
+      <Text strikethrough underline wordBreak="break-word">
+        Decorated
+      </Text>,
     );
 
-    expect(markup).toContain(styles.strikeUnderline);
-    expect(markup).toContain(styles.tabularFraction);
+    expect(markup).toContain("[text-decoration:line-through_underline]");
+    expect(markup).toContain("[word-break:break-word]");
+    expect(markup).not.toContain("decoration-[line-through");
+    expect(markup).not.toContain("break-words");
   });
 
-  it("passes only the generated class to a render function", () => {
+  it("emits one font family and one canonical weight", () => {
+    const markup = renderToStaticMarkup(
+      <>
+        <Text data-testid="sans">Sans</Text>
+        <Text data-testid="regular" bold={false}>
+          Regular
+        </Text>
+        <Text data-testid="mono" monospace>
+          Mono
+        </Text>
+        <Text data-testid="regular-mono" bold={false} monospace>
+          Regular mono
+        </Text>
+        <Text data-testid="bold-mono" bold monospace>
+          Bold mono
+        </Text>
+      </>,
+    );
+
+    const classNames = [...markup.matchAll(/class="([^"]+)"/g)].map((match) => match[1]);
+    expect(classNames[0]).toContain("font-rubik");
+    expect(classNames[0]).not.toContain("Roboto_Mono");
+    expect(classNames[0]).not.toMatch(/font-(?:medium|normal|\[425\])/);
+    expect(classNames[1]).toContain("font-normal");
+    expect(classNames[2]).toContain("Roboto_Mono");
+    expect(classNames[2]).not.toMatch(/font-(?:medium|normal|\[425\])/);
+    expect(classNames[2]).not.toContain("font-rubik");
+    expect(classNames[3]).toContain("Roboto_Mono");
+    expect(classNames[3]).toContain("font-[425]");
+    expect(classNames[4]).toContain("Roboto_Mono");
+    expect(classNames[4]).toContain("font-medium");
+    expect(classNames[4]).not.toContain("font-[425]");
+  });
+
+  it("passes classes only to render functions", () => {
     const markup = renderToStaticMarkup(
       <Text align="right" data-invalid="blocked" variant="promotion">
         {({ className }) => <a className={className}>Link</a>}
-      </Text>
+      </Text>,
     );
 
     expect(markup).toContain("<a");
@@ -139,86 +155,171 @@ describe("Text", () => {
     expect(markup).not.toContain("variant=");
   });
 
-  it("assigns a polymorphic React 19 ref without forwardRef", async () => {
+  it("assigns polymorphic refs", async () => {
     const container = document.createElement("div");
     document.body.append(container);
     const root = createRoot(container);
     mounted.push({ container, root });
     const ref = createRef<HTMLParagraphElement>();
 
-    await act(async () => root.render(<Text as="p" ref={ref}>Paragraph</Text>));
+    await act(async () => {
+      root.render(
+        <Text as="p" ref={ref}>
+          Paragraph
+        </Text>,
+      );
+    });
 
     expect(ref.current?.tagName).toBe("P");
   });
 });
 
 describe("Heading", () => {
-  it("maps semantic tags to exact default sizes and supports 3xl and 4xl", () => {
+  it("maps heading sizes and keeps inherit properties", () => {
     const markup = renderDocument(
       <>
         <Heading as="h1">H1</Heading>
         <Heading as="h6">H6</Heading>
-        <Heading as="h2" size="3xl">3xl</Heading>
-        <Heading as="h2" size="4xl">4xl</Heading>
-      </>
+        <Heading as="h2" size="4xl">
+          4xl
+        </Heading>
+        <Heading as="h3" variant="inherit">
+          Inherited
+        </Heading>
+      </>,
     );
 
-    expect(markup).toContain("font-size: 24px;");
-    expect(markup).toContain("font-size: 11px;");
-    expect(markup).toContain("font-size: 32px;");
-    expect(markup).toContain("font-size: 40px;");
+    expect(markup).toContain("[--scraps-text-font-size:24px]");
+    expect(markup).toContain("[--scraps-text-font-size:11px]");
+    expect(markup).toContain("[--scraps-text-font-size:40px]");
+    expect(markup).toContain("[--scraps-text-font-size:inherit]");
+    expect(markup).toContain("[--scraps-text-line-height:inherit]");
   });
 
-  it("inherits size, line height, and weight but emits no color declaration", () => {
-    const markup = renderDocument(
-      <Heading as="h3" variant="inherit">Inherited</Heading>
+  it("maps every public size and the inherit variant", () => {
+    const sizes = [
+      ["xs", "11px"],
+      ["sm", "12px"],
+      ["md", "14px"],
+      ["lg", "16px"],
+      ["xl", "20px"],
+      ["2xl", "24px"],
+      ["3xl", "32px"],
+      ["4xl", "40px"],
+    ] satisfies ReadonlyArray<readonly [HeadingSize, string]>;
+
+    for (const [size, value] of sizes) {
+      expect(
+        renderToStaticMarkup(
+          <Heading as="h2" size={size}>
+            {size}
+          </Heading>,
+        ),
+      ).toContain(`[--scraps-text-font-size:${value}]`);
+    }
+
+    expect(
+      renderToStaticMarkup(
+        <Heading as="h2" variant="inherit">
+          inherit
+        </Heading>,
+      ),
+    ).toContain("[--scraps-text-font-size:inherit]");
+  });
+
+  it("keeps Text-only cursor and width rules out of Heading", () => {
+    const headingMarkup = renderToStaticMarkup(
+      <Heading as="h2" cursor="pointer" ellipsis>
+        Heading
+      </Heading>,
+    );
+    const textMarkup = renderToStaticMarkup(
+      <Text cursor="pointer" ellipsis>
+        Text
+      </Text>,
     );
 
-    expect(markup).toContain("font-size: inherit;");
-    expect(markup).toContain("line-height: inherit;");
-    expect(markup).toContain(styles.headingInherit);
-    expect(markup).not.toContain(styles.primary);
+    expect(headingMarkup).toContain("overflow-hidden text-ellipsis");
+    expect(headingMarkup).not.toContain("w-full");
+    expect(headingMarkup).not.toContain("cursor-pointer");
+    expect(textMarkup).toContain("w-full overflow-hidden text-ellipsis");
+    expect(textMarkup).toContain("cursor-pointer");
   });
 
-  it("filters Heading props and supports its no-wrapper render form", () => {
+  it("uses exact dotted decoration and word-break properties", () => {
     const markup = renderToStaticMarkup(
-      <Heading align="center" size="xl" variant="danger">
-        {({ className }) => <h2 className={className} data-testid="heading">Title</h2>}
-      </Heading>
+      <Heading as="h2" strikethrough underline="dotted" wordBreak="break-word">
+        Decorated heading
+      </Heading>,
     );
 
-    expect(markup).toContain("<h2");
-    expect(markup).toContain('data-testid="heading"');
-    expect(markup).not.toMatch(/\s(?:align|size|variant)=/);
+    expect(markup).toContain("[text-decoration:line-through_underline_dotted]");
+    expect(markup).toContain("[word-break:break-word]");
+  });
+
+  it("sets normal word-break without resetting overflow-wrap", () => {
+    const markup = renderToStaticMarkup(
+      <>
+        <Text wordBreak="normal">Text</Text>
+        <Heading as="h2" wordBreak="normal">
+          Heading
+        </Heading>
+      </>,
+    );
+
+    expect(markup.match(/\[word-break:normal\]/g)).toHaveLength(2);
+    expect(markup).not.toContain("break-normal");
+  });
+
+  it("uses one family and the heading weight for monospace and inherit", () => {
+    const markup = renderToStaticMarkup(
+      <>
+        <Heading as="h2" monospace>
+          Mono heading
+        </Heading>
+        <Heading as="h2" variant="inherit">
+          Inherit heading
+        </Heading>
+      </>,
+    );
+    const classNames = [...markup.matchAll(/class="([^"]+)"/g)].map((match) => match[1]);
+
+    expect(classNames[0]).toContain("Roboto_Mono");
+    expect(classNames[0]).toContain("font-medium");
+    expect(classNames[0]).not.toContain("font-[425]");
+    expect(classNames[0]).not.toContain("font-rubik");
+    expect(classNames[1]).toContain("[font-weight:inherit]");
+    expect(classNames[1]).not.toContain("font-medium");
   });
 });
 
 describe("Prose", () => {
-  it("uses article by default and emits exact raw code and kbd recipes", () => {
+  it("has complete block spacing, inline code, and keycap recipes", () => {
     const markup = renderDocument(
       <Prose>
-        <p>Use <code>captureException</code> and <kbd>⌘K</kbd>.</p>
-        <pre><code>block</code></pre>
-      </Prose>
+        <p>
+          Use <code>captureException</code> and <kbd>⌘K</kbd>.
+        </p>
+        <pre>
+          <code>block</code>
+        </pre>
+      </Prose>,
     );
+    const selectors = [
+      "[&_h1]:mb-6",
+      "[&_ul:not([role=listbox],[role=grid],[role=menu])]:mb-6",
+      "[&_ul:not([role=listbox],[role=grid],[role=menu]):last-child]:mb-0",
+      "[&_[class^=highlight-]:last-child]:mb-0",
+      "[&_kbd]:border-b-2",
+      "[&_kbd]:[font-size:12px]",
+    ];
 
-    expect(markup).toContain("<article");
-    expect(markup).toContain("code:not(pre code)");
-    expect(markup).toContain("font-size-adjust:ex-height 0.57");
-    expect(markup).toContain("height:1.67em");
-    expect(markup).toContain("border-bottom:2px solid var(--scraps-hotkey-border-primary)");
-    expect(markup).toContain('data-href="scraps-prose-composition"');
-  });
-
-  it("forwards a polymorphic React 19 ref", async () => {
-    const container = document.createElement("div");
-    document.body.append(container);
-    const root = createRoot(container);
-    mounted.push({ container, root });
-    const ref = createRef<HTMLElement>();
-
-    await act(async () => root.render(<Prose as="section" ref={ref}>Body</Prose>));
-
-    expect(ref.current?.tagName).toBe("SECTION");
+    for (const selector of selectors) {
+      expect(markup).toContain(selector.replaceAll("&", "&amp;"));
+    }
+    expect(markup).not.toContain("code:not(pre_code)]:font-[425]");
+    expect(markup).not.toContain("code:not(pre_code)]:text-[length:inherit]");
+    expect(markup).not.toContain("[&_kbd]:text-xs");
+    expect(markup).not.toContain("<style");
   });
 });

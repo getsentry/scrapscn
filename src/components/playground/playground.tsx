@@ -1,8 +1,8 @@
 "use client";
 
 import { Check, Copy, Moon, RotateCcw, Settings2, Sun } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTheme } from "next-themes";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { SentryPageFrame } from "@/components/playground/sentry-page-frame";
@@ -27,7 +27,11 @@ import type { TemplateMetadata } from "@/templates/types";
 const subscribeToHydration = () => () => {};
 
 function useHydrated() {
-  return useSyncExternalStore(subscribeToHydration, () => true, () => false);
+  return useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  );
 }
 
 function appendParams(target: URLSearchParams, source: URLSearchParams) {
@@ -42,18 +46,26 @@ export function Playground({ templates = [] }: { templates?: TemplateMetadata[] 
   const { resolvedTheme, setTheme: setAppTheme } = useTheme();
   const initialSearch = nextSearchParams.toString();
   const initialParams = new URLSearchParams(initialSearch);
-  const [component, setComponent] = useState<WorkbenchId>(() => getWorkbenchDefinitionForPath(nextPathname, initialParams.get("component")).id);
+  const visualCapture = initialParams.get("capture") === "visual";
+  const [component, setComponent] = useState<WorkbenchId>(
+    () => getWorkbenchDefinitionForPath(nextPathname, initialParams.get("component")).id,
+  );
   const [pathname, setPathname] = useState(nextPathname);
   const [sourceSearch, setSourceSearch] = useState(initialSearch);
-  const [theme, setTheme] = useState<WorkbenchTheme | null>(() => parseWorkbenchTheme(initialParams.get("theme")));
-  const [viewport, setViewport] = useState<WorkbenchViewport>(() => parseWorkbenchViewport(initialParams.get("viewport")));
+  const [theme, setTheme] = useState<WorkbenchTheme | null>(() =>
+    parseWorkbenchTheme(initialParams.get("theme")),
+  );
+  const [viewport, setViewport] = useState<WorkbenchViewport>(() =>
+    parseWorkbenchViewport(initialParams.get("viewport")),
+  );
   const [setupOpen, setSetupOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const setupIslandRef = useRef<HTMLElement>(null);
   const setupTriggerRef = useRef<HTMLButtonElement>(null);
   const restoreSetupFocus = useRef(false);
   const hydrated = useHydrated();
-  const currentTheme: WorkbenchTheme = theme ?? (hydrated && resolvedTheme === "dark" ? "dark" : "light");
+  const currentTheme: WorkbenchTheme =
+    theme ?? (hydrated && resolvedTheme === "dark" ? "dark" : "light");
 
   useEffect(() => {
     setAppTheme(theme ?? "system");
@@ -94,19 +106,29 @@ export function Playground({ templates = [] }: { templates?: TemplateMetadata[] 
     return () => document.removeEventListener("pointerdown", closeOnOutsidePointer, true);
   }, [setupOpen]);
 
-  const composeParams = useCallback((workbenchParams: URLSearchParams, shared?: { theme?: WorkbenchTheme; viewport?: WorkbenchViewport }, id = component) => {
-    const params = new URLSearchParams();
-    params.set("component", id);
-    appendParams(params, workbenchParams);
-    params.set("theme", shared?.theme ?? currentTheme);
-    params.set("viewport", shared?.viewport ?? viewport);
-    return params;
-  }, [component, currentTheme, viewport]);
+  const composeParams = useCallback(
+    (
+      workbenchParams: URLSearchParams,
+      shared?: { theme?: WorkbenchTheme; viewport?: WorkbenchViewport },
+      id = component,
+    ) => {
+      const params = new URLSearchParams();
+      params.set("component", id);
+      appendParams(params, workbenchParams);
+      params.set("theme", shared?.theme ?? currentTheme);
+      params.set("viewport", shared?.viewport ?? viewport);
+      return params;
+    },
+    [component, currentTheme, viewport],
+  );
 
-  const replaceWorkbenchSearch = useCallback((workbenchParams: URLSearchParams) => {
-    const params = composeParams(workbenchParams);
-    window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-  }, [composeParams, pathname]);
+  const replaceWorkbenchSearch = useCallback(
+    (workbenchParams: URLSearchParams) => {
+      const params = composeParams(workbenchParams);
+      window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
+    },
+    [composeParams, pathname],
+  );
 
   function closeSetup() {
     restoreSetupFocus.current = true;
@@ -123,6 +145,7 @@ export function Playground({ templates = [] }: { templates?: TemplateMetadata[] 
     >
       {(session) => {
         const activeWorkbench = getWorkbenchDefinition(component);
+        const visualCaptureReady = hydrated && resolvedTheme === currentTheme;
         function updateShared(next: { theme?: WorkbenchTheme; viewport?: WorkbenchViewport }) {
           const params = composeParams(session.serialize(), next);
           window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
@@ -134,7 +157,8 @@ export function Playground({ templates = [] }: { templates?: TemplateMetadata[] 
             ? getWorkbenchDefinitionForPath(templatePath, null).id
             : parseWorkbenchId(value);
           const nextPath = templatePath ?? "/";
-          const workbenchParams = nextComponent === component ? session.serialize() : new URLSearchParams();
+          const workbenchParams =
+            nextComponent === component ? session.serialize() : new URLSearchParams();
           const params = composeParams(workbenchParams, undefined, nextComponent);
           const search = params.toString();
           setComponent(nextComponent);
@@ -155,17 +179,44 @@ export function Playground({ templates = [] }: { templates?: TemplateMetadata[] 
         async function copyShareUrl() {
           const params = composeParams(session.serialize());
           window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-          const shareUrl = new URL(`${activeWorkbench.sharePath}?${params.toString()}`, window.location.origin);
+          const shareUrl = new URL(
+            `${activeWorkbench.sharePath}?${params.toString()}`,
+            window.location.origin,
+          );
           await navigator.clipboard.writeText(shareUrl.href);
           setCopied(true);
           window.setTimeout(() => setCopied(false), 1600);
         }
 
+        if (visualCapture) {
+          return (
+            <main
+              className="min-h-dvh bg-background p-4 text-foreground sm:p-8"
+              data-component={component}
+              data-slot="visual-capture"
+              data-visual-ready={visualCaptureReady ? "true" : undefined}
+              data-viewport={viewport}
+            >
+              <div className="mx-auto grid w-full max-w-3xl min-w-0 grid-cols-[minmax(0,1fr)] [&_[data-testid=text-query-container]]:max-w-[calc(100%-1rem)]">
+                {session.preview}
+              </div>
+            </main>
+          );
+        }
+
         return (
-          <div className="isolate min-h-dvh bg-muted" data-component={component} data-slot="playground-canvas" data-viewport={viewport}>
+          <div
+            className="isolate min-h-dvh bg-muted"
+            data-component={component}
+            data-slot="playground-canvas"
+            data-viewport={viewport}
+          >
             <aside
               aria-label="Playground controls"
-              className={cn("fixed left-1/2 z-[10000] flex -translate-x-1/2 flex-col-reverse overflow-hidden rounded-2xl border border-foreground/10 bg-popover/95 text-popover-foreground shadow-xl backdrop-blur-md [bottom:max(0.75rem,env(safe-area-inset-bottom))]", setupOpen ? "w-[calc(100%-1rem)] max-w-3xl" : "w-14")}
+              className={cn(
+                "fixed [bottom:max(0.75rem,env(safe-area-inset-bottom))] left-1/2 z-[10000] flex -translate-x-1/2 flex-col-reverse overflow-hidden rounded-2xl border border-foreground/10 bg-popover/95 text-popover-foreground shadow-xl backdrop-blur-md",
+                setupOpen ? "w-[calc(100%-1rem)] max-w-3xl" : "w-14",
+              )}
               data-slot="playground-island"
               ref={setupIslandRef}
               onBlur={(event) => {
@@ -180,10 +231,18 @@ export function Playground({ templates = [] }: { templates?: TemplateMetadata[] 
                 closeSetup();
               }}
             >
-              <div className={cn("min-w-0 items-center gap-1 p-1.5", setupOpen ? "grid grid-cols-[minmax(0,1fr)_repeat(4,2.75rem)] sm:flex" : "flex")} data-slot="playground-toolbar">
+              <div
+                className={cn(
+                  "min-w-0 items-center gap-1 p-1.5",
+                  setupOpen ? "grid grid-cols-[minmax(0,1fr)_repeat(4,2.75rem)] sm:flex" : "flex",
+                )}
+                data-slot="playground-toolbar"
+              >
                 {setupOpen ? (
                   <>
-                    <label className="sr-only" htmlFor="playground-section">Component or template</label>
+                    <label className="sr-only" htmlFor="playground-section">
+                      Component or template
+                    </label>
                     <select
                       aria-label="Component or template"
                       className="col-span-full h-11 min-w-0 touch-manipulation rounded-xl border border-input bg-background px-2 text-base font-medium focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:col-auto sm:h-10 sm:flex-1 sm:text-sm"
@@ -191,10 +250,20 @@ export function Playground({ templates = [] }: { templates?: TemplateMetadata[] 
                       value={pathname.startsWith("/templates/") ? pathname : component}
                       onChange={(event) => navigate(event.target.value)}
                     >
-                      {workbenchOptions.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
-                      {templates.map((template) => <option key={template.slug} value={`/templates/${template.slug}`}>{template.title}</option>)}
+                      {workbenchOptions.map((option) => (
+                        <option key={option.id} value={option.id}>
+                          {option.label}
+                        </option>
+                      ))}
+                      {templates.map((template) => (
+                        <option key={template.slug} value={`/templates/${template.slug}`}>
+                          {template.title}
+                        </option>
+                      ))}
                     </select>
-                    <label className="sr-only" htmlFor="preview-viewport">Preview width</label>
+                    <label className="sr-only" htmlFor="preview-viewport">
+                      Preview width
+                    </label>
                     <select
                       className="h-11 w-full shrink-0 touch-manipulation rounded-xl border border-input bg-background px-2 text-base font-medium focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-10 sm:w-24 sm:text-sm"
                       id="preview-viewport"
@@ -205,33 +274,86 @@ export function Playground({ templates = [] }: { templates?: TemplateMetadata[] 
                         setViewport(nextViewport);
                         updateShared({ viewport: nextViewport });
                       }}
-                    ><option value="desktop">Desktop</option><option value="mobile">Mobile</option></select>
-                    <Button aria-label={`Switch to ${currentTheme === "dark" ? "light" : "dark"} theme`} chonk={false} className="size-11 sm:size-10" size="icon-lg" type="button" variant="ghost" onClick={() => { const nextTheme = currentTheme === "dark" ? "light" : "dark"; setTheme(nextTheme); setAppTheme(nextTheme); updateShared({ theme: nextTheme }); }}>{currentTheme === "dark" ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}</Button>
-                    <Button aria-label="Reset" chonk={false} className="size-11 sm:size-10" size="icon-lg" type="button" variant="ghost" onClick={resetPlayground}><RotateCcw aria-hidden="true" /></Button>
-                    <Button aria-label={copied ? "Copied" : "Share"} chonk={false} className="size-11 sm:size-10" size="icon-lg" type="button" variant="ghost" onClick={copyShareUrl}>{copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}</Button>
+                    >
+                      <option value="desktop">Desktop</option>
+                      <option value="mobile">Mobile</option>
+                    </select>
+                    <Button
+                      aria-label={`Switch to ${currentTheme === "dark" ? "light" : "dark"} theme`}
+                      className="size-11 sm:size-10"
+                      icon={
+                        currentTheme === "dark" ? (
+                          <Sun aria-hidden="true" />
+                        ) : (
+                          <Moon aria-hidden="true" />
+                        )
+                      }
+                      type="button"
+                      variant="transparent"
+                      onClick={() => {
+                        const nextTheme = currentTheme === "dark" ? "light" : "dark";
+                        setTheme(nextTheme);
+                        setAppTheme(nextTheme);
+                        updateShared({ theme: nextTheme });
+                      }}
+                    />
+                    <Button
+                      aria-label="Reset"
+                      className="size-11 sm:size-10"
+                      icon={<RotateCcw aria-hidden="true" />}
+                      type="button"
+                      variant="transparent"
+                      onClick={resetPlayground}
+                    />
+                    <Button
+                      aria-label={copied ? "Copied" : "Share"}
+                      className="size-11 sm:size-10"
+                      icon={copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+                      type="button"
+                      variant="transparent"
+                      onClick={copyShareUrl}
+                    />
                   </>
                 ) : null}
                 <Button
                   aria-controls="playground-setup"
                   aria-expanded={setupOpen}
                   aria-label={setupOpen ? "Close setup" : "Open setup"}
-                  chonk={false}
                   className="size-11 sm:size-10"
                   data-slot="playground-setup-trigger"
                   ref={setupTriggerRef}
-                  size="icon-lg"
+                  icon={<Settings2 aria-hidden="true" />}
                   type="button"
-                  variant={setupOpen ? "secondary" : "ghost"}
+                  variant={setupOpen ? "secondary" : "transparent"}
                   onClick={setupOpen ? closeSetup : () => setSetupOpen(true)}
-                ><Settings2 aria-hidden="true" /></Button>
+                />
               </div>
-              {setupOpen ? <div className="max-h-[calc(100dvh-8rem)] overflow-y-auto overscroll-contain border-b border-foreground/10 p-3 sm:max-h-[calc(100dvh-5rem)]" id="playground-setup">{session.controls}</div> : null}
+              {setupOpen ? (
+                <div
+                  className="max-h-[calc(100dvh-8rem)] overflow-y-auto overscroll-contain border-b border-foreground/10 p-3 sm:max-h-[calc(100dvh-5rem)]"
+                  id="playground-setup"
+                >
+                  {session.controls}
+                </div>
+              ) : null}
             </aside>
-            <div className={viewport === "mobile" ? "flex min-h-dvh justify-center bg-muted" : "min-h-dvh"}>
-              <div className={viewport === "mobile" ? "min-h-dvh w-full max-w-[390px] ring-1 ring-foreground/10" : "min-h-dvh w-full"}>
+            <div
+              className={
+                viewport === "mobile" ? "flex min-h-dvh justify-center bg-muted" : "min-h-dvh"
+              }
+            >
+              <div
+                className={
+                  viewport === "mobile"
+                    ? "min-h-dvh w-full max-w-[390px] ring-1 ring-foreground/10"
+                    : "min-h-dvh w-full"
+                }
+              >
                 <SentryPageFrame breadcrumbs={session.breadcrumbs} title={session.title}>
                   <div className="grid max-w-3xl gap-8">
-                    <p className="max-w-[65ch] text-pretty text-base text-muted-foreground sm:text-sm">{session.description}</p>
+                    <p className="max-w-[65ch] text-base text-pretty text-muted-foreground sm:text-sm">
+                      {session.description}
+                    </p>
                     {session.preview}
                   </div>
                 </SentryPageFrame>

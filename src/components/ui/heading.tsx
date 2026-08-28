@@ -6,25 +6,17 @@ import {
   type HTMLAttributes,
   type ReactElement,
   type ReactNode,
+  type Ref,
 } from "react";
 
 import "./roboto-mono.css";
-import {
-  isValidLayoutDomProp,
-  type LayoutResponsive as Responsive,
-} from "./layout-style-engine";
-import {
-  combineTextClassNames,
-  createTextStyleResource,
-  resolveFontSize,
-  resolveLineHeight,
-  textDeclaration,
-  type HeadingSize,
-} from "./text-style-engine";
-import styles from "./text.module.css";
-import type { BaseTextProps, TextVariant } from "./text";
+import { isValidLayoutDomProp, type LayoutResponsive as Responsive } from "./layout-style-engine";
+import { headingStaticClassName, resolveTextLineHeight, type BaseTextProps } from "./text";
+import { createTextTailwindClassName, type TextTailwindDeclaration } from "./text-tailwind";
 
 type HeadingElement = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+export type HeadingSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+
 type BaseHeadingProps = Omit<BaseTextProps, "bold" | "uppercase">;
 type ExclusiveHeadingEllipsisProps =
   | { ellipsis?: true; wrap?: never }
@@ -32,14 +24,11 @@ type ExclusiveHeadingEllipsisProps =
 
 export type HeadingProps = BaseHeadingProps & {
   as: HeadingElement;
-  ref?: React.Ref<HTMLHeadingElement | null>;
+  ref?: Ref<HTMLHeadingElement | null>;
   size?: Responsive<HeadingSize>;
   /** @deprecated Use Heading props for styling. */
   style?: CSSProperties;
-} & Omit<
-    DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>,
-    "style"
-  > &
+} & Omit<DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>, "style"> &
   ExclusiveHeadingEllipsisProps;
 
 type HeadingPropsWithRenderFunction = BaseHeadingProps &
@@ -51,10 +40,7 @@ type HeadingPropsWithRenderFunction = BaseHeadingProps &
   } & Partial<
     Record<
       Exclude<
-        keyof DetailedHTMLProps<
-          HTMLAttributes<HTMLHeadingElement>,
-          HTMLHeadingElement
-        >,
+        keyof DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>,
         "children"
       >,
       never
@@ -80,17 +66,18 @@ const headingPropNames = new Set<string>([
   "wrap",
 ]);
 
-const variantClassNames: Record<TextVariant, string | undefined> = {
-  accent: styles.accent,
-  danger: styles.danger,
-  inherit: undefined,
-  muted: styles.secondary,
-  primary: styles.primary,
-  promotion: styles.promotion,
-  secondary: styles.secondary,
-  success: styles.success,
-  warning: styles.warning,
-};
+const headingSizes = new Map<string, string>([
+  ["xs", "11px"],
+  ["sm", "12px"],
+  ["md", "14px"],
+  ["lg", "16px"],
+  ["xl", "20px"],
+  ["2xl", "24px"],
+  ["3xl", "32px"],
+  ["4xl", "40px"],
+]);
+
+const textAlignValues = new Set(["left", "center", "right", "justify"]);
 
 function defaultHeadingSize(as: HeadingElement | undefined): HeadingSize | undefined {
   if (as === "h1") return "2xl";
@@ -102,25 +89,34 @@ function defaultHeadingSize(as: HeadingElement | undefined): HeadingSize | undef
   return undefined;
 }
 
-function decorationClassName(props: BaseHeadingProps): string | undefined {
-  if (props.strikethrough && props.underline === "dotted") return styles.strikeDotted;
-  if (props.strikethrough && props.underline) return styles.strikeUnderline;
-  if (props.strikethrough) return styles.strike;
-  if (props.underline === "dotted") return styles.dotted;
-  if (props.underline) return styles.underline;
-  return undefined;
+function resolveHeadingSize(value: unknown): string | undefined {
+  if (value === "inherit") return "inherit";
+  return typeof value === "string" ? headingSizes.get(value) : undefined;
 }
 
-function nativeHeadingProps(
-  props: HeadingProps
-): Record<string, unknown> {
+function resolveHeadingLineHeight(value: unknown): string | undefined {
+  return value === "inherit" ? "inherit" : resolveTextLineHeight(value);
+}
+
+function resolveHeadingAlign(value: unknown): string | undefined {
+  return typeof value === "string" && textAlignValues.has(value) ? value : undefined;
+}
+
+function hasHeadingRenderFunction(
+  props: HeadingProps | HeadingPropsWithRenderFunction,
+): props is HeadingPropsWithRenderFunction {
+  return typeof props.children === "function";
+}
+
+function nativeHeadingProps(props: HeadingProps): Record<string, unknown> {
   const nativeProps: Record<string, unknown> = {};
   for (const [name, value] of Object.entries(props)) {
     if (
       name !== "children" &&
       name !== "className" &&
+      name !== "style" &&
       !headingPropNames.has(name) &&
-      (name === "ref" || isValidLayoutDomProp(name))
+      isValidLayoutDomProp(name)
     ) {
       nativeProps[name] = value;
     }
@@ -128,64 +124,44 @@ function nativeHeadingProps(
   return nativeProps;
 }
 
-function hasHeadingRenderFunction(
-  props: HeadingProps | HeadingPropsWithRenderFunction
-): props is HeadingPropsWithRenderFunction {
-  return typeof props.children === "function";
-}
-
-export function Heading(
-  props: HeadingProps | HeadingPropsWithRenderFunction
-): ReactElement {
+export function Heading(props: HeadingProps | HeadingPropsWithRenderFunction): ReactElement {
   const variant = props.variant ?? "primary";
   const size =
     variant === "inherit" && props.size === undefined
       ? "inherit"
-      : props.size ?? defaultHeadingSize(props.as);
-  const density =
-    variant === "inherit" && props.density === undefined
-      ? "inherit"
-      : props.density;
-  const { className: generatedClassName, resource } = createTextStyleResource([
-    textDeclaration("font-size", size, resolveFontSize),
-    textDeclaration("line-height", density, resolveLineHeight),
-    textDeclaration("text-align", props.align),
-    textDeclaration(
-      "white-space",
-      props.wrap ?? (props.ellipsis ? "nowrap" : undefined)
-    ),
-    textDeclaration("text-wrap", props.textWrap),
-    textDeclaration("word-break", props.wordBreak),
-  ]);
-  const className =
-    combineTextClassNames(
-      styles.text,
-      styles.heading,
-      variant === "inherit" && styles.headingInherit,
-      variantClassNames[variant],
-      props.monospace && styles.mono,
-      props.italic && styles.italic,
-      decorationClassName(props),
-      props.ellipsis && styles.headingEllipsis,
-      props.tabular && props.fraction
-        ? styles.tabularFraction
-        : props.tabular
-          ? styles.tabular
-          : props.fraction
-            ? styles.fraction
-            : undefined,
-      generatedClassName,
-      props.className
-    ) ?? "";
+      : (props.size ?? defaultHeadingSize(props.as));
+  const density = variant === "inherit" && props.density === undefined ? "inherit" : props.density;
+  const declarations: TextTailwindDeclaration[] = [
+    {
+      property: "font-size",
+      value: size,
+      resolve: resolveHeadingSize,
+    },
+    {
+      property: "line-height",
+      value: density,
+      resolve: resolveHeadingLineHeight,
+    },
+    {
+      property: "text-align",
+      value: props.align,
+      resolve: resolveHeadingAlign,
+    },
+  ];
+  const fontWeightClassName = variant === "inherit" ? "[font-weight:inherit]" : "font-medium";
+  const className = headingStaticClassName(
+    { ...props, variant },
+    createTextTailwindClassName(declarations),
+    fontWeightClassName,
+  );
 
   if (hasHeadingRenderFunction(props)) {
-    return createElement(Fragment, null, resource, props.children({ className }));
+    return createElement(Fragment, null, props.children({ className }));
   }
 
-  const node = createElement(
+  return createElement(
     props.as,
-    { ...nativeHeadingProps(props), className, key: "heading-node" },
-    props.children
+    { ...nativeHeadingProps(props), className, style: props.style },
+    props.children,
   );
-  return createElement(Fragment, null, resource, node);
 }

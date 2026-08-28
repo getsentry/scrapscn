@@ -1,34 +1,43 @@
 "use client";
 
-import {
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type HTMLAttributes,
-  type ReactNode,
-} from "react";
-
 import { useResizeObserver } from "@react-aria/utils";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useRef, useState, type CSSProperties, type HTMLAttributes } from "react";
 
-import { Stack } from "./layout";
-import { Text } from "./text";
-import styles from "./loader.module.css";
+import "./loader.css";
 
 interface IndeterminateLoaderProps extends HTMLAttributes<HTMLDivElement> {
-  messages?: ReactNode[];
   variant?: "vibrant" | "monochrome";
 }
 
 interface LoaderTrackStyle extends CSSProperties {
+  "--loader-squiggle"?: string;
   "--loader-track-color"?: string;
 }
 
 const WIDTH = { MIN: 128, MAX: 400 };
 const DURATION = { MIN: 2, MAX: 2.8 };
 const DELAY = { MIN: 0.8, MAX: 1.2 };
-const MESSAGE_INTERVAL_MS = 10_000;
+const SQUIGGLE_TILE =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='1 0 16 8'%3E%3Cpath stroke='%23fff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M17 6c-4 0-4-4-8-4S5 6 1 6'/%3E%3C/svg%3E\")";
+
+const MASK_CLASS_NAMES =
+  "[mask-image:var(--loader-squiggle)] [mask-repeat:repeat-x] [mask-size:16px_8px] " +
+  "[-webkit-mask-image:var(--loader-squiggle)] [-webkit-mask-repeat:repeat-x] " +
+  "[-webkit-mask-size:16px_8px]";
+
+const TRACK_CLASS_NAMES =
+  "scraps-loader-track-width relative h-2 overflow-hidden " +
+  "before:absolute before:inset-0 before:content-[''] " +
+  "before:bg-[var(--loader-track-color)] before:[mask-image:var(--loader-squiggle)] " +
+  "before:[mask-repeat:repeat-x] before:[mask-size:16px_8px] " +
+  "before:[-webkit-mask-image:var(--loader-squiggle)] " +
+  "before:[-webkit-mask-repeat:repeat-x] before:[-webkit-mask-size:16px_8px]";
+
+const BAR_CLASS_NAMES =
+  "absolute inset-y-0 right-0 left-0 " +
+  "[animation-timing-function:cubic-bezier(0.4,0,0.2,1)] " +
+  "[animation-iteration-count:infinite] [animation-fill-mode:backwards] " +
+  "motion-reduce:animate-none";
 
 function lerp(min: number, max: number, t: number): number {
   return min + (max - min) * Math.min(1, Math.max(0, t));
@@ -52,68 +61,50 @@ function useAnimationTiming() {
   return { delay, duration, ref };
 }
 
-function useMessageCycler(messages: ReactNode[]) {
-  const [index, setIndex] = useState(0);
-  useEffect(() => {
-    if (messages.length <= 1 || index >= messages.length - 1) return;
-    const timer = window.setTimeout(() => setIndex((value) => value + 1), MESSAGE_INTERVAL_MS);
-    return () => window.clearTimeout(timer);
-  }, [index, messages.length]);
-  return { index, message: messages.length > 0 ? messages[index] : null };
-}
-
-function Ellipsis() {
-  return <span aria-hidden><span className={styles.dot}>.</span><span className={styles.dot} style={{ animationDelay: "0.2s" }}>.</span><span className={styles.dot} style={{ animationDelay: "0.4s" }}>.</span></span>;
-}
-
 /** The regular Scraps animated indeterminate squiggle progress indicator. */
 export function IndeterminateLoader({
   variant = "vibrant",
-  messages,
   className,
   color,
   style,
   ...props
 }: IndeterminateLoaderProps) {
   const { delay, duration, ref } = useAnimationTiming();
-  const { index, message } = useMessageCycler(messages ?? []);
-  const reduceMotion = useReducedMotion();
   const monochrome = variant === "monochrome";
   const trackStyle: LoaderTrackStyle = {
-    "--loader-track-color": color ?? (monochrome ? "currentColor" : "var(--scraps-theme-border-secondary, #e6e6e9)"),
+    "--loader-squiggle": SQUIGGLE_TILE,
+    "--loader-track-color":
+      color ?? (monochrome ? "currentColor" : "var(--scraps-theme-border-secondary, #e6e6e9)"),
     ...style,
   };
-  const track = (
+  const barColorClassName = monochrome
+    ? "bg-current"
+    : "bg-[var(--scraps-theme-border-accent,#7553ff)]";
+  return (
     <div
       ref={ref}
       role="progressbar"
       aria-label="Loading"
       {...props}
-      className={[styles.track, monochrome ? styles.monochrome : undefined, className].filter(Boolean).join(" ")}
+      className={[TRACK_CLASS_NAMES, monochrome ? "before:opacity-20" : undefined, className]
+        .filter(Boolean)
+        .join(" ")}
       color={color}
       style={trackStyle}
     >
-      <span className={styles.mask}>
-        <span className={[styles.bar, styles.slow].join(" ")} style={{ animationDelay: "0s", animationDuration: `${duration}s` }} />
-        <span className={[styles.bar, styles.fast].join(" ")} style={{ animationDelay: `${delay}s`, animationDuration: `${duration}s` }} />
+      <span className={`absolute inset-0 ${MASK_CLASS_NAMES}`}>
+        <span
+          className={`${BAR_CLASS_NAMES} ${barColorClassName} [animation-name:loader-indeterminate-slow]`}
+          style={{ animationDelay: "0s", animationDuration: `${duration}s` }}
+        />
+        <span
+          className={`${BAR_CLASS_NAMES} ${barColorClassName} [animation-name:loader-indeterminate-fast]`}
+          style={{
+            animationDelay: `${delay}s`,
+            animationDuration: `${duration}s`,
+          }}
+        />
       </span>
     </div>
-  );
-  if (!messages?.length) return track;
-  return (
-    <Stack align="start" gap="xl" maxWidth="72ch" width="100%">
-      {track}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={index}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: reduceMotion ? 1 : 0 }}
-          initial={{ opacity: reduceMotion ? 1 : 0 }}
-          transition={reduceMotion ? { duration: 0 } : { duration: 0.3 }}
-        >
-          <Text monospace size="lg" variant="muted">{message}<Ellipsis /></Text>
-        </motion.div>
-      </AnimatePresence>
-    </Stack>
   );
 }

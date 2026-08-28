@@ -34,11 +34,16 @@ function parseVariant(value: string): DragHandleVariant {
 function parseSize(value: string | null) {
   if (value === null) return defaultSize;
   const parsed = Number(value);
-  return Number.isFinite(parsed) ? Math.max(minimum, Math.min(maximum, Math.round(parsed))) : defaultSize;
+  return Number.isFinite(parsed)
+    ? Math.max(minimum, Math.min(maximum, Math.round(parsed)))
+    : defaultSize;
 }
 
 function effectiveMaximum(availableLength: number) {
-  return Math.max(minimum, Math.min(maximum, Math.floor(availableLength - flexibleMinimum - DRAG_HANDLE_SIZE)));
+  return Math.max(
+    minimum,
+    Math.min(maximum, Math.floor(availableLength - flexibleMinimum - DRAG_HANDLE_SIZE)),
+  );
 }
 
 export function parseDragHandleWorkbench(params: URLSearchParams): DragHandleWorkbenchState {
@@ -58,7 +63,9 @@ export function serializeDragHandleWorkbench(state: DragHandleWorkbenchState) {
 }
 
 export function DragHandleWorkbench({ children, onSearchChange, sourceSearch }: WorkbenchProps) {
-  const [state, setState] = useState(() => parseDragHandleWorkbench(new URLSearchParams(sourceSearch)));
+  const [state, setState] = useState(() =>
+    parseDragHandleWorkbench(new URLSearchParams(sourceSearch)),
+  );
   const [availableLength, setAvailableLength] = useState<number | null>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const currentMaximum = availableLength === null ? maximum : effectiveMaximum(availableLength);
@@ -89,22 +96,52 @@ export function DragHandleWorkbench({ children, onSearchChange, sourceSearch }: 
   const controls = (
     <div className="grid gap-4">
       <div className="flex items-center justify-between gap-3">
-        <div><h2 className="text-sm font-semibold">Drag Handle setup</h2><p className="text-xs text-muted-foreground">Changes stay in the share URL.</p></div>
+        <div>
+          <h2 className="text-sm font-semibold">Drag Handle setup</h2>
+          <p className="text-xs text-muted-foreground">Changes stay in the share URL.</p>
+        </div>
         <ChevronUp aria-hidden="true" className="size-4 text-muted-foreground" />
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
-        <label className="grid gap-2 text-base font-medium sm:text-sm">Orientation
-          <select className="h-11 touch-manipulation rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-10 sm:text-sm" name="drag-handle-orientation" value={state.orientation} onChange={(event) => update({ ...state, orientation: parseOrientation(event.target.value) })}>
-            <option value="horizontal">Horizontal</option><option value="vertical">Vertical</option>
+        <label className="grid gap-2 text-base font-medium sm:text-sm">
+          Orientation
+          <select
+            className="h-11 touch-manipulation rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-10 sm:text-sm"
+            name="drag-handle-orientation"
+            value={state.orientation}
+            onChange={(event) =>
+              update({ ...state, orientation: parseOrientation(event.target.value) })
+            }
+          >
+            <option value="horizontal">Horizontal</option>
+            <option value="vertical">Vertical</option>
           </select>
         </label>
-        <label className="grid gap-2 text-base font-medium sm:text-sm">Variant
-          <select className="h-11 touch-manipulation rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-10 sm:text-sm" name="drag-handle-variant" value={state.variant} onChange={(event) => update({ ...state, variant: parseVariant(event.target.value) })}>
-            <option value="solid">Solid</option><option value="ghost">Ghost</option>
+        <label className="grid gap-2 text-base font-medium sm:text-sm">
+          Variant
+          <select
+            className="h-11 touch-manipulation rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-10 sm:text-sm"
+            name="drag-handle-variant"
+            value={state.variant}
+            onChange={(event) => update({ ...state, variant: parseVariant(event.target.value) })}
+          >
+            <option value="solid">Solid</option>
+            <option value="ghost">Ghost</option>
           </select>
         </label>
-        <label className="grid gap-2 text-base font-medium sm:text-sm">Value
-          <input className="h-11 touch-manipulation rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-10 sm:text-sm" max={currentMaximum} min={minimum} name="drag-handle-value" type="number" value={state.size} onChange={(event) => update({ ...state, size: Math.min(currentMaximum, parseSize(event.target.value)) })} />
+        <label className="grid gap-2 text-base font-medium sm:text-sm">
+          Value
+          <input
+            className="h-11 touch-manipulation rounded-md border border-input bg-background px-3 text-base focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring sm:h-10 sm:text-sm"
+            max={currentMaximum}
+            min={minimum}
+            name="drag-handle-value"
+            type="number"
+            value={state.size}
+            onChange={(event) =>
+              update({ ...state, size: Math.min(currentMaximum, parseSize(event.target.value)) })
+            }
+          />
         </label>
       </div>
     </div>
@@ -114,9 +151,28 @@ export function DragHandleWorkbench({ children, onSearchChange, sourceSearch }: 
     <Container background="primary" border="primary" minWidth="0" padding="md" radius="md">
       <Stack gap="sm">
         <span className="text-sm font-medium">Drag handle proof</span>
-        <span className="text-sm text-muted-foreground" data-testid="drag-handle-size">Sized pane {state.orientation === "horizontal" ? "width" : "height"}: {state.size}px</span>
-        <Flex ref={frameRef} border="primary" data-testid="drag-handle-frame" direction={state.orientation === "horizontal" ? "row" : "column"} height={state.orientation === "horizontal" ? "120px" : "420px"} minWidth="0" overflow="hidden" radius="md" width="100%">
-          <Container background="secondary" flexBasis={`${state.size}px`} flexShrink={0} padding="md"><span className="text-sm font-medium">Sized pane</span></Container>
+        <span className="text-sm text-muted-foreground" data-testid="drag-handle-size">
+          Sized pane {state.orientation === "horizontal" ? "width" : "height"}: {state.size}px
+        </span>
+        <Flex
+          ref={frameRef}
+          border="primary"
+          data-testid="drag-handle-frame"
+          direction={state.orientation === "horizontal" ? "row" : "column"}
+          height={state.orientation === "horizontal" ? "120px" : "420px"}
+          minWidth="0"
+          overflow="hidden"
+          radius="md"
+          width="100%"
+        >
+          <Container
+            background="secondary"
+            flexBasis={`${state.size}px`}
+            flexShrink={0}
+            padding="md"
+          >
+            <span className="text-sm font-medium">Sized pane</span>
+          </Container>
           <DragHandle
             aria-label={`Adjust drag pane ${state.orientation === "horizontal" ? "width" : "height"}`}
             isSizedFirst
@@ -126,9 +182,23 @@ export function DragHandleWorkbench({ children, onSearchChange, sourceSearch }: 
             value={state.size}
             variant={state.variant}
             onDoubleClick={() => update({ ...state, size: defaultSize })}
-            onMove={(delta) => update({ ...state, size: Math.max(minimum, Math.min(currentMaximum, state.size + delta)) })}
+            onMove={(delta) =>
+              update({
+                ...state,
+                size: Math.max(minimum, Math.min(currentMaximum, state.size + delta)),
+              })
+            }
           />
-          <Container background="primary" data-testid="drag-handle-flexible-pane" flexGrow={1} minHeight={state.orientation === "vertical" ? `${flexibleMinimum}px` : undefined} minWidth={state.orientation === "horizontal" ? `${flexibleMinimum}px` : undefined} padding="md"><span className="text-sm text-muted-foreground">Flexible pane</span></Container>
+          <Container
+            background="primary"
+            data-testid="drag-handle-flexible-pane"
+            flexGrow={1}
+            minHeight={state.orientation === "vertical" ? `${flexibleMinimum}px` : undefined}
+            minWidth={state.orientation === "horizontal" ? `${flexibleMinimum}px` : undefined}
+            padding="md"
+          >
+            <span className="text-sm text-muted-foreground">Flexible pane</span>
+          </Container>
         </Flex>
       </Stack>
     </Container>
@@ -139,7 +209,11 @@ export function DragHandleWorkbench({ children, onSearchChange, sourceSearch }: 
     controls,
     description: "Resize two panes with pointer, touch, or keyboard input.",
     preview,
-    reset: () => { const next = defaultState(); setState(next); return serializeDragHandleWorkbench(next); },
+    reset: () => {
+      const next = defaultState();
+      setState(next);
+      return serializeDragHandleWorkbench(next);
+    },
     serialize: () => serializeDragHandleWorkbench(state),
     title: "Drag Handle",
   });

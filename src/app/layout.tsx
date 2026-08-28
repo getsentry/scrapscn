@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Rubik } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
+
 import { ThemeProvider } from "@/components/theme-provider";
+
 import "./globals.css";
 
 const figmaCaptureBootstrap = `
@@ -30,8 +32,7 @@ const dammitSans = localFont({
 
 export const metadata: Metadata = {
   title: "Scrapscn Playground",
-  description:
-    "A local playground for building with Sentry's regular Scraps components.",
+  description: "A local playground for building with Sentry's regular Scraps components.",
 };
 
 export default function RootLayout({

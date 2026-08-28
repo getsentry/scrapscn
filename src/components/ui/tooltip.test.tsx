@@ -26,14 +26,11 @@ class TestResizeObserver implements ResizeObserver {
 
   static notify() {
     for (const instance of [...TestResizeObserver.instances]) {
-      instance.callback(
-        [],
-        {
-          disconnect() {},
-          observe() {},
-          unobserve() {},
-        }
-      );
+      instance.callback([], {
+        disconnect() {},
+        observe() {},
+        unobserve() {},
+      });
     }
   }
 }
@@ -92,7 +89,7 @@ describe("Tooltip", () => {
         <button onPointerEnter={onPointerEnter} ref={triggerRef} type="button">
           Trigger
         </button>
-      </Tooltip>
+      </Tooltip>,
     );
 
     const trigger = triggerRef.current;
@@ -102,9 +99,9 @@ describe("Tooltip", () => {
     expect(onPointerEnter).toHaveBeenCalledOnce();
     expect(document.querySelector('[role="tooltip"]')).not.toBeNull();
     expect(document.querySelector('[role="tooltip"] svg')).not.toBeNull();
-    expect(
-      document.querySelector('[data-tooltip-positioner]')?.hasAttribute("data-side")
-    ).toBe(true);
+    expect(document.querySelector("[data-tooltip-positioner]")?.hasAttribute("data-side")).toBe(
+      true,
+    );
 
     await act(async () => root.unmount());
   });
@@ -121,7 +118,7 @@ describe("Tooltip", () => {
         <span>
           Label <span data-overflowing="true">truncated value</span>
         </span>
-      </Tooltip>
+      </Tooltip>,
     );
 
     const logicalOverflow = document.querySelector("[data-overflowing]");
@@ -149,15 +146,19 @@ describe("Tooltip", () => {
     const triggerRef: RefObject<HTMLButtonElement | null> = createRef();
     const { root } = await render(
       <Tooltip delay={0} onHover={firstHover} skipWrapper title="Title">
-        <button ref={triggerRef} type="button">Trigger</button>
-      </Tooltip>
+        <button ref={triggerRef} type="button">
+          Trigger
+        </button>
+      </Tooltip>,
     );
 
     await rerender(
       root,
       <Tooltip delay={0} onHover={secondHover} skipWrapper title="Title">
-        <button ref={triggerRef} type="button">Trigger</button>
-      </Tooltip>
+        <button ref={triggerRef} type="button">
+          Trigger
+        </button>
+      </Tooltip>,
     );
     await hover(triggerRef.current!);
 
@@ -166,8 +167,10 @@ describe("Tooltip", () => {
     await rerender(
       root,
       <Tooltip delay={0} onHover={() => secondHover()} skipWrapper title="Title">
-        <button ref={triggerRef} type="button">Trigger</button>
-      </Tooltip>
+        <button ref={triggerRef} type="button">
+          Trigger
+        </button>
+      </Tooltip>,
     );
     expect(secondHover).toHaveBeenCalledOnce();
     await act(async () => root.unmount());
@@ -182,7 +185,7 @@ describe("Tooltip", () => {
         <Tooltip delay={400} displayTimeout={150} title="Second details">
           <button type="button">Second</button>
         </Tooltip>
-      </div>
+      </div>,
     );
 
     const first = document.querySelector("button");
@@ -208,8 +211,8 @@ describe("Tooltip", () => {
     });
     expect(
       [...document.querySelectorAll('[role="tooltip"]')].some((element) =>
-        element.textContent?.includes("Second details")
-      )
+        element.textContent?.includes("Second details"),
+      ),
     ).toBe(true);
     await act(async () => root.unmount());
   });
@@ -232,7 +235,7 @@ describe("Tooltip", () => {
             Trigger
           </Tooltip>
         </TooltipContext.Provider>
-      </button>
+      </button>,
     );
 
     const copyButton = portalHost.querySelector("button");
@@ -251,9 +254,15 @@ describe("Tooltip", () => {
   it("keeps a hoverable tooltip open while the pointer moves from trigger to popup", async () => {
     const onBlur = vi.fn();
     const { root } = await render(
-      <Tooltip delay={0} displayTimeout={150} isHoverable onBlur={onBlur} title="Interactive details">
+      <Tooltip
+        delay={0}
+        displayTimeout={150}
+        isHoverable
+        onBlur={onBlur}
+        title="Interactive details"
+      >
         <button type="button">Trigger</button>
-      </Tooltip>
+      </Tooltip>,
     );
 
     const trigger = document.querySelector("button");
@@ -279,18 +288,18 @@ describe("Tooltip", () => {
     await act(async () => root.unmount());
   });
 
-  it("applies SerializedStyles to the tooltip at runtime", async () => {
+  it("applies CSSProperties to the tooltip at runtime", async () => {
     const { root } = await render(
       <Tooltip
         forceVisible
         overlayStyle={{
-          name: "tooltip-override",
-          styles: "background-color:rgb(12, 34, 56);color:rgb(240, 241, 242);",
+          backgroundColor: "rgb(12, 34, 56)",
+          color: "rgb(240, 241, 242)",
         }}
         title="Styled details"
       >
         Trigger
-      </Tooltip>
+      </Tooltip>,
     );
 
     const tooltip = document.querySelector<HTMLElement>('[role="tooltip"]');
@@ -300,25 +309,128 @@ describe("Tooltip", () => {
     await act(async () => root.unmount());
   });
 
+  it("composes edge-to-edge sections into shared tooltip grid tracks", async () => {
+    const { root } = await render(
+      <Tooltip
+        forceVisible
+        title={
+          <>
+            <Tooltip.Header leadingItems={<span>Header icon</span>} trailingItems={0}>
+              Last Seen
+            </Tooltip.Header>
+            <Tooltip.Grid columns="max-content 1fr max-content">
+              <Tooltip.Row leadingItems={<span>PDT</span>} trailingItems={<span>11:40 PM</span>}>
+                <span>Jul 28, 2026</span>
+              </Tooltip.Row>
+              <Tooltip.Row leadingItems={<span>UTC</span>} trailingItems={<span>12:40 AM</span>}>
+                <span>Jul 29, 2026</span>
+              </Tooltip.Row>
+            </Tooltip.Grid>
+            <Tooltip.Footer leadingItems={<span>Footer icon</span>} trailingItems="">
+              Times shown in
+            </Tooltip.Footer>
+          </>
+        }
+      >
+        Trigger
+      </Tooltip>,
+    );
+
+    const tooltip = document.querySelector<HTMLElement>('[role="tooltip"]');
+    expect(tooltip).not.toBeNull();
+    expect(tooltip?.className).toContain("[&>[data-tooltip-section]]:-mx-3");
+    expect(tooltip?.className).toContain("[&>[data-tooltip-section]~[data-tooltip-section]]:mt-0");
+
+    const sections = tooltip?.querySelectorAll<HTMLElement>("[data-tooltip-section]");
+    expect(sections).toHaveLength(3);
+    expect(sections?.[1].style.gridTemplateColumns).toBe("max-content 1fr max-content");
+    expect(sections?.[1].style.gap).toBe("2px 8px");
+    expect(sections?.[1].querySelector(".contents")).not.toBeNull();
+    expect(sections?.[1].textContent).toBe("PDTJul 28, 202611:40 PMUTCJul 29, 202612:40 AM");
+    expect(tooltip?.textContent).toContain("Header iconLast Seen0");
+    expect(tooltip?.textContent).toContain("Footer iconTimes shown in");
+    expect(
+      Array.from(tooltip?.querySelectorAll(".whitespace-nowrap") ?? []).some(
+        (element) => element.textContent === "",
+      ),
+    ).toBe(true);
+    await act(async () => root.unmount());
+  });
+
+  it("resets an open tooltip when it becomes disabled", async () => {
+    const { root } = await render(
+      <Tooltip delay={0} title="Disabled details">
+        <button type="button">Trigger</button>
+      </Tooltip>,
+    );
+    const trigger = document.querySelector("button");
+    expect(trigger).not.toBeNull();
+    await hover(trigger!);
+    expect(document.querySelector('[role="tooltip"]')).not.toBeNull();
+
+    await rerender(
+      root,
+      <Tooltip delay={0} disabled title="Disabled details">
+        <button type="button">Trigger</button>
+      </Tooltip>,
+    );
+
+    expect(document.querySelector('[role="tooltip"]')).toBeNull();
+    await act(async () => root.unmount());
+  });
+
+  it("does not restore stale state when disabled then re-enabled", async () => {
+    const tooltip = (disabled = false) => (
+      <Tooltip delay={0} disabled={disabled} title="Reset details">
+        <button type="button">Trigger</button>
+      </Tooltip>
+    );
+    const { root } = await render(tooltip());
+    const trigger = document.querySelector("button");
+    expect(trigger).not.toBeNull();
+    await hover(trigger!);
+    expect(document.querySelector('[role="tooltip"]')).not.toBeNull();
+
+    await rerender(root, tooltip(true));
+    await rerender(root, tooltip());
+
+    expect(document.querySelector('[role="tooltip"]')).toBeNull();
+    await act(async () => root.unmount());
+  });
+
+  it("does not wrap or render an empty title", async () => {
+    const { host, root } = await render(
+      <Tooltip title="">
+        <button type="button">Trigger</button>
+      </Tooltip>,
+    );
+
+    expect(host.innerHTML).toBe('<button type="button">Trigger</button>');
+    expect(document.querySelector('[role="tooltip"]')).toBeNull();
+    await act(async () => root.unmount());
+  });
+
   it.each([
     ["auto", "center"],
     ["auto-start", "start"],
     ["auto-end", "end"],
   ] as const)("selects the available side for %s", async (position, align) => {
-    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (
-      this: HTMLElement
-    ) {
-      if (this.getAttribute("data-auto-anchor") === "true") {
-        return DOMRect.fromRect({ height: 20, width: 20, x: 20, y: 390 });
-      }
-      return DOMRect.fromRect();
-    });
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(
+      function (this: HTMLElement) {
+        if (this.getAttribute("data-auto-anchor") === "true") {
+          return DOMRect.fromRect({ height: 20, width: 20, x: 20, y: 390 });
+        }
+        return DOMRect.fromRect();
+      },
+    );
     vi.stubGlobal("innerWidth", 1000);
     vi.stubGlobal("innerHeight", 800);
     const { root } = await render(
       <Tooltip forceVisible position={position} skipWrapper title="Automatic placement">
-        <button data-auto-anchor="true" type="button">Trigger</button>
-      </Tooltip>
+        <button data-auto-anchor="true" type="button">
+          Trigger
+        </button>
+      </Tooltip>,
     );
     await act(async () => Promise.resolve());
 
@@ -332,37 +444,35 @@ describe("Tooltip", () => {
 
   it("ranks automatic sides by the measured popup overflow and updates after content resizes", async () => {
     let popupWidth = 600;
-    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (
-      this: HTMLElement
-    ) {
-      if (this.getAttribute("data-auto-anchor") === "true") {
-        return DOMRect.fromRect({ height: 20, width: 20, x: 300, y: 250 });
-      }
-      if (this.hasAttribute("data-tooltip")) {
-        return DOMRect.fromRect({ height: 50, width: popupWidth });
-      }
-      return DOMRect.fromRect();
-    });
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(
+      function (this: HTMLElement) {
+        if (this.getAttribute("data-auto-anchor") === "true") {
+          return DOMRect.fromRect({ height: 20, width: 20, x: 300, y: 250 });
+        }
+        if (this.hasAttribute("data-tooltip")) {
+          return DOMRect.fromRect({ height: 50, width: popupWidth });
+        }
+        return DOMRect.fromRect();
+      },
+    );
     vi.stubGlobal("innerWidth", 800);
     vi.stubGlobal("innerHeight", 600);
     const tooltip = (title: string) => (
       <Tooltip forceVisible offset={8} position="auto" skipWrapper title={title}>
-        <button data-auto-anchor="true" type="button">Trigger</button>
+        <button data-auto-anchor="true" type="button">
+          Trigger
+        </button>
       </Tooltip>
     );
     const { root } = await render(tooltip("A wide tooltip"));
     const popup = document.querySelector<HTMLElement>("[data-tooltip]");
     const requestedSide = () =>
-      document
-        .querySelector("[data-tooltip-positioner]")
-        ?.getAttribute("data-requested-side");
+      document.querySelector("[data-tooltip-positioner]")?.getAttribute("data-requested-side");
 
     expect(popup).not.toBeNull();
     expect(requestedSide()).toBe("bottom");
     expect(
-      [...TestResizeObserver.instances].some((observer) =>
-        observer.observedElements.has(popup!)
-      )
+      [...TestResizeObserver.instances].some((observer) => observer.observedElements.has(popup!)),
     ).toBe(true);
 
     popupWidth = 100;
@@ -378,24 +488,22 @@ describe("Tooltip", () => {
 
   it("recomputes automatic placement after viewport, movement, and trigger-size updates", async () => {
     let anchorRect = DOMRect.fromRect({ height: 20, width: 20, x: 20, y: 390 });
-    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (
-      this: HTMLElement
-    ) {
-      return this.getAttribute("data-auto-anchor") === "true"
-        ? anchorRect
-        : DOMRect.fromRect();
-    });
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(
+      function (this: HTMLElement) {
+        return this.getAttribute("data-auto-anchor") === "true" ? anchorRect : DOMRect.fromRect();
+      },
+    );
     vi.stubGlobal("innerWidth", 1000);
     vi.stubGlobal("innerHeight", 800);
     const { root } = await render(
       <Tooltip forceVisible position="auto" skipWrapper title="Automatic placement">
-        <button data-auto-anchor="true" type="button">Trigger</button>
-      </Tooltip>
+        <button data-auto-anchor="true" type="button">
+          Trigger
+        </button>
+      </Tooltip>,
     );
     const requestedSide = () =>
-      document
-        .querySelector("[data-tooltip-positioner]")
-        ?.getAttribute("data-requested-side");
+      document.querySelector("[data-tooltip-positioner]")?.getAttribute("data-requested-side");
     expect(requestedSide()).toBe("right");
 
     await act(async () => {
@@ -424,7 +532,7 @@ describe("Tooltip", () => {
     const { root } = await render(
       <Tooltip delay={0} displayTimeout={0} isHoverable onHover={onHover} title="Exiting details">
         <button type="button">Trigger</button>
-      </Tooltip>
+      </Tooltip>,
     );
     const trigger = document.querySelector("button");
     expect(trigger).not.toBeNull();
@@ -495,22 +603,18 @@ describe("Tooltip", () => {
         return this.getAttribute("data-auto-anchor") === "true"
           ? DOMRect.fromRect({ height: 20, width: 20, x: 20, y: 390 })
           : DOMRect.fromRect();
-      }
+      },
     );
     const addEventListener = ownerWindow.addEventListener.bind(ownerWindow);
     const removeEventListener = ownerWindow.removeEventListener.bind(ownerWindow);
-    vi.spyOn(ownerWindow, "addEventListener").mockImplementation(
-      (type, listener, options) => {
-        if (type === "resize") activeResizeListeners.add(listener);
-        addEventListener(type, listener, options);
-      }
-    );
-    vi.spyOn(ownerWindow, "removeEventListener").mockImplementation(
-      (type, listener, options) => {
-        if (type === "resize") activeResizeListeners.delete(listener);
-        removeEventListener(type, listener, options);
-      }
-    );
+    vi.spyOn(ownerWindow, "addEventListener").mockImplementation((type, listener, options) => {
+      if (type === "resize") activeResizeListeners.add(listener);
+      addEventListener(type, listener, options);
+    });
+    vi.spyOn(ownerWindow, "removeEventListener").mockImplementation((type, listener, options) => {
+      if (type === "resize") activeResizeListeners.delete(listener);
+      removeEventListener(type, listener, options);
+    });
 
     const host = ownerDocument.createElement("div");
     ownerDocument.body.append(host);
@@ -518,15 +622,17 @@ describe("Tooltip", () => {
     await act(async () => {
       root.render(
         <Tooltip forceVisible position="auto" skipWrapper title="Realm placement">
-          <button data-auto-anchor="true" type="button">Trigger</button>
-        </Tooltip>
+          <button data-auto-anchor="true" type="button">
+            Trigger
+          </button>
+        </Tooltip>,
       );
     });
     const requestedSide = () =>
-      (ownerDocument.querySelector("[data-tooltip-positioner]") ??
-        document.querySelector("[data-tooltip-positioner]"))?.getAttribute(
-        "data-requested-side"
-      );
+      (
+        ownerDocument.querySelector("[data-tooltip-positioner]") ??
+        document.querySelector("[data-tooltip-positioner]")
+      )?.getAttribute("data-requested-side");
     expect(requestedSide()).toBe("bottom");
 
     Object.defineProperty(ownerWindow, "innerWidth", {
@@ -556,11 +662,15 @@ describe("Tooltip", () => {
     const fragment = document.createDocumentFragment();
     const { root } = await render(
       <TooltipContext.Provider value={{ container: fragment }}>
-        <Tooltip forceVisible title="Fragment details">Trigger</Tooltip>
-      </TooltipContext.Provider>
+        <Tooltip forceVisible title="Fragment details">
+          Trigger
+        </Tooltip>
+      </TooltipContext.Provider>,
     );
 
-    expect(fragment.querySelector('[role="tooltip"]')?.textContent ?? "").toContain("Fragment details");
+    expect(fragment.querySelector('[role="tooltip"]')?.textContent ?? "").toContain(
+      "Fragment details",
+    );
     expect(document.body.querySelector('[role="tooltip"]')).toBeNull();
     await act(async () => root.unmount());
   });

@@ -1,0 +1,58 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "import",
+    "jsx-a11y",
+    "nextjs",
+    "react",
+    "typescript",
+    "unicorn",
+    "oxc"
+  ],
+  "ignorePatterns": [
+    "node_modules/**",
+    ".next/**",
+    "public/r/**",
+    "public/storybook/**",
+    "storybook-static/**",
+    "src/templates/template-manifest.generated.ts",
+    "src/components/ui/layout-tailwind.ts",
+    "src/components/ui/layout-tailwind-candidates.ts",
+    "src/components/ui/text-tailwind.ts",
+    "src/components/ui/form-field-registry.ts",
+    "src/components/ui/prism-language-loaders.ts",
+    "src/components/ui/prism-language-reloaders.js",
+    "src/components/ui/prism-language-reloaders.d.ts"
+  ],
+  "categories": {
+    "correctness": "off",
+    "suspicious": "off"
+  },
+  "rules": {
+    "no-constant-binary-expression": "error",
+    "no-debugger": "error",
+    "no-dupe-else-if": "error",
+    "no-duplicate-case": "error",
+    "import/no-cycle": "error",
+    "jsx-a11y/alt-text": "error",
+    "jsx-a11y/aria-props": "error",
+    "jsx-a11y/aria-proptypes": "error",
+    "jsx-a11y/aria-role": "error",
+    "jsx-a11y/role-has-required-aria-props": "error",
+    "nextjs/no-assign-module-variable": "error",
+    "nextjs/no-async-client-component": "error",
+    "react/forward-ref-uses-ref": "error",
+    "react/jsx-key": "error",
+    "react/jsx-no-duplicate-props": "error",
+    "react/no-direct-mutation-state": "error",
+    "react/no-unknown-property": "error",
+    "typescript/no-duplicate-enum-values": "error",
+    "typescript/no-duplicate-type-constituents": "error",
+    "typescript/no-misused-new": "error",
+    "typescript/no-unsafe-declaration-merging": "error",
+    "typescript/no-wrapper-object-types": "error"
+  },
+  "env": {
+    "builtin": true
+  }
+}

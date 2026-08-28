@@ -6,12 +6,7 @@ import { describe, expect, it, vi } from "vitest";
 const sentryWarn = vi.hoisted(() => vi.fn());
 vi.mock("@sentry/react", () => ({ logger: { warn: sentryWarn } }));
 
-import {
-  ExternalLink,
-  Link,
-  LinkBehaviorContextProvider,
-  type LinkProps,
-} from "./link";
+import { ExternalLink, Link, LinkBehaviorContextProvider, type LinkProps } from "./link";
 import { TrackingContextProvider } from "./tracking-context";
 
 function render(ui: ReactElement) {
@@ -40,7 +35,7 @@ describe("Link", () => {
     const view = render(
       <RouterFixture>
         <Link to={to}>Link</Link>
-      </RouterFixture>
+      </RouterFixture>,
     );
 
     expect(view.host.querySelector("a")?.getAttribute("href")).toBe(href);
@@ -53,17 +48,10 @@ describe("Link", () => {
   ])("removes %s destination when disabled", (_name, to) => {
     const view = render(
       <RouterFixture>
-        <Link
-          disabled
-          preventScrollReset
-          reloadDocument
-          replace
-          state={{ source: "test" }}
-          to={to}
-        >
+        <Link disabled preventScrollReset reloadDocument replace state={{ source: "test" }} to={to}>
           Link
         </Link>
-      </RouterFixture>
+      </RouterFixture>,
     );
 
     const link = view.host.querySelector("a");
@@ -95,7 +83,7 @@ describe("Link", () => {
             Open
           </Link>
         </RouterFixture>
-      </TrackingContextProvider>
+      </TrackingContextProvider>,
     );
 
     const click = new MouseEvent("click", { bubbles: true, cancelable: true });
@@ -127,8 +115,10 @@ describe("Link", () => {
 
     const view = render(
       <LinkBehaviorContextProvider value={{ behavior, component: AdaptedLink }}>
-        <Link ref={ref} to="/issues/">Open</Link>
-      </LinkBehaviorContextProvider>
+        <Link ref={ref} to="/issues/">
+          Open
+        </Link>
+      </LinkBehaviorContextProvider>,
     );
 
     expect(behavior).toHaveBeenCalledOnce();
@@ -146,7 +136,7 @@ describe("Link", () => {
     const view = render(
       <RouterFixture>
         <Link to="/issues/">Open</Link>
-      </RouterFixture>
+      </RouterFixture>,
     );
 
     expect(sentryWarn).toHaveBeenCalledWith("LinkBehaviorContext not found");
@@ -157,9 +147,7 @@ describe("Link", () => {
 
 describe("ExternalLink", () => {
   it("uses the canonical new-tab attributes by default", () => {
-    const view = render(
-      <ExternalLink href="https://www.sentry.io/">External</ExternalLink>
-    );
+    const view = render(<ExternalLink href="https://www.sentry.io/">External</ExternalLink>);
     const link = view.host.querySelector("a");
 
     expect(link?.getAttribute("target")).toBe("_blank");
@@ -171,7 +159,7 @@ describe("ExternalLink", () => {
     const view = render(
       <ExternalLink href="https://www.sentry.io/" openInNewTab={false}>
         External
-      </ExternalLink>
+      </ExternalLink>,
     );
     const link = view.host.querySelector("a");
 

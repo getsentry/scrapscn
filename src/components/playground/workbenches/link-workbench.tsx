@@ -39,14 +39,8 @@ function serialize(state: LinkWorkbenchState) {
 const controlClassName =
   "h-11 rounded-md border border-input bg-background px-3 text-base sm:h-10 sm:text-sm";
 
-export function LinkWorkbench({
-  children,
-  onSearchChange,
-  sourceSearch,
-}: WorkbenchProps) {
-  const [state, setState] = useState(() =>
-    parseState(new URLSearchParams(sourceSearch))
-  );
+export function LinkWorkbench({ children, onSearchChange, sourceSearch }: WorkbenchProps) {
+  const [state, setState] = useState(() => parseState(new URLSearchParams(sourceSearch)));
 
   function update(next: LinkWorkbenchState) {
     setState(next);
@@ -66,7 +60,7 @@ export function LinkWorkbench({
           <input
             aria-label="Link label"
             className={controlClassName}
-            onChange={event => update({ ...state, label: event.target.value })}
+            onChange={(event) => update({ ...state, label: event.target.value })}
             value={state.label}
           />
         </label>
@@ -75,7 +69,7 @@ export function LinkWorkbench({
             aria-label="Disabled link"
             checked={state.disabled}
             className="size-5 touch-manipulation"
-            onChange={event => update({ ...state, disabled: event.target.checked })}
+            onChange={(event) => update({ ...state, disabled: event.target.checked })}
             type="checkbox"
           />
           Disabled router link
@@ -85,7 +79,7 @@ export function LinkWorkbench({
             aria-label="Open external link in new tab"
             checked={state.openInNewTab}
             className="size-5 touch-manipulation"
-            onChange={event => update({ ...state, openInNewTab: event.target.checked })}
+            onChange={(event) => update({ ...state, openInNewTab: event.target.checked })}
             type="checkbox"
           />
           Open external link in new tab
@@ -110,10 +104,7 @@ export function LinkWorkbench({
           >
             {state.label}
           </Link>
-          <ExternalLink
-            href="https://docs.sentry.io"
-            openInNewTab={state.openInNewTab}
-          >
+          <ExternalLink href="https://docs.sentry.io" openInNewTab={state.openInNewTab}>
             Read the docs
           </ExternalLink>
         </div>

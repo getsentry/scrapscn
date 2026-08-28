@@ -14,8 +14,7 @@ Prism.manual = true;
 
 const languageMap = new Map<string, string>();
 
-for (const language of Object.keys(prismLanguageLoaders))
-  languageMap.set(language, language);
+for (const language of Object.keys(prismLanguageLoaders)) languageMap.set(language, language);
 for (const [alias, language] of Object.entries(prismLanguageAliases))
   languageMap.set(alias, language);
 
@@ -63,16 +62,14 @@ const languageLoads = new Map<string, Promise<boolean>>();
 const loadedGrammarlessComponents = new Set<string>();
 const incompleteLanguageLoads = new Set<string>();
 const completedLanguageLoads = new Set(
-  Object.keys(prismLanguageLoaders).filter(language => Prism.languages[language])
+  Object.keys(prismLanguageLoaders).filter((language) => Prism.languages[language]),
 );
 let languageLoadQueue = Promise.resolve();
 
 type PrismHook = NonNullable<(typeof Prism.hooks.all)[string]>[number];
 type PrismHookSnapshot = Map<string, PrismHook[]>;
 
-const languageHooksKey = Symbol.for(
-  "scrapscn.prism.registered-language-hooks"
-);
+const languageHooksKey = Symbol.for("scrapscn.prism.registered-language-hooks");
 const registeredLanguageHooks: unknown = Reflect.get(Prism, languageHooksKey);
 const prismLanguageHooks: Map<string, PrismHookSnapshot> =
   registeredLanguageHooks instanceof Map
@@ -80,14 +77,12 @@ const prismLanguageHooks: Map<string, PrismHookSnapshot> =
     : new Map<string, PrismHookSnapshot>();
 Reflect.set(Prism, languageHooksKey, prismLanguageHooks);
 
-for (const [language, hookIndexes] of Object.entries(
-  prismPreloadedLanguageHookIndexes
-)) {
+for (const [language, hookIndexes] of Object.entries(prismPreloadedLanguageHookIndexes)) {
   if (prismLanguageHooks.has(language)) continue;
   const languageHooks: PrismHookSnapshot = new Map();
   for (const [name, indexes] of Object.entries(hookIndexes)) {
     const hooks = Prism.hooks.all[name] ?? [];
-    const ownedHooks = indexes.flatMap(index => {
+    const ownedHooks = indexes.flatMap((index) => {
       const hook = hooks[index];
       return hook ? [hook] : [];
     });
@@ -97,30 +92,26 @@ for (const [language, hookIndexes] of Object.entries(
 }
 
 function snapshotPrismHooks(): PrismHookSnapshot {
-  return new Map(
-    Object.entries(Prism.hooks.all).map(([name, hooks]) => [name, [...hooks]])
-  );
+  return new Map(Object.entries(Prism.hooks.all).map(([name, hooks]) => [name, [...hooks]]));
 }
 
 function collectAddedPrismHooks(
-  snapshot: ReadonlyMap<string, readonly PrismHook[]>
+  snapshot: ReadonlyMap<string, readonly PrismHook[]>,
 ): PrismHookSnapshot {
   const addedHooks: PrismHookSnapshot = new Map();
   for (const [name, hooks] of Object.entries(Prism.hooks.all)) {
     const previousHooks = snapshot.get(name) ?? [];
-    const added = hooks.filter(hook => !previousHooks.includes(hook));
+    const added = hooks.filter((hook) => !previousHooks.includes(hook));
     if (added.length > 0) addedHooks.set(name, added);
   }
   return addedHooks;
 }
 
-function removePrismHooks(
-  hooksToRemove: ReadonlyMap<string, readonly PrismHook[]>
-) {
+function removePrismHooks(hooksToRemove: ReadonlyMap<string, readonly PrismHook[]>) {
   for (const [name, removedHooks] of hooksToRemove) {
     const hooks = Prism.hooks.all[name];
     if (!hooks) continue;
-    Prism.hooks.all[name] = hooks.filter(hook => !removedHooks.includes(hook));
+    Prism.hooks.all[name] = hooks.filter((hook) => !removedHooks.includes(hook));
   }
 }
 
@@ -128,7 +119,7 @@ type PrismPluginImporter = () => Promise<unknown>;
 
 export async function loadPrismLineHighlight(
   importPlugin: PrismPluginImporter = () =>
-    import("prismjs/plugins/line-highlight/prism-line-highlight")
+    import("prismjs/plugins/line-highlight/prism-line-highlight"),
 ): Promise<boolean> {
   for (let attempt = 0; attempt < 2; attempt += 1) {
     try {
@@ -145,8 +136,7 @@ export async function loadPrismLineHighlight(
 function isLanguageLoaded(language: string): boolean {
   return (
     completedLanguageLoads.has(language) &&
-    (Boolean(Prism.languages[language]) ||
-      loadedGrammarlessComponents.has(language))
+    (Boolean(Prism.languages[language]) || loadedGrammarlessComponents.has(language))
   );
 }
 
@@ -162,22 +152,20 @@ const languageDependencyCache = new Map<string, ReadonlySet<string>>();
 
 function getTransitiveLanguageDependencies(
   language: string,
-  stack: readonly string[] = []
+  stack: readonly string[] = [],
 ): ReadonlySet<string> {
   const cached = languageDependencyCache.get(language);
   if (cached) return cached;
   if (stack.includes(language)) {
-    throw new Error(
-      `Circular Prism dependency: ${[...stack, language].join(" -> ")}`
-    );
+    throw new Error(`Circular Prism dependency: ${[...stack, language].join(" -> ")}`);
   }
 
   const dependencies = new Set(getLanguageDependencies(language));
   for (const dependency of [...dependencies]) {
-    for (const transitiveDependency of getTransitiveLanguageDependencies(
-      dependency,
-      [...stack, language]
-    )) {
+    for (const transitiveDependency of getTransitiveLanguageDependencies(dependency, [
+      ...stack,
+      language,
+    ])) {
       dependencies.add(transitiveDependency);
     }
   }
@@ -187,13 +175,13 @@ function getTransitiveLanguageDependencies(
 
 function getLoadedLanguages(): Set<string> {
   return new Set(
-    Object.keys(prismLanguageLoaders).filter(language => isLanguageLoaded(language))
+    Object.keys(prismLanguageLoaders).filter((language) => isLanguageLoaded(language)),
   );
 }
 
 function createLanguageLoadSet(
   language: string,
-  loadedLanguages: ReadonlySet<string>
+  loadedLanguages: ReadonlySet<string>,
 ): Set<string> {
   const loadSet = new Set([language]);
 
@@ -210,12 +198,8 @@ function createLanguageLoadSet(
   while (additions.size > 0) {
     const nextAdditions = new Set<string>();
     for (const addedLanguage of additions) {
-      for (const modifiedLanguage of
-        prismLanguageModifications[addedLanguage] ?? []) {
-        if (
-          loadedLanguages.has(modifiedLanguage) &&
-          !loadSet.has(modifiedLanguage)
-        ) {
+      for (const modifiedLanguage of prismLanguageModifications[addedLanguage] ?? []) {
+        if (loadedLanguages.has(modifiedLanguage) && !loadSet.has(modifiedLanguage)) {
           nextAdditions.add(modifiedLanguage);
         }
       }
@@ -224,14 +208,12 @@ function createLanguageLoadSet(
     for (const loadedLanguage of loadedLanguages) {
       if (loadSet.has(loadedLanguage)) continue;
       const dependencies = getTransitiveLanguageDependencies(loadedLanguage);
-      if ([...loadSet].some(dependency => dependencies.has(dependency))) {
+      if ([...loadSet].some((dependency) => dependencies.has(dependency))) {
         nextAdditions.add(loadedLanguage);
       }
     }
 
-    additions = new Set(
-      [...nextAdditions].filter(addedLanguage => !loadSet.has(addedLanguage))
-    );
+    additions = new Set([...nextAdditions].filter((addedLanguage) => !loadSet.has(addedLanguage)));
     for (const addedLanguage of additions) loadSet.add(addedLanguage);
   }
 
@@ -242,29 +224,25 @@ function hasDependencyPath(
   dependencyMap: ReadonlyMap<string, ReadonlySet<string>>,
   language: string,
   target: string,
-  visited = new Set<string>()
+  visited = new Set<string>(),
 ): boolean {
   if (language === target) return true;
   if (visited.has(language)) return false;
   visited.add(language);
 
-  return [...(dependencyMap.get(language) ?? [])].some(dependency =>
-    hasDependencyPath(dependencyMap, dependency, target, visited)
+  return [...(dependencyMap.get(language) ?? [])].some((dependency) =>
+    hasDependencyPath(dependencyMap, dependency, target, visited),
   );
 }
 
 function createLanguageLoadDependencies(
-  loadSet: ReadonlySet<string>
+  loadSet: ReadonlySet<string>,
 ): ReadonlyMap<string, ReadonlySet<string>> {
   const dependencyMap = new Map<string, Set<string>>(
-    [...loadSet].map(language => [
+    [...loadSet].map((language) => [
       language,
-      new Set(
-        getLanguageDependencies(language).filter(dependency =>
-          loadSet.has(dependency)
-        )
-      ),
-    ])
+      new Set(getLanguageDependencies(language).filter((dependency) => loadSet.has(dependency))),
+    ]),
   );
   const languages = [...loadSet].sort();
 
@@ -272,9 +250,7 @@ function createLanguageLoadDependencies(
     const dependencies = dependencyMap.get(language);
     if (!dependencies) continue;
     const transitiveDependencies = getTransitiveLanguageDependencies(language);
-    const languageModifications = new Set(
-      prismLanguageModifications[language] ?? []
-    );
+    const languageModifications = new Set(prismLanguageModifications[language] ?? []);
 
     for (const modifier of languages) {
       if (
@@ -284,11 +260,13 @@ function createLanguageLoadDependencies(
       ) {
         continue;
       }
-      if ((prismLanguageModifications[modifier] ?? []).some(
-        modifiedLanguage =>
-          transitiveDependencies.has(modifiedLanguage) &&
-          !languageModifications.has(modifiedLanguage)
-      )) {
+      if (
+        (prismLanguageModifications[modifier] ?? []).some(
+          (modifiedLanguage) =>
+            transitiveDependencies.has(modifiedLanguage) &&
+            !languageModifications.has(modifiedLanguage),
+        )
+      ) {
         dependencies.add(modifier);
       }
     }
@@ -297,13 +275,8 @@ function createLanguageLoadDependencies(
   return dependencyMap;
 }
 
-async function executeLanguageLoader(
-  language: string,
-  reload: boolean
-): Promise<boolean> {
-  const loader = reload
-    ? prismLanguageReloaders[language]
-    : prismLanguageLoaders[language];
+async function executeLanguageLoader(language: string, reload: boolean): Promise<boolean> {
+  const loader = reload ? prismLanguageReloaders[language] : prismLanguageLoaders[language];
   if (!loader) return false;
 
   const previousGrammar = Prism.languages[language];
@@ -325,7 +298,7 @@ async function executeLanguageLoader(
     else completedLanguageLoads.delete(language);
     removePrismHooks(collectAddedPrismHooks(hookSnapshot));
     console.warn(
-      `Cannot download Prism grammar file for \`${language}\`. Check the internet connection, and the \`lang\` argument passed to \`loadPrismLanguage()\`.`
+      `Cannot download Prism grammar file for \`${language}\`. Check the internet connection, and the \`lang\` argument passed to \`loadPrismLanguage()\`.`,
     );
     return false;
   }
@@ -343,10 +316,7 @@ async function executeLanguageLoader(
 }
 
 async function runLanguageLoad(language: string): Promise<boolean> {
-  if (
-    isLanguageLoaded(language) &&
-    !incompleteLanguageLoads.has(language)
-  ) {
+  if (isLanguageLoaded(language) && !incompleteLanguageLoads.has(language)) {
     return true;
   }
 
@@ -361,16 +331,13 @@ async function runLanguageLoad(language: string): Promise<boolean> {
 
     const load = (async () => {
       const dependencies = await Promise.all(
-        [...(dependencyMap.get(component) ?? [])].map(loadComponent)
+        [...(dependencyMap.get(component) ?? [])].map(loadComponent),
       );
-      if (dependencies.some(loaded => !loaded)) {
+      if (dependencies.some((loaded) => !loaded)) {
         incompleteLanguageLoads.add(component);
         return false;
       }
-      const loaded = await executeLanguageLoader(
-        component,
-        loadedLanguages.has(component)
-      );
+      const loaded = await executeLanguageLoader(component, loadedLanguages.has(component));
       if (loaded) incompleteLanguageLoads.delete(component);
       else incompleteLanguageLoads.add(component);
       return loaded;
@@ -387,10 +354,7 @@ async function runLanguageLoad(language: string): Promise<boolean> {
 }
 
 function loadResolvedPrismLanguage(language: string): Promise<boolean> {
-  if (
-    isLanguageLoaded(language) &&
-    !incompleteLanguageLoads.has(language)
-  ) {
+  if (isLanguageLoaded(language) && !incompleteLanguageLoads.has(language)) {
     return Promise.resolve(true);
   }
   const existing = languageLoads.get(language);
@@ -399,14 +363,11 @@ function loadResolvedPrismLanguage(language: string): Promise<boolean> {
   const load = languageLoadQueue.then(() => runLanguageLoad(language));
   languageLoadQueue = load.then(
     () => undefined,
-    () => undefined
+    () => undefined,
   );
   languageLoads.set(language, load);
   const clearLoad = () => languageLoads.delete(language);
-  void load.then(
-    clearLoad,
-    clearLoad
-  );
+  void load.then(clearLoad, clearLoad);
   return load;
 }
 

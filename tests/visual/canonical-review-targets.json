@@ -1,0 +1,100 @@
+{
+  "alert": [{ "label": "Alert", "slug": "alert" }],
+  "avatar": [{ "label": "Avatar", "slug": "avatar" }],
+  "avatar-button": [{ "label": "AvatarButton", "slug": "avatarbutton" }],
+  "backdrop": [],
+  "badge": [
+    { "label": "Badge", "slug": "badge" },
+    { "label": "Tag", "slug": "tag" }
+  ],
+  "breadcrumb-list": [{ "label": "BreadcrumbList", "slug": "breadcrumblist" }],
+  "button": [
+    { "label": "Button", "slug": "button" },
+    { "label": "ButtonBar", "slug": "buttonbar" },
+    { "label": "LinkButton", "slug": "linkbutton" }
+  ],
+  "chat": [
+    { "label": "AssistantActions", "slug": "assistantactions" },
+    { "label": "AssistantMessage", "slug": "assistantmessage" },
+    { "label": "MessageRow", "slug": "messagerow" },
+    { "label": "ThinkingBlock", "slug": "thinkingblock" },
+    { "label": "ToolCall", "slug": "toolcall" },
+    { "label": "ToolCallIndicator", "slug": "toolcallindicator" },
+    { "label": "UserMessage", "slug": "usermessage" }
+  ],
+  "checkbox": [{ "label": "Checkbox", "slug": "checkbox" }],
+  "chip": [{ "label": "Chip", "slug": "chip" }],
+  "code": [
+    { "label": "CodeBlock", "slug": "codeblock" },
+    { "label": "InlineCode", "slug": "inlinecode" }
+  ],
+  "compact-select": [
+    { "label": "CompactSelect", "slug": "compactselect" },
+    { "label": "Composite", "slug": "composite" }
+  ],
+  "disclosure": [{ "label": "Disclosure", "slug": "disclosure" }],
+  "drag-handle": [{ "label": "DragHandle", "slug": "draghandle" }],
+  "drawer": [{ "label": "Drawer", "slug": "drawer" }],
+  "empty-state": [{ "label": "EmptyState", "slug": "emptystate" }],
+  "form": [
+    { "label": "AutoSaveForm", "slug": "autosaveform" },
+    { "label": "Fields", "slug": "fields" },
+    { "label": "Form", "slug": "form" }
+  ],
+  "hotkey": [{ "label": "Hotkey", "slug": "hotkey" }],
+  "image": [{ "label": "Image", "slug": "image" }],
+  "info": [
+    { "label": "InfoText", "slug": "infotext" },
+    { "label": "InfoTip", "slug": "infotip" }
+  ],
+  "input": [
+    { "label": "Input", "slug": "input" },
+    { "label": "InputGroup", "slug": "inputgroup" },
+    { "label": "NumberDragInput", "slug": "numberdraginput" },
+    { "label": "NumberInput", "slug": "numberinput" },
+    { "label": "OTPInput", "slug": "otpinput" }
+  ],
+  "interaction-state-layer": [],
+  "layout": [
+    {
+      "capture": false,
+      "label": "Composition",
+      "reason": "This documentation-only catalog page has no rendered demo surface.",
+      "slug": "composition"
+    },
+    { "label": "Container", "slug": "container" },
+    { "label": "Flex", "slug": "flex" },
+    { "label": "Grid", "slug": "grid" },
+    { "label": "Stack", "slug": "stack" },
+    { "label": "Surface", "slug": "surface" }
+  ],
+  "link": [{ "label": "Link", "slug": "link" }],
+  "loader": [{ "label": "Loader", "slug": "loader" }],
+  "markdown": [{ "label": "Markdown", "slug": "markdown" }],
+  "menu-list-item": [{ "label": "MenuListItem", "slug": "menulistitem" }],
+  "modal": [{ "label": "Modal", "slug": "modal" }],
+  "pagination": [{ "label": "Pagination", "slug": "pagination" }],
+  "picture-in-picture": [],
+  "quote": [{ "label": "Quote", "slug": "quote" }],
+  "radio": [{ "label": "Radio", "slug": "radio" }],
+  "reveal-on-hover": [{ "label": "RevealOnHover", "slug": "revealonhover" }],
+  "segmented-control": [{ "label": "SegmentedControl", "slug": "segmentedcontrol" }],
+  "select": [{ "label": "Select", "slug": "select" }],
+  "separator": [{ "label": "Separator", "slug": "separator" }],
+  "slide-over-panel": [{ "label": "SlideOverPanel", "slug": "slideoverpanel" }],
+  "slider": [{ "label": "Slider", "slug": "slider" }],
+  "slot": [],
+  "split-panel": [{ "label": "SplitPanel", "slug": "splitpanel" }],
+  "status-indicator": [{ "label": "StatusIndicator", "slug": "statusindicator" }],
+  "switch": [{ "label": "Switch", "slug": "switch" }],
+  "table": [{ "label": "Table", "slug": "table" }],
+  "tabs": [{ "label": "Tabs", "slug": "tabs" }],
+  "text": [
+    { "label": "Heading", "slug": "heading" },
+    { "label": "Prose", "slug": "prose" },
+    { "label": "Text", "slug": "text" }
+  ],
+  "textarea": [],
+  "toast": [{ "label": "Toast", "slug": "toast" }],
+  "tooltip": [{ "label": "Tooltip", "slug": "tooltip" }]
+}

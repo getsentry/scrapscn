@@ -32,7 +32,11 @@ ref.current?.setSize(240, true);
 // @ts-expect-error SplitPanel is intentionally a two-position component.
 <SplitPanel defaultSize={200} placement="middle" sized={<div />} />;
 
-// @ts-expect-error onResizeEnd reports numeric sizes, not strings.
-<SplitPanel defaultSize={200} sized={<div />} onResizeEnd={(payload: { endSize: string }) => void payload} />;
+<SplitPanel
+  defaultSize={200}
+  sized={<div />}
+  // @ts-expect-error onResizeEnd reports numeric sizes, not strings.
+  onResizeEnd={(payload: { endSize: string }) => void payload}
+/>;
 
 export {};

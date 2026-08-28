@@ -2,11 +2,13 @@
 
 Scrapscn is a local playground for Sentry product interface prototypes. It ports regular Scraps components from the Sentry monolith to React and Tailwind. It also provides shadcn registry items as a release format.
 
-The canonical source is `static/app/components/core` in `getsentry/sentry`. The current parity baseline is Sentry commit `d91f823d232ddd12a4d2a64554d85fd36df0e278`.
+The canonical source is `static/app/components/core` in `getsentry/sentry`. The current parity baseline is Sentry commit `a2db8365e2ec17c96b200bface596081c68f12c9`.
 
 ## Parity inventory
 
 [`scraps-parity.json`](scraps-parity.json) is the machine-readable inventory for all 48 regular Scraps modules. It records the pinned canonical source files and public exports, mapped local files, registry items, stories, tests, Figma nodes, playground routes, and completion state.
+
+The manifest records all 48 modules as complete. Select applies every nested `StylesConfig` pattern used by the pinned monolith through static Tailwind selectors. Its public type still accepts arbitrary new selectors, but applying an unknown selector to the default DOM is an owner-authorized portable-contract exclusion because it would require runtime CSS injection. Scrapscn keeps the complete callback result available to replacement components through `getStyles`.
 
 Run `pnpm parity:validate` to check the inventory. The command fails when:
 
@@ -20,7 +22,7 @@ Run `pnpm parity:generate` only when you intentionally refresh the inventory fro
 
 ## Start a prototype
 
-You need Node.js 24 or later and pnpm.
+You need Node.js 24 or later and pnpm. This checkout pins Next.js to 16.3.3 and uses Oxlint and Oxfmt instead of ESLint and Prettier. It uses shadcn 4.8.x and Tailwind CSS 4.
 
 ```bash
 pnpm install
@@ -29,7 +31,7 @@ pnpm dev
 
 Open the URL printed by Next.js. The homepage is the playground. It needs no Sentry monolith, account, database, environment variable, or external service.
 
-The preview fills the viewport. Open the floating setup island at the bottom of the page to change Checkbox props, reorder form rows, switch theme or preview width, and reset the page. The island closes when you press Escape, move focus into the preview, or click outside it. Select **Checkbox settings** to open the direct template route. Select **Share** to copy an absolute URL that restores the current review state.
+The preview fills the viewport. Open the floating setup island at the bottom of the page to choose any regular Scraps workbench or a page template. The island exposes the selected component's public controls, light and dark modes, preview widths, and reset behavior. It closes when you press Escape, move focus into the preview, or click outside it. Select **Share** on a template to copy an absolute URL that restores the current review state.
 
 ## Create a template
 
@@ -57,7 +59,7 @@ Verify the direct template route, a hard refresh, the Share URL, and toolbar com
 
 ## Figma Dev Mode
 
-The Checkbox Code Connect file is `src/components/ui/checkbox.figma.ts`. It connects Scrapscn to the canonical Checkbox node `3481:4211` in the Sentry Components Figma library. The connection label is `Scrapscn React`, so it does not replace the monolith connection.
+Scrapscn has 11 local Code Connect templates for Alert, FeatureBadge, Tag, Button, Checkbox, EmptyState, Radio, Slider, Switch, TextArea, and Tooltip. They use pinned Sentry Figma node URLs and canonical property names. The connection label is `Scrapscn React`, so it remains distinct from the monolith connection.
 
 Run the local syntax check without credentials:
 
@@ -65,17 +67,18 @@ Run the local syntax check without credentials:
 pnpm figma:parse
 ```
 
-To inspect all remote property combinations, provide a Figma access token in your shell and run:
+The parser checks local syntax, node URLs, imports, parserless format, and pinned property vocabulary. Remote publication, Dev Mode verification, Figma MCP, code-to-canvas, and round-trip tests are release work. They are outside the current parity goal.
 
-```bash
-FIGMA_ACCESS_TOKEN=... pnpm figma:preview
-```
+The local page frame is a source-grounded structural prototype. It is not a claim that Sentry has an approved page-frame Figma node.
 
-Never commit the token. Before publication, confirm in Dev Mode that size, checked state, and disabled state produce the expected `@/components/ui/checkbox` import and JSX.
+## Review visual parity locally
 
-For local code to canvas, run the template and use Figma MCP `generate_figma_design`. Its one-time URL includes a `figmacapture` hash that enables the development-only capture script for that visit. Test a Vercel Preview through the separate external-URL capture workflow. Production pages and runtime JavaScript do not load or contain the local capture bootstrap; source maps can retain development source text. The result must contain editable layers. For the return trip, change a connected Checkbox property and its label in the Figma test frame, read that frame through Figma MCP, and update the existing `Checkbox` usage. Do not replace it with raw markup.
+Start Scrapscn with `pnpm dev`. In a Sentry checkout pinned to `a2db8365e2ec17c96b200bface596081c68f12c9`, run Sentry dev UI with `SENTRY_WEBPACK_PROXY_PORT=8000 pnpm dev-ui`. Open the same module in two browser windows. For Checkbox, use:
 
-The approved Sentry page-frame Figma node is not yet recorded. The local page frame is a source-grounded structural prototype. Do not call it pixel-approved until Design provides a node URL and accepts the comparison.
+- Scrapscn: append `/?component=checkbox&theme=dark&viewport=desktop` to the URL printed by `pnpm dev`
+- Sentry catalog: `https://sentry.dev.getsentry.net:8000/organizations/sentry/scraps/core/checkbox/?theme=dark#examples`
+
+The Sentry catalog needs a local Sentry session and organization context. Open `https://sentry.dev.getsentry.net:8000/auth/login/` first and sign in. The login form can take a few seconds to replace the initial loader. The review workflow requires the Sentry checkout at the pinned comparison commit. Set `SENTRY_REPO_PATH` to that checkout and `SENTRY_REVIEW_ORIGIN=https://sentry.dev.getsentry.net:8000` when running `pnpm visual:review`. Set `SENTRY_ORG_SLUG` when your local organization slug is not `sentry`. Then open the catalog URL above. Compare every documented size, variant, disabled state, focus state, open state, and responsive width. Record approval before treating a screenshot as a baseline. A screenshot of Scrapscn alone only locks the current implementation. It does not prove parity with Scraps.
 
 ## Checks
 
@@ -86,14 +89,12 @@ pnpm build:next
 pnpm build-storybook
 pnpm test:playground
 pnpm test:templates
-pnpm test:figma-capture
 pnpm figma:parse
-pnpm figma:preview
 ```
 
-`test:playground` starts the production app through `portless`, completes the real browser workflow, and restores the copied URL in a second browser context. `test:templates` validates metadata, discovery, scaffold behavior, imports, and production routes.
+`test:playground` starts a controlled production server, completes the real browser workflow, and restores the copied URL in a second browser context. `test:templates` validates metadata, discovery, scaffold behavior, imports, and production routes.
 
-The full end state and exact completion gates are in [docs/scraps-parity-goal.md](docs/scraps-parity-goal.md). The first Checkbox slice does not mean all 48 regular Scraps modules are complete.
+The full end state and exact completion gates are in [docs/scraps-parity-goal.md](docs/scraps-parity-goal.md). The parity manifest is the authority for module status. The 192 deterministic local visual baselines and the reviewed canonical comparison evidence are present. See [docs/visual-baselines.md](docs/visual-baselines.md).
 
 ## Registry release format
 

@@ -1,11 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
-import {
-  prismLanguageLoaders,
-  prismLanguageReloaders,
-} from "./prism-language-loaders";
-import { reloadPrismLanguage } from "./prism-language-reloaders.js";
 import { loadPrismLanguage, Prism } from "./prism";
+import { prismLanguageLoaders, prismLanguageReloaders } from "./prism-language-loaders";
+import { reloadPrismLanguage } from "./prism-language-reloaders.js";
 
 const cssExtraTokens = ["hexcode", "color", "unit", "number"];
 const openclHostCppToken = "type-opencl-host-cpp";
@@ -42,28 +39,22 @@ describe.sequential("Prism dependency loading", () => {
 
     try {
       await expect(loadPrismLanguage("scss")).resolves.toBe(true);
-      expect(cssExtraTokens.every(token => token in Prism.languages.scss)).toBe(
-        false
-      );
+      expect(cssExtraTokens.every((token) => token in Prism.languages.scss)).toBe(false);
 
       await expect(loadPrismLanguage("css-extras")).resolves.toBe(true);
-      expect(cssExtraTokens.every(token => token in Prism.languages.scss)).toBe(
-        true
-      );
+      expect(cssExtraTokens.every((token) => token in Prism.languages.scss)).toBe(true);
       expect(cssReloader).toHaveBeenCalledOnce();
       expect(scssReloader).toHaveBeenCalledOnce();
       expect(cReloader).not.toHaveBeenCalled();
       const wrapHooks = Prism.hooks.all.wrap ?? [];
       expect(wrapHooks).toHaveLength(initialWrapHooks.length + 1);
-      expect(wrapHooks.filter(hook => hook === sentinelHook)).toHaveLength(1);
+      expect(wrapHooks.filter((hook) => hook === sentinelHook)).toHaveLength(1);
       expect(wrapHooks).not.toContain(initialMarkupHook);
     } finally {
       prismLanguageReloaders.css = originalCssReloader;
       prismLanguageReloaders.c = originalCReloader;
       prismLanguageReloaders.scss = originalScssReloader;
-      Prism.hooks.all.wrap = (Prism.hooks.all.wrap ?? []).filter(
-        hook => hook !== sentinelHook
-      );
+      Prism.hooks.all.wrap = (Prism.hooks.all.wrap ?? []).filter((hook) => hook !== sentinelHook);
     }
   });
 
@@ -92,13 +83,13 @@ describe.sequential("Prism dependency loading", () => {
     let resolveOpencl = () => {};
     const openclLoader = vi.fn(
       () =>
-        new Promise<unknown>(resolve => {
+        new Promise<unknown>((resolve) => {
           resolveOpencl = () => {
             Prism.languages.cpp.boolean = /opencl/;
             Prism.languages.opencl = Prism.languages.extend("c", {});
             resolve(undefined);
           };
-        })
+        }),
     );
     const arduinoReloader = vi.fn(async () => {
       Prism.languages.arduino = Prism.languages.extend("cpp", {});
@@ -149,13 +140,13 @@ describe.sequential("Prism dependency loading", () => {
     });
     const openclReloader = vi.fn(
       () =>
-        new Promise<unknown>(resolve => {
+        new Promise<unknown>((resolve) => {
           resolveOpencl = () => {
             setOpenclHostCppToken(/opencl/);
             Prism.languages.opencl = Prism.languages.extend("c", {});
             resolve(undefined);
           };
-        })
+        }),
     );
     const arduinoLoader = vi.fn(async () => {
       Prism.languages.arduino = Prism.languages.extend("cpp", {});
@@ -179,9 +170,7 @@ describe.sequential("Prism dependency loading", () => {
 
       await expect(loading).resolves.toBe(true);
       expect(arduinoLoader).toHaveBeenCalledOnce();
-      expect(Reflect.get(Prism.languages.arduino, openclHostCppToken)).toEqual(
-        /opencl/
-      );
+      expect(Reflect.get(Prism.languages.arduino, openclHostCppToken)).toEqual(/opencl/);
     } finally {
       prismLanguageLoaders.cpp = originalCppLoader;
       prismLanguageLoaders.opencl = originalOpenclLoader;
@@ -231,9 +220,7 @@ describe.sequential("Prism dependency loading", () => {
       expect(openclLoader).toHaveBeenCalledOnce();
       expect(openclReloader).toHaveBeenCalledOnce();
       expect(arduinoReloader).toHaveBeenCalledTimes(2);
-      expect(Reflect.get(Prism.languages.arduino, openclHostCppToken)).toEqual(
-        /recovered/
-      );
+      expect(Reflect.get(Prism.languages.arduino, openclHostCppToken)).toEqual(/recovered/);
     } finally {
       prismLanguageLoaders.opencl = originalOpenclLoader;
       prismLanguageReloaders.opencl = originalOpenclReloader;
@@ -280,9 +267,7 @@ describe.sequential("Prism dependency loading", () => {
       await expect(loadPrismLanguage("arduino")).resolves.toBe(true);
       expect(openclLoader).toHaveBeenCalledOnce();
       expect(arduinoReloader).toHaveBeenCalledTimes(2);
-      expect(Reflect.get(Prism.languages.arduino, openclHostCppToken)).toEqual(
-        /direct-retry/
-      );
+      expect(Reflect.get(Prism.languages.arduino, openclHostCppToken)).toEqual(/direct-retry/);
     } finally {
       prismLanguageLoaders.opencl = originalOpenclLoader;
       prismLanguageReloaders.arduino = originalArduinoReloader;
@@ -301,18 +286,16 @@ describe.sequential("Prism dependency loading", () => {
     const sentinelHook = vi.fn();
     Prism.hooks.add("before-tokenize", sentinelHook);
     const hooksBeforeLoad = new Map(
-      Object.entries(Prism.hooks.all).map(([name, hooks]) => [name, [...hooks]])
+      Object.entries(Prism.hooks.all).map(([name, hooks]) => [name, [...hooks]]),
     );
     await expect(loadPrismLanguage("django")).resolves.toBe(true);
     const hookCounts = Object.fromEntries(
-      Object.entries(Prism.hooks.all).map(([name, hooks]) => [name, hooks.length])
+      Object.entries(Prism.hooks.all).map(([name, hooks]) => [name, hooks.length]),
     );
     const initialGrammar = Prism.languages.django;
     const initialOwnedHooks = new Map<string, PrismHook[]>();
     for (const [name, hooks] of Object.entries(Prism.hooks.all)) {
-      const ownedHooks = hooks.filter(
-        hook => !(hooksBeforeLoad.get(name) ?? []).includes(hook)
-      );
+      const ownedHooks = hooks.filter((hook) => !(hooksBeforeLoad.get(name) ?? []).includes(hook));
       if (ownedHooks.length > 0) initialOwnedHooks.set(name, ownedHooks);
     }
     expect([...initialOwnedHooks.values()].flat()).not.toHaveLength(0);
@@ -320,22 +303,22 @@ describe.sequential("Prism dependency loading", () => {
     try {
       reloadPrismLanguage("django");
       const firstReloadedGrammar = Prism.languages.django;
-      const firstOwnedHooks = new Map<string, typeof Prism.hooks.all[string]>();
+      const firstOwnedHooks = new Map<string, (typeof Prism.hooks.all)[string]>();
       expect(firstReloadedGrammar).not.toBe(initialGrammar);
       expect(Prism.hooks.all["before-tokenize"]).toContain(sentinelHook);
       for (const [name, hooks] of initialOwnedHooks) {
         const currentHooks = Prism.hooks.all[name] ?? [];
-        expect(currentHooks.some(hook => hooks.includes(hook))).toBe(false);
+        expect(currentHooks.some((hook) => hooks.includes(hook))).toBe(false);
         const replacements = currentHooks.filter(
-          hook => !(hooksBeforeLoad.get(name) ?? []).includes(hook)
+          (hook) => !(hooksBeforeLoad.get(name) ?? []).includes(hook),
         );
         expect(replacements).toHaveLength(hooks.length);
         firstOwnedHooks.set(name, replacements);
       }
       expect(
         Object.fromEntries(
-          Object.entries(Prism.hooks.all).map(([name, hooks]) => [name, hooks.length])
-        )
+          Object.entries(Prism.hooks.all).map(([name, hooks]) => [name, hooks.length]),
+        ),
       ).toEqual(hookCounts);
 
       reloadPrismLanguage("django");
@@ -343,29 +326,27 @@ describe.sequential("Prism dependency loading", () => {
       expect(Prism.hooks.all["before-tokenize"]).toContain(sentinelHook);
       for (const [name, hooks] of firstOwnedHooks) {
         const currentHooks = Prism.hooks.all[name] ?? [];
-        expect(currentHooks.some(hook => hooks.includes(hook))).toBe(false);
+        expect(currentHooks.some((hook) => hooks.includes(hook))).toBe(false);
         expect(
-          currentHooks.filter(
-            hook => !(hooksBeforeLoad.get(name) ?? []).includes(hook)
-          )
+          currentHooks.filter((hook) => !(hooksBeforeLoad.get(name) ?? []).includes(hook)),
         ).toHaveLength(hooks.length);
       }
       expect(
         Object.fromEntries(
-          Object.entries(Prism.hooks.all).map(([name, hooks]) => [name, hooks.length])
-        )
+          Object.entries(Prism.hooks.all).map(([name, hooks]) => [name, hooks.length]),
+        ),
       ).toEqual(hookCounts);
       expect(
         Prism.highlight(
           "{% if captured %}{{ event_id }}{% endif %}",
           Prism.languages.django,
-          "django"
-        )
+          "django",
+        ),
       ).toContain("token tag keyword");
     } finally {
-      Prism.hooks.all["before-tokenize"] = (
-        Prism.hooks.all["before-tokenize"] ?? []
-      ).filter(hook => hook !== sentinelHook);
+      Prism.hooks.all["before-tokenize"] = (Prism.hooks.all["before-tokenize"] ?? []).filter(
+        (hook) => hook !== sentinelHook,
+      );
     }
   });
 });

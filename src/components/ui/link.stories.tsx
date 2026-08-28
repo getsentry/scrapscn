@@ -10,7 +10,7 @@ const meta = {
   title: "Scraps/Link",
   component: Link,
   decorators: [
-    Story => (
+    (Story) => (
       <MemoryRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
         <Story />
       </MemoryRouter>
@@ -29,7 +29,9 @@ export const RouterAndExternal: Story = {
   render: () => (
     <div className="flex flex-col items-start gap-3 text-sm">
       <Link to="/issues/">Open issue</Link>
-      <Link disabled to={{ pathname: "/issues/" }}>Disabled issue</Link>
+      <Link disabled to={{ pathname: "/issues/" }}>
+        Disabled issue
+      </Link>
       <ExternalLink href="https://docs.sentry.io">External link</ExternalLink>
       <ExternalLink href="https://docs.sentry.io" openInNewTab={false}>
         Same-tab external link
@@ -40,17 +42,17 @@ export const RouterAndExternal: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("link", { name: "Open issue" })).toHaveAttribute(
       "href",
-      "/issues/"
+      "/issues/",
     );
     await expect(canvas.getByText("Disabled issue")).not.toHaveAttribute("href");
     await expect(canvas.getByText("Disabled issue")).not.toHaveAttribute("disabled");
     await expect(canvas.getByRole("link", { name: "External link" })).toHaveAttribute(
       "rel",
-      "noreferrer noopener"
+      "noreferrer noopener",
     );
-    await expect(
-      canvas.getByRole("link", { name: "Same-tab external link" })
-    ).not.toHaveAttribute("target");
+    await expect(canvas.getByRole("link", { name: "Same-tab external link" })).not.toHaveAttribute(
+      "target",
+    );
   },
 };
 
@@ -71,9 +73,7 @@ export const Tracking: Story = {
   ),
   play: async ({ canvasElement }) => {
     tracking.mockClear();
-    await userEvent.click(
-      within(canvasElement).getByRole("link", { name: "Open tracked issue" })
-    );
+    await userEvent.click(within(canvasElement).getByRole("link", { name: "Open tracked issue" }));
     await expect(tracking).toHaveBeenCalledWith({
       "aria-label": "Open tracked issue",
       analyticsEventKey: "issue.opened",
@@ -87,8 +87,8 @@ export const Tracking: Story = {
 export const Inline: Story = {
   render: () => (
     <Text>
-      This is a paragraph with an <Link to="/issues/">inline link</Link> that
-      inherits its text styling.
+      This is a paragraph with an <Link to="/issues/">inline link</Link> that inherits its text
+      styling.
     </Text>
   ),
   play: async ({ canvasElement }) => {
@@ -107,11 +107,15 @@ export const LightAndDark: Story = {
     <div className="grid gap-4 sm:grid-cols-2">
       <div className="flex flex-col items-start gap-3 bg-background p-4 text-foreground">
         <Link to="/issues/">Light focus</Link>
-        <Link disabled to="/issues/">Light disabled</Link>
+        <Link disabled to="/issues/">
+          Light disabled
+        </Link>
       </div>
       <div className="dark flex flex-col items-start gap-3 bg-background p-4 text-foreground">
         <Link to="/issues/">Dark focus</Link>
-        <Link disabled to="/issues/">Dark disabled</Link>
+        <Link disabled to="/issues/">
+          Dark disabled
+        </Link>
       </div>
     </div>
   ),
@@ -124,9 +128,7 @@ export const LightAndDark: Story = {
     await userEvent.tab();
     await expect(lightFocus).toHaveFocus();
     await expect(getComputedStyle(lightFocus).borderRadius).toBe("2px");
-    await expect(getComputedStyle(lightFocus).boxShadow).toContain(
-      "oklch(0.58 0.241 285.2)"
-    );
+    await expect(getComputedStyle(lightFocus).boxShadow).toContain("oklch(0.58 0.241 285.2)");
     await expect(getComputedStyle(lightDisabled).color).toBe("rgb(135, 132, 144)");
     await expect(getComputedStyle(darkDisabled).color).toBe("rgb(149, 142, 159)");
     await expect(getComputedStyle(lightDisabled).pointerEvents).toBe("none");

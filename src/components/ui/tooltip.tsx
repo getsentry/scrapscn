@@ -1,7 +1,6 @@
 "use client";
 
 import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
-import { ClassNames, type SerializedStyles } from "@emotion/react";
 import { AnimatePresence, motion, useIsPresent, useReducedMotion } from "framer-motion";
 import {
   cloneElement,
@@ -21,13 +20,15 @@ import {
   type SyntheticEvent,
 } from "react";
 
-import styles from "./tooltip.module.css";
+import "./rubik.css";
 
 interface TooltipContextProps {
   container: Element | DocumentFragment | null;
 }
 
-export const TooltipContext = createContext<TooltipContextProps>({ container: null });
+export const TooltipContext = createContext<TooltipContextProps>({
+  container: null,
+});
 
 type OverlayStatus = "idle" | "warming" | "open" | "cooling";
 type UnderlineColor = "warning" | "danger" | "success" | "muted" | "primary";
@@ -64,7 +65,7 @@ export interface TooltipProps extends UseHoverOverlayProps {
   children?: ReactNode;
   disabled?: boolean;
   maxWidth?: number;
-  overlayStyle?: CSSProperties | SerializedStyles;
+  overlayStyle?: CSSProperties;
 }
 
 interface DelayGroup {
@@ -118,9 +119,7 @@ function startGroupCoolDown(group: DelayGroup) {
 
 function isOverflown(element: Element): boolean {
   const tolerance =
-    navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome")
-      ? 2
-      : 0;
+    navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome") ? 2 : 0;
   return (
     element.getAttribute("data-overflowing") === "true" ||
     element.scrollWidth - element.clientWidth > tolerance ||
@@ -148,7 +147,7 @@ function underlineStyle(color: UnderlineColor = "muted") {
 function selectAutoSide(
   triggerElement: Element,
   popupElement: Element | null,
-  offset: number
+  offset: number,
 ): TooltipSide {
   const triggerRect = triggerElement.getBoundingClientRect();
   const popupRect = popupElement?.getBoundingClientRect();
@@ -158,25 +157,30 @@ function selectAutoSide(
   const viewportWidth =
     ownerWindow?.innerWidth ?? triggerElement.ownerDocument.documentElement.clientWidth;
   const availableSpace: [TooltipSide, number][] = [
-    ["bottom", viewportHeight - triggerRect.bottom - (popupRect?.height ?? 0) - offset - COLLISION_PADDING],
+    [
+      "bottom",
+      viewportHeight - triggerRect.bottom - (popupRect?.height ?? 0) - offset - COLLISION_PADDING,
+    ],
     ["left", triggerRect.left - (popupRect?.width ?? 0) - offset - COLLISION_PADDING],
-    ["right", viewportWidth - triggerRect.right - (popupRect?.width ?? 0) - offset - COLLISION_PADDING],
+    [
+      "right",
+      viewportWidth - triggerRect.right - (popupRect?.width ?? 0) - offset - COLLISION_PADDING,
+    ],
     ["top", triggerRect.top - (popupRect?.height ?? 0) - offset - COLLISION_PADDING],
   ];
-  return availableSpace.reduce((best, candidate) =>
-    candidate[1] > best[1] ? candidate : best
-  )[0];
+  return availableSpace.reduce((best, candidate) => (candidate[1] > best[1] ? candidate : best))[0];
 }
 
-function splitPosition(position: TooltipPosition, autoSide: TooltipSide): {
+function splitPosition(
+  position: TooltipPosition,
+  autoSide: TooltipSide,
+): {
   align: TooltipAlign;
   side: TooltipSide;
 } {
   const [requestedSide, requestedAlign] = position.split("-");
   const side: TooltipSide =
-    requestedSide === "right" ||
-    requestedSide === "bottom" ||
-    requestedSide === "left"
+    requestedSide === "right" || requestedSide === "bottom" || requestedSide === "left"
       ? requestedSide
       : requestedSide === "auto"
         ? autoSide
@@ -186,44 +190,54 @@ function splitPosition(position: TooltipPosition, autoSide: TooltipSide): {
   return { align, side };
 }
 
-function isSerializedStyles(value: CSSProperties | SerializedStyles): value is SerializedStyles {
-  return (
-    "name" in value &&
-    typeof value.name === "string" &&
-    "styles" in value &&
-    typeof value.styles === "string"
-  );
-}
-
 function stopPropagation(event: SyntheticEvent) {
   event.stopPropagation();
 }
 
 function getPortalContainer(
-  container: Element | DocumentFragment | null
+  container: Element | DocumentFragment | null,
 ): HTMLElement | ShadowRoot | undefined {
   return container ? (container as HTMLElement | ShadowRoot) : undefined;
 }
 
 function TooltipArrow() {
   return (
-    <TooltipPrimitive.Arrow className={styles.arrow}>
-      <svg aria-hidden="true" fill="none" viewBox="0 0 16 8">
-        <polygon className={styles.arrowSideBorder} points="-2,0 16,0 8,6 6,6" />
-        <polygon className={styles.arrowBorder} points="0,0 16,0 8,6" />
-        <polygon className={styles.arrowFill} points="3,0 13,0 8,4.8" />
+    <TooltipPrimitive.Arrow className="group/tooltip-arrow absolute h-2 w-4 origin-center data-[side=bottom]:[transform:rotate(180deg)] data-[side=left]:h-4 data-[side=left]:[transform:rotate(-90deg)] data-[side=right]:h-4 data-[side=right]:[transform:rotate(90deg)] data-[side=top]:[transform:rotate(0deg)] data-[side=top]:[&_[data-non-top]]:hidden data-[side=left]:[&_[data-side-border]]:inline data-[side=right]:[&_[data-side-border]]:inline data-[side=top]:[&_[data-top-only]]:inline">
+      <svg aria-hidden="true" className="block h-2 w-4" fill="none" viewBox="0 0 16 8">
+        <polygon
+          className="hidden fill-[var(--scraps-theme-border-primary,var(--border))] group-data-[side=right]/tooltip-arrow:[transform:translateX(2px)]"
+          data-side-border=""
+          points="-2,0 16,0 8,5.8 6,5.8"
+        />
+        <polygon
+          className="hidden fill-[var(--scraps-theme-border-primary,var(--border))]"
+          data-top-only=""
+          points="0,0 16,0 8,7.8"
+        />
+        <polygon
+          className="fill-[var(--scraps-theme-border-primary,var(--border))]"
+          data-non-top=""
+          points="0,0 16,0 8,5.8"
+        />
+        <polygon
+          className="hidden fill-[var(--background)]"
+          data-top-only=""
+          points="3,0 13,0 8,4.8"
+        />
+        <polygon className="fill-[var(--background)]" data-non-top="" points="1.5,0 14.5,0 8,4.8" />
       </svg>
     </TooltipPrimitive.Arrow>
   );
 }
 
+const positionerClasses = "pointer-events-auto z-[10003]";
+
+const popupClasses =
+  "relative w-max rounded-[6px] bg-[var(--popover)] px-3 py-2 text-center text-[0.75rem] leading-[1.2] font-normal text-[var(--popover-foreground)] shadow-[0_2px_0_var(--scraps-theme-border-primary,var(--border))] [border:1px_solid_var(--scraps-theme-border-primary,var(--border))] [font-family:var(--font-rubik,'Rubik'),sans-serif] [overflow-wrap:break-word] [transform-origin:var(--transform-origin)] [will-change:transform,opacity] [&>[data-tooltip-section]]:-mx-3 [&>[data-tooltip-section]]:-mt-2 [&>[data-tooltip-section]~[data-tooltip-section]]:mt-0 [&>[data-tooltip-section]:last-child]:-mb-2 motion-reduce:transition-none";
+
 type PositionerProps = ComponentProps<typeof TooltipPrimitive.Positioner>;
 
-function PresenceAwarePositioner({
-  onPointerEnter,
-  onPointerLeave,
-  ...props
-}: PositionerProps) {
+function PresenceAwarePositioner({ onPointerEnter, onPointerLeave, ...props }: PositionerProps) {
   const isPresent = useIsPresent();
   return (
     <TooltipPrimitive.Positioner
@@ -235,7 +249,89 @@ function PresenceAwarePositioner({
   );
 }
 
-export function Tooltip({
+interface TooltipHeaderProps {
+  children: ReactNode;
+  leadingItems?: ReactNode;
+  trailingItems?: ReactNode;
+}
+
+function TooltipHeader({ children, leadingItems, trailingItems }: TooltipHeaderProps) {
+  return (
+    <div className="flex items-center justify-between gap-1 px-3 py-2" data-tooltip-section>
+      <div className="flex items-center gap-1">
+        {leadingItems}
+        <span className="inline-block text-left font-medium text-[var(--scraps-content-primary,#302e36)]">
+          {children}
+        </span>
+      </div>
+      {trailingItems !== null && trailingItems !== undefined ? (
+        <span className="inline-block text-right font-medium whitespace-nowrap text-[var(--scraps-content-primary,#302e36)]">
+          {trailingItems}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
+interface TooltipGridProps {
+  children: ReactNode;
+  columns?: CSSProperties["gridTemplateColumns"];
+  gap?: CSSProperties["gap"];
+}
+
+function TooltipGrid({ children, columns = "1fr", gap = "2px 8px" }: TooltipGridProps) {
+  return (
+    <div
+      className="grid items-center px-3 py-2"
+      data-tooltip-section
+      style={{ gap, gridTemplateColumns: columns }}
+    >
+      {children}
+    </div>
+  );
+}
+
+interface TooltipRowProps {
+  children: ReactNode;
+  leadingItems?: ReactNode;
+  trailingItems?: ReactNode;
+}
+
+function TooltipRow({ children, leadingItems, trailingItems }: TooltipRowProps) {
+  return (
+    <div className="contents">
+      {leadingItems}
+      {children}
+      {trailingItems}
+    </div>
+  );
+}
+
+interface TooltipFooterProps {
+  children: ReactNode;
+  leadingItems?: ReactNode;
+  trailingItems?: ReactNode;
+}
+
+function TooltipFooter({ children, leadingItems, trailingItems }: TooltipFooterProps) {
+  return (
+    <div className="flex items-center justify-between gap-1 px-3 py-2" data-tooltip-section>
+      <div className="flex items-center gap-1">
+        {leadingItems}
+        <span className="inline-block text-left text-[var(--scraps-content-secondary,#6a6772)]">
+          {children}
+        </span>
+      </div>
+      {trailingItems !== null && trailingItems !== undefined ? (
+        <span className="inline-block text-right whitespace-nowrap text-[var(--scraps-content-secondary,#6a6772)]">
+          {trailingItems}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
+function TooltipComponent({
   children,
   overlayStyle,
   title,
@@ -285,13 +381,8 @@ export function Tooltip({
   }, []);
 
   const isOpen =
-    disabled
-      ? false
-      : forceVisible === true
-      ? true
-      : forceVisible === false
-        ? false
-        : status === "open" || status === "cooling";
+    forceVisible === true ||
+    (forceVisible !== false && (status === "open" || status === "cooling"));
 
   useLayoutEffect(() => {
     onHoverRef.current = onHover;
@@ -332,7 +423,7 @@ export function Tooltip({
       }
       mayBeAnimatingOutRef.current = false;
     },
-    []
+    [],
   );
 
   const reset = useCallback(() => {
@@ -352,7 +443,7 @@ export function Tooltip({
       onOverflowChangeRef.current?.(next);
       if (showOnlyOnOverflow && !next) reset();
     },
-    [reset, showOnlyOnOverflow]
+    [reset, showOnlyOnOverflow],
   );
 
   const setTriggerElementRef = useCallback(
@@ -381,15 +472,14 @@ export function Tooltip({
         updateOverflow(null);
       };
     },
-    [offset, position, showOnlyOnOverflow, updateOverflow]
+    [offset, position, showOnlyOnOverflow, updateOverflow],
   );
 
   useLayoutEffect(() => {
     if (!triggerElement || !position.startsWith("auto")) return;
     const ownerDocument = triggerElement.ownerDocument;
     const ownerWindow = ownerDocument.defaultView;
-    const updateAutoSide = () =>
-      setAutoSide(selectAutoSide(triggerElement, popupElement, offset));
+    const updateAutoSide = () => setAutoSide(selectAutoSide(triggerElement, popupElement, offset));
     const ResizeObserverConstructor =
       ownerWindow?.ResizeObserver ??
       (typeof ResizeObserver === "undefined" ? null : ResizeObserver);
@@ -412,7 +502,9 @@ export function Tooltip({
     const intersectionObserver =
       IntersectionObserverConstructor === null
         ? null
-        : new IntersectionObserverConstructor(updateAutoSide, { threshold: [0, 1] });
+        : new IntersectionObserverConstructor(updateAutoSide, {
+            threshold: [0, 1],
+          });
     intersectionObserver?.observe(triggerElement);
     ownerWindow?.addEventListener("resize", updateAutoSide);
     ownerDocument.addEventListener("scroll", updateAutoSide, true);
@@ -426,11 +518,10 @@ export function Tooltip({
     };
   }, [maxWidth, offset, popupElement, position, title, triggerElement]);
 
-  useEffect(() => {
-    if (!disabled) return;
-    const timer = window.setTimeout(reset, 0);
-    return () => window.clearTimeout(timer);
-  }, [disabled, reset]);
+  useLayoutEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- The canonical disabled reset must finish before the next paint.
+    if (disabled && isOpen) reset();
+  }, [disabled, isOpen, reset]);
 
   const handleMouseEnter = useCallback(() => {
     if (showOnlyOnOverflow && triggerElement && !isOverflown(triggerElement)) return;
@@ -481,10 +572,7 @@ export function Tooltip({
   }, [forceVisible, handleMouseEnter, handleMouseLeave]);
 
   const shouldInteract =
-    !showOnlyOnOverflow ||
-    isOverflowing ||
-    forceVisible === true ||
-    forceVisible === "delayed";
+    !showOnlyOnOverflow || isOverflowing || forceVisible === true || forceVisible === "delayed";
   let trigger: ReactElement<TriggerElementProps>;
   if (
     isValidElement<TriggerElementProps>(children) &&
@@ -513,16 +601,12 @@ export function Tooltip({
   if (disabled || !title) return children;
 
   const { align, side } = splitPosition(position, autoSide);
-  const inlineOverlayStyle =
-    overlayStyle && !isSerializedStyles(overlayStyle) ? overlayStyle : undefined;
-  const serializedOverlayStyle =
-    overlayStyle && isSerializedStyles(overlayStyle) ? overlayStyle : undefined;
   const popup = snapClosed ? null : (
     <AnimatePresence initial={false}>
       {isOpen ? (
-          <PresenceAwarePositioner
+        <PresenceAwarePositioner
           align={align}
-          className={styles.positioner}
+          className={positionerClasses}
           collisionPadding={COLLISION_PADDING}
           data-requested-align={align}
           data-requested-side={side}
@@ -537,45 +621,33 @@ export function Tooltip({
           side={side}
           sideOffset={offset}
         >
-          <ClassNames>
-            {({ css }) => (
-              <TooltipPrimitive.Popup
-                className={
-                  serializedOverlayStyle
-                    ? `${styles.popup} ${css(serializedOverlayStyle)}`
-                    : styles.popup
+          <TooltipPrimitive.Popup
+            className={popupClasses}
+            data-tooltip
+            id={describeById}
+            ref={setPopupElement}
+            render={
+              <motion.div
+                animate={reducedMotion ? undefined : { opacity: 1, scale: 1 }}
+                exit={
+                  reducedMotion
+                    ? undefined
+                    : {
+                        opacity: 0,
+                        scale: 0.95,
+                        transition: { type: "spring", delay: 0.1 },
+                      }
                 }
-                data-tooltip
-                id={describeById}
-                ref={setPopupElement}
-                render={
-                  <motion.div
-                    animate={reducedMotion ? undefined : { opacity: 1, scale: 1 }}
-                    exit={
-                      reducedMotion
-                        ? undefined
-                        : {
-                            opacity: 0,
-                            scale: 0.95,
-                            transition: { type: "spring", delay: 0.1 },
-                          }
-                    }
-                    initial={reducedMotion ? false : { opacity: 0 }}
-                    transition={
-                      reducedMotion
-                        ? { duration: 0 }
-                        : { type: "spring", duration: 0.2 }
-                    }
-                  />
-                }
-                role="tooltip"
-                style={{ maxWidth: maxWidth ?? 225, ...inlineOverlayStyle }}
-              >
-                <TooltipArrow />
-                {title}
-              </TooltipPrimitive.Popup>
-            )}
-          </ClassNames>
+                initial={reducedMotion ? false : { opacity: 0 }}
+                transition={reducedMotion ? { duration: 0 } : { type: "spring", duration: 0.2 }}
+              />
+            }
+            role="tooltip"
+            style={{ maxWidth: maxWidth ?? 225, ...overlayStyle }}
+          >
+            <TooltipArrow />
+            {title}
+          </TooltipPrimitive.Popup>
         </PresenceAwarePositioner>
       ) : null}
     </AnimatePresence>
@@ -598,3 +670,10 @@ export function Tooltip({
     </TooltipPrimitive.Root>
   );
 }
+
+export const Tooltip = Object.assign(TooltipComponent, {
+  Footer: TooltipFooter,
+  Grid: TooltipGrid,
+  Header: TooltipHeader,
+  Row: TooltipRow,
+});

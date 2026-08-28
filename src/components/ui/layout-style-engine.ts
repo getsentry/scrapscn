@@ -1,27 +1,7 @@
-import isPropValid from "@emotion/is-prop-valid";
-
 import type { ContainerQueryBreakpoint } from "./container-query-context";
 
-export type LayoutSpaceSize =
-  | "0"
-  | "2xs"
-  | "xs"
-  | "sm"
-  | "md"
-  | "lg"
-  | "xl"
-  | "2xl"
-  | "3xl";
-export type LayoutRadiusSize =
-  | "0"
-  | "2xs"
-  | "xs"
-  | "sm"
-  | "md"
-  | "lg"
-  | "xl"
-  | "2xl"
-  | "full";
+export type LayoutSpaceSize = "0" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
+export type LayoutRadiusSize = "0" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "full";
 export type LayoutBorderVariant =
   | "primary"
   | "secondary"
@@ -34,27 +14,16 @@ export type LayoutBorderVariant =
   | "none";
 export type LayoutSurfaceVariant = "primary" | "secondary" | "tertiary";
 export type LayoutContainerBreakpoint = ContainerQueryBreakpoint;
-export type LayoutViewportBreakpoint =
-  | "2xs"
-  | "xs"
-  | "sm"
-  | "md"
-  | "lg"
-  | "xl"
-  | "2xl";
-export type LayoutResponsiveBreakpoint =
-  | LayoutContainerBreakpoint
-  | LayoutViewportBreakpoint;
+export type LayoutViewportBreakpoint = "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+export type LayoutResponsiveBreakpoint = LayoutContainerBreakpoint | LayoutViewportBreakpoint;
 export type LayoutScreenBreakpoint = `screen:${LayoutViewportBreakpoint}`;
-export type LayoutResponsiveKey =
-  | LayoutContainerBreakpoint
-  | LayoutScreenBreakpoint;
+export type LayoutResponsiveKey = LayoutContainerBreakpoint | LayoutScreenBreakpoint;
 export type LayoutResponsive<T> = T | Partial<Record<LayoutResponsiveKey, T>>;
 export type LayoutShorthand<T extends string, N extends 4 | 2> = N extends 4
   ? `${T} ${T} ${T} ${T}` | `${T} ${T} ${T}` | `${T} ${T}` | T
   : N extends 2
-  ? `${T} ${T}` | T
-  : never;
+    ? `${T} ${T}` | T
+    : never;
 export type LayoutMargin = LayoutSpaceSize | "auto" | "0";
 
 export interface LayoutTheme {
@@ -178,113 +147,28 @@ export const LAYOUT_THEME: LayoutTheme = {
   },
 };
 
-export type LayoutCssResolver<T> = (
-  value: T | undefined,
-  breakpoint: LayoutResponsiveBreakpoint | undefined,
-  theme: LayoutTheme
-) => string | undefined;
-
-export interface LayoutCssDeclaration {
-  property: string;
-  theme: LayoutTheme;
-  value: LayoutResponsive<unknown> | undefined;
-  resolve: (
-    value: unknown,
-    breakpoint: LayoutResponsiveBreakpoint | undefined
-  ) => string | undefined;
-}
-
-interface CompiledResponsiveDeclaration {
-  base?: string;
-  queries: string[];
-}
-
 /** Tests whether a layout value uses responsive breakpoint keys. */
 export function isLayoutResponsiveValue<T>(
-  value: LayoutResponsive<T> | undefined
+  value: LayoutResponsive<T> | undefined,
 ): value is Partial<Record<LayoutResponsiveKey, T>> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function sanitizeLayoutCssValue(value: unknown): string | undefined {
+/** Rejects characters that can escape a CSS declaration value. */
+export function sanitizeLayoutCssValue(value: unknown): string | undefined {
   if (typeof value !== "string" && typeof value !== "number") return undefined;
   const cssValue = String(value);
   return /[{};<>]/.test(cssValue) ? undefined : cssValue;
 }
 
-function compileResponsiveDeclaration(
-  declaration: LayoutCssDeclaration,
-  selector?: string
-): CompiledResponsiveDeclaration {
-  if (!isLayoutResponsiveValue(declaration.value)) {
-    const value = declaration.resolve(declaration.value, undefined);
-    return {
-      base:
-        value === undefined ? undefined : `${declaration.property}: ${value};`,
-      queries: [],
-    };
-  }
-
-  const responsiveValue = declaration.value;
-  let first = true;
-  let base: string | undefined;
-  const queries: string[] = [];
-  const emit = (
-    key: LayoutResponsiveKey,
-    breakpoint: LayoutResponsiveBreakpoint,
-    atRule: "@container" | "@media",
-    size: string
-  ) => {
-    const value = declaration.resolve(responsiveValue[key], breakpoint);
-    if (value === undefined) return;
-    const property = `${declaration.property}: ${value};`;
-    if (first) {
-      base = property;
-      first = false;
-      return;
-    }
-    queries.push(
-      selector
-        ? `${atRule} (min-width: ${size}) { ${selector} { ${property} } }`
-        : `${atRule} (min-width: ${size}) { ${property} }`
-    );
-  };
-  for (const breakpoint of LAYOUT_CONTAINER_ORDER) {
-    emit(
-      breakpoint,
-      breakpoint,
-      "@container",
-      declaration.theme.container[breakpoint]
-    );
-  }
-  for (const { key, token } of LAYOUT_VIEWPORT_ORDER) {
-    emit(key, token, "@media", declaration.theme.breakpoints[token]);
-  }
-  return { base, queries };
-}
-
-/** Compiles one public responsive property without a component selector. */
-export function compileResponsiveLayoutValue<T>(
-  property: string,
-  value: LayoutResponsive<T> | undefined,
-  theme: LayoutTheme,
-  resolver?: LayoutCssResolver<T>
-): string | undefined {
-  const declaration = createLayoutCssDeclaration(
-    property,
-    value,
-    resolver,
-    theme
-  );
-  const compiled = compileResponsiveDeclaration(declaration);
-  return (
-    [compiled.base, ...compiled.queries].filter(Boolean).join("") || undefined
-  );
+/** Tests whether a name can be used as one CSS declaration property. */
+export function isValidLayoutCssPropertyName(name: string): boolean {
+  return /^(?:--[A-Za-z_][A-Za-z0-9_-]*|-?[A-Za-z_][A-Za-z0-9_-]*)$/.test(name);
 }
 
 function resolveLayoutShorthand<T extends string>(
   value: string | undefined,
-  resolveToken: (token: T) => string | undefined
+  resolveToken: (token: T) => string | undefined,
 ): string | undefined {
   if (value === undefined) return undefined;
   return value
@@ -295,7 +179,7 @@ function resolveLayoutShorthand<T extends string>(
 
 function resolveLayoutBorderValue(
   variant: Exclude<LayoutBorderVariant, "none">,
-  theme: LayoutTheme
+  theme: LayoutTheme,
 ): string {
   if (variant === "primary") return theme.tokens.border.primary;
   if (variant === "secondary" || variant === "muted") {
@@ -308,7 +192,7 @@ function resolveLayoutBorderValue(
 export function resolveLayoutBorder(
   border: LayoutBorderVariant | undefined,
   _breakpoint: LayoutResponsiveBreakpoint | undefined,
-  theme: LayoutTheme
+  theme: LayoutTheme,
 ): string | undefined {
   if (border === undefined) return undefined;
   if (border === "none") return "none";
@@ -318,8 +202,8 @@ export function resolveLayoutBorder(
       (variant) =>
         `1px solid ${resolveLayoutBorderValue(
           variant as Exclude<LayoutBorderVariant, "none">,
-          theme
-        )}`
+          theme,
+        )}`,
     )
     .join(" ");
 }
@@ -328,23 +212,20 @@ export function resolveLayoutBorder(
 export function resolveLayoutRadius(
   value: LayoutShorthand<LayoutRadiusSize, 4> | undefined,
   _breakpoint: LayoutResponsiveBreakpoint | undefined,
-  theme: LayoutTheme
+  theme: LayoutTheme,
 ): string | undefined {
-  return resolveLayoutShorthand<LayoutRadiusSize>(
-    value,
-    (token) => theme.radius[token]
-  );
+  return resolveLayoutShorthand<LayoutRadiusSize>(value, (token) => theme.radius[token]);
 }
 
 /** Resolves a spacing token or shorthand to CSS values. */
 export function resolveLayoutSpacing(
   value: LayoutShorthand<LayoutSpaceSize, 4> | undefined,
   _breakpoint: LayoutResponsiveBreakpoint | undefined,
-  theme: LayoutTheme
+  theme: LayoutTheme,
 ): string | undefined {
   return resolveLayoutShorthand<LayoutSpaceSize>(
     value,
-    (token) => theme.space[token] ?? theme.space["0"]
+    (token) => theme.space[token] ?? theme.space["0"],
   );
 }
 
@@ -352,82 +233,21 @@ export function resolveLayoutSpacing(
 export function resolveLayoutMargin(
   value: LayoutShorthand<LayoutMargin, 4> | undefined,
   _breakpoint: LayoutResponsiveBreakpoint | undefined,
-  theme: LayoutTheme
+  theme: LayoutTheme,
 ): string | undefined {
   return resolveLayoutShorthand<LayoutMargin>(value, (token) =>
-    token === "auto" || token === "0"
-      ? token
-      : theme.space[token] ?? theme.space["0"]
+    token === "auto" || token === "0" ? token : (theme.space[token] ?? theme.space["0"]),
   );
 }
 
-/** Creates one declaration for the shared responsive CSS compiler. */
-export function createLayoutCssDeclaration<T>(
-  property: string,
-  value: LayoutResponsive<T> | undefined,
-  resolver?: LayoutCssResolver<T>,
-  theme: LayoutTheme = LAYOUT_THEME
-): LayoutCssDeclaration {
-  return {
-    property,
-    theme,
-    value: value as LayoutResponsive<unknown> | undefined,
-    resolve: (candidate, breakpoint) =>
-      resolver
-        ? resolver(candidate as T | undefined, breakpoint, theme)
-        : sanitizeLayoutCssValue(candidate),
-  };
-}
+const validDomPropertyNames = new Set(
+  `abbr about accept acceptCharset accessKey action allow allowFullScreen allowPaymentRequest allowTransparency allowUserMedia alt async autoCapitalize autoComplete autoCorrect autoFocus autoPlay autoSave capture cellPadding cellSpacing challenge charSet checked children cite class classID className cols colSpan color content contentEditable contextMenu controls controlsList coords crossOrigin dangerouslySetInnerHTML data datatype dateTime decoding default defaultChecked defaultValue defer dir disabled disablePictureInPicture disableRemotePlayback download draggable encType enterKeyHint exportparts fallback fetchPriority fetchpriority for form formAction formEncType formMethod formNoValidate formTarget frameBorder headers height hidden high href hrefLang htmlFor httpEquiv id incremental inert innerHTML inlist inputMode integrity is itemID itemProp itemRef itemScope itemType key keyParams keyType kind label lang list loading loop low marginHeight marginWidth max maxLength media mediaGroup method min minLength multiple muted name noValidate nonce on open optimum option part pattern placeholder playsInline popover popoverTarget popoverTargetAction poster prefix preload profile property radioGroup readOnly ref referrerPolicy rel required resource results reversed role rowSpan rows sandbox scope scoped scrolling seamless security selected shape size sizes slot span spellCheck src srcDoc srcLang srcSet start step style summary suppressContentEditableWarning suppressHydrationWarning tabIndex target title translate type typeof unselectable useMap value valueLink vocab width wmode wrap`.split(
+    " ",
+  ),
+);
 
-function hashCompiledLayoutCss(css: string): string {
-  let result = 5381;
-  for (let index = 0; index < css.length; index++) {
-    result = (result * 33) ^ css.charCodeAt(index);
-  }
-  return (result >>> 0).toString(36);
-}
-
-export interface CompiledLayoutStyle {
-  className?: string;
-  css?: string;
-}
-
-/** Compiles and hashes canonical CSS so equivalent responsive values dedupe. */
-export function compileLayoutStyle(
-  namespace: "layout" | "separator" | "text",
-  declarations: readonly LayoutCssDeclaration[]
-): CompiledLayoutStyle {
-  if (!declarations.some((declaration) => declaration.value !== undefined)) {
-    return {};
-  }
-  const placeholder = "scraps-layout-placeholder";
-  const selector = `:where(.${placeholder})`;
-  const base: string[] = [];
-  const queries: string[] = [];
-  for (const declaration of declarations) {
-    const compiled = compileResponsiveDeclaration(declaration, selector);
-    if (compiled.base) base.push(compiled.base);
-    queries.push(...compiled.queries);
-  }
-  const canonicalCss = `${selector} { ${base.join(" ")} } ${queries.join(" ")}`;
-  const className = `scraps-${namespace}-${hashCompiledLayoutCss(
-    canonicalCss
-  )}`;
-  return {
-    className,
-    css: canonicalCss.replaceAll(placeholder, className),
-  };
-}
-
-/** Joins generated and consumer class names without empty tokens. */
-export function combineLayoutClassNames(
-  ...classNames: Array<string | undefined>
-): string | undefined {
-  const combined = classNames.filter(Boolean).join(" ");
-  return combined || undefined;
-}
-
-/** Matches Emotion's native DOM prop validity gate. */
 export function isValidLayoutDomProp(name: string): boolean {
-  return isPropValid(name);
+  return (
+    validDomPropertyNames.has(name) || /^(?:aria|data|x)-/i.test(name) || /^on[A-Z]/.test(name)
+  );
 }

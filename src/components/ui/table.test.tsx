@@ -2,12 +2,33 @@ import { act, createRef } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { COL_WIDTH_UNDEFINED, Table, type TableColumnConfig } from "./table";
+import {
+  COL_WIDTH_UNDEFINED,
+  emptyCellStyle,
+  fullWidthCellStyle,
+  statusCellStyle,
+  Table,
+  type TableColumnConfig,
+  useTableElement,
+} from "./table";
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 
+class NoopResizeObserver implements ResizeObserver {
+  constructor(_callback: ResizeObserverCallback) {}
+  disconnect() {}
+  observe() {}
+  unobserve() {}
+}
+
+vi.stubGlobal("ResizeObserver", NoopResizeObserver);
+
 const roots: Array<{ container: HTMLDivElement; root: Root }> = [];
-const columns: TableColumnConfig[] = [{ key: "name", width: 200 }, { key: "count", width: 150 }, { key: "age" }];
+const columns: TableColumnConfig[] = [
+  { key: "name", width: 200 },
+  { key: "count", width: 150 },
+  { key: "age" },
+];
 
 async function render(ui: React.ReactNode) {
   const container = document.createElement("div");
@@ -18,8 +39,39 @@ async function render(ui: React.ReactNode) {
   return { container, root };
 }
 
-function TestTable({ columns: configured = columns, ...props }: Partial<React.ComponentProps<typeof Table>>) {
-  return <Table columns={configured} {...props}><Table.Head><Table.Row>{configured.map((column) => <Table.HeadCell column={column.key} key={column.key}>{column.key}</Table.HeadCell>)}</Table.Row></Table.Head><Table.Body><Table.Row divider>{configured.map((column) => <Table.Cell key={column.key}>{column.key}-value</Table.Cell>)}</Table.Row></Table.Body></Table>;
+function TestTable({
+  columns: configured = columns,
+  ...props
+}: Partial<React.ComponentProps<typeof Table>>) {
+  return (
+    <Table columns={configured} {...props}>
+      <Table.Head>
+        <Table.Row>
+          {configured.map((column) => (
+            <Table.HeadCell column={column.key} key={column.key}>
+              {column.key}
+            </Table.HeadCell>
+          ))}
+        </Table.Row>
+      </Table.Head>
+      <Table.Body>
+        <Table.Row divider>
+          {configured.map((column) => (
+            <Table.Cell key={column.key}>{column.key}-value</Table.Cell>
+          ))}
+        </Table.Row>
+      </Table.Body>
+    </Table>
+  );
+}
+
+function TableElementProbe({
+  onTableRef,
+}: {
+  onTableRef: (ref: React.RefObject<HTMLTableElement | null>) => void;
+}) {
+  onTableRef(useTableElement());
+  return null;
 }
 
 function table(container: ParentNode) {
@@ -39,7 +91,15 @@ function keyboard(element: HTMLElement, key: string, shiftKey = false) {
 
 function pointer(element: EventTarget, type: string, x: number, button = 0) {
   const event = new Event(type, { bubbles: true, cancelable: true });
-  Object.defineProperties(event, { button: { value: button }, clientX: { value: x }, clientY: { value: 0 }, pageX: { value: x }, pageY: { value: 0 }, pointerId: { value: 1 }, pointerType: { value: "mouse" } });
+  Object.defineProperties(event, {
+    button: { value: button },
+    clientX: { value: x },
+    clientY: { value: 0 },
+    pageX: { value: x },
+    pageY: { value: 0 },
+    pointerId: { value: 1 },
+    pointerType: { value: "mouse" },
+  });
   element.dispatchEvent(event);
 }
 
@@ -57,9 +117,44 @@ afterEach(async () => {
     mounted.container.remove();
   }
   vi.restoreAllMocks();
+  vi.useRealTimers();
 });
 
 describe("Table", () => {
+  it("provides the table element and a stable detached fallback", async () => {
+    const detached: Array<React.RefObject<HTMLTableElement | null>> = [];
+    const inside: Array<React.RefObject<HTMLTableElement | null>> = [];
+    const tableRef = createRef<HTMLTableElement>();
+    function DetachedProbe() {
+      const tableRef = useTableElement();
+      detached.push(tableRef);
+      return null;
+    }
+    const detachedView = await render(
+      <>
+        <DetachedProbe />
+        <DetachedProbe />
+      </>,
+    );
+    expect(detached[0]).toBe(detached[1]);
+    expect(detached[0]?.current).toBeNull();
+    await act(async () =>
+      detachedView.root.render(
+        <Table ref={tableRef}>
+          <TableElementProbe onTableRef={(ref) => inside.push(ref)} />
+        </Table>,
+      ),
+    );
+    expect(inside.at(-1)).toBe(tableRef);
+    expect(tableRef.current).toBe(table(detachedView.container));
+  });
+
+  it("exports Tailwind cell style helpers with canonical semantics", () => {
+    expect(fullWidthCellStyle).toBe("items-stretch flex-col p-0");
+    expect(statusCellStyle).toBe("min-h-[200px] p-4");
+    expect(emptyCellStyle).toBe("min-h-[200px] p-4 text-[var(--scraps-content-secondary)] text-sm");
+  });
+
   it("renders canonical table semantics", async () => {
     const view = await render(<TestTable />);
     expect(view.container.querySelectorAll('[role="columnheader"]')).toHaveLength(3);
@@ -69,42 +164,65 @@ describe("Table", () => {
 
   it.each([
     { configured: columns, expected: "200px 150px minmax(90px, auto)" },
-    { configured: [{ key: "a", width: 10 }, { key: "b" }], expected: "90px minmax(90px, auto)" },
-    { configured: [{ key: "a", width: "min-content" }, { key: "b" }], expected: "min-content minmax(90px, auto)" },
+    {
+      configured: [{ key: "a", width: 10 }, { key: "b" }],
+      expected: "90px minmax(90px, auto)",
+    },
+    {
+      configured: [{ key: "a", width: "min-content" }, { key: "b" }],
+      expected: "min-content minmax(90px, auto)",
+    },
   ])("resolves canonical column tracks", async ({ configured, expected }) => {
     const view = await render(<TestTable columns={configured} />);
     expect(table(view.container).style.gridTemplateColumns).toBe(expected);
   });
 
   it("pins the final column and prepends tracks", async () => {
-    const view = await render(<TestTable flexibleLastColumn={false} prependColumnWidths={["40px", "min-content"]} />);
-    expect(table(view.container).style.gridTemplateColumns).toBe("40px min-content 200px 150px minmax(90px, auto)");
+    const view = await render(
+      <TestTable flexibleLastColumn={false} prependColumnWidths={["40px", "min-content"]} />,
+    );
+    expect(table(view.container).style.gridTemplateColumns).toBe(
+      "40px min-content 200px 150px minmax(90px, auto)",
+    );
   });
 
   it("pins a declared final width when flexibility is disabled", async () => {
-    const configured = [{ key: "a", width: 200 }, { key: "b", width: 150 }];
+    const configured = [
+      { key: "a", width: 200 },
+      { key: "b", width: 150 },
+    ];
     const view = await render(<TestTable columns={configured} flexibleLastColumn={false} />);
     expect(table(view.container).style.gridTemplateColumns).toBe("200px 150px");
   });
 
   it("uses a caller-defined minimum for automatic and undersized tracks", async () => {
-    const view = await render(<TestTable columns={[{ key: "a", width: 20 }, { key: "b" }]} minimumColumnWidth={120} />);
+    const view = await render(
+      <TestTable columns={[{ key: "a", width: 20 }, { key: "b" }]} minimumColumnWidth={120} />,
+    );
     expect(table(view.container).style.gridTemplateColumns).toBe("120px minmax(120px, auto)");
   });
 
   it("treats a non-finite comparable width like the pinned implementation", async () => {
-    const view = await render(<TestTable columns={[{ key: "a", width: Number.NaN }, { key: "b" }]} />);
+    const view = await render(
+      <TestTable columns={[{ key: "a", width: Number.NaN }, { key: "b" }]} />,
+    );
     expect(table(view.container).style.gridTemplateColumns).toBe("90px minmax(90px, auto)");
   });
 
   it("leaves consumer tracks untouched without column metadata", async () => {
-    const view = await render(<Table style={{ gridTemplateColumns: "1fr 2fr" }}><Table.StatusBody>No results</Table.StatusBody></Table>);
+    const view = await render(
+      <Table style={{ gridTemplateColumns: "1fr 2fr" }}>
+        <Table.StatusBody>No results</Table.StatusBody>
+      </Table>,
+    );
     expect(table(view.container).style.gridTemplateColumns).toBe("1fr 2fr");
     expect(view.container.querySelector('[role="cell"]')?.textContent).toBe("No results");
   });
 
   it("shows handles only for resizable non-final columns", async () => {
-    const view = await render(<TestTable columns={[{ key: "a" }, { key: "b", resizable: false }, { key: "c" }]} />);
+    const view = await render(
+      <TestTable columns={[{ key: "a" }, { key: "b", resizable: false }, { key: "c" }]} />,
+    );
     expect(separators(view.container)).toHaveLength(1);
   });
 
@@ -133,7 +251,10 @@ describe("Table", () => {
     await act(async () => keyboard(handle, "ArrowRight"));
     await act(async () => keyboard(handle, "ArrowRight", true));
     await act(async () => keyboard(handle, "ArrowDown"));
-    expect(onColumnResize.mock.calls).toEqual([[0, 90], [0, 90]]);
+    expect(onColumnResize.mock.calls).toEqual([
+      [0, 90],
+      [0, 90],
+    ]);
   });
 
   it("writes and commits pointer resize", async () => {
@@ -153,7 +274,9 @@ describe("Table", () => {
     await drag(handle, 100, 400, false);
     await act(async () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
     expect(table(view.container).style.gridTemplateColumns).toBe("300px 150px minmax(90px, auto)");
-    await act(async () => view.root.render(<TestTable columns={[...columns]} aria-label="after" />));
+    await act(async () =>
+      view.root.render(<TestTable columns={[...columns]} aria-label="after" />),
+    );
     expect(table(view.container).getAttribute("aria-label")).toBe("after");
     expect(table(view.container).style.gridTemplateColumns).toBe("300px 150px minmax(90px, auto)");
     await act(async () => pointer(window, "pointerup", 400));
@@ -177,7 +300,9 @@ describe("Table", () => {
     await act(async () => table(view.container).click());
     expect(table(view.container).style.gridTemplateColumns).toBe("300px 150px minmax(90px, auto)");
     await act(async () => handle.dispatchEvent(new MouseEvent("dblclick", { bubbles: true })));
-    expect(table(view.container).style.gridTemplateColumns).toBe("minmax(90px, auto) 150px minmax(90px, auto)");
+    expect(table(view.container).style.gridTemplateColumns).toBe(
+      "minmax(90px, auto) 150px minmax(90px, auto)",
+    );
   });
 
   it("reports the auto sentinel when controlled reset is requested", async () => {
@@ -191,7 +316,17 @@ describe("Table", () => {
 
   it("sorts once and exposes ascending and descending semantics", async () => {
     const onSort = vi.fn();
-    const view = await render(<Table columns={[{ key: "duration" }]}><Table.Head><Table.Row><Table.HeadCell column="duration" sort="desc" onSort={onSort}>Duration</Table.HeadCell></Table.Row></Table.Head></Table>);
+    const view = await render(
+      <Table columns={[{ key: "duration" }]}>
+        <Table.Head>
+          <Table.Row>
+            <Table.HeadCell column="duration" sort="desc" onSort={onSort}>
+              Duration
+            </Table.HeadCell>
+          </Table.Row>
+        </Table.Head>
+      </Table>,
+    );
     const header = view.container.querySelector("th");
     const button = view.container.querySelector("button");
     if (!header || !button) throw new Error("Missing sortable header");
@@ -202,7 +337,22 @@ describe("Table", () => {
   });
 
   it("lets native role and aria-sort props override convenience defaults", async () => {
-    const view = await render(<Table columns={[{ key: "duration" }]}><Table.Head role="presentation"><Table.Row role="presentation"><Table.HeadCell aria-sort="other" column="duration" sort="desc">Duration</Table.HeadCell></Table.Row></Table.Head><Table.Body role="presentation"><Table.Row role="presentation"><Table.Cell role="gridcell">Value</Table.Cell></Table.Row></Table.Body></Table>);
+    const view = await render(
+      <Table columns={[{ key: "duration" }]}>
+        <Table.Head role="presentation">
+          <Table.Row role="presentation">
+            <Table.HeadCell aria-sort="other" column="duration" sort="desc">
+              Duration
+            </Table.HeadCell>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body role="presentation">
+          <Table.Row role="presentation">
+            <Table.Cell role="gridcell">Value</Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table>,
+    );
     expect(view.container.querySelector("thead")?.getAttribute("role")).toBe("presentation");
     expect(view.container.querySelector("tbody")?.getAttribute("role")).toBe("presentation");
     expect(view.container.querySelector("tr")?.getAttribute("role")).toBe("presentation");
@@ -211,47 +361,107 @@ describe("Table", () => {
   });
 
   it("closes an open overflow tooltip after resize and prevents its click from sorting", async () => {
-    const resizeCallbacks: ResizeObserverCallback[] = [];
+    vi.useFakeTimers();
+    const resizeObservers: TestResizeObserver[] = [];
     class TestResizeObserver implements ResizeObserver {
-      constructor(callback: ResizeObserverCallback) { resizeCallbacks.push(callback); }
-      disconnect() {}
-      observe() {}
-      unobserve() {}
+      readonly targets = new Set<Element>();
+      constructor(readonly callback: ResizeObserverCallback) {
+        resizeObservers.push(this);
+      }
+      disconnect() {
+        this.targets.clear();
+      }
+      observe(target: Element) {
+        this.targets.add(target);
+      }
+      unobserve(target: Element) {
+        this.targets.delete(target);
+      }
     }
     vi.stubGlobal("ResizeObserver", TestResizeObserver);
     const onSort = vi.fn();
-    const view = await render(<Table columns={[{ key: "duration" }]}><Table.Head><Table.Row><Table.HeadCell column="duration" onSort={onSort}>Duration</Table.HeadCell></Table.Row></Table.Head></Table>);
+    const view = await render(
+      <Table columns={[{ key: "duration" }]}>
+        <Table.Head>
+          <Table.Row>
+            <Table.HeadCell column="duration" onSort={onSort}>
+              Duration
+            </Table.HeadCell>
+          </Table.Row>
+        </Table.Head>
+      </Table>,
+    );
     const label = view.container.querySelector<HTMLElement>("button div");
     if (!label) throw new Error("Missing overflow label");
-    Object.defineProperty(label, "scrollWidth", { configurable: true, get: () => 100 });
-    Object.defineProperty(label, "clientWidth", { configurable: true, get: () => 50 });
-    await act(async () => label.dispatchEvent(new MouseEvent("mouseover", { bubbles: true })));
-    const popup = document.querySelector<HTMLElement>("[data-table-tooltip]");
+    Object.defineProperty(label, "scrollWidth", {
+      configurable: true,
+      get: () => 100,
+    });
+    Object.defineProperty(label, "clientWidth", {
+      configurable: true,
+      get: () => 50,
+    });
+    await act(async () => {
+      label.dispatchEvent(new Event("pointerover", { bubbles: true }));
+      await vi.advanceTimersByTimeAsync(400);
+    });
+    const popup = document.querySelector<HTMLElement>("[data-tooltip]");
     if (!popup) throw new Error("Missing overflow tooltip");
     await act(async () => popup.click());
     expect(onSort).not.toHaveBeenCalled();
 
-    Object.defineProperty(label, "clientWidth", { configurable: true, get: () => 120 });
-    const observer = new TestResizeObserver(() => {});
-    await act(async () => { for (const callback of [...resizeCallbacks]) callback([], observer); });
-    expect(document.querySelector("[data-table-tooltip]")).toBeNull();
+    Object.defineProperty(label, "clientWidth", {
+      configurable: true,
+      get: () => 120,
+    });
+    await act(async () => {
+      for (const observer of resizeObservers) {
+        if (observer.targets.has(label)) observer.callback([], observer);
+      }
+      await vi.runAllTimersAsync();
+    });
+    expect(label.getAttribute("aria-describedby")).toBeNull();
   });
 
   it("renders overlays without forcing a sort button", async () => {
-    const view = await render(<Table columns={[{ key: "duration" }]}><Table.Head><Table.Row><Table.HeadCell column="duration" overlays={<span>New</span>}>Duration</Table.HeadCell></Table.Row></Table.Head></Table>);
+    const view = await render(
+      <Table columns={[{ key: "duration" }]}>
+        <Table.Head>
+          <Table.Row>
+            <Table.HeadCell column="duration" overlays={<span>New</span>}>
+              Duration
+            </Table.HeadCell>
+          </Table.Row>
+        </Table.Head>
+      </Table>,
+    );
     expect(view.container.textContent).toContain("NewDuration");
     expect(view.container.querySelector("button")).toBeNull();
   });
 
   it("omits sort state and indicator when the header is unsorted", async () => {
-    const view = await render(<Table columns={[{ key: "duration" }]}><Table.Head><Table.Row><Table.HeadCell column="duration" onSort={() => {}}>Duration</Table.HeadCell></Table.Row></Table.Head></Table>);
+    const view = await render(
+      <Table columns={[{ key: "duration" }]}>
+        <Table.Head>
+          <Table.Row>
+            <Table.HeadCell column="duration" onSort={() => {}}>
+              Duration
+            </Table.HeadCell>
+          </Table.Row>
+        </Table.Head>
+      </Table>,
+    );
     expect(view.container.querySelector("th")?.hasAttribute("aria-sort")).toBe(false);
     expect(view.container.querySelector("svg")).toBeNull();
   });
 
   it("forwards native table attributes and its React 19 ref", async () => {
     const ref = createRef<HTMLTableElement>();
-    const view = await render(<Table ref={ref} aria-label="Native table" data-owner="issues"><Table.StatusBody>Ready</Table.StatusBody></Table>);
+    const view = await render(
+      <Table ref={ref} aria-label="Native table" data-owner="issues">
+        <Table.StatusBody>Ready</Table.StatusBody>
+      </Table>,
+    );
     expect(ref.current).toBe(table(view.container));
     expect(ref.current?.getAttribute("aria-label")).toBe("Native table");
     expect(ref.current?.dataset.owner).toBe("issues");

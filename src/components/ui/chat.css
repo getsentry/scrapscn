@@ -1,0 +1,20 @@
+@keyframes scraps-chat-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes scraps-chat-seer-wait {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  5%,
+  40% {
+    transform: translateX(-1.6px);
+  }
+  50%,
+  95% {
+    transform: translateX(1.6px);
+  }
+}

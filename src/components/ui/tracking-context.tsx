@@ -26,20 +26,17 @@ type TrackableProps<Element extends TrackableElement> = AnalyticsProps & {
   variant?: string;
 };
 
-const TrackingContext = createContext<() => (props: TrackingProps) => void>(
-  () => () => {}
-);
+const TrackingContext = createContext<() => (props: TrackingProps) => void>(() => () => {});
 
 export const TrackingContextProvider = TrackingContext.Provider;
 
 export function useClickTracking<Element extends TrackableElement>(
   props: TrackableProps<Element>,
-  clickType: ClickTrackingType
+  clickType: ClickTrackingType,
 ) {
   const clickTracking = useContext(TrackingContext)();
   const accessibleLabel =
-    props["aria-label"] ??
-    (typeof props.children === "string" ? props.children : undefined);
+    props["aria-label"] ?? (typeof props.children === "string" ? props.children : undefined);
 
   function handleClick(event: MouseEvent<Element>) {
     if (props.disabled || props.busy) {

@@ -1,4 +1,4 @@
-import { Hotkey, Kbd, useHotkeys } from "@/components/ui/hotkey";
+import { Hotkey, Kbd, matchesHotkey, useHotkeys } from "@/components/ui/hotkey";
 
 function TypeFixture() {
   useHotkeys([
@@ -15,7 +15,9 @@ function TypeFixture() {
     <>
       <Hotkey value="mod+k" />
       <Hotkey value={["mod+backspace", "delete"]} variant="debossed" />
-      <Kbd className="custom" data-testid="key">Esc</Kbd>
+      <Kbd className="custom" data-testid="key">
+        Esc
+      </Kbd>
       {/* @ts-expect-error The canonical variants are fixed. */}
       <Hotkey value="k" variant="flat" />
       {/* @ts-expect-error Hotkey requires a shortcut value. */}
@@ -27,5 +29,8 @@ function TypeFixture() {
 }
 
 void TypeFixture;
+void matchesHotkey("ctrl+k", new KeyboardEvent("keydown"));
+// @ts-expect-error A hotkey match is a string or string array.
+void matchesHotkey(1, new KeyboardEvent("keydown"));
 
 export {};

@@ -1,0 +1,32 @@
+@layer utilities {
+  .scraps-loader-track-width {
+    width: 100%;
+    width: calc(round(down, 100% - 16px, 8px) + 16px);
+  }
+}
+
+@keyframes loader-indeterminate-slow {
+  0% {
+    left: -35%;
+    right: 100%;
+  }
+
+  60%,
+  100% {
+    left: 100%;
+    right: -90%;
+  }
+}
+
+@keyframes loader-indeterminate-fast {
+  0% {
+    left: -200%;
+    right: 100%;
+  }
+
+  60%,
+  100% {
+    left: 107%;
+    right: -8%;
+  }
+}

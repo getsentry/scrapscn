@@ -1,84 +1,27 @@
 "use client";
 
-import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
 import {
   Fragment,
   useEffect,
   useRef,
   useState,
-  type FocusEvent,
+  type CSSProperties,
   type ReactNode,
   type RefObject,
 } from "react";
 
 import "./roboto-mono.css";
-import styles from "./code.module.css";
+import { Button } from "./button";
 import { useCodeMessages, type CodeMessages } from "./code-messages";
-import {
-  getPrismLanguage,
-  loadPrismLanguage,
-  loadPrismLineHighlight,
-  Prism,
-} from "./prism";
+import { getPrismLanguage, loadPrismLanguage, loadPrismLineHighlight, Prism } from "./prism";
 
 function classNames(...values: Array<string | false | undefined>) {
   return values.filter(Boolean).join(" ");
 }
 
-const tooltipGroupListeners = new Map<
-  symbol,
-  (origin: symbol) => void
->();
-const openTooltipGroupMembers = new Set<symbol>();
-let tooltipGroupCoolDown: ReturnType<typeof setTimeout> | undefined;
-let tooltipGroupIsWarm = false;
-const tooltipOpenDelay = 400;
-const tooltipCloseDelay = 150;
-const tooltipGroupTimeout = 600;
-
-function openTooltipGroup(member: symbol) {
-  if (tooltipGroupCoolDown) clearTimeout(tooltipGroupCoolDown);
-  tooltipGroupCoolDown = undefined;
-  openTooltipGroupMembers.add(member);
-  tooltipGroupIsWarm = true;
-  for (const listener of tooltipGroupListeners.values()) {
-    listener(member);
-  }
-}
-
-function closeTooltipGroup(member: symbol) {
-  const removedOpenMember = openTooltipGroupMembers.delete(member);
-  if (!removedOpenMember) return;
-  if (openTooltipGroupMembers.size > 0) return;
-  if (tooltipGroupCoolDown) clearTimeout(tooltipGroupCoolDown);
-  tooltipGroupCoolDown = setTimeout(() => {
-    tooltipGroupIsWarm = false;
-    tooltipGroupCoolDown = undefined;
-  }, tooltipGroupTimeout);
-}
-
-type PreventableFocusEvent = FocusEvent<HTMLButtonElement> & {
-  preventBaseUIHandler?: () => void;
-};
-
-function clearTooltipTimer(
-  timer: RefObject<ReturnType<typeof setTimeout> | undefined>
-) {
-  if (timer.current === undefined) return;
-  clearTimeout(timer.current);
-  timer.current = undefined;
-}
-
-function clearTooltipTimers(
-  openTimer: RefObject<ReturnType<typeof setTimeout> | undefined>,
-  closeTimer: RefObject<ReturnType<typeof setTimeout> | undefined>
-) {
-  clearTooltipTimer(openTimer);
-  clearTooltipTimer(closeTimer);
-}
-
 interface CodeBlockProps {
   children: string;
+  alwaysShowCopyButton?: boolean;
   className?: string;
   dark?: boolean;
   "data-render-inline"?: boolean;
@@ -95,16 +38,14 @@ interface CodeBlockProps {
   onTabClick?: (tab: string) => void;
   selectedTab?: string;
   tabs?: Array<{ label: string; value: string }>;
+  wrapMode?: "scroll" | "wrap";
 }
 
 type CopyState = "copy" | "copied" | "error";
 
 const copyMessageKeys: Record<
   CopyState,
-  keyof Pick<
-    CodeMessages,
-    "copiedTooltip" | "copyErrorTooltip" | "copyTooltip"
-  >
+  keyof Pick<CodeMessages, "copiedTooltip" | "copyErrorTooltip" | "copyTooltip">
 > = {
   copy: "copyTooltip",
   copied: "copiedTooltip",
@@ -122,28 +63,62 @@ function CopyIcon() {
   );
 }
 
-function CopyTooltipArrow() {
-  return (
-    <TooltipPrimitive.Arrow
-      className={styles.copyTooltipArrow}
-      render={
-        <svg aria-hidden viewBox="0 0 16 8">
-          <polygon
-            className={styles.copyTooltipArrowSideBorder}
-            points="-2,0 16,0 8,5.8 6,5.8"
-          />
-          <polygon
-            className={styles.copyTooltipArrowBorder}
-            points="0,0 16,0 8,5.8"
-          />
-          <polygon
-            className={styles.copyTooltipArrowFill}
-            points="1.5,0 14.5,0 8,4.8"
-          />
-        </svg>
+const wrapperClasses = [
+  "group/code relative h-full min-w-0 rounded-[6px] bg-[var(--prism-block-background)] data-[rounded=false]:rounded-none",
+  "[&_pre]:m-0 [&_pre]:h-full [&_pre]:w-max [&_pre]:min-w-full [&_pre]:overflow-x-auto [&_pre]:rounded-[6px] [&_pre]:bg-[var(--prism-block-background)] [&_pre]:px-4 [&_pre]:py-2 [&_pre]:text-left [&_pre]:font-[425] [&_pre]:text-[0.75rem] [&_pre]:text-[var(--prism-base)] [&_pre]:shadow-none [&_pre]:[direction:ltr] [&_pre]:[font-family:var(--font-roboto-mono,'Roboto_Mono_Variable'),'Roboto_Mono',monospace] [&_pre]:[hyphens:none] [&_pre]:[tab-size:4] [&_pre]:[text-shadow:none] [&_pre]:[white-space:pre] [&_pre]:[word-break:normal] [&_pre]:[word-spacing:normal]",
+  "data-[render-inline=true]:[&_pre]:p-0 [&_pre[data-line]]:relative",
+  "[&_code]:relative [&_code]:z-[1] [&_code]:text-[var(--prism-base)] [&_code]:[background:none] [&_code]:[font:inherit] [&_code]:[text-shadow:none] [&_code]:[user-select:auto] [&_code[data-disable-user-selection=true]]:[user-select:none]",
+  "[&_.namespace]:opacity-70",
+  "[&_.token]:[--prism-token-comment:initial] [&_.token]:[--prism-token-function:initial] [&_.token]:[--prism-token-keyword:initial] [&_.token]:[--prism-token-operator:initial] [&_.token]:[--prism-token-property:initial] [&_.token]:[--prism-token-punctuation:initial] [&_.token]:[--prism-token-selector:initial] [&_.token]:[--prism-token-variable:initial] [&_.token]:[color:var(--prism-token-variable,var(--prism-token-function,var(--prism-token-keyword,var(--prism-token-operator,var(--prism-token-selector,var(--prism-token-property,var(--prism-token-punctuation,var(--prism-token-comment,var(--prism-base)))))))))]",
+  "[&_.token.comment]:[--prism-token-comment:var(--prism-comment)] [&_.token.prolog]:[--prism-token-comment:var(--prism-comment)] [&_.token.doctype]:[--prism-token-comment:var(--prism-comment)] [&_.token.cdata]:[--prism-token-comment:var(--prism-comment)]",
+  "[&_.token.punctuation]:[--prism-token-punctuation:var(--prism-punctuation)]",
+  "[&_.token.property]:[--prism-token-property:var(--prism-property)] [&_.token.tag]:[--prism-token-property:var(--prism-property)] [&_.token.boolean]:[--prism-token-property:var(--prism-property)] [&_.token.number]:[--prism-token-property:var(--prism-property)] [&_.token.constant]:[--prism-token-property:var(--prism-property)] [&_.token.symbol]:[--prism-token-property:var(--prism-property)] [&_.token.deleted]:[--prism-token-property:var(--prism-property)]",
+  "[&_.token.selector]:[--prism-token-selector:var(--prism-selector)] [&_.token.attr-name]:[--prism-token-selector:var(--prism-selector)] [&_.token.string]:[--prism-token-selector:var(--prism-selector)] [&_.token.char]:[--prism-token-selector:var(--prism-selector)] [&_.token.builtin]:[--prism-token-selector:var(--prism-selector)] [&_.token.inserted]:[--prism-token-selector:var(--prism-selector)]",
+  "[&_.token.operator]:[--prism-token-operator:var(--prism-operator)] [&_.token.operator]:[background:none] [&_.token.entity]:[--prism-token-operator:var(--prism-operator)] [&_.token.entity]:[background:none] [&_.token.url]:[--prism-token-operator:var(--prism-operator)] [&_.token.url]:[background:none] [&_.language-css_.token.string]:[--prism-token-operator:var(--prism-operator)] [&_.language-css_.token.string]:[background:none] [&_.style_.token.string]:[--prism-token-operator:var(--prism-operator)] [&_.style_.token.string]:[background:none]",
+  "[&_.token.atrule]:[--prism-token-keyword:var(--prism-keyword)] [&_.token.attr-value]:[--prism-token-keyword:var(--prism-keyword)] [&_.token.keyword]:[--prism-token-keyword:var(--prism-keyword)]",
+  "[&_.token.function]:[--prism-token-function:var(--prism-function)]",
+  "[&_.token.regex]:[--prism-token-variable:var(--prism-variable)] [&_.token.important]:[--prism-token-variable:var(--prism-variable)] [&_.token.variable]:[--prism-token-variable:var(--prism-variable)]",
+  "[&_.token.important]:font-medium [&_.token.bold]:font-medium [&_.token.italic]:italic [&_.token.entity]:cursor-help",
+  "[&_.line-highlight]:pointer-events-none [&_.line-highlight]:absolute [&_.line-highlight]:right-0 [&_.line-highlight]:left-[-16px] [&_.line-highlight]:z-0 [&_.line-highlight]:bg-[var(--prism-highlight-background)] [&_.line-highlight]:shadow-[inset_5px_0_0_var(--prism-highlight-accent)] [&_.line-highlight]:[line-height:inherit] [&_.line-highlight]:[white-space:pre]",
+].join(" ");
+
+const darkThemeClasses =
+  "[--scraps-theme-border-primary:#141119] [--scraps-code-button-active:#d0b8f821] [--scraps-code-button-hover:#c0a8f81a] [--scraps-code-focus:#7553ff] [--scraps-code-focus-mask:#2e2936] [--scraps-code-tooltip-background:#393442] [--scraps-code-tooltip-arrow-background:#2e2936] [--scraps-code-tooltip-content:#e7e5ea] [--prism-base:#e7e5ea] [--prism-block-background:#24202b] [--prism-comment:#b5b0bd] [--prism-function:#aba8f8] [--prism-highlight-accent:#c0b0f02e] [--prism-highlight-background:#c0a8f81a] [--prism-keyword:#f6938c] [--prism-operator:#aba8f8] [--prism-property:#aba8f8] [--prism-punctuation:#e7e5ea] [--prism-selector:#5ece73] [--prism-variable:#e7e5ea]";
+
+const headerClasses =
+  "z-[2] flex items-center text-[0.75rem] font-medium text-[var(--prism-base)] [font-family:var(--font-roboto-mono,'Roboto_Mono_Variable'),'Roboto_Mono',monospace]";
+
+const regularHeaderClasses =
+  "gap-1.5 [border-bottom:1px_solid_var(--scraps-theme-border-primary)] [padding:4px_4px_0_8px]";
+
+const floatingHeaderClasses =
+  "absolute top-0 right-0 h-max max-h-full w-max justify-end gap-0.5 [border-bottom:0] p-1";
+
+const tabClasses = "m-0 box-border block touch-manipulation [background:none]";
+
+const unselectedTabClasses = "p-2 text-[var(--prism-comment)] [border:0]";
+
+const selectedTabClasses =
+  "text-[var(--prism-base)] [border-color:var(--scraps-code-accent)] [border-style:solid] [border-width:0_0_3px_0] [padding:8px_8px_5px]";
+
+const copyButtonClasses =
+  "touch-manipulation opacity-0 text-[var(--prism-comment)] transition-opacity duration-100 ease-out [--background:var(--scraps-code-focus-mask)] [--ring:var(--scraps-code-focus)] [--scraps-button-transparent-active:var(--scraps-code-button-active)] [--scraps-button-transparent-content:var(--prism-comment)] [--scraps-button-transparent-hover:var(--scraps-code-button-hover)] group-hover/code:opacity-100 hover:text-[var(--prism-base)] focus-visible:opacity-100 data-[always-visible=true]:opacity-100 motion-reduce:transition-none [@media(hover:none)]:min-h-11 [@media(hover:none)]:min-w-11 [@media(hover:none)]:opacity-100 [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 [@media(pointer:coarse)]:opacity-100";
+
+type CodeTooltipStyle = CSSProperties & Record<`--${string}`, string>;
+
+function codeTooltipStyle(dark?: boolean): CodeTooltipStyle {
+  return dark
+    ? {
+        "--background": "#2e2936",
+        "--popover": "#393442",
+        "--popover-foreground": "#e7e5ea",
+        "--scraps-theme-border-primary": "#141119",
       }
-    />
-  );
+    : {
+        "--background": "var(--scraps-code-tooltip-arrow-background)",
+        "--popover": "var(--scraps-code-tooltip-background)",
+        "--popover-foreground": "var(--scraps-code-tooltip-content)",
+      };
 }
 
 function CodeCopyButton({
@@ -160,54 +135,7 @@ function CodeCopyButton({
   onCopy?: (copiedCode: string) => void;
 }) {
   const messages = useCodeMessages();
-  const tooltipGroupMember = useRef(Symbol("codeTooltip"));
-  const mayBeAnimatingOut = useRef(false);
-  const tooltipOpenRef = useRef(false);
-  const tooltipOpenTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const tooltipCloseTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [copyState, setCopyState] = useState<CopyState>("copy");
-  const [tooltipOpen, setTooltipOpen] = useState(false);
-  const [tooltipSnapClosed, setTooltipSnapClosed] = useState(false);
-
-  function clearTimers() {
-    clearTooltipTimers(tooltipOpenTimer, tooltipCloseTimer);
-  }
-
-  function openTooltip() {
-    clearTimers();
-    tooltipOpenRef.current = true;
-    mayBeAnimatingOut.current = true;
-    setTooltipSnapClosed(false);
-    setTooltipOpen(true);
-    openTooltipGroup(tooltipGroupMember.current);
-  }
-
-  function closeTooltip({ snap = false }: { snap?: boolean } = {}) {
-    clearTimers();
-    tooltipOpenRef.current = false;
-    setTooltipOpen(false);
-    setTooltipSnapClosed(snap);
-    setCopyState("copy");
-    closeTooltipGroup(tooltipGroupMember.current);
-    if (snap) mayBeAnimatingOut.current = false;
-  }
-
-  function scheduleFocusOpen(event: PreventableFocusEvent) {
-    event.preventBaseUIHandler?.();
-    clearTimers();
-    if (tooltipOpenRef.current || tooltipGroupIsWarm) {
-      openTooltip();
-      return;
-    }
-    tooltipOpenTimer.current = setTimeout(openTooltip, tooltipOpenDelay);
-  }
-
-  function scheduleFocusClose(event: PreventableFocusEvent) {
-    event.preventBaseUIHandler?.();
-    clearTimers();
-    if (!tooltipOpenRef.current) return;
-    tooltipCloseTimer.current = setTimeout(closeTooltip, tooltipCloseDelay);
-  }
 
   function handleCopy() {
     try {
@@ -226,97 +154,27 @@ function CodeCopyButton({
     onCopy?.(copiedCode);
   }
 
-  useEffect(() => {
-    const member = tooltipGroupMember.current;
-    tooltipGroupListeners.set(member, (origin) => {
-      if (origin === member || !mayBeAnimatingOut.current) return;
-      clearTooltipTimers(tooltipOpenTimer, tooltipCloseTimer);
-      tooltipOpenRef.current = false;
-      mayBeAnimatingOut.current = false;
-      closeTooltipGroup(member);
-      setTooltipOpen(false);
-      setTooltipSnapClosed(true);
-      setCopyState("copy");
-    });
-    return () => {
-      clearTooltipTimers(tooltipOpenTimer, tooltipCloseTimer);
-      tooltipGroupListeners.delete(member);
-      closeTooltipGroup(member);
-    };
-  }, []);
-
   return (
-    <TooltipPrimitive.Provider
-      closeDelay={tooltipCloseDelay}
-      delay={tooltipOpenDelay}
-      timeout={tooltipGroupTimeout}
-    >
-      <TooltipPrimitive.Root
-        open={tooltipOpen}
-        onOpenChange={(open) => {
-          if (open) openTooltip();
-          else closeTooltip();
-        }}
-        onOpenChangeComplete={(open) => {
-          if (!open) mayBeAnimatingOut.current = false;
-        }}
-      >
-        <TooltipPrimitive.Trigger
-          closeOnClick={false}
-          closeDelay={tooltipCloseDelay}
-          delay={tooltipOpenDelay}
-          render={
-            <button
-              aria-label={messages.copyButtonLabel}
-              className={styles.copyButton}
-              data-always-visible={isAlwaysVisible}
-              type="button"
-              onBlur={scheduleFocusClose}
-              onClick={handleCopy}
-              onFocus={scheduleFocusOpen}
-              onMouseEnter={() => {
-                clearTooltipTimer(tooltipCloseTimer);
-                if (!tooltipGroupIsWarm || tooltipOpenRef.current) return;
-                openTooltip();
-              }}
-              onMouseLeave={() => setCopyState("copy")}
-            >
-              <CopyIcon />
-            </button>
-          }
-        />
-        {tooltipSnapClosed ? null : (
-          <TooltipPrimitive.Portal>
-            <TooltipPrimitive.Positioner
-              arrowPadding={4}
-              className={styles.copyTooltipPositioner}
-              collisionAvoidance={{ fallbackAxisSide: "none" }}
-              collisionPadding={12}
-              side="left"
-              sideOffset={8}
-              onClick={(event) => event.stopPropagation()}
-              onMouseDown={(event) => event.stopPropagation()}
-              onPointerDown={(event) => event.stopPropagation()}
-            >
-              <TooltipPrimitive.Popup
-                className={classNames(
-                  styles.copyTooltip,
-                  dark && styles.darkTheme
-                )}
-                role="tooltip"
-              >
-                {messages[copyMessageKeys[copyState]]}
-                <CopyTooltipArrow />
-              </TooltipPrimitive.Popup>
-            </TooltipPrimitive.Positioner>
-          </TooltipPrimitive.Portal>
-        )}
-      </TooltipPrimitive.Root>
-    </TooltipPrimitive.Provider>
+    <Button
+      aria-label={messages.copyButtonLabel}
+      className={copyButtonClasses}
+      data-always-visible={isAlwaysVisible}
+      icon={<CopyIcon />}
+      size="xs"
+      tooltipProps={{
+        overlayStyle: codeTooltipStyle(dark),
+        position: "left",
+        title: messages[copyMessageKeys[copyState]],
+      }}
+      variant="transparent"
+      onClick={handleCopy}
+      onMouseLeave={() => setCopyState("copy")}
+    />
   );
 }
 
 export function CodeBlock({
+  alwaysShowCopyButton,
   children,
   className,
   dark,
@@ -334,6 +192,7 @@ export function CodeBlock({
   onTabClick,
   selectedTab,
   tabs,
+  wrapMode = "scroll",
 }: CodeBlockProps) {
   const codeRef = useRef<HTMLElement>(null);
   const onAfterHighlightRef = useRef(onAfterHighlight);
@@ -372,8 +231,7 @@ export function CodeBlock({
       const loaded = await loadPrismLanguage(languageToHighlight);
       if (!loaded || !mounted || !codeRef.current) return;
       Prism.highlightElement(codeRef.current, false, () => {
-        if (mounted && codeRef.current)
-          onAfterHighlightRef.current?.(codeRef.current);
+        if (mounted && codeRef.current) onAfterHighlightRef.current?.(codeRef.current);
       });
     }
 
@@ -388,20 +246,37 @@ export function CodeBlock({
 
   return (
     <div
-      className={classNames(styles.wrapper, dark && styles.darkTheme, className)}
+      className={classNames(
+        wrapperClasses,
+        wrapMode === "wrap" &&
+          "[&_pre]:w-full [&_pre]:whitespace-pre-wrap [&_pre]:[overflow-wrap:anywhere] [&_code]:whitespace-pre-wrap [&_code]:[overflow-wrap:anywhere]",
+        alwaysShowCopyButton &&
+          hasFloatingHeader &&
+          wrapMode === "wrap" &&
+          "[&_pre]:before:float-right [&_pre]:before:h-4 [&_pre]:before:w-3 [&_pre]:before:content-['']",
+        dark && darkThemeClasses,
+        className,
+      )}
+      data-code-block=""
       data-render-inline={renderInline}
       data-rounded={isRounded}
     >
-      <div className={styles.header} data-floating={hasFloatingHeader}>
+      <div
+        className={classNames(
+          headerClasses,
+          hasFloatingHeader ? floatingHeaderClasses : regularHeaderClasses,
+        )}
+        data-floating={hasFloatingHeader}
+      >
         {hasTabs ? (
           <Fragment>
-            <div className={styles.tabs}>
+            <div className="flex overflow-x-auto p-0">
               {tabs?.map(({ label, value }) => (
                 <button
                   aria-pressed={selectedTab === value}
                   className={classNames(
-                    styles.tab,
-                    selectedTab === value && styles.selectedTab
+                    tabClasses,
+                    selectedTab === value ? selectedTabClasses : unselectedTabClasses,
                   )}
                   key={value}
                   type="button"
@@ -411,30 +286,38 @@ export function CodeBlock({
                 </button>
               ))}
             </div>
-            <span className={styles.headerSpacer} />
+            <span className="grow" />
           </Fragment>
         ) : null}
         {icon}
-        {filename ? <span className={styles.filename}>{filename}</span> : null}
-        {!hasTabs ? <span className={styles.headerSpacer} /> : null}
+        {filename ? (
+          <span className="block w-auto overflow-hidden text-ellipsis whitespace-nowrap">
+            {filename}
+          </span>
+        ) : null}
+        {!hasTabs ? <span className="grow" /> : null}
         {!hideCopyButton ? (
           <CodeCopyButton
             codeRef={codeRef}
             copiedCode={children}
             dark={dark}
-            isAlwaysVisible={!hasFloatingHeader || Boolean(icon)}
+            isAlwaysVisible={alwaysShowCopyButton || !hasFloatingHeader || Boolean(icon)}
             onCopy={onCopy}
           />
         ) : null}
       </div>
-      <div className={styles.scrollWrapper}>
-        <pre
-          className={`language-${renderedLanguage}`}
-          data-line={lineHighlightRange}
-        >
+      <div
+        className={classNames(
+          "h-full",
+          wrapMode === "scroll" ? "overflow-x-auto" : "overflow-x-hidden",
+          alwaysShowCopyButton && hasFloatingHeader && wrapMode === "scroll" && "mr-8",
+        )}
+      >
+        <pre className={`language-${renderedLanguage}`} data-line={lineHighlightRange}>
           <code
             className={`language-${renderedLanguage}`}
             data-disable-user-selection={disableUserSelection}
+            data-wrap-mode={wrapMode}
             ref={codeRef}
             onCopy={onSelectAndCopy}
           >

@@ -1,0 +1,99 @@
+@keyframes scraps-markdown-decode-accent {
+  0% {
+    content: "#";
+  }
+  14% {
+    content: "7";
+  }
+  28% {
+    content: "5";
+  }
+  42% {
+    content: "5";
+  }
+  56% {
+    content: "3";
+  }
+  70% {
+    content: "F";
+  }
+  84% {
+    content: "F";
+  }
+}
+
+@keyframes scraps-markdown-decode-success {
+  0% {
+    content: "#";
+  }
+  14% {
+    content: "0";
+  }
+  28% {
+    content: "0";
+  }
+  42% {
+    content: "F";
+  }
+  56% {
+    content: "2";
+  }
+  70% {
+    content: "6";
+  }
+  84% {
+    content: "1";
+  }
+}
+
+@keyframes scraps-markdown-decode-promotion {
+  0% {
+    content: "#";
+  }
+  14% {
+    content: "F";
+  }
+  28% {
+    content: "C";
+  }
+  42% {
+    content: "5";
+  }
+  56% {
+    content: "C";
+  }
+  70% {
+    content: "B";
+  }
+  84% {
+    content: "4";
+  }
+}
+
+[data-scraps-decode] {
+  position: relative;
+  color: transparent;
+  contain: style paint;
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+}
+
+[data-scraps-decode].scraps-markdown-decode-visible {
+  opacity: var(--scraps-markdown-decode-opacity, 1);
+}
+
+[data-streaming-hidden] {
+  opacity: 0;
+}
+
+[data-scraps-decode]::after {
+  content: "1";
+  position: absolute;
+  left: 50%;
+  color: var(--scraps-markdown-glyph-color, CanvasText);
+  font: inherit;
+  pointer-events: none;
+  transform: translateX(-50%);
+  animation: var(--scraps-markdown-decode-animation) 160ms steps(1) infinite;
+  animation-delay: var(--scraps-markdown-decode-delay, 0ms);
+}

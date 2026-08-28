@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite"
-import { expect, userEvent, waitFor, within } from "storybook/test"
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
-import { FeatureBadge } from "./feature-badge"
+import { FeatureBadge } from "./badge";
 
 const meta = {
   title: "Components/FeatureBadge",
@@ -12,10 +12,10 @@ const meta = {
       options: ["alpha", "beta", "new", "experimental", "debug"],
     },
   },
-} satisfies Meta<typeof FeatureBadge>
+} satisfies Meta<typeof FeatureBadge>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Types: Story = {
   render: () => (
@@ -27,27 +27,29 @@ export const Types: Story = {
       <FeatureBadge type="debug" />
     </div>
   ),
-}
+};
 
 export const CustomTooltip: Story = {
   args: {
     type: "new",
-    title: "This very special new feature requires additional context!",
+    tooltipProps: {
+      title: "This very special new feature requires additional context!",
+    },
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const badge = canvas.getByLabelText("new")
-    expect(badge).toBeInTheDocument()
-    await userEvent.hover(badge)
-    const tooltip = await within(canvasElement.ownerDocument.body).findByRole("tooltip")
-    await expect(tooltip).toHaveAttribute("data-side", "right")
-    await userEvent.unhover(badge)
+    const canvas = within(canvasElement);
+    const badge = canvas.getByLabelText("new");
+    expect(badge).toBeInTheDocument();
+    await userEvent.hover(badge);
+    const tooltip = await within(canvasElement.ownerDocument.body).findByRole("tooltip");
+    await expect(tooltip).toHaveAttribute("data-side", "right");
+    await userEvent.unhover(badge);
     await waitFor(
       () =>
         expect(
-          within(canvasElement.ownerDocument.body).queryByRole("tooltip")
+          within(canvasElement.ownerDocument.body).queryByRole("tooltip"),
         ).not.toBeInTheDocument(),
-      { timeout: 2000 }
-    )
+      { timeout: 2000 },
+    );
   },
-}
+};

@@ -1,14 +1,14 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite"
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { Slider } from "./slider"
+import { Slider } from "./slider";
 
 const meta = {
   title: "Components/Slider",
   component: Slider,
-} satisfies Meta<typeof Slider>
+} satisfies Meta<typeof Slider>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
@@ -16,7 +16,7 @@ export const Default: Story = {
       <Slider defaultValue={40} aria-label="Sample rate" />
     </div>
   ),
-}
+};
 
 export const Steps: Story = {
   render: () => (
@@ -24,7 +24,7 @@ export const Steps: Story = {
       <Slider defaultValue={50} min={0} max={100} step={10} aria-label="Quota" />
     </div>
   ),
-}
+};
 
 export const Ticks: Story = {
   render: () => (
@@ -38,19 +38,15 @@ export const Ticks: Story = {
       />
     </div>
   ),
-}
+};
 
 export const TickLabels: Story = {
   render: () => (
     <div className="w-80">
-      <Slider
-        defaultValue={50}
-        ticks={{ count: 5, labels: true }}
-        aria-label="Tick labels"
-      />
+      <Slider defaultValue={50} ticks={{ count: 5, labels: true }} aria-label="Tick labels" />
     </div>
   ),
-}
+};
 
 export const Formatted: Story = {
   render: () => (
@@ -65,12 +61,16 @@ export const Formatted: Story = {
         min={0}
         max={1000}
         step={50}
-        formatOptions={{ style: "currency", currency: "USD", maximumFractionDigits: 0 }}
+        formatOptions={{
+          style: "currency",
+          currency: "USD",
+          maximumFractionDigits: 0,
+        }}
         aria-label="Currency"
       />
     </div>
   ),
-}
+};
 
 export const Disabled: Story = {
   render: () => (
@@ -78,9 +78,8 @@ export const Disabled: Story = {
       <Slider defaultValue={30} disabled aria-label="Sample rate (disabled)" />
     </div>
   ),
-}
+};
 
-// Args-driven story so the Controls panel can manipulate a live instance.
 export const Playground: Story = {
   args: {
     defaultValue: 40,
@@ -101,4 +100,4 @@ export const Playground: Story = {
       <Slider {...args} />
     </div>
   ),
-}
+};

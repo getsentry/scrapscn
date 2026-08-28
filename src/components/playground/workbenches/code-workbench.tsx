@@ -35,7 +35,7 @@ const defaultCode = "const event = { status: 'captured' };";
 function choose<T extends readonly string[]>(
   values: T,
   value: string | null,
-  fallback: T[number]
+  fallback: T[number],
 ): T[number] {
   return values.find((candidate) => candidate === value) ?? fallback;
 }
@@ -62,11 +62,7 @@ function parseCodeWorkbench(params: URLSearchParams): CodeWorkbenchState {
     copyButton: params.get("codeCopyButton") !== "false",
     dark: params.get("codeDark") === "true",
     header: choose(headers, params.get("codeHeader"), "filename"),
-    inlineVariant: choose(
-      inlineVariants,
-      params.get("codeInlineVariant"),
-      "accent"
-    ),
+    inlineVariant: choose(inlineVariants, params.get("codeInlineVariant"), "accent"),
     language: choose(languages, params.get("codeLanguage"), "typescript"),
     lineHighlight: params.get("codeLineHighlight") !== "false",
     mode: choose(modes, params.get("codeMode"), "block"),
@@ -114,9 +110,7 @@ function CodeSelect<T extends string>({
         className={selectClassName}
         value={value}
         onChange={(event) => {
-          const next = values.find(
-            (option) => option === event.target.value
-          );
+          const next = values.find((option) => option === event.target.value);
           if (next !== undefined) onChange(next);
         }}
       >
@@ -153,21 +147,12 @@ function CodeToggle({
   );
 }
 
-export function CodeWorkbench({
-  children,
-  onSearchChange,
-  sourceSearch,
-}: WorkbenchProps) {
-  const [state, setState] = useState(() =>
-    parseCodeWorkbench(new URLSearchParams(sourceSearch))
-  );
+export function CodeWorkbench({ children, onSearchChange, sourceSearch }: WorkbenchProps) {
+  const [state, setState] = useState(() => parseCodeWorkbench(new URLSearchParams(sourceSearch)));
   const [copies, setCopies] = useState(0);
   const [highlights, setHighlights] = useState(0);
   const recordCopy = useCallback(() => setCopies((count) => count + 1), []);
-  const recordHighlight = useCallback(
-    () => setHighlights((count) => count + 1),
-    []
-  );
+  const recordHighlight = useCallback(() => setHighlights((count) => count + 1), []);
 
   function update(next: CodeWorkbenchState) {
     setState(next);
@@ -178,9 +163,7 @@ export function CodeWorkbench({
     <div className="grid gap-4 sm:grid-cols-2">
       <div className="sm:col-span-2">
         <h2 className="text-sm font-semibold">Code setup</h2>
-        <p className="text-xs text-muted-foreground">
-          Changes stay in the share URL.
-        </p>
+        <p className="text-xs text-muted-foreground">Changes stay in the share URL.</p>
       </div>
       <CodeSelect
         label="Code mode"
@@ -260,10 +243,7 @@ export function CodeWorkbench({
       {state.mode === "inline" ? (
         <p className="text-base">
           Inspect{" "}
-          <InlineCode
-            data-testid="inline-code-preview"
-            variant={state.inlineVariant}
-          >
+          <InlineCode data-testid="inline-code-preview" variant={state.inlineVariant}>
             {state.code}
           </InlineCode>{" "}
           in context.

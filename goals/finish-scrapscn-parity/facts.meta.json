@@ -1,0 +1,16 @@
+{
+  "facts": [
+    { "id": "inventory", "recommendedAutomatedVerification": true, "automatedVerification": true, "comment": "" },
+    { "id": "current-evidence", "recommendedAutomatedVerification": true, "automatedVerification": true, "comment": "" },
+    { "id": "contract-parity", "recommendedAutomatedVerification": true, "automatedVerification": true, "comment": "" },
+    { "id": "tailwind-only", "recommendedAutomatedVerification": true, "automatedVerification": true, "comment": "" },
+    { "id": "registry-reference-proof", "recommendedAutomatedVerification": true, "automatedVerification": true, "comment": "" },
+    { "id": "figma-reference-proof", "recommendedAutomatedVerification": true, "automatedVerification": true, "comment": "" },
+    { "id": "canonical-capture", "recommendedAutomatedVerification": true, "automatedVerification": true, "comment": "" },
+    { "id": "visual-triage", "recommendedAutomatedVerification": false, "automatedVerification": false, "comment": "" },
+    { "id": "playground", "recommendedAutomatedVerification": true, "automatedVerification": true, "comment": "" },
+    { "id": "bounded-component-loop", "recommendedAutomatedVerification": false, "automatedVerification": false, "comment": "" },
+    { "id": "full-check-once", "recommendedAutomatedVerification": true, "automatedVerification": true, "comment": "" },
+    { "id": "done", "recommendedAutomatedVerification": true, "automatedVerification": true, "comment": "" }
+  ]
+}

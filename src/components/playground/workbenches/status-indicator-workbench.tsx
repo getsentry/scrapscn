@@ -5,14 +5,7 @@ import { useState } from "react";
 import type { WorkbenchProps } from "@/components/playground/workbench";
 import { StatusIndicator } from "@/components/ui/status-indicator";
 
-const variants = [
-  "accent",
-  "danger",
-  "warning",
-  "success",
-  "promotion",
-  "muted",
-] as const;
+const variants = ["accent", "danger", "warning", "success", "promotion", "muted"] as const;
 
 type StatusVariant = (typeof variants)[number];
 type StatusCount = "infinite" | "0" | "1" | "3";
@@ -46,9 +39,7 @@ function defaultState(): StatusIndicatorWorkbenchState {
   };
 }
 
-function parseStatusIndicatorWorkbench(
-  params: URLSearchParams
-): StatusIndicatorWorkbenchState {
+function parseStatusIndicatorWorkbench(params: URLSearchParams): StatusIndicatorWorkbenchState {
   return {
     count: parseCount(params.get("statusCount")),
     labeled: params.get("statusLabeled") === "true",
@@ -57,9 +48,7 @@ function parseStatusIndicatorWorkbench(
   };
 }
 
-function serializeStatusIndicatorWorkbench(
-  state: StatusIndicatorWorkbenchState
-) {
+function serializeStatusIndicatorWorkbench(state: StatusIndicatorWorkbenchState) {
   return new URLSearchParams({
     statusCount: state.count,
     statusLabeled: String(state.labeled),
@@ -77,7 +66,7 @@ export function StatusIndicatorWorkbench({
   sourceSearch,
 }: WorkbenchProps) {
   const [state, setState] = useState(() =>
-    parseStatusIndicatorWorkbench(new URLSearchParams(sourceSearch))
+    parseStatusIndicatorWorkbench(new URLSearchParams(sourceSearch)),
   );
 
   function update(next: StatusIndicatorWorkbenchState) {
@@ -90,9 +79,7 @@ export function StatusIndicatorWorkbench({
     <div className="grid gap-4">
       <div>
         <h2 className="text-sm font-semibold">Status Indicator setup</h2>
-        <p className="text-xs text-muted-foreground">
-          Changes stay in the share URL.
-        </p>
+        <p className="text-xs text-muted-foreground">Changes stay in the share URL.</p>
       </div>
       <label className="grid gap-1 text-sm">
         Variant
@@ -100,12 +87,12 @@ export function StatusIndicatorWorkbench({
           aria-label="Status variant"
           className={selectClassName}
           value={state.variant}
-          onChange={(event) =>
-            update({ ...state, variant: parseVariant(event.target.value) })
-          }
+          onChange={(event) => update({ ...state, variant: parseVariant(event.target.value) })}
         >
           {variants.map((variant) => (
-            <option key={variant} value={variant}>{variant}</option>
+            <option key={variant} value={variant}>
+              {variant}
+            </option>
           ))}
         </select>
       </label>
@@ -115,9 +102,7 @@ export function StatusIndicatorWorkbench({
           aria-label="Animation iterations"
           className={selectClassName}
           value={state.count}
-          onChange={(event) =>
-            update({ ...state, count: parseCount(event.target.value) })
-          }
+          onChange={(event) => update({ ...state, count: parseCount(event.target.value) })}
         >
           <option value="infinite">Infinite</option>
           <option value="0">0</option>

@@ -1,0 +1,7 @@
+{
+  "architecture": "arm64",
+  "browser": "Google Chrome for Testing 148.0.7778.96",
+  "operatingSystem": "darwin",
+  "operatingSystemVersion": "26.6.1",
+  "playwright": "1.60.0"
+}

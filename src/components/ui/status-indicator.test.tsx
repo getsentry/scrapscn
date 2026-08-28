@@ -26,22 +26,14 @@ afterEach(async () => {
 
 describe("StatusIndicator", () => {
   it("is hidden from the accessibility tree when no aria-label is provided", async () => {
-    const container = await render(
-      <StatusIndicator data-testid="dot" variant="accent" />
-    );
+    const container = await render(<StatusIndicator data-testid="dot" variant="accent" />);
 
-    expect(container.querySelector("[data-testid=dot]")?.getAttribute("aria-hidden")).toBe(
-      "true"
-    );
+    expect(container.querySelector("[data-testid=dot]")?.getAttribute("aria-hidden")).toBe("true");
   });
 
   it('has role="img" and aria-label when aria-label is provided', async () => {
     const container = await render(
-      <StatusIndicator
-        aria-label="Online"
-        data-testid="dot"
-        variant="accent"
-      />
+      <StatusIndicator aria-label="Online" data-testid="dot" variant="accent" />,
     );
     const dot = container.querySelector('[role="img"][aria-label="Online"]');
 
@@ -56,10 +48,10 @@ describe("StatusIndicator", () => {
         data-testid="dot"
         role="status"
         variant="accent"
-      />
+      />,
     );
     const dot = container.querySelector(
-      '[role="status"][aria-label="Authentication Method Active"]'
+      '[role="status"][aria-label="Authentication Method Active"]',
     );
 
     expect(dot).not.toBeNull();
@@ -68,11 +60,7 @@ describe("StatusIndicator", () => {
 
   it("accepts a finite animation count without passing styling props to the DOM", async () => {
     const container = await render(
-      <StatusIndicator
-        animationIterationCount={3}
-        data-testid="dot"
-        variant="accent"
-      />
+      <StatusIndicator animationIterationCount={3} data-testid="dot" variant="accent" />,
     );
     const dot = container.querySelector<HTMLElement>("[data-testid=dot]");
 

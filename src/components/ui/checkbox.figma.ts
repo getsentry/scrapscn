@@ -2,19 +2,19 @@
 // source=src/components/ui/checkbox.tsx
 // component=Checkbox
 
-import figma from "figma"
+import figma from "figma";
 
-const instance = figma.selectedInstance
+const instance = figma.selectedInstance;
 const size = instance.getEnum("size", {
   xs: "xs",
   sm: "sm",
   md: "md",
-})
+});
 const checked = instance.getEnum("checked", {
   False: false,
   indeterminate: "indeterminate",
   True: true,
-})
+});
 // Hover, active, and focus are runtime interaction states rather than public props.
 const disabled = instance.getEnum("state", {
   Default: false,
@@ -22,19 +22,19 @@ const disabled = instance.getEnum("state", {
   Active: false,
   disabled: true,
   Focused: false,
-})
+});
 
 const checkboxCodeConnect = {
   id: "Checkbox",
   imports: ['import { Checkbox } from "@/components/ui/checkbox"'],
   example: figma.code`<Checkbox${figma.helpers.react.renderProp(
     "size",
-    size
+    size,
   )}${figma.helpers.react.renderProp(
     "checked",
-    checked
+    checked,
   )}${figma.helpers.react.renderProp("disabled", disabled)} />`,
   metadata: { nestable: true },
-}
+};
 
-export default checkboxCodeConnect
+export default checkboxCodeConnect;

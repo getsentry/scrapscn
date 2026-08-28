@@ -20,9 +20,7 @@ export default function QuoteServerConsumptionPage() {
           {quoteCase.source === undefined ? (
             <Quote>Server-rendered regular Scraps quotation.</Quote>
           ) : (
-            <Quote source={quoteCase.source}>
-              Server-rendered regular Scraps quotation.
-            </Quote>
+            <Quote source={quoteCase.source}>Server-rendered regular Scraps quotation.</Quote>
           )}
         </section>
       ))}

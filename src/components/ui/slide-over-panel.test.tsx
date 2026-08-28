@@ -1,20 +1,16 @@
-import {
-  act,
-  createRef,
-  type HTMLAttributes,
-  type ReactNode,
-} from "react";
+import { act, createRef, type HTMLAttributes, type ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-const motionRenderProps = vi.hoisted(() =>
-  [] as Array<{
-    animate: unknown;
-    children: ReactNode;
-    exit: unknown;
-    initial: unknown;
-    transition: unknown;
-  }>
+const motionRenderProps = vi.hoisted(
+  () =>
+    [] as Array<{
+      animate: unknown;
+      children: ReactNode;
+      exit: unknown;
+      initial: unknown;
+      transition: unknown;
+    }>,
 );
 const reducedMotion = vi.hoisted(() => ({ matches: false }));
 
@@ -31,10 +27,7 @@ vi.mock("framer-motion", async () => {
           initial?: unknown;
           transition?: unknown;
         }
-      >(function MotionDiv(
-        { animate, children, exit, initial, transition, ...props },
-        ref
-      ) {
+      >(function MotionDiv({ animate, children, exit, initial, transition, ...props }, ref) {
         motionRenderProps.push({
           animate,
           children,
@@ -95,7 +88,7 @@ describe("SlideOverPanel", () => {
         ref={ref}
       >
         Panel
-      </SlideOverPanel>
+      </SlideOverPanel>,
     );
     const panel = container.querySelector<HTMLElement>("[role=complementary]");
 
@@ -109,9 +102,7 @@ describe("SlideOverPanel", () => {
     expect(panel?.hasAttribute("data-mode")).toBe(false);
     expect(panel?.hasAttribute("data-position")).toBe(false);
     expect(panel?.classList.contains("consumer")).toBe(true);
-    expect(
-      panel?.style.getPropertyValue("--scraps-slide-over-panel-width")
-    ).toBe("640px");
+    expect(panel?.style.getPropertyValue("--scraps-slide-over-panel-width")).toBe("640px");
     expect(ref.current).toBe(panel);
   });
 
@@ -130,7 +121,7 @@ describe("SlideOverPanel", () => {
           states.push(isOpening);
           return <span>{String(isOpening)}</span>;
         }}
-      </SlideOverPanel>
+      </SlideOverPanel>,
     );
 
     expect(states[0]).toBe(true);
@@ -142,11 +133,11 @@ describe("SlideOverPanel", () => {
 
     expect(motionRenderProps[0]?.initial).toEqual({
       opacity: 0,
-      transform: "translateX(50vw) translateY(0)",
+      transform: "translateX(100%) translateY(0)",
     });
     expect(motionRenderProps[0]?.exit).toEqual({
       opacity: 0,
-      transform: "translateX(50vw) translateY(0)",
+      transform: "translateX(100%) translateY(0)",
     });
   });
 
@@ -179,14 +170,12 @@ describe("SlideOverPanel", () => {
           showSuperuserWarning={showSuperuserWarning}
         >
           <SlideOverPanel mode="passive">Panel</SlideOverPanel>
-        </SlideOverPanelEnvironmentProvider>
+        </SlideOverPanelEnvironmentProvider>,
       );
       const panel = container.querySelector<HTMLElement>("[role=complementary]");
 
-      expect(
-        panel?.style.getPropertyValue("--scraps-slide-over-panel-top")
-      ).toBe(expected);
-    }
+      expect(panel?.style.getPropertyValue("--scraps-slide-over-panel-top")).toBe(expected);
+    },
   );
 
   it("keeps the pinned navigation constants", () => {
@@ -204,7 +193,7 @@ describe("SlideOverPanel", () => {
     const container = await render(
       <SlideOverPanel>
         <BoundaryConsumer />
-      </SlideOverPanel>
+      </SlideOverPanel>,
     );
     const panel = container.querySelector<HTMLElement>("[role=complementary]");
     const boundaryId = container.querySelector("[data-boundary-id]")?.textContent;

@@ -1,6 +1,6 @@
 # Scraps parity and designer prototyping goal
 
-Status: proposed
+Status: active
 
 Baseline date: 2026-08-21
 
@@ -8,11 +8,11 @@ Baseline date: 2026-08-21
 
 Make Scrapcn the fastest supported place to prototype Sentry product interfaces outside the monolith.
 
-A designer or engineer can clone Scrapcn, start the local app, open a Sentry page frame, compose a realistic page with regular Scraps components, and move the result between code and Figma Dev Mode without replacing mapped components with approximations.
+A designer or engineer can clone Scrapcn, start the local app, open a Sentry page frame, and compose a realistic page with regular Scraps components. Local Code Connect templates preserve the canonical Figma node and property vocabulary for mapped components.
 
 ## Scope
 
-The canonical regular Scraps library is `static/app/components/core` in the Sentry monolith, pinned to commit `d91f823d232ddd12a4d2a64554d85fd36df0e278`. It contains 48 component modules after the documentation-only `overview`, `patterns`, and `principles` directories are excluded.
+The canonical regular Scraps library is `static/app/components/core` in the Sentry monolith, pinned to commit `a2db8365e2ec17c96b200bface596081c68f12c9`. It contains 48 component modules after the documentation-only `overview`, `patterns`, and `principles` directories are excluded.
 
 Marketing components and Scrapcy variants do not count toward this goal. Extra shadcn components can remain, but they do not count toward regular Scraps parity.
 
@@ -24,13 +24,13 @@ The goal includes:
 - A reusable Sentry page frame and a local composition playground at `/`.
 - A file-based template workflow with direct URLs and Vercel Preview sharing.
 - Storybook documentation, behavior tests, visual tests, and accessibility checks.
-- Figma Dev Mode component mappings and tested workflows in both directions.
+- Locally parsed Figma Code Connect mappings under a distinct Scrapscn label.
 
 The goal does not require:
 
 - Marketing-site components.
 - Monolith business logic, routing, data fetching, permissions, or feature flags.
-- A lossless conversion between browser DOM and Figma component instances. Code-to-canvas must produce editable design layers and visual fidelity. Code Connect provides component identity for Figma-to-code work.
+- Remote Code Connect publication, live Dev Mode verification, Figma MCP tests, code-to-canvas, or round-trip testing.
 
 ## Baseline
 
@@ -44,15 +44,15 @@ At the original baseline, Scrapcn had:
 - No reusable page frame, composition playground, or Chat component.
 - A marketing landing page at `/` that does not serve the local prototyping workflow and does not match the intended product frame.
 - A passing Next production build.
-- Next.js `16.3.2`, the stable `latest` release when this baseline was updated, with matching `eslint-config-next`; React and React DOM are `19.2.8`.
+- Next.js `16.3.2`, the stable `latest` release when this baseline was first recorded; React and React DOM are `19.2.8`.
 - A failing lint command because generated Storybook output is included, plus two source errors and one source warning.
 - Ten existing legacy Code Connect mappings in the monolith: Alert, FeatureBadge, Tag, Button, Checkbox, Radio, Slider, Switch, TextArea, and Tooltip. They point to published components in the Sentry “🐦 Components” Figma library and provide initial node URLs and property mappings, but they import the CSS-in-JS implementations and use the legacy React parser format.
 - No generated `public/r/*.json` registry artifacts and no registry build command.
 - A hosted registry URL that redirects unauthenticated requests to Vercel SSO. The shadcn CLI cannot use this as a public registry transport.
 
-The current local checkpoint adds the playground, reusable page frame, Checkbox vertical slice, template workflow, and a machine-readable parity inventory. `pnpm parity:validate` reports 0 complete, 17 partial, and 31 missing modules. A partial module has mapped local code but has not passed every exact contract, behavior, visual, registry, and Figma gate.
+The current local checkpoint uses Next.js 16.3.3 and has a full-screen playground, reusable page frame, 48 component workbenches, file-based templates, generated registry items, and a machine-readable parity inventory. The manifest records all 48 modules as complete. Select applies every nested `StylesConfig` pattern used by the pinned monolith through fixed Tailwind selectors, CSS custom properties, and an aria-hidden decorative element. The public type still accepts arbitrary new selectors for source compatibility, and replacement components receive those objects through `getStyles`. Applying an unknown selector to the default DOM is an explicit portable-contract input exclusion because it would require runtime stylesheet injection or CSS-in-JS.
 
-An existing file or a similar name is not proof of parity. Current examples include Button, Alert, Slider, TextArea, Badge, Avatar, Input, Link, Select, Tabs, and Tooltip APIs that differ from their canonical Scraps APIs.
+The repository has 11 local parserless Code Connect templates under the `Scrapscn React` label. Automated contract, behavior, accessibility, build, playground, template, registry, and Code Connect checks pass. Approved light, dark, narrow, and wide visual baselines are still missing as goal-level evidence. The manifest count does not override that acceptance gate.
 
 ## Definitions
 
@@ -70,17 +70,19 @@ A component module is complete only when all of these statements are true:
 
 Internal implementation details can differ. Tailwind and Base UI can replace Emotion and React Aria when the public contract, behavior, accessibility, and appearance remain compatible.
 
+### Portable contract inputs
+
+A portable contract input works in the Tailwind-only Scrapcn architecture without a CSS-in-JS runtime, a legacy CSS parser, or runtime stylesheet injection. Import-path-only compatibility remains the goal for all portable inputs.
+
+The owner-authorized exceptions are `tooltip.overlayStyle.serializedStyles`, `modal.modalCss.interpolation`, `layout.renderFunction.arbitraryCssProperties`, and `select.stylesConfig.arbitraryNestedSelectors`. Canonical `TooltipProps.overlayStyle` also accepts Emotion `SerializedStyles`; Scrapcn accepts `React.CSSProperties` only. Alert, Avatar, AvatarButton, Badge, BreadcrumbList, Button, CompactSelect, Form, MenuListItem, Modal, SegmentedControl, Select, Tabs, and Tooltip expose this boundary through direct props, compound components, nested elements, generic constraints, or hook and render-prop returns. Canonical `ModalOptions.modalCss` accepts Emotion `Interpolation<Theme>`; Scrapcn accepts a Tailwind class string only. Canonical `ContainerPropsWithRenderFunction` retains the `ContainerLayoutProps` members backed by indexed `React.CSSProperties` values. Scrapcn render-function children receive finite literal Tailwind classes only; use the ordinary `as` form or move a dynamic CSSProperties value into the target component static Tailwind or CSS. Canonical Select `StylesConfig` accepts new nested selector strings at runtime. Scrapcn applies flat declarations and every nested pattern found in the pinned monolith, and passes the complete callback result to replacement components. Move any new nested rule into literal Tailwind or static CSS. The generator derives all closures from pinned TypeScript declaration identities. The manifest records each exported path as diagnostic evidence. Moving the replay call site requires translating its dynamic padding and widths, `!important` declarations, and responsive rule into Tailwind or static CSS. Moving a modal interpolation requires the same translation. These cases are not import-path-only changes.
+
 ### Figma interoperability
 
-Figma interoperability contains three distinct workflows:
+Code Connect template files are the maintained local integration format. Mappings use parserless `.figma.ts` templates instead of the legacy framework parser format.
 
-- **Design to code:** Figma Dev Mode and the Figma MCP server return Scrapcn component names, imports, and mapped props for connected instances.
-- **Code to canvas:** Figma's `generate_figma_design` workflow captures the running prototype as editable Figma design layers.
-- **Design iteration back to code:** An agent reads an updated Figma frame and changes the prototype while preserving connected Scrapcn components.
+The ten monolith mappings are migration inputs, not files to copy unchanged. Scrapcn reuses each pinned Figma node URL and property vocabulary, replaces the source import and generated JSX with the compatible Scrapcn interface, and validates the result locally under the `Scrapscn React` label. EmptyState adds one property-free mapping from its pinned MDX node. An exact empty canonical property map, such as Slider's, produces a property-free local template instead of invented mappings.
 
-Code Connect template files are the maintained integration format. New mappings use `.figma.ts` templates instead of the legacy framework parser format.
-
-The ten monolith mappings are migration inputs, not files to copy unchanged. Scrapcn reuses each verified Figma node URL and property vocabulary, replaces the source import and generated JSX with the compatible Scrapcn interface, uses a distinct Scrapcn connection label, and validates the result before publication. A mapping remains incomplete when the old file has missing property coverage, such as the current Slider mapping with an empty `props` object.
+Remote publication and Figma application workflows are release work outside this goal.
 
 ### Template
 
@@ -102,7 +104,7 @@ The completed repository contains:
 8. Component stories and at least one page-frame composition story.
 9. Code Connect `.figma.ts` templates and a current `figma.config.json`.
 10. Automated playground, template, type, behavior, visual, accessibility, and build checks.
-11. A short designer quick-start guide for local prototypes, template creation and sharing, Figma-to-code, and code-to-canvas.
+11. A short designer quick-start guide for local prototypes, template creation and sharing, and local Code Connect validation.
 
 ## End-state acceptance criteria
 
@@ -111,7 +113,7 @@ The goal passes only when every gate below passes. A checklist or file count alo
 ### Gate 1: inventory and scope
 
 - The parity manifest contains exactly the 48 regular Scraps modules.
-- Every module is `complete`. An owner-approved scope exclusion changes the target and must update this goal before completion.
+- Every module is `complete`, except for a documented owner-authorized portable contract-input exclusion in the parity manifest. Any new exclusion changes the target and must update this goal before completion.
 - Marketing variants and extra shadcn components are labeled separately and do not increase the parity score.
 - A test fails when a canonical public export is missing from the manifest or implementation.
 
@@ -119,8 +121,8 @@ The goal passes only when every gate below passes. A checklist or file count alo
 
 - Every non-excluded canonical runtime export is available from the corresponding Scrapcn module.
 - Contract fixtures cover prop names, variant values, sizes, defaults, controlled and uncontrolled behavior, callback meaning, refs, and compound-component structure where applicable.
-- At least one representative canonical usage per module compiles after only the import path changes.
-- A module with a public contract or behavior difference remains incomplete until the difference is removed or this goal is explicitly revised.
+- At least one representative canonical usage per module compiles after only the import path changes, except when the recorded portable contract-input exclusion requires a Tailwind or static-CSS translation.
+- A module with a public contract or behavior difference remains incomplete until the difference is removed or this goal explicitly records an owner-authorized portable contract-input exclusion.
 
 ### Gate 3: behavior and visual parity
 
@@ -170,23 +172,18 @@ The goal passes only when every gate below passes. A checklist or file count alo
 - A composition story demonstrates at least a form page, a table or list page, an empty state, and an overlay interaction.
 - The page-frame templates use the public local component modules and remain valid inputs for later registry packaging.
 
-### Gate 8: Figma Dev Mode and MCP
+### Gate 8: local Figma Code Connect
 
-- Every complete visual component is connected to its approved published Figma component through a `.figma.ts` Code Connect template.
+- Every complete visual component with pinned Figma evidence has a locally parsed `.figma.ts` Code Connect template under the distinct `Scrapscn React` label.
 - `figma connect parse --exit-on-unreadable-files` passes in CI.
-- Code Connect templates map every supported Figma property to the correct code prop or explicitly document why a property is design-only.
-- Dev Mode shows the correct Scrapcn import and JSX for representative variants of every connected component.
-- A Figma MCP design-to-code smoke test on a frame with connected instances uses Scrapcn imports and does not recreate those components with raw elements.
-- Every semantic CSS token used by a complete visual component maps to a published Figma variable or is recorded as code-only with a reason.
-- Figma variables used by the smoke frame have a tested mapping to Scrapcn semantic CSS tokens.
-- A code-to-canvas smoke test captures the running page-frame prototype into a new or existing Figma file as editable layers.
-- After a reviewer changes a mapped component property and copy in Figma, the design-to-code workflow updates the prototype with the correct Scrapcn prop and text while all automated checks remain green.
-- Figma URLs and non-secret evidence from the last successful smoke test are recorded in a repeatable test report. Tokens and credentials are never committed.
+- Templates use parserless `figma.code`, the pinned node URL, local imports, and only the property vocabulary supported by canonical evidence.
+- Focused tests verify node URLs, imports, property mappings, and parserless format. Tokens and credentials are never committed.
+- Remote publication, live library metadata, Dev Mode verification, Figma MCP smoke tests, code-to-canvas, and round-trip validation are release work outside this active parity goal.
 
 ### Gate 9: repository health and documentation
 
 - Tests, lint, type checks, the production build, Storybook build, playground and template end-to-end checks, and Code Connect parsing pass from a clean checkout.
-- `next` and `eslint-config-next` match the stable `latest` release reported by the package registry when the goal starts and again before completion. React, React DOM, and their types satisfy the version recommended by that Next.js release.
+- `next` matches the stable `latest` release reported by the package registry when the goal starts and again before completion. React, React DOM, and their types satisfy the version recommended by that Next.js release. Oxlint and Oxfmt are the only source lint and format tools.
 - The exact Next.js version is pinned in `package.json`, recorded in the evidence, and used by the Vercel Preview build.
 - Generated Storybook output is excluded from source linting.
 - The README states the canonical source, supported Next and shadcn versions, designer quick start, page-frame workflow, registry installation, and Figma workflow.
@@ -194,9 +191,9 @@ The goal passes only when every gate below passes. A checklist or file count alo
 
 Registry generation and hosted installation remain release requirements for the finished library. They are not the validation environment for component parity or the first vertical slice. Complete local playground behavior before registry transport work begins.
 
-## Smallest vertical slice
+## Original vertical slice
 
-The first slice proves the delivery system. It does not attempt broad component coverage.
+The first slice proved the delivery system before the full 48-module port. Its local work is complete. Remote Figma work was later removed from the active goal.
 
 ### Slice contents
 
@@ -209,15 +206,6 @@ The first slice proves the delivery system. It does not attempt broad component 
 7. **Local browser proof:** Run the local app and test the real `/` workflow: open Checkbox, change its controls, reorder the stack, open the settings template, submit the form, change theme and viewport, copy the URL, and restore the same state in a second browser context using only the copied URL.
 8. **Vercel Preview proof:** Push the slice branch, wait for its Vercel Preview, and repeat the share test with both the branch URL and the commit URL. Confirm that an intended reviewer can open and comment on the template without local setup.
 9. **Figma component proof:** Create a Code Connect template for the existing canonical Checkbox Figma component at node `3481:4211` in the Sentry Components library. Map size, checked value, and disabled state to the compatible Checkbox API.
-10. **Figma full-design proof:** Use the remote Figma MCP code-to-canvas workflow to capture the running Preview template as editable Figma layers.
-11. **Round-trip proof:** Use a Figma test frame that contains an instance of the connected Checkbox. Change its size or checked state and the surrounding label copy in Figma, retrieve the frame through MCP, and update the local template. The resulting code must still import and use Checkbox.
-
-### Slice prerequisites
-
-- An approved Sentry page-frame Figma selection URL, including the exact desktop frame node, must be recorded before page-frame visual acceptance. If no canonical frame exists, the slice creates a minimal reference frame and gets design approval before continuing.
-- The Sentry Components Figma library must be published and accessible to the tester.
-- The tester must have a Figma seat and file permissions that support the selected Code Connect and MCP actions.
-- The remote Figma MCP server must be connected to a supported client. Codex is supported for code-to-canvas.
 
 ### Slice automated pass criteria
 
@@ -231,26 +219,15 @@ pnpm build-storybook
 pnpm test:playground
 pnpm test:templates
 pnpm figma:parse
-pnpm figma:preview
 ```
 
-The new scripts must be deterministic and documented. `test:playground` must exercise the local `/` workflow in a real browser. `test:templates` must validate metadata, unique slugs, discovery, direct routes, URL-state restoration, and production rendering. Agents run the development server through `portless` as required by `AGENTS.md`. `figma:parse` must run Code Connect parsing with unreadable files treated as failures. `figma:preview` must validate all slice templates before publication.
+The new scripts must be deterministic and documented. `test:playground` must exercise the local `/` workflow in a real browser. `test:templates` must validate metadata, unique slugs, discovery, direct routes, URL-state restoration, and production rendering. Agents run the development server through `portless` as required by `AGENTS.md`. `figma:parse` must run Code Connect parsing with unreadable files treated as failures.
 
 The Checkbox visual test matrix covers three sizes by three checked values by enabled and disabled states in both light and dark modes. The playground and page-frame smoke tests cover agreed desktop and mobile widths.
 
-### Slice manual Figma pass criteria
-
-The slice also requires a short test report that proves:
-
-1. Dev Mode shows the expected Checkbox import and JSX for unchecked, checked, indeterminate, and disabled instances across the supported sizes.
-2. Figma MCP design context for the test frame identifies the connected Checkbox and its selected props.
-3. Generated prototype code uses the local public Checkbox module and passes the automated gate.
-4. Code-to-canvas creates an editable Figma frame that matches the running Vercel Preview template at the tested viewport.
-5. A changed Checkbox property and surrounding label make the return trip to the source template without replacing Checkbox with raw markup.
-
 ### Why this is the minimum useful slice
 
-Checkbox is the smallest component that still tests types, native forms, controlled state, indeterminate state, keyboard input, focus, accessibility, visual states, and an existing canonical Figma mapping. The playground proves the actual designer entry point. The page frame and settings template prove local composition. Direct URLs and Vercel Preview prove asynchronous sharing. The two Figma checks test semantic design-to-code and editable code-to-canvas separately. Together they exercise every critical boundary before the remaining 47 modules are ported.
+Checkbox is the smallest component that still tests types, native forms, controlled state, indeterminate state, keyboard input, focus, accessibility, visual states, and an existing canonical Figma mapping. The playground proves the designer entry point. The page frame and settings template prove local composition. Direct URLs and Vercel Preview prove asynchronous sharing.
 
 ### Go or no-go experiment
 
@@ -262,13 +239,10 @@ Run the slice in this order:
 4. Build and run Scrapcn locally, then exercise component controls, stack ordering, native form state, theme, viewport, URL-state restoration, and keyboard behavior in the browser.
 5. Open the copied local Share URL in a second browser context and confirm the same review state.
 6. Push the branch and repeat the share test on its Vercel branch and commit Preview URLs with another intended reviewer.
-7. Parse and preview the Checkbox Code Connect template, publish it under the Scrapcn label, and inspect its variants in Dev Mode.
-8. Ask the Figma MCP server to implement a small settings frame that contains the connected Checkbox. Confirm that the result imports Checkbox instead of recreating it.
-9. Capture the running Vercel Preview template back to Figma as editable layers.
-10. Change the Checkbox state and surrounding label in the connected Figma test frame, apply that change back to the source template, and rerun every automated check.
-11. Give the written quick start to a designer or engineer who did not build the slice. Confirm the five-minute startup and ten-minute template-creation criteria without verbal help.
+7. Parse the Checkbox Code Connect template under the distinct Scrapscn label.
+8. Give the written quick start to a designer or engineer who did not build the slice. Confirm the five-minute startup and ten-minute template-creation criteria without verbal help.
 
-Proceed to the 48-module goal only when all 11 steps pass. A failure means the slice remains active until the shared pipeline is fixed. Do not work around a playground, template, Vercel Preview, page-frame, Figma, or documentation failure inside later component ports.
+Proceed to the 48-module goal only when all eight steps pass. A failure means the slice remains active until the shared pipeline is fixed. Do not work around a playground, template, Vercel Preview, page-frame, Code Connect, or documentation failure inside later component ports.
 
 ## Evidence format
 
@@ -281,28 +255,21 @@ Each completed slice or module records:
 - Storybook story and approved visual baseline.
 - Template slug, local route, Vercel branch URL, and Vercel commit URL.
 - Share-URL restoration result from a second browser context.
-- Figma component and test-frame URLs.
+- Pinned Figma component URLs.
 - Code Connect parse result.
-- Design-to-code and code-to-canvas smoke-test date.
 - Approved exceptions, if any.
 
-## Recommended first goal handoff
+## Current goal handoff
 
-Use this objective for the first implementation goal:
+Use this objective for the active implementation goal:
 
-> Implement the smallest vertical slice in `docs/scraps-parity-goal.md`. Replace the marketing homepage with the fast local playground, complete Checkbox contract parity, add the file-based template workflow, create the reusable Sentry page frame and `checkbox-settings` template, prove share-state restoration on a Vercel Preview, and add the Checkbox Code Connect template. Treat every automated playground, template, Preview, and manual Figma criterion as a completion gate. Record the required evidence. Keep registry transport and the remaining Scraps modules out of scope.
-
-Before page-frame visual work starts, attach or record the approved Sentry page-frame node URL. If no canonical frame exists, create and approve the minimal reference as the first design deliverable. If the Figma library, permissions, or remote MCP connection are unavailable, implementation can continue through the automated gates, but the goal remains incomplete until the manual Figma gate passes.
+> Create a Tailwind clone of all 48 regular Scraps modules. Preserve the consumer API and Figma property vocabulary so a component usage can move between the monolith and Scrapscn by changing only its import path. Provide locally validated Code Connect mappings with a distinct Scrapscn label. Remote Figma publication and round-trip testing are out of scope.
 
 ## External references
 
-- Figma MCP overview: <https://developers.figma.com/docs/figma-mcp-server/>
-- Figma MCP tools: <https://developers.figma.com/docs/figma-mcp-server/tools-and-prompts/>
-- Code to canvas: <https://developers.figma.com/docs/figma-mcp-server/code-to-canvas/>
 - Code Connect overview: <https://developers.figma.com/docs/code-connect/>
 - Code Connect template files: <https://developers.figma.com/docs/code-connect/template-files/>
 - Code Connect CLI: <https://developers.figma.com/docs/code-connect/cli-reference/>
-- Figma file structure guidance: <https://developers.figma.com/docs/figma-mcp-server/structure-figma-file/>
 - Vercel Preview environments: <https://vercel.com/docs/deployments/environments>
 - Vercel generated branch and commit URLs: <https://vercel.com/docs/deployments/generated-urls>
 - Vercel Shareable Links: <https://vercel.com/docs/deployment-protection/methods-to-bypass-deployment-protection/sharable-links>

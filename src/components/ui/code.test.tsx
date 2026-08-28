@@ -2,10 +2,10 @@ import { act, createRef, Profiler, useState, type ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { CodeBlock, InlineCode, inlineCodeStyles } from "./code";
+import { CodeBlock, InlineCode } from "./code";
 import { CodeMessagesProvider, type CodeMessages } from "./code-messages";
-import { prismLanguageLoaders } from "./prism-language-loaders";
 import { loadPrismLanguage, loadPrismLineHighlight, Prism } from "./prism";
+import { prismLanguageLoaders } from "./prism-language-loaders";
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 
@@ -48,47 +48,27 @@ describe("InlineCode", () => {
     const container = await render(
       <InlineCode ref={ref} aria-label="Inline example" variant="neutral">
         const value = 1
-      </InlineCode>
+      </InlineCode>,
     );
 
     expect(ref.current).toBe(container.querySelector("code"));
     expect(ref.current?.hasAttribute("data-variant")).toBe(false);
-    expect(ref.current?.className).toContain("inlineCodeNeutral");
+    expect(ref.current?.className).toContain("bg-[var(--scraps-inline-code-neutral-background)]");
     expect(ref.current?.getAttribute("aria-label")).toBe("Inline example");
   });
 
-  it("returns the canonical reusable inline style recipe", () => {
-    const theme = {
-      font: { family: { mono: "Mono" } },
-      radius: { "2xs": "3px" },
-      tokens: {
-        background: {
-          transparent: {
-            neutral: { muted: "neutral-bg" },
-            promotion: { muted: "promotion-bg" },
-          },
-        },
-        content: { primary: "neutral-fg", promotion: "promotion-fg" },
-      },
-    };
+  it("uses literal Tailwind recipes for both variants", async () => {
+    const container = await render(
+      <>
+        <InlineCode>accent</InlineCode>
+        <InlineCode variant="neutral">neutral</InlineCode>
+      </>,
+    );
+    const [accent, neutral] = container.querySelectorAll("code");
 
-    expect(inlineCodeStyles(theme).styles).toContain("color:promotion-fg");
-    expect(inlineCodeStyles(theme).styles).toContain("background:promotion-bg");
-    expect(
-      inlineCodeStyles(theme, {
-        "aria-label": "Neutral code",
-        id: "neutral-code",
-        variant: "neutral",
-      }).styles
-    ).toContain(
-      "color:neutral-fg"
-    );
-    expect(inlineCodeStyles(theme, { variant: "neutral" }).styles).toContain(
-      "background:neutral-bg"
-    );
-    expect(inlineCodeStyles(theme).styles).toContain(
-      "border-radius:clamp(0.21em, 0.28em, 0.57em)"
-    );
+    expect(accent?.className).toContain("bg-[var(--scraps-inline-code-background)]");
+    expect(accent?.className).toContain("rounded-[clamp(0.21em,0.28em,0.57em)]");
+    expect(neutral?.className).toContain("text-[var(--scraps-inline-code-neutral-content)]");
   });
 });
 
@@ -111,27 +91,21 @@ describe("CodeBlock", () => {
       const container = await render(
         <CodeMessagesProvider messages={messages}>
           <CodeBlock>{'const idioma = "es";'}</CodeBlock>
-        </CodeMessagesProvider>
+        </CodeMessagesProvider>,
       );
-      const button = container.querySelector<HTMLButtonElement>(
-        '[aria-label="Copiar fragmento"]'
-      );
+      const button = container.querySelector<HTMLButtonElement>('[aria-label="Copiar fragmento"]');
       if (!button) throw new Error("Localized copy trigger is missing");
 
       await act(async () => button.focus());
       await advanceTimers(400);
-      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe(
-        "Copiar"
-      );
+      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe("Copiar");
 
       await act(async () => {
         button.click();
         await Promise.resolve();
       });
       expect(writeText).toHaveBeenCalledWith('const idioma = "es";');
-      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe(
-        "Copiado"
-      );
+      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe("Copiado");
 
       await act(async () => button.blur());
       await advanceTimers(tooltipCloseAndCoolDown);
@@ -156,11 +130,9 @@ describe("CodeBlock", () => {
       const container = await render(
         <CodeMessagesProvider messages={messages}>
           <CodeBlock>copia</CodeBlock>
-        </CodeMessagesProvider>
+        </CodeMessagesProvider>,
       );
-      const button = container.querySelector<HTMLButtonElement>(
-        '[aria-label="Copiar fragmento"]'
-      );
+      const button = container.querySelector<HTMLButtonElement>('[aria-label="Copiar fragmento"]');
 
       await act(async () => {
         button?.focus();
@@ -168,9 +140,7 @@ describe("CodeBlock", () => {
         await Promise.resolve();
       });
       await advanceTimers(400);
-      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe(
-        "No se pudo copiar"
-      );
+      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe("No se pudo copiar");
 
       await act(async () => button?.blur());
       await advanceTimers(tooltipCloseAndCoolDown);
@@ -186,10 +156,10 @@ describe("CodeBlock", () => {
         <>
           <CodeBlock>first</CodeBlock>
           <CodeBlock>second</CodeBlock>
-        </>
+        </>,
       );
       const [first, second] = container.querySelectorAll<HTMLButtonElement>(
-        '[aria-label="Copy snippet"]'
+        '[aria-label="Copy snippet"]',
       );
       if (!first || !second) throw new Error("Copy triggers are missing");
 
@@ -229,9 +199,7 @@ describe("CodeBlock", () => {
       }
 
       const container = await render(<TooltipSet showIdle />);
-      const first = container.querySelector<HTMLButtonElement>(
-        '[aria-label="Copy snippet"]'
-      );
+      const first = container.querySelector<HTMLButtonElement>('[aria-label="Copy snippet"]');
       if (!first) throw new Error("First copy trigger is missing");
       await act(async () => first.focus());
       await advanceTimers(400);
@@ -241,9 +209,7 @@ describe("CodeBlock", () => {
 
       await rerender(container, <TooltipSet showIdle={false} />);
       await advanceTimers(101);
-      const buttons = container.querySelectorAll<HTMLButtonElement>(
-        '[aria-label="Copy snippet"]'
-      );
+      const buttons = container.querySelectorAll<HTMLButtonElement>('[aria-label="Copy snippet"]');
       const last = buttons[1];
       if (!last) throw new Error("Last copy trigger is missing");
       await act(async () => last.focus());
@@ -268,9 +234,7 @@ describe("CodeBlock", () => {
     });
     try {
       const container = await render(<CodeBlock>copy me</CodeBlock>);
-      const button = container.querySelector<HTMLButtonElement>(
-        '[aria-label="Copy snippet"]'
-      );
+      const button = container.querySelector<HTMLButtonElement>('[aria-label="Copy snippet"]');
       if (!button) throw new Error("Copy trigger is missing");
       await act(async () => button.focus());
       await advanceTimers(400);
@@ -278,9 +242,7 @@ describe("CodeBlock", () => {
         button.click();
         await Promise.resolve();
       });
-      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe(
-        "Copied"
-      );
+      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe("Copied");
 
       await rerender(container, <CodeBlock hideCopyButton>copy me</CodeBlock>);
       expect(container.querySelector('[aria-label="Copy snippet"]')).toBeNull();
@@ -289,14 +251,12 @@ describe("CodeBlock", () => {
 
       await rerender(container, <CodeBlock>copy me</CodeBlock>);
       const restoredButton = container.querySelector<HTMLButtonElement>(
-        '[aria-label="Copy snippet"]'
+        '[aria-label="Copy snippet"]',
       );
       if (!restoredButton) throw new Error("Restored copy trigger is missing");
       await act(async () => restoredButton.focus());
       await advanceTimers(400);
-      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe(
-        "Copy"
-      );
+      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe("Copy");
       await act(async () => restoredButton.blur());
       await advanceTimers(tooltipCloseAndCoolDown);
     } finally {
@@ -319,17 +279,13 @@ describe("CodeBlock", () => {
             <CodeBlock>{`snippet ${index}`}</CodeBlock>
           </Profiler>
         ))}
-      </>
+      </>,
     );
     const idleCommitCounts = commitCounts.slice(1);
-    const firstButton = container.querySelector<HTMLButtonElement>(
-      '[aria-label="Copy snippet"]'
-    );
+    const firstButton = container.querySelector<HTMLButtonElement>('[aria-label="Copy snippet"]');
 
     await act(async () => firstButton?.focus());
-    await vi.waitFor(() =>
-      expect(document.querySelector('[role="tooltip"]')).not.toBeNull()
-    );
+    await vi.waitFor(() => expect(document.querySelector('[role="tooltip"]')).not.toBeNull());
 
     expect(commitCounts.slice(1)).toEqual(idleCommitCounts);
   });
@@ -345,16 +301,12 @@ describe("CodeBlock", () => {
   });
 
   it("reports a line-highlight chunk that fails twice", async () => {
-    const importer = vi
-      .fn<() => Promise<unknown>>()
-      .mockRejectedValue(new Error("chunk failed"));
+    const importer = vi.fn<() => Promise<unknown>>().mockRejectedValue(new Error("chunk failed"));
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
 
     await expect(loadPrismLineHighlight(importer)).resolves.toBe(false);
     expect(importer).toHaveBeenCalledTimes(2);
-    expect(warn).toHaveBeenCalledWith(
-      "Cannot load the Prism line-highlight plugin."
-    );
+    expect(warn).toHaveBeenCalledWith("Cannot load the Prism line-highlight plugin.");
 
     warn.mockRestore();
   });
@@ -378,7 +330,7 @@ describe("CodeBlock", () => {
     try {
       await expect(loadPrismLanguage("abap")).resolves.toBe(false);
       expect(warn).toHaveBeenCalledWith(
-        "Cannot download Prism grammar file for `abap`. Check the internet connection, and the `lang` argument passed to `loadPrismLanguage()`."
+        "Cannot download Prism grammar file for `abap`. Check the internet connection, and the `lang` argument passed to `loadPrismLanguage()`.",
       );
       expect(Prism.languages.abap).toBeUndefined();
       await expect(loadPrismLanguage("abap")).resolves.toBe(true);
@@ -404,30 +356,30 @@ describe("CodeBlock", () => {
     let resolvePython = () => {};
     const mataLoader = vi.fn(
       () =>
-        new Promise<unknown>(resolve => {
+        new Promise<unknown>((resolve) => {
           resolveMata = () => {
             Prism.languages.mata = Prism.languages.javascript;
             resolve(undefined);
           };
-        })
+        }),
     );
     const javaLoader = vi.fn(
       () =>
-        new Promise<unknown>(resolve => {
+        new Promise<unknown>((resolve) => {
           resolveJava = () => {
             Prism.languages.java = Prism.languages.javascript;
             resolve(undefined);
           };
-        })
+        }),
     );
     const pythonLoader = vi.fn(
       () =>
-        new Promise<unknown>(resolve => {
+        new Promise<unknown>((resolve) => {
           resolvePython = () => {
             Prism.languages.python = Prism.languages.javascript;
             resolve(undefined);
           };
-        })
+        }),
     );
     const stataLoader = vi.fn(async () => {
       Prism.languages.stata = Prism.languages.javascript;
@@ -475,7 +427,7 @@ describe("CodeBlock", () => {
     const container = await render(
       <CodeBlock language="javascript" onAfterHighlight={onAfterHighlight}>
         {"const answer = 42;"}
-      </CodeBlock>
+      </CodeBlock>,
     );
 
     await vi.waitFor(() => {
@@ -489,21 +441,15 @@ describe("CodeBlock", () => {
     "normalizes %s before Prism highlights it",
     async (language) => {
       const container = await render(
-        <CodeBlock language={language}>{"const answer = 42;"}</CodeBlock>
+        <CodeBlock language={language}>{"const answer = 42;"}</CodeBlock>,
       );
 
       await vi.waitFor(() => {
-        expect(container.querySelector(".token.keyword")?.textContent).toBe(
-          "const"
-        );
+        expect(container.querySelector(".token.keyword")?.textContent).toBe("const");
       });
-      expect(container.querySelector("pre")?.className).toBe(
-        "language-javascript"
-      );
-      expect(container.querySelector("code")?.className).toBe(
-        "language-javascript"
-      );
-    }
+      expect(container.querySelector("pre")?.className).toBe("language-javascript");
+      expect(container.querySelector("code")?.className).toBe("language-javascript");
+    },
   );
 
   it("uses the latest inline callback without restarting highlighting", async () => {
@@ -517,7 +463,7 @@ describe("CodeBlock", () => {
             Prism.languages.abnf = Prism.languages.javascript;
             resolve(undefined);
           };
-        })
+        }),
     );
     delete Prism.languages.abnf;
     const callbackVersions: string[] = [];
@@ -549,14 +495,10 @@ describe("CodeBlock", () => {
       const container = await render(<CallbackHarness />);
       const updateButton = container.querySelector("button");
       if (!updateButton) throw new Error("Callback update button is missing");
-      await vi.waitFor(() =>
-        expect(prismLanguageLoaders.abnf).toHaveBeenCalledOnce()
-      );
+      await vi.waitFor(() => expect(prismLanguageLoaders.abnf).toHaveBeenCalledOnce());
       await act(async () => updateButton.click());
       await act(async () => resolveLanguage());
-      await vi.waitFor(() =>
-        expect(container.querySelector("output")?.textContent).toBe("1")
-      );
+      await vi.waitFor(() => expect(container.querySelector("output")?.textContent).toBe("1"));
       await act(async () => Promise.resolve());
 
       expect(callbackVersions).toEqual(["latest"]);
@@ -570,11 +512,9 @@ describe("CodeBlock", () => {
 
   it("clears token markup when the language becomes unsupported", async () => {
     const source = "const answer = 42;";
-    const container = await render(
-      <CodeBlock language="javascript">{source}</CodeBlock>
-    );
+    const container = await render(<CodeBlock language="javascript">{source}</CodeBlock>);
     await vi.waitFor(() =>
-      expect(container.querySelector(".token.keyword")?.textContent).toBe("const")
+      expect(container.querySelector(".token.keyword")?.textContent).toBe("const"),
     );
 
     await rerender(container, <CodeBlock language="not-a-language">{source}</CodeBlock>);
@@ -588,53 +528,43 @@ describe("CodeBlock", () => {
     const container = await render(
       <CodeBlock language="javascript" linesToHighlight={[1]}>
         {source}
-      </CodeBlock>
+      </CodeBlock>,
     );
     await vi.waitFor(() =>
-      expect(container.querySelector('.line-highlight[data-range="1"]')).not.toBeNull()
+      expect(container.querySelector('.line-highlight[data-range="1"]')).not.toBeNull(),
     );
 
     await rerender(
       container,
       <CodeBlock language="javascript" linesToHighlight={[2]}>
         {source}
-      </CodeBlock>
+      </CodeBlock>,
     );
     await vi.waitFor(() =>
-      expect(container.querySelector('.line-highlight[data-range="2"]')).not.toBeNull()
+      expect(container.querySelector('.line-highlight[data-range="2"]')).not.toBeNull(),
     );
     expect(container.querySelectorAll(".line-highlight")).toHaveLength(1);
 
     await rerender(container, <CodeBlock language="javascript">{source}</CodeBlock>);
-    await vi.waitFor(() =>
-      expect(container.querySelectorAll(".line-highlight")).toHaveLength(0)
-    );
+    await vi.waitFor(() => expect(container.querySelectorAll(".line-highlight")).toHaveLength(0));
   });
 
   it("does not re-highlight an equivalent line range after a parent rerender", async () => {
     const source = "const answer = 42;";
     const onAfterHighlight = vi.fn();
     const container = await render(
-      <CodeBlock
-        language="javascript"
-        linesToHighlight={[1]}
-        onAfterHighlight={onAfterHighlight}
-      >
+      <CodeBlock language="javascript" linesToHighlight={[1]} onAfterHighlight={onAfterHighlight}>
         {source}
-      </CodeBlock>
+      </CodeBlock>,
     );
     await vi.waitFor(() => expect(onAfterHighlight).toHaveBeenCalledTimes(2));
     const highlightCount = onAfterHighlight.mock.calls.length;
 
     await rerender(
       container,
-      <CodeBlock
-        language="javascript"
-        linesToHighlight={[1]}
-        onAfterHighlight={onAfterHighlight}
-      >
+      <CodeBlock language="javascript" linesToHighlight={[1]} onAfterHighlight={onAfterHighlight}>
         {source}
-      </CodeBlock>
+      </CodeBlock>,
     );
 
     expect(onAfterHighlight).toHaveBeenCalledTimes(highlightCount);
@@ -645,7 +575,7 @@ describe("CodeBlock", () => {
     const container = await render(
       <CodeBlock language="not-a-language" onAfterHighlight={onAfterHighlight}>
         plain text
-      </CodeBlock>
+      </CodeBlock>,
     );
 
     expect(container.querySelector("code")?.textContent).toBe("plain text");
@@ -663,11 +593,9 @@ describe("CodeBlock", () => {
     const container = await render(
       <CodeBlock language="javascript" onCopy={onCopy}>
         {"const answer = 42;"}
-      </CodeBlock>
+      </CodeBlock>,
     );
-    const button = container.querySelector<HTMLButtonElement>(
-      '[aria-label="Copy snippet"]'
-    );
+    const button = container.querySelector<HTMLButtonElement>('[aria-label="Copy snippet"]');
 
     await act(async () => {
       button?.focus();
@@ -678,13 +606,11 @@ describe("CodeBlock", () => {
     expect(writeText).toHaveBeenCalledWith("const answer = 42;");
     expect(onCopy).toHaveBeenCalledWith("const answer = 42;");
     await vi.waitFor(() =>
-      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe("Copied")
+      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe("Copied"),
     );
-    await act(async () =>
-      button?.dispatchEvent(new MouseEvent("mouseout", { bubbles: true }))
-    );
+    await act(async () => button?.dispatchEvent(new MouseEvent("mouseout", { bubbles: true })));
     await vi.waitFor(() =>
-      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe("Copy")
+      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe("Copy"),
     );
   });
 
@@ -695,9 +621,7 @@ describe("CodeBlock", () => {
     });
     const onCopy = vi.fn();
     const container = await render(<CodeBlock onCopy={onCopy}>copy me</CodeBlock>);
-    const button = container.querySelector<HTMLButtonElement>(
-      '[aria-label="Copy snippet"]'
-    );
+    const button = container.querySelector<HTMLButtonElement>('[aria-label="Copy snippet"]');
 
     await act(async () => {
       button?.focus();
@@ -706,9 +630,7 @@ describe("CodeBlock", () => {
 
     expect(onCopy).toHaveBeenCalledWith("copy me");
     await vi.waitFor(() =>
-      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe(
-        "Unable to copy"
-      )
+      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe("Unable to copy"),
     );
   });
 
@@ -719,9 +641,7 @@ describe("CodeBlock", () => {
     });
     const onCopy = vi.fn();
     const container = await render(<CodeBlock onCopy={onCopy}>copy me</CodeBlock>);
-    const button = container.querySelector<HTMLButtonElement>(
-      '[aria-label="Copy snippet"]'
-    );
+    const button = container.querySelector<HTMLButtonElement>('[aria-label="Copy snippet"]');
 
     await act(async () => {
       button?.focus();
@@ -730,9 +650,7 @@ describe("CodeBlock", () => {
 
     expect(onCopy).toHaveBeenCalledWith("copy me");
     await vi.waitFor(() =>
-      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe(
-        "Unable to copy"
-      )
+      expect(document.querySelector('[role="tooltip"]')?.textContent).toBe("Unable to copy"),
     );
   });
 
@@ -750,20 +668,21 @@ describe("CodeBlock", () => {
         onTabClick={onTabClick}
       >
         code
-      </CodeBlock>
+      </CodeBlock>,
     );
 
     expect(container.textContent).toContain("example.ts");
     expect(container.querySelector('[data-testid="header-icon"]')).not.toBeNull();
     const react = [...container.querySelectorAll("button")].find(
-      (button) => button.textContent === "React"
+      (button) => button.textContent === "React",
     );
     const vue = [...container.querySelectorAll("button")].find(
-      (button) => button.textContent === "Vue"
+      (button) => button.textContent === "Vue",
     );
-    expect(react?.className).toContain("selectedTab");
     expect(react?.getAttribute("aria-pressed")).toBe("true");
     expect(vue?.getAttribute("aria-pressed")).toBe("false");
+    expect(react?.className).toContain("[border-width:0_0_3px_0]");
+    expect(vue?.className).not.toContain("[border-width:0_0_3px_0]");
     await act(async () => vue?.click());
     expect(onTabClick).toHaveBeenCalledWith("vue");
   });
@@ -778,7 +697,7 @@ describe("CodeBlock", () => {
         linesToHighlight={[1, 3]}
       >
         {"one\ntwo\nthree"}
-      </CodeBlock>
+      </CodeBlock>,
     );
     const wrapper = container.firstElementChild;
     const code = container.querySelector("code");
@@ -790,15 +709,28 @@ describe("CodeBlock", () => {
     expect(code?.dataset.disableUserSelection).toBe("true");
   });
 
+  it("reserves wrapped first-line space for an always-visible floating copy button", async () => {
+    const container = await render(
+      <CodeBlock alwaysShowCopyButton wrapMode="wrap">
+        a long line of code
+      </CodeBlock>,
+    );
+    const wrapper = container.querySelector<HTMLElement>('[data-code-block=""]');
+    expect(wrapper?.className).toContain("[&_pre]:before:float-right");
+    expect(wrapper?.className).toContain("[&_pre]:before:h-4");
+    expect(wrapper?.className).toContain("[&_pre]:before:w-3");
+    expect(container.querySelector('[aria-label="Copy snippet"]')?.className).toContain(
+      "opacity-100",
+    );
+  });
+
   it("forwards manual copy events from the code element", async () => {
     const onSelectAndCopy = vi.fn();
     const container = await render(
-      <CodeBlock onSelectAndCopy={onSelectAndCopy}>copy event</CodeBlock>
+      <CodeBlock onSelectAndCopy={onSelectAndCopy}>copy event</CodeBlock>,
     );
 
-    container
-      .querySelector("code")
-      ?.dispatchEvent(new Event("copy", { bubbles: true }));
+    container.querySelector("code")?.dispatchEvent(new Event("copy", { bubbles: true }));
 
     expect(onSelectAndCopy).toHaveBeenCalledOnce();
   });

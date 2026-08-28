@@ -5,6 +5,7 @@ import {
   createElement,
   forwardRef,
   Fragment,
+  isValidElement,
   useCallback,
   useContext,
   useLayoutEffect,
@@ -12,10 +13,9 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
+  type ComponentPropsWithRef,
   type CSSProperties,
-  type DetailedHTMLProps,
   type ForwardedRef,
-  type HTMLAttributes,
   type ReactElement,
   type ReactNode,
   type Ref,
@@ -23,15 +23,11 @@ import {
   type RefObject,
 } from "react";
 
-import { Separator, type SeparatorProps } from "./separator";
 import { ContainerQueryContext } from "./container-query-context";
 import {
-  combineLayoutClassNames as combineClassNames,
-  compileLayoutStyle,
-  compileResponsiveLayoutValue,
-  createLayoutCssDeclaration as declaration,
-  isLayoutResponsiveValue as isResponsive,
+  isValidLayoutCssPropertyName,
   isValidLayoutDomProp,
+  isLayoutResponsiveValue as isResponsive,
   LAYOUT_CONTAINER_ORDER as CONTAINER_ORDER,
   LAYOUT_THEME,
   LAYOUT_VIEWPORT_ORDER as VIEWPORT_ORDER,
@@ -39,9 +35,9 @@ import {
   resolveLayoutMargin,
   resolveLayoutRadius,
   resolveLayoutSpacing,
+  sanitizeLayoutCssValue,
   type LayoutBorderVariant,
   type LayoutContainerBreakpoint,
-  type LayoutCssDeclaration,
   type LayoutMargin,
   type LayoutRadiusSize,
   type LayoutResponsive,
@@ -53,6 +49,12 @@ import {
   type LayoutTheme,
   type LayoutViewportBreakpoint,
 } from "./layout-style-engine";
+import {
+  createLayoutTailwindStyle,
+  type LayoutProperty,
+  type LayoutTailwindDeclaration,
+} from "./layout-tailwind";
+import { Separator, type SeparatorProps } from "./separator";
 
 type SpaceSize = LayoutSpaceSize;
 type RadiusSize = LayoutRadiusSize;
@@ -79,17 +81,51 @@ export function rc<T>(
   resolver?: (
     value: T | undefined,
     breakpoint: ResponsiveBreakpoint | undefined,
-    theme: LayoutTheme
-  ) => string | undefined
+    theme: LayoutTheme,
+  ) => string | undefined,
 ): string | undefined {
-  return compileResponsiveLayoutValue(property, value, theme, resolver);
+  if (!isValidLayoutCssPropertyName(property)) return undefined;
+
+  const resolve = (candidate: T | undefined, breakpoint: ResponsiveBreakpoint | undefined) => {
+    const resolved = resolver ? resolver(candidate, breakpoint, theme) : candidate;
+    return sanitizeLayoutCssValue(resolved);
+  };
+  if (!isResponsive(value)) {
+    const resolved = resolve(value, undefined);
+    return resolved === undefined ? undefined : `${property}: ${resolved};`;
+  }
+
+  let first = true;
+  const declarations: string[] = [];
+  const emit = (
+    key: ResponsiveKey,
+    breakpoint: ResponsiveBreakpoint,
+    atRule: "@container" | "@media",
+    size: string,
+  ) => {
+    const resolved = resolve(value[key], breakpoint);
+    if (resolved === undefined) return;
+    if (first) {
+      first = false;
+      declarations.push(`${property}: ${resolved};`);
+      return;
+    }
+    declarations.push(`${atRule} (min-width: ${size}) { ${property}: ${resolved}; }`);
+  };
+  for (const breakpoint of CONTAINER_ORDER) {
+    emit(breakpoint, breakpoint, "@container", theme.container[breakpoint]);
+  }
+  for (const { key, token } of VIEWPORT_ORDER) {
+    emit(key, token, "@media", theme.breakpoints[token]);
+  }
+  return declarations.join("") || undefined;
 }
 
 /** Resolves a semantic border token to a one-pixel CSS border. */
 export function getBorder(
   border: BorderVariant | undefined,
   breakpoint: ResponsiveBreakpoint | undefined,
-  theme: LayoutTheme
+  theme: LayoutTheme,
 ): string | undefined {
   return resolveLayoutBorder(border, breakpoint, theme);
 }
@@ -98,7 +134,7 @@ export function getBorder(
 export function getRadius(
   value: Shorthand<RadiusSize, 4> | undefined,
   breakpoint: ResponsiveBreakpoint | undefined,
-  theme: LayoutTheme
+  theme: LayoutTheme,
 ): string | undefined {
   return resolveLayoutRadius(value, breakpoint, theme);
 }
@@ -107,7 +143,7 @@ export function getRadius(
 export function getSpacing(
   value: Shorthand<SpaceSize, 4> | undefined,
   breakpoint: ResponsiveBreakpoint | undefined,
-  theme: LayoutTheme
+  theme: LayoutTheme,
 ): string | undefined {
   return resolveLayoutSpacing(value, breakpoint, theme);
 }
@@ -116,32 +152,31 @@ export function getSpacing(
 export function getMargin(
   value: Shorthand<Margin, 4> | undefined,
   breakpoint: ResponsiveBreakpoint | undefined,
-  theme: LayoutTheme
+  theme: LayoutTheme,
 ): string | undefined {
   return resolveLayoutMargin(value, breakpoint, theme);
 }
 
-type CssDeclaration = LayoutCssDeclaration;
+type CssDeclaration = LayoutTailwindDeclaration;
 
-interface LayoutStyleResource {
-  className?: string;
-  resource?: ReactElement;
-}
-
-function createLayoutStyleResource(
-  declarations: readonly CssDeclaration[]
-): LayoutStyleResource {
-  const { className, css } = compileLayoutStyle("layout", declarations);
+function declaration<T>(
+  property: LayoutProperty,
+  value: Responsive<T> | undefined,
+  resolver?: (
+    value: T | undefined,
+    breakpoint: ResponsiveBreakpoint | undefined,
+    theme: LayoutTheme,
+  ) => string | undefined,
+): CssDeclaration {
   return {
-    className,
-    resource:
-      className && css ? (
-        <style href={className} precedence="scraps-layout">
-          {css}
-        </style>
-      ) : undefined,
+    property,
+    value,
+    resolve: resolver
+      ? (value, breakpoint, theme) => resolver(value as T | undefined, breakpoint, theme)
+      : undefined,
   };
 }
+
 interface ContainerLayoutProps {
   background?: Responsive<SurfaceVariant>;
   display?: Responsive<
@@ -160,9 +195,7 @@ interface ContainerLayoutProps {
   paddingBottom?: Responsive<SpaceSize>;
   paddingLeft?: Responsive<SpaceSize>;
   paddingRight?: Responsive<SpaceSize>;
-  position?: Responsive<
-    "static" | "relative" | "absolute" | "fixed" | "sticky"
-  >;
+  position?: Responsive<"static" | "relative" | "absolute" | "fixed" | "sticky">;
   inset?: Responsive<CSSProperties["inset"]>;
   top?: Responsive<CSSProperties["top"]>;
   bottom?: Responsive<CSSProperties["bottom"]>;
@@ -199,9 +232,7 @@ interface ContainerLayoutProps {
   alignSelf?: Responsive<CSSProperties["alignSelf"]>;
   justifySelf?: Responsive<CSSProperties["justifySelf"]>;
   visibility?: Responsive<"visible" | "hidden" | "collapse">;
-  whiteSpace?: Responsive<
-    "break-spaces" | "normal" | "nowrap" | "pre" | "pre-line" | "pre-wrap"
-  >;
+  whiteSpace?: Responsive<"break-spaces" | "normal" | "nowrap" | "pre" | "pre-line" | "pre-wrap">;
   /** @deprecated Use the `gap` prop on Flex or Grid. */
   margin?: Responsive<Shorthand<Margin, 4>>;
   /** @deprecated Use the `gap` prop on Flex or Grid. */
@@ -231,53 +262,58 @@ type ContainerElement =
   | "section"
   | "span"
   | "summary"
+  | "td"
+  | "th"
   | "ul"
   | "hr";
 
 /** Props for a polymorphic layout container. Layout-only props never reach the DOM. */
-export type ContainerProps<T extends ContainerElement = "div"> =
-  ContainerLayoutProps & {
-    as?: T;
-    children?: ReactNode;
-    htmlFor?: T extends "label" ? string : never;
-    ref?: Ref<HTMLElementTagNameMap[T] | null>;
-    /** @deprecated Use layout props instead. */
-    style?: CSSProperties;
-  } & Omit<
-      DetailedHTMLProps<
-        HTMLAttributes<HTMLElementTagNameMap[T]>,
-        HTMLElementTagNameMap[T]
-      >,
-      "style"
-    >;
+export type ContainerProps<T extends ContainerElement = "div"> = ContainerLayoutProps & {
+  as?: T;
+  /** @deprecated Use layout props instead. */
+  style?: CSSProperties;
+} & Omit<ComponentPropsWithRef<T>, keyof ContainerLayoutProps | "style">;
 
 /** Props for the no-wrapper render-function Container form. */
-export type ContainerPropsWithRenderFunction<
-  T extends ContainerElement = "div"
-> = Omit<ContainerLayoutProps, "containerType"> & {
+export type ContainerPropsWithRenderFunction<T extends ContainerElement = "div"> = Omit<
+  ContainerLayoutProps,
+  | "alignSelf"
+  | "area"
+  | "bottom"
+  | "column"
+  | "contain"
+  | "cursor"
+  | "flex"
+  | "flexBasis"
+  | "flexGrow"
+  | "flexShrink"
+  | "height"
+  | "inset"
+  | "justifySelf"
+  | "left"
+  | "maxHeight"
+  | "maxWidth"
+  | "minHeight"
+  | "minWidth"
+  | "order"
+  | "pointerEvents"
+  | "right"
+  | "row"
+  | "top"
+  | "width"
+  | "containerType"
+> & {
   children: (props: { className: string }) => ReactNode | undefined;
   as?: never;
   containerType?: never;
   htmlFor?: never;
   ref?: never;
-} & Partial<
-    Record<
-      Exclude<
-        keyof DetailedHTMLProps<
-          HTMLAttributes<HTMLElementTagNameMap[T]>,
-          HTMLElementTagNameMap[T]
-        >,
-        "children"
-      >,
-      never
-    >
-  >;
+} & Partial<Record<Exclude<keyof ComponentPropsWithRef<T>, "children">, never>>;
 
 function getContentBoxInlineSize(element: Element): number {
   const styles = window.getComputedStyle(element);
   const horizontalPadding =
-    (Number.parseFloat(styles.paddingLeft) || 0) +
-    (Number.parseFloat(styles.paddingRight) || 0);
+    (Number.parseFloat(styles.paddingLeft) || 0) + (Number.parseFloat(styles.paddingRight) || 0);
   return Math.max(0, (element as HTMLElement).clientWidth - horizontalPadding);
 }
 
@@ -302,30 +338,46 @@ export function ContainerQueryProvider({
   elementRef: RefObject<Element | null>;
 }) {
   const [breakpoint, setBreakpoint] = useState<ContainerBreakpoint>("zero");
+  const observedElementRef = useRef<Element | null>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  // A stable ref object can receive a new host during commit. The identity guard prevents observer churn.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useLayoutEffect(() => {
     const element = elementRef.current;
-    if (!element) return;
+    if (observedElementRef.current === element) return;
+    resizeObserverRef.current?.disconnect();
+    resizeObserverRef.current = null;
+    observedElementRef.current = element;
+    if (!element) {
+      setBreakpoint("zero");
+      return;
+    }
     const updateBreakpoint = (inlineSize: number) =>
       setBreakpoint(findContainerBreakpoint(inlineSize));
     updateBreakpoint(getContentBoxInlineSize(element));
     if (typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver((entries) => {
+      if (observedElementRef.current !== element) return;
       const entry = entries[0];
       if (!entry) return;
       const contentBox = Array.isArray(entry.contentBoxSize)
         ? entry.contentBoxSize[0]
         : entry.contentBoxSize;
-      updateBreakpoint(
-        contentBox?.inlineSize ?? getContentBoxInlineSize(element)
-      );
+      updateBreakpoint(contentBox?.inlineSize ?? getContentBoxInlineSize(element));
     });
     observer.observe(element);
-    return () => observer.disconnect();
-  }, [elementRef]);
+    resizeObserverRef.current = observer;
+  });
+  useLayoutEffect(
+    () => () => {
+      resizeObserverRef.current?.disconnect();
+      resizeObserverRef.current = null;
+      observedElementRef.current = null;
+    },
+    [],
+  );
   return (
-    <ContainerQueryContext.Provider value={breakpoint}>
-      {children}
-    </ContainerQueryContext.Provider>
+    <ContainerQueryContext.Provider value={breakpoint}>{children}</ContainerQueryContext.Provider>
   );
 }
 
@@ -343,9 +395,7 @@ interface ViewportQuery {
   breakpoint: ViewportBreakpoint;
   query: MediaQueryList;
 }
-function findViewportBreakpoint(
-  queries: readonly ViewportQuery[]
-): ViewportBreakpoint {
+function findViewportBreakpoint(queries: readonly ViewportQuery[]): ViewportBreakpoint {
   return queries.find(({ query }) => query.matches)?.breakpoint ?? "2xs";
 }
 function getServerViewportBreakpoint(): ViewportBreakpoint {
@@ -357,31 +407,20 @@ function useActiveViewportBreakpoint(): ViewportBreakpoint {
     if (typeof window === "undefined" || !window.matchMedia) return [];
     return [...VIEWPORT_ORDER].reverse().map(({ token }) => ({
       breakpoint: token,
-      query: window.matchMedia(
-        `(min-width: ${LAYOUT_THEME.breakpoints[token]})`
-      ),
+      query: window.matchMedia(`(min-width: ${LAYOUT_THEME.breakpoints[token]})`),
     }));
   }, []);
   const subscribe = useCallback(
     (notify: () => void) => {
-      for (const { query } of mediaQueries)
-        query.addEventListener("change", notify);
+      for (const { query } of mediaQueries) query.addEventListener("change", notify);
       return () => {
-        for (const { query } of mediaQueries)
-          query.removeEventListener("change", notify);
+        for (const { query } of mediaQueries) query.removeEventListener("change", notify);
       };
     },
-    [mediaQueries]
+    [mediaQueries],
   );
-  const getSnapshot = useCallback(
-    () => findViewportBreakpoint(mediaQueries),
-    [mediaQueries]
-  );
-  return useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerViewportBreakpoint
-  );
+  const getSnapshot = useCallback(() => findViewportBreakpoint(mediaQueries), [mediaQueries]);
+  return useSyncExternalStore(subscribe, getSnapshot, getServerViewportBreakpoint);
 }
 
 /** Resolves a responsive value with the same cascade as the generated CSS. */
@@ -406,7 +445,7 @@ export function useResponsivePropValue<T>(value: Responsive<T>): T {
   cascade(CONTAINER_ORDER, CONTAINER_ORDER.indexOf(containerBreakpoint));
   cascade(
     VIEWPORT_ORDER.map(({ key }) => key),
-    VIEWPORT_ORDER.findIndex(({ token }) => token === viewportBreakpoint)
+    VIEWPORT_ORDER.findIndex(({ token }) => token === viewportBreakpoint),
   );
   if (resolved === undefined)
     throw new Error("Responsive prop does not define a supported breakpoint");
@@ -485,10 +524,69 @@ const COMPONENT_LAYOUT_PROP_NAMES = new Set<string>([
   "wrap",
 ]);
 
-function containerDeclarations(props: ContainerLayoutProps): CssDeclaration[] {
+function shorthandDeclarations<T>(
+  property: "padding" | "margin" | "border-radius",
+  value: Responsive<T> | undefined,
+  resolve: (
+    value: T | undefined,
+    breakpoint: ResponsiveBreakpoint | undefined,
+    theme: LayoutTheme,
+  ) => string | undefined,
+): CssDeclaration[] {
+  const suffixes =
+    property === "border-radius"
+      ? ["top-left-radius", "top-right-radius", "bottom-right-radius", "bottom-left-radius"]
+      : ["top", "right", "bottom", "left"];
+  return suffixes.map((suffix, index) =>
+    declaration(
+      (property === "border-radius"
+        ? `border-${suffix}`
+        : `${property}-${suffix}`) as LayoutProperty,
+      value,
+      (candidate, breakpoint, theme) => {
+        const resolved = resolve(candidate, breakpoint, theme);
+        if (!resolved) return undefined;
+        const values = resolved.split(" ");
+        const expanded =
+          values.length === 1
+            ? [values[0], values[0], values[0], values[0]]
+            : values.length === 2
+              ? [values[0], values[1], values[0], values[1]]
+              : values.length === 3
+                ? [values[0], values[1], values[2], values[1]]
+                : values;
+        return expanded[index];
+      },
+    ),
+  );
+}
+
+function gapDeclarations(
+  value: Responsive<SpaceSize | `${SpaceSize} ${SpaceSize}`> | undefined,
+): CssDeclaration[] {
+  return (["row-gap", "column-gap"] as const).map((property, index) =>
+    declaration(property, value, (candidate, breakpoint, theme) => {
+      const resolved = getSpacing(candidate, breakpoint, theme);
+      if (!resolved) return undefined;
+      const [row, column = row] = resolved.split(" ");
+      return index === 0 ? row : column;
+    }),
+  );
+}
+
+function borderDeclarations(value: Responsive<BorderVariant> | undefined): CssDeclaration[] {
+  return (["top", "right", "bottom", "left"] as const).map((side) =>
+    declaration(`border-${side}`, value, getBorder),
+  );
+}
+
+function containerDeclarations(
+  props: ContainerLayoutProps,
+  defaultDisplay?: "flex" | "grid",
+): CssDeclaration[] {
   return [
     declaration("container-type", props.containerType),
-    declaration("display", props.display),
+    declaration("display", props.display ?? defaultDisplay),
     declaration("position", props.position),
     declaration("inset", props.inset),
     declaration("top", props.top),
@@ -502,20 +600,20 @@ function containerDeclarations(props: ContainerLayoutProps): CssDeclaration[] {
     declaration("pointer-events", props.pointerEvents),
     declaration("cursor", props.cursor),
     declaration("contain", props.contain),
-    declaration("padding", props.padding, getSpacing),
+    ...shorthandDeclarations("padding", props.padding, getSpacing),
     declaration("padding-top", props.paddingTop, getSpacing),
     declaration("padding-bottom", props.paddingBottom, getSpacing),
     declaration("padding-left", props.paddingLeft, getSpacing),
     declaration("padding-right", props.paddingRight, getSpacing),
-    declaration("margin", props.margin, getMargin),
+    ...shorthandDeclarations("margin", props.margin, getMargin),
     declaration("margin-top", props.marginTop, getMargin),
     declaration("margin-bottom", props.marginBottom, getMargin),
     declaration("margin-left", props.marginLeft, getMargin),
     declaration("margin-right", props.marginRight, getMargin),
     declaration("background", props.background, (value, _breakpoint, theme) =>
-      value ? theme.tokens.background[value] : undefined
+      value ? theme.tokens.background[value] : undefined,
     ),
-    declaration("border-radius", props.radius, getRadius),
+    ...shorthandDeclarations("border-radius", props.radius, getRadius),
     declaration("width", props.width),
     declaration("min-width", props.minWidth),
     declaration("max-width", props.maxWidth),
@@ -532,7 +630,7 @@ function containerDeclarations(props: ContainerLayoutProps): CssDeclaration[] {
     declaration("flex-basis", props.flexBasis),
     declaration("align-self", props.alignSelf),
     declaration("justify-self", props.justifySelf),
-    declaration("border", props.border, getBorder),
+    ...borderDeclarations(props.border),
     declaration("border-top", props.borderTop, getBorder),
     declaration("border-bottom", props.borderBottom, getBorder),
     declaration("border-left", props.borderLeft, getBorder),
@@ -544,16 +642,37 @@ function containerDeclarations(props: ContainerLayoutProps): CssDeclaration[] {
 
 interface RuntimeLayoutProps extends ContainerLayoutProps {
   as?: ContainerElement;
-  children?:
-    | ReactNode
-    | ((props: { className: string }) => ReactNode | undefined);
+  children?: ReactNode | ((props: { className: string }) => ReactNode | undefined);
   className?: string;
   [key: string]: unknown;
 }
 
+function LayoutRenderFunction({
+  children,
+  className,
+  declarations,
+}: {
+  children: (props: { className: string }) => ReactNode | undefined;
+  className?: string;
+  declarations: readonly CssDeclaration[];
+}): ReactElement {
+  const container = useContainerBreakpoint();
+  const viewport = useActiveViewportBreakpoint();
+  const { className: generatedClassName } = createLayoutTailwindStyle(
+    declarations,
+    LAYOUT_THEME,
+    true,
+    { container, viewport },
+  );
+  const child = children({
+    className: [generatedClassName, className].filter(Boolean).join(" "),
+  });
+  return isValidElement(child) ? child : <Fragment>{child}</Fragment>;
+}
+
 function useMergedContainerRef(
   forwardedRef: Ref<HTMLElement | null> | undefined,
-  containerRef: RefObject<HTMLElement | null>
+  containerRef: RefObject<HTMLElement | null>,
 ): RefCallback<HTMLElement> {
   return useCallback(
     (node) => {
@@ -572,32 +691,37 @@ function useMergedContainerRef(
         else forwardedRef(null);
       };
     },
-    [containerRef, forwardedRef]
+    [containerRef, forwardedRef],
   );
 }
 
 function useLayoutElement(
   props: RuntimeLayoutProps,
   forwardedRef: ForwardedRef<HTMLElement>,
-  declarations: readonly CssDeclaration[]
+  declarations: readonly CssDeclaration[],
 ): ReactElement {
-  const { className: generatedClassName, resource: styleResource } =
-    createLayoutStyleResource(declarations);
-  const className = combineClassNames(generatedClassName, props.className);
   const containerRef = useRef<HTMLElement>(null);
-  const isQueryContainer =
-    props.containerType !== undefined && props.containerType !== "normal";
+  const isQueryContainer = props.containerType !== undefined && props.containerType !== "normal";
   const containerElementRef = useMergedContainerRef(forwardedRef, containerRef);
   const mergedRef = isQueryContainer ? containerElementRef : forwardedRef;
   if (typeof props.children === "function") {
-    const child = props.children({ className: className ?? "" });
-    return createElement(Fragment, null, styleResource, child);
+    return (
+      <LayoutRenderFunction className={props.className} declarations={declarations}>
+        {props.children}
+      </LayoutRenderFunction>
+    );
   }
+  const { className: generatedClassName, style: generatedStyle } = createLayoutTailwindStyle(
+    declarations,
+    LAYOUT_THEME,
+  );
+  const className = [generatedClassName, props.className].filter(Boolean).join(" ");
   const domProps: Record<string, unknown> = {};
   for (const [name, value] of Object.entries(props)) {
     if (
       name !== "children" &&
       name !== "className" &&
+      name !== "style" &&
       !COMPONENT_LAYOUT_PROP_NAMES.has(name) &&
       isValidLayoutDomProp(name)
     )
@@ -605,16 +729,22 @@ function useLayoutElement(
   }
   const node = createElement(
     props.as ?? "div",
-    { ...domProps, className, key: "layout-node", ref: mergedRef },
-    props.children
+    {
+      ...domProps,
+      className,
+      key: "layout-node",
+      ref: mergedRef,
+      style: {
+        ...generatedStyle,
+        ...(props.style as CSSProperties | undefined),
+      },
+    },
+    props.children,
   );
-  const styledNode = createElement(Fragment, null, styleResource, node);
   return isQueryContainer ? (
-    <ContainerQueryProvider elementRef={containerRef}>
-      {styledNode}
-    </ContainerQueryProvider>
+    <ContainerQueryProvider elementRef={containerRef}>{node}</ContainerQueryProvider>
   ) : (
-    styledNode
+    node
   );
 }
 
@@ -623,17 +753,31 @@ type ContainerRuntimeProps = RuntimeLayoutProps & {
 };
 function ContainerInner(
   props: ContainerRuntimeProps,
-  forwardedRef: ForwardedRef<HTMLElement>
+  forwardedRef: ForwardedRef<HTMLElement>,
 ): ReactElement {
   return useLayoutElement(props, forwardedRef, containerDeclarations(props));
 }
 
 /** A polymorphic layout primitive with token-aware responsive properties. */
+type UnionKeys<T> = T extends T ? keyof T : never;
+type StrictUnion<T, All = T> = T extends T
+  ? T & Partial<Record<Exclude<UnionKeys<All>, keyof T>, never>>
+  : never;
+type ContainerOrdinaryComponentProps = {
+  [T in ContainerElement]: Omit<ContainerProps<T>, "as"> &
+    (T extends "div" ? { as?: T } : { as: T });
+}[ContainerElement];
+type ContainerComponentProps = StrictUnion<
+  ContainerOrdinaryComponentProps | ContainerPropsWithRenderFunction
+>;
+type ContainerComponent = {
+  (props: ContainerOrdinaryComponentProps): ReactElement;
+  (props: ContainerPropsWithRenderFunction): ReactElement;
+  (props: ContainerComponentProps): ReactElement;
+};
 export const Container = forwardRef<HTMLElement, ContainerRuntimeProps>(
-  ContainerInner
-) as unknown as <T extends ContainerElement = "div">(
-  props: ContainerProps<T> | ContainerPropsWithRenderFunction<T>
-) => ReactElement;
+  ContainerInner,
+) as unknown as ContainerComponent;
 
 interface FlexLayoutProps {
   align?: Responsive<"start" | "end" | "center" | "baseline" | "stretch">;
@@ -642,38 +786,30 @@ interface FlexLayoutProps {
   flex?: Responsive<CSSProperties["flex"]>;
   gap?: Responsive<SpaceSize | `${SpaceSize} ${SpaceSize}`>;
   justify?: Responsive<
-    | "start"
-    | "end"
-    | "center"
-    | "between"
-    | "around"
-    | "evenly"
-    | "left"
-    | "right"
+    "start" | "end" | "center" | "between" | "around" | "evenly" | "left" | "right"
   >;
   wrap?: Responsive<"nowrap" | "wrap" | "wrap-reverse">;
 }
 
 /** Props for a flex layout container. */
-export type FlexProps<T extends ContainerElement = "div"> = Omit<
-  ContainerProps<T>,
-  "display"
-> &
+export type FlexProps<T extends ContainerElement = "div"> = Omit<ContainerProps<T>, "display"> &
   FlexLayoutProps;
 type FlexPropsWithRenderFunction<T extends ContainerElement = "div"> = Omit<
-  ContainerPropsWithRenderFunction<T>,
-  "display"
+  ContainerPropsWithRenderFunction<T> & FlexLayoutProps,
+  "display" | "flex"
 > &
-  FlexLayoutProps;
+  Omit<FlexLayoutProps, "flex">;
+type FlexOrdinaryComponentProps = {
+  [T in ContainerElement]: Omit<FlexProps<T>, "as"> & (T extends "div" ? { as?: T } : { as: T });
+}[ContainerElement];
+type FlexComponentProps = StrictUnion<FlexOrdinaryComponentProps | FlexPropsWithRenderFunction>;
 
 function resolveFlexAlignment(value: string | undefined): string | undefined {
   if (value === "start") return "flex-start";
   if (value === "end") return "flex-end";
   return value;
 }
-function resolveContentAlignment(
-  value: string | undefined
-): string | undefined {
+function resolveContentAlignment(value: string | undefined): string | undefined {
   if (value === "between") return "space-between";
   if (value === "around") return "space-around";
   if (value === "evenly") return "space-evenly";
@@ -681,39 +817,31 @@ function resolveContentAlignment(
 }
 function flexDeclarations(props: FlexLayoutProps): CssDeclaration[] {
   return [
-    declaration("display", props.display ?? "flex"),
-    declaration("gap", props.gap, getSpacing),
+    ...gapDeclarations(props.gap),
     declaration("flex-direction", props.direction),
     declaration("flex-wrap", props.wrap),
-    declaration("flex", props.flex),
     declaration("justify-content", props.justify, (value) =>
-      resolveFlexAlignment(resolveContentAlignment(value))
+      resolveFlexAlignment(resolveContentAlignment(value)),
     ),
-    declaration("align-items", props.align, (value) =>
-      resolveFlexAlignment(value)
-    ),
+    declaration("align-items", props.align, (value) => resolveFlexAlignment(value)),
   ];
 }
 type FlexRuntimeProps = RuntimeLayoutProps & FlexLayoutProps;
-function FlexInner(
-  props: FlexRuntimeProps,
-  ref: ForwardedRef<HTMLElement>
-): ReactElement {
+function FlexInner(props: FlexRuntimeProps, ref: ForwardedRef<HTMLElement>): ReactElement {
   return useLayoutElement(props, ref, [
-    ...containerDeclarations(props),
+    ...containerDeclarations(props, "flex"),
     ...flexDeclarations(props),
   ]);
 }
 
 /** A Container that defaults to `display: flex`. */
-const FlexRuntimeComponent = forwardRef<HTMLElement, FlexRuntimeProps>(
-  FlexInner
-);
-export const Flex = FlexRuntimeComponent as unknown as <
-  T extends ContainerElement = "div"
->(
-  props: FlexProps<T> | FlexPropsWithRenderFunction<T>
-) => ReactElement;
+const FlexRuntimeComponent = forwardRef<HTMLElement, FlexRuntimeProps>(FlexInner);
+type FlexComponent = {
+  (props: FlexOrdinaryComponentProps): ReactElement;
+  (props: FlexPropsWithRenderFunction): ReactElement;
+  (props: FlexComponentProps): ReactElement;
+};
+export const Flex = FlexRuntimeComponent as unknown as FlexComponent;
 
 interface GridLayoutProps {
   align?: Responsive<"start" | "end" | "center" | "baseline" | "stretch">;
@@ -727,60 +855,61 @@ interface GridLayoutProps {
   display?: Responsive<"grid" | "inline-grid" | "none">;
   flow?: Responsive<"row" | "column" | "row dense" | "column dense">;
   gap?: Responsive<SpaceSize | `${SpaceSize} ${SpaceSize}`>;
-  justify?: Responsive<
-    "start" | "end" | "center" | "between" | "around" | "evenly" | "stretch"
-  >;
+  justify?: Responsive<"start" | "end" | "center" | "between" | "around" | "evenly" | "stretch">;
   justifyItems?: Responsive<"start" | "end" | "center" | "stretch">;
   rows?: Responsive<CSSProperties["gridTemplateRows"]>;
 }
 
 /** Props for a grid layout container. */
-export type GridProps<T extends ContainerElement = "div"> = ContainerProps<T> &
-  GridLayoutProps;
+export type GridProps<T extends ContainerElement = "div"> = ContainerProps<T> & GridLayoutProps;
 type GridPropsWithRenderFunction<T extends ContainerElement = "div"> =
-  ContainerPropsWithRenderFunction<T> & GridLayoutProps;
+  ContainerPropsWithRenderFunction<T> &
+    Omit<GridLayoutProps, "areas" | "autoColumns" | "autoRows" | "columns" | "rows">;
+type GridOrdinaryComponentProps = {
+  [T in ContainerElement]: Omit<GridProps<T>, "as"> & (T extends "div" ? { as?: T } : { as: T });
+}[ContainerElement];
+type GridComponentProps = StrictUnion<GridOrdinaryComponentProps | GridPropsWithRenderFunction>;
 function gridDeclarations(props: GridLayoutProps): CssDeclaration[] {
   return [
-    declaration("display", props.display ?? "grid"),
-    declaration("gap", props.gap, getSpacing),
+    ...gapDeclarations(props.gap),
     declaration("grid-template-columns", props.columns),
     declaration("grid-template-rows", props.rows),
     declaration("grid-template-areas", props.areas),
     declaration("grid-auto-columns", props.autoColumns),
     declaration("grid-auto-rows", props.autoRows),
     declaration("grid-auto-flow", props.flow),
-    declaration("justify-content", props.justify, (value) =>
-      resolveContentAlignment(value)
-    ),
-    declaration("align-content", props.alignContent, (value) =>
-      resolveContentAlignment(value)
-    ),
+    declaration("justify-content", props.justify, (value) => resolveContentAlignment(value)),
+    declaration("align-content", props.alignContent, (value) => resolveContentAlignment(value)),
     declaration("align-items", props.align),
     declaration("justify-items", props.justifyItems),
   ];
 }
 type GridRuntimeProps = RuntimeLayoutProps & GridLayoutProps;
-function GridInner(
-  props: GridRuntimeProps,
-  ref: ForwardedRef<HTMLElement>
-): ReactElement {
+function GridInner(props: GridRuntimeProps, ref: ForwardedRef<HTMLElement>): ReactElement {
   return useLayoutElement(props, ref, [
-    ...containerDeclarations(props),
+    ...containerDeclarations(props, "grid"),
     ...gridDeclarations(props),
   ]);
 }
 
 /** A Container that defaults to `display: grid`. */
+type GridComponent = {
+  (props: GridOrdinaryComponentProps): ReactElement;
+  (props: GridPropsWithRenderFunction): ReactElement;
+  (props: GridComponentProps): ReactElement;
+};
 export const Grid = forwardRef<HTMLElement, GridRuntimeProps>(
-  GridInner
-) as unknown as <T extends ContainerElement = "div">(
-  props: GridProps<T> | GridPropsWithRenderFunction<T>
-) => ReactElement;
+  GridInner,
+) as unknown as GridComponent;
 
 /** Props for a vertical-by-default flex layout container. */
 export type StackProps<T extends ContainerElement = "div"> = FlexProps<T>;
 type StackPropsWithRenderFunction<T extends ContainerElement = "div"> =
   FlexPropsWithRenderFunction<T>;
+type StackOrdinaryComponentProps = {
+  [T in ContainerElement]: Omit<StackProps<T>, "as"> & (T extends "div" ? { as?: T } : { as: T });
+}[ContainerElement];
+type StackComponentProps = StrictUnion<StackOrdinaryComponentProps | StackPropsWithRenderFunction>;
 type StackDirection = NonNullable<StackProps["direction"]>;
 interface StackDirectionContextValue {
   direction: StackDirection;
@@ -789,10 +918,7 @@ const StackDirectionContext = createContext<StackDirectionContextValue>({
   direction: "row",
 });
 type StackRuntimeProps = FlexRuntimeProps;
-function StackInner(
-  props: StackRuntimeProps,
-  ref: ForwardedRef<HTMLElement>
-): ReactElement {
+function StackInner(props: StackRuntimeProps, ref: ForwardedRef<HTMLElement>): ReactElement {
   const direction = props.direction ?? "column";
   const contextValue = useMemo(() => ({ direction }), [direction]);
   return (
@@ -801,32 +927,24 @@ function StackInner(
     </StackDirectionContext.Provider>
   );
 }
-const StackComponent = forwardRef<HTMLElement, StackRuntimeProps>(
-  StackInner
-) as unknown as <T extends ContainerElement = "div">(
-  props: StackProps<T> | StackPropsWithRenderFunction<T>
-) => ReactElement;
+const StackComponent = forwardRef<HTMLElement, StackRuntimeProps>(StackInner) as unknown as {
+  (props: StackOrdinaryComponentProps): ReactElement;
+  (props: StackPropsWithRenderFunction): ReactElement;
+  (props: StackComponentProps): ReactElement;
+};
 function getOrientationFromDirection(
-  direction: "row" | "row-reverse" | "column" | "column-reverse"
+  direction: "row" | "row-reverse" | "column" | "column-reverse",
 ): "horizontal" | "vertical" {
-  return direction === "row" || direction === "row-reverse"
-    ? "horizontal"
-    : "vertical";
+  return direction === "row" || direction === "row-reverse" ? "horizontal" : "vertical";
 }
-function StackSeparator(
-  props: Omit<SeparatorProps, "orientation">
-): ReactElement {
+function StackSeparator(props: Omit<SeparatorProps, "orientation">): ReactElement {
   const { direction } = useContext(StackDirectionContext);
-  const stackOrientation = getOrientationFromDirection(
-    useResponsivePropValue(direction)
-  );
+  const stackOrientation = getOrientationFromDirection(useResponsivePropValue(direction));
   return (
     <Separator
       {...props}
       border={props.border ?? "primary"}
-      orientation={
-        stackOrientation === "horizontal" ? "vertical" : "horizontal"
-      }
+      orientation={stackOrientation === "horizontal" ? "vertical" : "horizontal"}
     />
   );
 }
@@ -836,16 +954,20 @@ export const Stack = Object.assign(StackComponent, {
   Separator: StackSeparator,
 });
 
-interface FlatSurfaceProps<T extends ContainerElement = "div">
-  extends Omit<ContainerProps<T>, "background" | "border"> {
+type FlatSurfaceProps<T extends ContainerElement = "div"> = Omit<
+  ContainerProps<T>,
+  "background" | "border"
+> & {
   elevation?: never;
   variant?: SurfaceVariant;
-}
-interface OverlaySurfaceProps<T extends ContainerElement = "div">
-  extends Omit<ContainerProps<T>, "background" | "border"> {
+};
+type OverlaySurfaceProps<T extends ContainerElement = "div"> = Omit<
+  ContainerProps<T>,
+  "background" | "border"
+> & {
   elevation?: "low" | "medium" | "high";
   variant: "overlay";
-}
+};
 interface FlatSurfacePropsWithRenderFunction {
   children: (props: { className: string }) => ReactNode;
   elevation?: never;
@@ -870,25 +992,16 @@ function surfaceDeclarations(props: SurfaceRuntimeProps): CssDeclaration[] {
   const isOverlay = props.variant === "overlay";
   return [
     declaration("background", props.variant, (value, _breakpoint, theme) =>
-      value ? theme.tokens.background[value] : undefined
-    ),
-    declaration("border", isOverlay ? "primary" : undefined, getBorder),
-    declaration(
-      "border-radius",
-      props.radius ?? (isOverlay ? "md" : undefined),
-      getRadius
+      value ? theme.tokens.background[value] : undefined,
     ),
     declaration(
       "box-shadow",
       props.elevation ?? (isOverlay ? "low" : undefined),
-      (value, _breakpoint, theme) => (value ? theme.shadow[value] : undefined)
+      (value, _breakpoint, theme) => (value ? theme.shadow[value] : undefined),
     ),
   ];
 }
-function SurfaceInner(
-  props: SurfaceRuntimeProps,
-  ref: ForwardedRef<HTMLElement>
-): ReactElement {
+function SurfaceInner(props: SurfaceRuntimeProps, ref: ForwardedRef<HTMLElement>): ReactElement {
   const containerProps: RuntimeLayoutProps = {
     ...props,
     border: props.variant === "overlay" ? "primary" : undefined,
@@ -901,8 +1014,8 @@ function SurfaceInner(
 }
 
 /** A Container with canonical surface backgrounds, borders, radii, and shadows. */
-export const Surface = forwardRef<HTMLElement, SurfaceRuntimeProps>(
-  SurfaceInner
-) as unknown as <T extends ContainerElement = "div">(
-  props: SurfaceProps<T> | SurfaceRenderProps
+export const Surface = forwardRef<HTMLElement, SurfaceRuntimeProps>(SurfaceInner) as unknown as <
+  T extends ContainerElement = "div",
+>(
+  props: SurfaceProps<T> | SurfaceRenderProps,
 ) => ReactElement;

@@ -1,0 +1,31 @@
+@keyframes gentlePulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  33% {
+    transform: scale(0.95);
+  }
+
+  67% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes gentleSpin {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) rotate(0);
+  }
+
+  75% {
+    opacity: 1;
+    transform: scale(1) rotate(1turn);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.25) rotate(1turn);
+  }
+}

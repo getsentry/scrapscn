@@ -7,7 +7,6 @@ export function LoaderTypeEvidence() {
       className="loader"
       color="#123456"
       data-consumer="forwarded"
-      messages={["Saving", "Saved"]}
       style={{ color: "#abcdef", width: 240 }}
       variant="monochrome"
     />

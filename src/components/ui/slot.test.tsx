@@ -1,8 +1,4 @@
-import {
-  act,
-  useContext,
-  type ReactNode,
-} from "react";
+import { act, useContext, type ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -25,12 +21,12 @@ vi.mock("@sentry/react", () => ({
       setFingerprint: sentryMocks.setFingerprint,
       setLevel: sentryMocks.setLevel,
       setTag: sentryMocks.setTag,
-    })
+    }),
   ),
 }));
 
-(globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean })
-  .IS_REACT_ACT_ENVIRONMENT = true;
+(globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT =
+  true;
 
 const mountedRoots: Array<{ container: HTMLDivElement; root: Root }> = [];
 
@@ -94,11 +90,24 @@ describe("production missing-provider warnings", () => {
     expect(sentryMocks.setTag).toHaveBeenCalledWith("slot.name", "prod-two");
     expect(sentryMocks.setTag).toHaveBeenCalledWith("slot.component", "Fallback");
     expect(sentryMocks.setTag).toHaveBeenCalledWith("slot.name", "unknown");
-    expect(sentryMocks.setFingerprint).toHaveBeenCalledWith(["slot-missing-provider", "Consumer", "prod-one"]);
-    expect(sentryMocks.setFingerprint).toHaveBeenCalledWith(["slot-missing-provider", "Outlet", "prod-two"]);
-    expect(sentryMocks.setFingerprint).toHaveBeenCalledWith(["slot-missing-provider", "Fallback", "unknown"]);
+    expect(sentryMocks.setFingerprint).toHaveBeenCalledWith([
+      "slot-missing-provider",
+      "Consumer",
+      "prod-one",
+    ]);
+    expect(sentryMocks.setFingerprint).toHaveBeenCalledWith([
+      "slot-missing-provider",
+      "Outlet",
+      "prod-two",
+    ]);
+    expect(sentryMocks.setFingerprint).toHaveBeenCalledWith([
+      "slot-missing-provider",
+      "Fallback",
+      "unknown",
+    ]);
     expect(sentryMocks.captureException).toHaveBeenCalledTimes(3);
-    for (const [error] of sentryMocks.captureException.mock.calls) expect(error).toBeInstanceOf(Error);
+    for (const [error] of sentryMocks.captureException.mock.calls)
+      expect(error).toBeInstanceOf(Error);
   });
 });
 
@@ -113,7 +122,7 @@ describe("slot portal behavior", () => {
     const view = await render(
       <Slot.Provider>
         <span data-testid="provider-child" />
-      </Slot.Provider>
+      </Slot.Provider>,
     );
     expect(byTestId(view.container, "provider-child")).toBeTruthy();
   });
@@ -128,10 +137,12 @@ describe("slot portal behavior", () => {
         <Slot name="content">
           <span data-testid="portaled">Portaled content</span>
         </Slot>
-      </Slot.Provider>
+      </Slot.Provider>,
     );
 
-    expect(byTestId(view.container, "target").contains(byTestId(view.container, "portaled"))).toBe(true);
+    expect(byTestId(view.container, "target").contains(byTestId(view.container, "portaled"))).toBe(
+      true,
+    );
   });
 
   it("renders multiple consumers independently without outlets and none without a provider", async () => {
@@ -140,11 +151,17 @@ describe("slot portal behavior", () => {
     const view = await render(
       <>
         <Slot.Provider>
-          <Slot name="a"><span data-testid="without-outlet-a" /></Slot>
-          <Slot name="b"><span data-testid="without-outlet-b" /></Slot>
+          <Slot name="a">
+            <span data-testid="without-outlet-a" />
+          </Slot>
+          <Slot name="b">
+            <span data-testid="without-outlet-b" />
+          </Slot>
         </Slot.Provider>
-        <Slot name="outside"><span data-testid="without-provider" /></Slot>
-      </>
+        <Slot name="outside">
+          <span data-testid="without-provider" />
+        </Slot>
+      </>,
     );
 
     expect(view.container.querySelector("[data-testid=without-outlet-a]")).toBeNull();
@@ -163,7 +180,7 @@ describe("slot portal behavior", () => {
             {hasConsumers ? "consumer" : "no consumer"}
           </div>
         )}
-      </Slot.Outlet>
+      </Slot.Outlet>,
     );
 
     expect(byTestId(view.container, "outside-outlet").textContent).toBe("no consumer");
@@ -185,7 +202,9 @@ describe("slot portal behavior", () => {
             )}
           </Slot.Outlet>
           {Array.from({ length: consumerCount }, (_, index) => (
-            <Slot name="content" key={index}><span>{index}</span></Slot>
+            <Slot name="content" key={index}>
+              <span>{index}</span>
+            </Slot>
           ))}
         </Slot.Provider>
       );
@@ -213,17 +232,23 @@ describe("slot portal behavior", () => {
               {(props) => <div {...props} data-testid="panel" />}
             </Slot.Outlet>
           ) : null}
-          <Slot name="panel"><span data-testid="panel-content" /></Slot>
+          <Slot name="panel">
+            <span data-testid="panel-content" />
+          </Slot>
         </Slot.Provider>
       );
     }
 
     const view = await render(<App showOutlet />);
-    expect(byTestId(view.container, "panel").contains(byTestId(view.container, "panel-content"))).toBe(true);
+    expect(
+      byTestId(view.container, "panel").contains(byTestId(view.container, "panel-content")),
+    ).toBe(true);
     await view.rerender(<App showOutlet={false} />);
     expect(view.container.querySelector("[data-testid=panel-content]")).toBeNull();
     await view.rerender(<App showOutlet />);
-    expect(byTestId(view.container, "panel").contains(byTestId(view.container, "panel-content"))).toBe(true);
+    expect(
+      byTestId(view.container, "panel").contains(byTestId(view.container, "panel-content")),
+    ).toBe(true);
   });
 });
 
@@ -236,39 +261,57 @@ describe("Slot.Fallback", () => {
           <Slot.Outlet name="feedback">
             {(props) => (
               <div {...props} data-testid="feedback">
-                <Slot.Fallback><span data-testid="fallback" /></Slot.Fallback>
+                <Slot.Fallback>
+                  <span data-testid="fallback" />
+                </Slot.Fallback>
               </div>
             )}
           </Slot.Outlet>
-          {withConsumer ? <Slot name="feedback"><span data-testid="custom" /></Slot> : null}
+          {withConsumer ? (
+            <Slot name="feedback">
+              <span data-testid="custom" />
+            </Slot>
+          ) : null}
         </Slot.Provider>
       );
     }
 
     const view = await render(<App withConsumer={false} />);
-    expect(byTestId(view.container, "feedback").contains(byTestId(view.container, "fallback"))).toBe(true);
+    expect(
+      byTestId(view.container, "feedback").contains(byTestId(view.container, "fallback")),
+    ).toBe(true);
     await view.rerender(<App withConsumer />);
     expect(view.container.querySelector("[data-testid=fallback]")).toBeNull();
-    expect(byTestId(view.container, "feedback").contains(byTestId(view.container, "custom"))).toBe(true);
+    expect(byTestId(view.container, "feedback").contains(byTestId(view.container, "custom"))).toBe(
+      true,
+    );
     await view.rerender(<App withConsumer={false} />);
-    expect(byTestId(view.container, "feedback").contains(byTestId(view.container, "fallback"))).toBe(true);
+    expect(
+      byTestId(view.container, "feedback").contains(byTestId(view.container, "fallback")),
+    ).toBe(true);
   });
 
   it("renders nothing outside a provider", async () => {
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const Slot = slot(["empty-fallback"] as const);
-    const view = await render(<Slot.Fallback><span data-testid="fallback" /></Slot.Fallback>);
+    const view = await render(
+      <Slot.Fallback>
+        <span data-testid="fallback" />
+      </Slot.Fallback>,
+    );
     expect(view.container.innerHTML).toBe("");
   });
 
   it("throws outside an Outlet", async () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     const Slot = slot(["invalid-fallback"] as const);
-    await expect(render(
-      <Slot.Provider>
-        <Slot.Fallback>Invalid</Slot.Fallback>
-      </Slot.Provider>
-    )).rejects.toThrow("Slot.Fallback must be rendered inside Slot.Outlet");
+    await expect(
+      render(
+        <Slot.Provider>
+          <Slot.Fallback>Invalid</Slot.Fallback>
+        </Slot.Provider>,
+      ),
+    ).rejects.toThrow("Slot.Fallback must be rendered inside Slot.Outlet");
   });
 });
 
@@ -305,9 +348,13 @@ describe("outlet refs", () => {
     const view = await render(
       <Slot.Provider>
         <Slot.Outlet name="menu-ref">
-          {(props) => <div {...props} data-testid="menu-element"><RefReader /></div>}
+          {(props) => (
+            <div {...props} data-testid="menu-element">
+              <RefReader />
+            </div>
+          )}
         </Slot.Outlet>
-      </Slot.Provider>
+      </Slot.Provider>,
     );
     expect(byTestId(view.container, "outlet-ref").textContent).toBe("menu-element");
   });
@@ -319,18 +366,25 @@ describe("context bridging", () => {
     function Reader() {
       const size = useSizeContext();
       const breakpoint = useContext(ContainerQueryContext);
-      return <output data-testid="contexts">{size ?? "none"}:{breakpoint ?? "none"}</output>;
+      return (
+        <output data-testid="contexts">
+          {size ?? "none"}:{breakpoint ?? "none"}
+        </output>
+      );
     }
     function App({ size, breakpoint }: { size?: "sm" | "md"; breakpoint: "xs" | "lg" | null }) {
       let outlet: ReactNode = (
         <Slot.Outlet name="bridge">{(props) => <div {...props} />}</Slot.Outlet>
       );
-      if (breakpoint) outlet = <ContainerQueryContext value={breakpoint}>{outlet}</ContainerQueryContext>;
+      if (breakpoint)
+        outlet = <ContainerQueryContext value={breakpoint}>{outlet}</ContainerQueryContext>;
       if (size) outlet = <SizeProvider size={size}>{outlet}</SizeProvider>;
       return (
         <Slot.Provider>
           {outlet}
-          <Slot name="bridge"><Reader /></Slot>
+          <Slot name="bridge">
+            <Reader />
+          </Slot>
         </Slot.Provider>
       );
     }
@@ -351,8 +405,10 @@ describe("slot system composition", () => {
     const view = await render(
       <First.Provider>
         <First.Outlet name="zone">{(props) => <div {...props} data-testid="first" />}</First.Outlet>
-        <Second name="zone"><span data-testid="wrong-system" /></Second>
-      </First.Provider>
+        <Second name="zone">
+          <span data-testid="wrong-system" />
+        </Second>
+      </First.Provider>,
     );
     expect(view.container.querySelector("[data-testid=wrong-system]")).toBeNull();
   });
@@ -360,7 +416,12 @@ describe("slot system composition", () => {
   it("withSlots preserves component runtime behavior and attaches Slot", async () => {
     const Slot = slot(["title"] as const);
     function Card({ label }: { label: string }) {
-      return <section data-testid="card">{label}<Slot.Outlet name="title">{(props) => <h2 {...props} />}</Slot.Outlet></section>;
+      return (
+        <section data-testid="card">
+          {label}
+          <Slot.Outlet name="title">{(props) => <h2 {...props} />}</Slot.Outlet>
+        </section>
+      );
     }
     const CardWithSlots = withSlots(Card, Slot);
     expect(CardWithSlots).toBe(Card);
@@ -369,8 +430,10 @@ describe("slot system composition", () => {
     const view = await render(
       <CardWithSlots.Slot.Provider>
         <CardWithSlots label="Card" />
-        <CardWithSlots.Slot name="title"><span data-testid="title">Title</span></CardWithSlots.Slot>
-      </CardWithSlots.Slot.Provider>
+        <CardWithSlots.Slot name="title">
+          <span data-testid="title">Title</span>
+        </CardWithSlots.Slot>
+      </CardWithSlots.Slot.Provider>,
     );
     expect(byTestId(view.container, "card").textContent).toBe("CardTitle");
   });
@@ -381,14 +444,23 @@ describe("development missing-provider warnings", () => {
     vi.stubEnv("NODE_ENV", "development");
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const Slot = slot(["dev-one", "dev-two"] as const);
-    const ui = <><Slot name="dev-one">One</Slot><Slot name="dev-one">Again</Slot><Slot name="dev-two">Two</Slot></>;
+    const ui = (
+      <>
+        <Slot name="dev-one">One</Slot>
+        <Slot name="dev-one">Again</Slot>
+        <Slot name="dev-two">Two</Slot>
+      </>
+    );
     const view = await render(ui);
     await view.rerender(ui);
 
     expect(warn).toHaveBeenCalledTimes(2);
-    expect(warn).toHaveBeenCalledWith('<Slot.Consumer> for slot "dev-one" rendered without a <Slot.Provider>');
-    expect(warn).toHaveBeenCalledWith('<Slot.Consumer> for slot "dev-two" rendered without a <Slot.Provider>');
+    expect(warn).toHaveBeenCalledWith(
+      '<Slot.Consumer> for slot "dev-one" rendered without a <Slot.Provider>',
+    );
+    expect(warn).toHaveBeenCalledWith(
+      '<Slot.Consumer> for slot "dev-two" rendered without a <Slot.Provider>',
+    );
     expect(sentryMocks.withScope).not.toHaveBeenCalled();
   });
-
 });

@@ -25,11 +25,7 @@ export function CodeMessagesProvider({
   children: ReactNode;
   messages: CodeMessages;
 }) {
-  return (
-    <CodeMessagesContext.Provider value={messages}>
-      {children}
-    </CodeMessagesContext.Provider>
-  );
+  return <CodeMessagesContext.Provider value={messages}>{children}</CodeMessagesContext.Provider>;
 }
 
 export function useCodeMessages() {

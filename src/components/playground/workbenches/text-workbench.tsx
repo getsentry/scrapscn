@@ -3,13 +3,10 @@
 import { useState } from "react";
 
 import type { WorkbenchProps } from "@/components/playground/workbench";
+import type { HeadingSize } from "@/components/ui/heading";
 import { Container } from "@/components/ui/layout";
+import type { TextSize, TextVariant } from "@/components/ui/text";
 import { Heading, Prose, Text } from "@/components/ui/text-index";
-import type {
-  HeadingSize,
-  TextSize,
-} from "@/components/ui/text-style-engine";
-import type { TextVariant } from "@/components/ui/text";
 
 const variants = [
   "primary",
@@ -26,13 +23,7 @@ const textSizes = ["xs", "sm", "md", "lg", "xl", "2xl"] as const satisfies reado
 const headingSizes = [...textSizes, "3xl", "4xl"] as const satisfies readonly HeadingSize[];
 const densities = ["default", "compressed", "comfortable"] as const;
 const alignments = ["left", "center", "right", "justify"] as const;
-const decorations = [
-  "none",
-  "underline",
-  "dotted",
-  "strike",
-  "underline-strike",
-] as const;
+const decorations = ["none", "underline", "dotted", "strike", "underline-strike"] as const;
 const containerWidths = ["384px", "512px", "640px"] as const;
 
 type Density = (typeof densities)[number];
@@ -59,7 +50,7 @@ interface TextWorkbenchState {
 function choose<const Values extends readonly string[]>(
   values: Values,
   value: string | null,
-  fallback: Values[number]
+  fallback: Values[number],
 ): Values[number] {
   return values.find((candidate) => candidate === value) ?? fallback;
 }
@@ -90,11 +81,7 @@ function parseTextWorkbench(params: URLSearchParams): TextWorkbenchState {
   return {
     align: choose(alignments, params.get("textAlign"), "left"),
     bold: parseBoolean(params.get("textBold"), false),
-    containerWidth: choose(
-      containerWidths,
-      params.get("textContainerWidth"),
-      "512px"
-    ),
+    containerWidth: choose(containerWidths, params.get("textContainerWidth"), "512px"),
     decoration: choose(decorations, params.get("textDecoration"), "none"),
     density: choose(densities, params.get("textDensity"), "default"),
     ellipsis: parseBoolean(params.get("textEllipsis"), false),
@@ -189,12 +176,10 @@ function ConfiguredText({ state }: { state: TextWorkbenchState }) {
   const underline =
     state.decoration === "dotted"
       ? "dotted"
-      : state.decoration === "underline" ||
-          state.decoration === "underline-strike"
+      : state.decoration === "underline" || state.decoration === "underline-strike"
         ? true
         : undefined;
-  const strikethrough =
-    state.decoration === "strike" || state.decoration === "underline-strike";
+  const strikethrough = state.decoration === "strike" || state.decoration === "underline-strike";
   const sharedProps = {
     align: state.align,
     bold: state.bold,
@@ -218,14 +203,8 @@ function ConfiguredText({ state }: { state: TextWorkbenchState }) {
   );
 }
 
-export function TextWorkbench({
-  children,
-  onSearchChange,
-  sourceSearch,
-}: WorkbenchProps) {
-  const [state, setState] = useState(() =>
-    parseTextWorkbench(new URLSearchParams(sourceSearch))
-  );
+export function TextWorkbench({ children, onSearchChange, sourceSearch }: WorkbenchProps) {
+  const [state, setState] = useState(() => parseTextWorkbench(new URLSearchParams(sourceSearch)));
 
   function update(next: TextWorkbenchState) {
     setState(next);
@@ -314,8 +293,8 @@ export function TextWorkbench({
   );
 
   const preview = (
-    <div className="grid min-w-0 gap-8">
-      <section className="grid min-w-0 gap-3">
+    <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-8">
+      <section className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-3">
         <Heading
           as="h2"
           data-testid="heading-preview"
@@ -327,7 +306,7 @@ export function TextWorkbench({
         >
           Text composition
         </Heading>
-        <div className="min-w-0 max-w-md">
+        <div className="max-w-md min-w-0">
           <ConfiguredText state={state} />
         </div>
         <Text variant={state.variant}>
@@ -361,7 +340,7 @@ export function TextWorkbench({
           >
             Consumer style color
           </Heading>
-          <Text data-testid="text-mono-regular-preview" monospace>
+          <Text bold={false} data-testid="text-mono-regular-preview" monospace>
             Regular monospace
           </Text>
           <Text bold data-testid="text-mono-bold-preview" monospace>
@@ -371,8 +350,10 @@ export function TextWorkbench({
       </section>
 
       {state.responsive ? (
-        <section className="grid min-w-0 gap-4">
-          <Heading as="h3" size="lg">Responsive cascade</Heading>
+        <section className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4">
+          <Heading as="h3" size="lg">
+            Responsive cascade
+          </Heading>
           <Text
             align={{ zero: "left", "screen:xs": "center", "screen:lg": "right" }}
             data-testid="text-responsive-viewport"
@@ -388,10 +369,7 @@ export function TextWorkbench({
             padding="md"
             width={state.containerWidth}
           >
-            <Text
-              data-testid="text-responsive-container"
-              size={{ zero: "xs", sm: "md", lg: "xl" }}
-            >
+            <Text data-testid="text-responsive-container" size={{ zero: "xs", sm: "md", lg: "xl" }}>
               Container responsive text
             </Text>
           </Container>
@@ -400,12 +378,15 @@ export function TextWorkbench({
 
       {state.prose ? (
         <Prose data-testid="prose-preview" id="prose">
-          <Heading as="h3" size="lg">Prose composition</Heading>
-          <p>
-            Raw prose applies <code>inline code</code> and <kbd>⌘K</kbd> without
-            component wrappers.
+          <Heading as="h3" size="lg">
+            Prose composition
+          </Heading>
+          <p style={{ fontSize: "18px", fontWeight: 600, lineHeight: "29px" }}>
+            Raw prose applies <code>inline code</code> and <kbd>⌘K</kbd> without component wrappers.
           </p>
-          <pre><code>preformatted code is not restyled as inline code</code></pre>
+          <pre className="max-w-full overflow-x-auto">
+            <code>preformatted code is not restyled as inline code</code>
+          </pre>
         </Prose>
       ) : null}
     </div>

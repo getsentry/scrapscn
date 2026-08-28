@@ -1,0 +1,39 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "switch",
+  "title": "Switch",
+  "description": "Regular Scraps native switch with exact chonk geometry, icons, focus treatment, and form behavior.",
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/switch.tsx",
+      "content": "import type React from \"react\";\n\nexport interface SwitchProps extends Omit<\n  React.InputHTMLAttributes<HTMLInputElement>,\n  \"size\" | \"type\" | \"onClick\"\n> {\n  ref?: React.Ref<HTMLInputElement>;\n  size?: \"sm\" | \"lg\";\n}\n\nconst switchSizes = {\n  lg: { icon: \"size-[14px]\", thumb: \"size-6\", track: \"h-6 w-10\" },\n  sm: { icon: \"size-3\", thumb: \"size-5\", track: \"h-5 w-9\" },\n} satisfies Record<NonNullable<SwitchProps[\"size\"]>, Record<string, string>>;\n\nconst moderateSpring =\n  \"duration-[350ms] ease-[linear(0,0.2949,0.6842,0.911,0.9988,1.0172,1.0129,1.006,1.0018,1.0001,1,1)]\";\nconst fastSpring =\n  \"duration-[350ms] ease-[linear(0,0.4005,0.8613,1.0429,1.0528,1.0214,1.0015,0.9965,0.9977,0.9994,1,1)]\";\n\n/** Renders the native, form-compatible Switch used by regular Scraps. */\nexport function Switch({ className, ref, size = \"sm\", ...props }: SwitchProps) {\n  const dimensions = switchSizes[size];\n\n  return (\n    <div className=\"relative inline-flex justify-start\">\n      <input\n        ref={ref}\n        type=\"checkbox\"\n        className={`peer absolute top-0 left-0 m-0 size-full cursor-pointer p-0 opacity-0 disabled:cursor-not-allowed ${className ?? \"\"}`}\n        {...props}\n      />\n      <div\n        data-slot=\"switch-track\"\n        className={`pointer-events-none relative ${dimensions.track} ${moderateSpring} rounded-[5px] border border-t-2 border-[var(--scraps-switch-neutral-chonk)] bg-[var(--scraps-switch-neutral-background)] transition-all peer-checked:border-[var(--scraps-switch-accent-chonk)] peer-checked:bg-[var(--scraps-switch-accent-background)] peer-focus-visible:[box-shadow:0_0_0_0_var(--scraps-switch-focus-mask),0_0_0_2px_var(--scraps-switch-focus)] peer-disabled:opacity-60 peer-checked:[&_[data-icon=checkmark]]:[transform:scale(1)_translate(-50%,-50%)] peer-checked:[&_[data-icon=checkmark]]:opacity-100 peer-checked:[&_[data-icon=close]]:[transform:scale(.94)_translate(-50%,-50%)] peer-checked:[&_[data-icon=close]]:opacity-0 peer-checked:[&_[data-slot=switch-thumb]]:[transform:translateY(-1px)_translateX(-1px)_translateX(17px)] peer-checked:[&_[data-slot=switch-thumb]]:border-[var(--scraps-switch-accent-chonk)] peer-disabled:[&_[data-slot=switch-thumb]]:[transform:translateY(0px)_translateX(-1px)] peer-checked:peer-disabled:[&_[data-slot=switch-thumb]]:[transform:translateY(0px)_translateX(17px)]`}\n      >\n        <div\n          data-slot=\"switch-thumb\"\n          className={`absolute top-0 left-0 flex ${dimensions.thumb} ${moderateSpring} [transform:translateY(-1px)] items-center justify-center rounded-[5px] border border-[var(--scraps-switch-neutral-chonk)] bg-[var(--scraps-switch-thumb-surface)] transition-transform`}\n        >\n          <svg\n            aria-hidden=\"true\"\n            data-icon=\"close\"\n            viewBox=\"0 0 16 16\"\n            className={`absolute top-1/2 left-1/2 ${dimensions.icon} ${fastSpring} origin-center [transform:scale(1)_translate(-50%,-50%)] fill-[var(--scraps-switch-close)] opacity-100 transition-all`}\n          >\n            <path d=\"M12.72 2.22C13.01 1.93 13.49 1.93 13.78 2.22C14.07 2.51 14.07 2.99 13.78 3.28L9.06 8L13.78 12.72C14.07 13.01 14.07 13.49 13.78 13.78C13.49 14.07 13.01 14.07 12.72 13.78L8 9.06L3.28 13.78C2.99 14.07 2.51 14.07 2.22 13.78C1.93 13.49 1.93 13.01 2.22 12.72L6.94 8L2.22 3.28C1.93 2.99 1.93 2.51 2.22 2.22C2.51 1.93 2.99 1.93 3.28 2.22L8 6.94L12.72 2.22Z\" />\n          </svg>\n          <svg\n            aria-hidden=\"true\"\n            data-icon=\"checkmark\"\n            viewBox=\"0 0 16 16\"\n            className={`absolute top-1/2 left-1/2 ${dimensions.icon} ${fastSpring} origin-center [transform:scale(.94)_translate(-50%,-50%)] fill-[var(--scraps-switch-check)] opacity-0 transition-all`}\n          >\n            <path d=\"M13.72 3.22C14.01 2.93 14.49 2.93 14.78 3.22C15.07 3.51 15.07 3.99 14.78 4.28L6.53 12.53C6.24 12.82 5.76 12.82 5.47 12.53L1.22 8.28C0.93 7.99 0.93 7.51 1.22 7.22C1.51 6.93 1.99 6.93 2.28 7.22L6 10.94L13.72 3.22Z\" />\n          </svg>\n        </div>\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "cssVars": {
+    "light": {
+      "scraps-switch-neutral-background": "#10103008",
+      "scraps-switch-neutral-chonk": "#dad9de",
+      "scraps-switch-thumb-surface": "#ffffff",
+      "scraps-switch-accent-background": "#7553ff",
+      "scraps-switch-accent-chonk": "#5827d6",
+      "scraps-switch-close": "#6a6772",
+      "scraps-switch-check": "#653de9",
+      "scraps-switch-focus-mask": "#ffffff",
+      "scraps-switch-focus": "#7553ff"
+    },
+    "dark": {
+      "scraps-switch-neutral-background": "#00002033",
+      "scraps-switch-neutral-chonk": "#141119",
+      "scraps-switch-thumb-surface": "#2e2936",
+      "scraps-switch-accent-background": "#7553ff",
+      "scraps-switch-accent-chonk": "#120539",
+      "scraps-switch-close": "#b5b0bd",
+      "scraps-switch-check": "#aba8f8",
+      "scraps-switch-focus-mask": "#2e2936",
+      "scraps-switch-focus": "#7553ff"
+    }
+  },
+  "type": "registry:ui"
+}

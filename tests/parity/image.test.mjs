@@ -18,9 +18,7 @@ test("records the complete regular Scraps Image delivery", async () => {
     runtime: ["Image"],
     types: ["ImageProps"],
   });
-  assert.deepEqual(image.local.implementationPaths, [
-    "src/components/ui/image.tsx",
-  ]);
+  assert.deepEqual(image.local.implementationPaths, ["src/components/ui/image.tsx"]);
   assert.deepEqual(image.local.implementedExports, {
     runtime: ["Image"],
     types: ["ImageProps"],
@@ -34,6 +32,7 @@ test("records the complete regular Scraps Image delivery", async () => {
   ]);
   assert.deepEqual(image.local.figmaNodes, []);
   assert.equal(image.local.playgroundPath, "/?component=image");
+  assert.equal(image.completion.state, "complete");
   assert.equal(image.completion.complete, true);
 });
 
@@ -41,7 +40,7 @@ test("publishes Image with the exact self-contained Layout closure", async () =>
   const registry = JSON.parse(await readFile("registry.json", "utf8"));
   const item = registry.items.find(({ name }) => name === "image");
 
-  assert.deepEqual(item.dependencies, ["@emotion/is-prop-valid@1.4.0"]);
+  assert.deepEqual(item.dependencies, []);
   assert.deepEqual(item.registryDependencies, []);
   assert.deepEqual(item.files, [
     {
@@ -49,6 +48,11 @@ test("publishes Image with the exact self-contained Layout closure", async () =>
       type: "registry:ui",
     },
     { path: "src/components/ui/layout-style-engine.ts", type: "registry:ui" },
+    {
+      path: "src/components/ui/layout-tailwind-candidates.ts",
+      type: "registry:ui",
+    },
+    { path: "src/components/ui/layout-tailwind.ts", type: "registry:ui" },
     { path: "src/components/ui/layout.tsx", type: "registry:ui" },
     { path: "src/components/ui/separator.tsx", type: "registry:ui" },
     { path: "src/components/ui/image.tsx", type: "registry:ui" },
@@ -57,19 +61,14 @@ test("publishes Image with the exact self-contained Layout closure", async () =>
 
 test("keeps the native Image contract, responsive Layout path, and server boundary", async () => {
   const source = await readFile("src/components/ui/image.tsx", "utf8");
-  const serverPage = await readFile(
-    "src/app/evidence/image-server/page.tsx",
-    "utf8"
-  );
+  const serverPage = await readFile("src/app/evidence/image-server/page.tsx", "utf8");
 
   assert.match(source, /^"use client"/);
-  assert.match(
-    source,
-    /extends Omit<ImgHTMLAttributes<HTMLImageElement>, "height" \| "width">/
-  );
+  assert.match(source, /extends Omit<ImgHTMLAttributes<HTMLImageElement>, "height" \| "width">/);
   assert.match(source, /loading = "lazy"/);
-  assert.match(source, /height=\{height \?\? "auto"\}/);
-  assert.match(source, /width=\{width \?\? "100%"\}/);
+  assert.match(source, /property: "height", value: height \?\? "auto"/);
+  assert.match(source, /property: "width", value: width \?\? "100%"/);
+  assert.match(source, /createLayoutTailwindStyle/);
   assert.match(source, /objectFit/);
   assert.match(source, /objectPosition/);
   assert.match(source, /aspectRatio/);

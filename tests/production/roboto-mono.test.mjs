@@ -6,9 +6,7 @@ import test from "node:test";
 const fontFamily = /font-family:\s*["']?Roboto Mono(?: Variable)?["']?/;
 
 function extractRules(css, ruleName) {
-  return [...css.matchAll(new RegExp(`${ruleName}\\s*\\{[^}]*\\}`, "g"))].map(
-    ([rule]) => rule
-  );
+  return [...css.matchAll(new RegExp(`${ruleName}\\s*\\{[^}]*\\}`, "g"))].map(([rule]) => rule);
 }
 
 async function assertSingleRobotoMonoSet(cssFiles) {
@@ -16,12 +14,12 @@ async function assertSingleRobotoMonoSet(cssFiles) {
     cssFiles.map(async (cssFile) => ({
       cssFile,
       source: await readFile(cssFile, "utf8"),
-    }))
+    })),
   );
   const faces = sources.flatMap(({ cssFile, source }) =>
     extractRules(source, "@font-face")
       .filter((rule) => fontFamily.test(rule))
-      .map((rule) => ({ cssFile, rule }))
+      .map((rule) => ({ cssFile, rule })),
   );
 
   assert.equal(faces.length, 6);
@@ -51,12 +49,8 @@ async function readNextPageCssFiles() {
   assert.notEqual(entryStart, -1);
   assert.notEqual(entryEnd, -1);
 
-  const entries = JSON.parse(
-    manifest.slice(entryStart + '"entryCSSFiles":'.length, entryEnd)
-  );
-  const pageEntry = Object.entries(entries).find(([entry]) =>
-    entry.endsWith("/src/app/page")
-  );
+  const entries = JSON.parse(manifest.slice(entryStart + '"entryCSSFiles":'.length, entryEnd));
+  const pageEntry = Object.entries(entries).find(([entry]) => entry.endsWith("/src/app/page"));
 
   assert.ok(pageEntry, "Missing the playground page CSS manifest entry");
   return pageEntry[1].map(({ path: assetPath }) => path.join(".next", assetPath));

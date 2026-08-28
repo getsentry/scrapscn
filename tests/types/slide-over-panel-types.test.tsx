@@ -5,7 +5,19 @@ import { SlideOverPanel } from "@/components/ui/slide-over-panel";
 import type { SlideOverPanelProps } from "@/components/ui/slide-over-panel";
 
 export function SlideOverPanelTypeEvidence() {
-  return <SlideOverPanel ariaLabel="Details" className="panel" data-test-id="panel" mode="passive" panelWidth="36rem" position="left" ref={createRef<HTMLDivElement>()}>{({ isOpening }) => isOpening ? "Opening" : "Ready"}</SlideOverPanel>;
+  return (
+    <SlideOverPanel
+      ariaLabel="Details"
+      className="panel"
+      data-test-id="panel"
+      mode="passive"
+      panelWidth="36rem"
+      position="left"
+      ref={createRef<HTMLDivElement>()}
+    >
+      {({ isOpening }) => (isOpening ? "Opening" : "Ready")}
+    </SlideOverPanel>
+  );
 }
 
 type UnpublishedSlideOverPanelProps = SlideOverPanelProps;

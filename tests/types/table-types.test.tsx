@@ -1,16 +1,47 @@
 import { createRef } from "react";
 
-import { Table, type TableColumnConfig } from "@/components/ui/table";
+import {
+  emptyCellStyle,
+  fullWidthCellStyle,
+  statusCellStyle,
+  Table,
+  type TableColumnConfig,
+  useTableElement,
+} from "@/components/ui/table";
 
-const columns: TableColumnConfig[] = [{ key: "name", width: 200 }, { key: "count", resizable: false, width: "min-content" }];
+const columns: TableColumnConfig[] = [
+  { key: "name", width: 200 },
+  { key: "count", resizable: false, width: "min-content" },
+];
 const ref = createRef<HTMLTableElement>();
+const tableElement: () => React.RefObject<HTMLTableElement | null> = useTableElement;
+const cellStyles: string[] = [emptyCellStyle, fullWidthCellStyle, statusCellStyle];
+void tableElement;
+void cellStyles;
 
-<Table ref={ref} columns={columns} flexibleLastColumn={false} minimumColumnWidth={100} prependColumnWidths={["40px"]} onColumnResize={(index, width) => {
-  const values: [number, number] = [index, width];
-  void values;
-}}>
-  <Table.Head sticky><Table.Row><Table.HeadCell column="name" sort="asc" onSort={() => {}}>Name</Table.HeadCell></Table.Row></Table.Head>
-  <Table.Body><Table.Row divider><Table.Cell>Name</Table.Cell></Table.Row></Table.Body>
+<Table
+  ref={ref}
+  columns={columns}
+  flexibleLastColumn={false}
+  minimumColumnWidth={100}
+  prependColumnWidths={["40px"]}
+  onColumnResize={(index, width) => {
+    const values: [number, number] = [index, width];
+    void values;
+  }}
+>
+  <Table.Head sticky>
+    <Table.Row>
+      <Table.HeadCell column="name" sort="asc" onSort={() => {}}>
+        Name
+      </Table.HeadCell>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row divider>
+      <Table.Cell>Name</Table.Cell>
+    </Table.Row>
+  </Table.Body>
   <Table.Status>Loading</Table.Status>
 </Table>;
 
@@ -22,7 +53,9 @@ void invalidWidth;
 <Table.HeadCell sort="ascending">Name</Table.HeadCell>;
 
 // @ts-expect-error Resize callbacks receive a numeric width.
-<Table columns={columns} onColumnResize={(index: number, width: string) => void [index, width]}><Table.Body /></Table>;
+<Table columns={columns} onColumnResize={(index: number, width: string) => void [index, width]}>
+  <Table.Body />
+</Table>;
 
 // @ts-expect-error Legacy shadcn compounds are not part of the regular Scraps API.
 <Table.Footer />;

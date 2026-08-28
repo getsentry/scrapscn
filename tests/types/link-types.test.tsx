@@ -15,7 +15,9 @@ const props: LinkProps = {
 <Link {...props}>Issues</Link>;
 
 const anchorRef = (element: HTMLAnchorElement | null) => element?.focus();
-<Link ref={anchorRef} to="/issues/">Issues</Link>;
+<Link ref={anchorRef} to="/issues/">
+  Issues
+</Link>;
 <ExternalLink href="https://docs.sentry.io">Docs</ExternalLink>;
 <LinkBehaviorContextProvider value={null}>
   <Link to="/issues/">Issues</Link>
@@ -24,6 +26,10 @@ const anchorRef = (element: HTMLAnchorElement | null) => element?.focus();
 // @ts-expect-error The canonical API uses router `to`, not anchor `href`.
 <Link href="/issues/">Issues</Link>;
 // @ts-expect-error The canonical API has no visual variant prop.
-<Link to="/issues/" variant="accent">Issues</Link>;
+<Link to="/issues/" variant="accent">
+  Issues
+</Link>;
 // @ts-expect-error The canonical LinkProps uses HTMLAttributes, not AnchorHTMLAttributes.
-<Link download="issues.csv" to="/issues/">Issues</Link>;
+<Link download="issues.csv" to="/issues/">
+  Issues
+</Link>;

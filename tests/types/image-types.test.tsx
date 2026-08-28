@@ -1,6 +1,7 @@
+import { createRef } from "react";
+
 /* eslint-disable jsx-a11y/alt-text -- This fixture intentionally checks a missing-alt type error. */
 import { Image, type ImageProps } from "@/components/ui/image";
-import { createRef } from "react";
 
 const imageProps = {
   alt: "Issue preview",

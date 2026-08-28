@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "node_modules/**",
+    ".next/**",
+    "public/r/**",
+    "public/storybook/**",
+    "storybook-static/**",
+    "src/templates/template-manifest.generated.ts",
+    "src/components/ui/layout-tailwind.ts",
+    "src/components/ui/layout-tailwind-candidates.ts",
+    "src/components/ui/text-tailwind.ts",
+    "src/components/ui/form-field-registry.ts",
+    "src/components/ui/prism-language-loaders.ts",
+    "src/components/ui/prism-language-reloaders.js",
+    "src/components/ui/prism-language-reloaders.d.ts"
+  ],
+  "sortImports": {
+    "partitionByComment": true,
+    "partitionByNewLine": true
+  },
+  "sortTailwindcss": {
+    "stylesheet": "./src/app/globals.css",
+    "functions": ["cn", "clsx", "cva"],
+    "preserveDuplicates": true
+  }
+}

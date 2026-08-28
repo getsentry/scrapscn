@@ -1,4 +1,3 @@
-import { readFileSync } from "node:fs";
 import { act, createRef } from "react";
 import { createRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -56,11 +55,7 @@ describe("Quote", () => {
     "keeps the canonical figure and citation semantics for $name",
     ({ caption, cite, label, source }) => {
       const markup = renderToStaticMarkup(
-        source === undefined ? (
-          <Quote>A quote.</Quote>
-        ) : (
-          <Quote source={source}>A quote.</Quote>
-        )
+        source === undefined ? <Quote>A quote.</Quote> : <Quote source={source}>A quote.</Quote>,
       );
       const host = document.createElement("div");
       host.innerHTML = markup;
@@ -74,14 +69,19 @@ describe("Quote", () => {
       expect(blockquote?.getAttribute("cite") ?? null).toBe(cite);
       expect(figcaption?.textContent.trim() ?? null).toBe(caption);
       expect(figcaption?.querySelector("cite")?.textContent ?? null).toBe(label);
-    }
+    },
   );
 
-  it("uses the exact 16px plus 12px rail geometry", () => {
-    const css = readFileSync("src/components/ui/quote.module.css", "utf8");
-    expect(css).toContain("padding-left: 16px");
-    expect(css).toContain("margin: 0 0 0 12px");
-    expect(css).toContain("padding: 0 0 0 28px");
+  it("uses literal Tailwind classes for the exact 16px plus 12px rail geometry", () => {
+    const markup = renderToStaticMarkup(<Quote source={{ author: "Ada" }}>A quote.</Quote>);
+    expect(markup).toContain("ml-3");
+    expect(markup).toContain("pl-4");
+    expect(markup).toContain("top-0");
+    expect(markup).toContain("bottom-0");
+    expect(markup).not.toContain("inset-y-0");
+    expect(markup.match(/border-none/g)).toHaveLength(2);
+    expect(markup.match(/pl-7/g)).toHaveLength(2);
+    expect(markup).not.toContain("module.css");
   });
 
   it("forwards the root element, ref, native props, and consumer overrides", async () => {
@@ -102,7 +102,7 @@ describe("Quote", () => {
           style={{ gap: "7px", position: "fixed" }}
         >
           A quote.
-        </Quote>
+        </Quote>,
       );
     });
 

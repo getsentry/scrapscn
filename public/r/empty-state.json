@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "empty-state",
+  "title": "Empty State",
+  "description": "Regular Scraps responsive no-content layout with optional illustration, description, and action.",
+  "registryDependencies": [
+    "https://scrapscn.sentry.dev/r/layout.json",
+    "https://scrapscn.sentry.dev/r/text.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/empty-state.tsx",
+      "content": "import { type ReactNode } from \"react\";\n\nimport { Heading } from \"./heading\";\nimport { Flex, Stack, type FlexProps } from \"./layout\";\nimport { Text, type TextProps } from \"./text\";\n\ntype EmptyStateProps = Omit<FlexProps, \"children\" | \"containerType\" | \"title\"> & {\n  title: ReactNode;\n  action?: ReactNode;\n  description?: ReactNode;\n  illustration?: ReactNode;\n};\n\n/** The regular Scraps responsive no-content layout. */\nexport function EmptyState({\n  action,\n  description,\n  illustration,\n  title,\n  ...props\n}: EmptyStateProps) {\n  const switchOn = \"md\";\n  const textAlign: TextProps<\"p\">[\"align\"] = {\n    zero: \"center\",\n    [switchOn]: \"left\",\n  };\n\n  return (\n    <Flex containerType=\"inline-size\" flexGrow={1} minWidth={0} width=\"100%\">\n      <Flex\n        align=\"center\"\n        data-test-id=\"empty-state\"\n        direction={{ zero: \"column\", [switchOn]: \"row\" }}\n        flexGrow={1}\n        gap={{ zero: \"xl\", [switchOn]: \"2xl\" }}\n        justify={{ zero: \"start\", [switchOn]: \"center\" }}\n        {...props}\n      >\n        {illustration && (\n          <Flex align=\"center\" flexShrink={0} justify=\"center\" overflow=\"hidden\">\n            {illustration}\n          </Flex>\n        )}\n        <Stack gap=\"xl\">\n          <Stack gap=\"md\" maxWidth=\"48ch\" width=\"100%\">\n            <Heading align={textAlign} as=\"h3\" size=\"lg\">\n              {title}\n            </Heading>\n            {description && (\n              <Text align={textAlign} as=\"p\" size=\"md\" textWrap=\"balance\" variant=\"muted\">\n                {description}\n              </Text>\n            )}\n          </Stack>\n          {action && (\n            <Flex gap=\"md\" justify={{ zero: \"center\", [switchOn]: \"start\" }} wrap=\"wrap\">\n              {action}\n            </Flex>\n          )}\n        </Stack>\n      </Flex>\n    </Flex>\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -11,7 +11,19 @@ import {
 } from "react";
 
 import "./roboto-mono.css";
-import styles from "./hotkey.module.css";
+
+const kbdClasses =
+  "m-0 inline-flex h-[1.67em] items-center justify-center rounded-[5px] border border-[var(--scraps-hotkey-border-primary)] bg-[var(--scraps-hotkey-background-primary)] px-1 [font-family:'Roboto_Mono',Monaco,Consolas,'Courier_New',monospace] text-xs font-medium text-[var(--scraps-hotkey-content-primary)] shadow-none";
+const embossedKbdClasses = "border-b-2";
+const debossedKbdClasses =
+  "border-t-2 bg-[var(--scraps-hotkey-background-secondary)] text-[var(--scraps-hotkey-content-secondary)]";
+const hotkeyClasses = "gap-0.5 px-1";
+const keyClasses =
+  "m-0 inline-flex scale-90 items-center justify-center rounded-none border-0 bg-none p-0 font-[inherit] text-[length:inherit] text-[inherit] shadow-none";
+
+function classNames(...values: Array<string | undefined | false>) {
+  return values.filter(Boolean).join(" ");
+}
 
 type Variant = "embossed" | "debossed";
 
@@ -85,10 +97,7 @@ const punctuationCodeMap: Record<string, string> = {
   "\\": "Backslash",
 };
 
-const modifierPredicates: Record<
-  string,
-  (event: KeyboardEvent) => boolean
-> = {
+const modifierPredicates: Record<string, (event: KeyboardEvent) => boolean> = {
   command: (event) => event.metaKey,
   shift: (event) => event.shiftKey,
   control: (event) => event.ctrlKey,
@@ -143,6 +152,21 @@ function matchesKey(name: string, event: KeyboardEvent): boolean {
   }
 
   return false;
+}
+
+/** Returns whether an event triggers one of the supplied keyboard shortcuts. */
+export function matchesHotkey(match: string | string[], event: KeyboardEvent): boolean {
+  if (event.isComposing) return false;
+
+  return (Array.isArray(match) ? match : [match]).some((keyset) => {
+    const keys = keyset.toLowerCase().split("+").map(canonicalize);
+    const unusedModifiers = modifierKeys.filter((modifier) => !keys.includes(modifier));
+
+    return (
+      keys.every((key) => matchesKey(key, event)) &&
+      unusedModifiers.every((modifier) => !matchesKey(modifier, event))
+    );
+  });
 }
 
 function KeyIcon({
@@ -244,9 +268,11 @@ export function Kbd({ className, variant, ...props }: KbdProps) {
   return (
     <kbd
       {...props}
-      className={[styles.kbd, variant === "debossed" ? styles.debossed : "", className]
-        .filter(Boolean)
-        .join(" ")}
+      className={classNames(
+        kbdClasses,
+        variant === "debossed" ? debossedKbdClasses : embossedKbdClasses,
+        className,
+      )}
     />
   );
 }
@@ -255,28 +281,26 @@ export function Kbd({ className, variant, ...props }: KbdProps) {
 export function Hotkey({ value, variant }: HotkeyProps) {
   const mac = useIsMacPlatform();
   const keySets = (Array.isArray(value) ? value : [value]).map((keySet) =>
-    keySet.trim().split("+")
+    keySet.trim().split("+"),
   );
-  const resolvedKeySets = keySets.map((keys) =>
-    keys.map((key) => resolveKeyGlyph(key, mac))
-  );
+  const resolvedKeySets = keySets.map((keys) => keys.map((key) => resolveKeyGlyph(key, mac)));
   const finalKeys = resolvedKeySets[0];
   if (!finalKeys || finalKeys.length === 0) {
     return null;
   }
 
   return (
-    <Kbd className={styles.hotkey} variant={variant}>
+    <Kbd className={hotkeyClasses} variant={variant}>
       {finalKeys.map((glyph, index) =>
         "icon" in glyph ? (
-          <kbd aria-label={glyph.label} className={styles.key} key={index}>
+          <kbd aria-label={glyph.label} className={keyClasses} key={index}>
             {glyph.icon}
           </kbd>
         ) : (
-          <kbd className={styles.key} key={index}>
+          <kbd className={keyClasses} key={index}>
             {glyph.label}
           </kbd>
-        )
+        ),
       )}
     </Kbd>
   );
@@ -297,28 +321,15 @@ export function useHotkeys(hotkeys: HotkeyRegistration[]): void {
       for (const hotkey of hotkeysRef.current) {
         if (hotkey.enabled === false) continue;
 
-        const keysets = (Array.isArray(hotkey.match) ? hotkey.match : [hotkey.match]).map(
-          (keys) => keys.toLowerCase()
-        );
+        const inputHasFocus =
+          !hotkey.includeInputs && event.target instanceof HTMLElement
+            ? ["textarea", "input"].includes(event.target.tagName.toLowerCase())
+            : false;
 
-        for (const keyset of keysets) {
-          const keys = keyset.split("+").map(canonicalize);
-          const unusedModifiers = modifierKeys.filter(
-            (modifier) => !keys.includes(modifier)
-          );
-          const allKeysPressed =
-            keys.every((key) => matchesKey(key, event)) &&
-            unusedModifiers.every((modifier) => !matchesKey(modifier, event));
-          const inputHasFocus =
-            !hotkey.includeInputs && event.target instanceof HTMLElement
-              ? ["textarea", "input"].includes(event.target.tagName.toLowerCase())
-              : false;
-
-          if (allKeysPressed && !inputHasFocus) {
-            if (!hotkey.skipPreventDefault) event.preventDefault();
-            hotkey.callback(event);
-            return;
-          }
+        if (matchesHotkey(hotkey.match, event) && !inputHasFocus) {
+          if (!hotkey.skipPreventDefault) event.preventDefault();
+          hotkey.callback(event);
+          return;
         }
       }
     };

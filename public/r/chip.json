@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chip",
+  "title": "Chip",
+  "description": "Regular Scraps query chip with exact sizes, readonly summary, and dismiss behavior.",
+  "registryDependencies": [
+    "https://scrapscn.sentry.dev/r/button.json",
+    "https://scrapscn.sentry.dev/r/layout.json",
+    "https://scrapscn.sentry.dev/r/text.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/chip.tsx",
+      "content": "import { cn } from \"../../lib/utils\";\nimport { Button } from \"./button\";\nimport { Flex } from \"./layout\";\nimport { Text } from \"./text\";\n\ntype ChipSize = \"xs\" | \"sm\" | \"md\";\n\ninterface BaseChipProps extends React.HTMLAttributes<HTMLDivElement> {\n  value: string;\n  operator?: string;\n  property?: string;\n  size?: ChipSize;\n}\n\ninterface DismissableChipProps extends BaseChipProps {\n  onDismiss?: () => void;\n  readonly?: false;\n}\n\ninterface ReadonlyChipProps extends BaseChipProps {\n  readonly: true;\n  onDismiss?: never;\n}\n\ntype ChipProps = DismissableChipProps | ReadonlyChipProps;\n\nconst chipSizeClasses: Record<\n  ChipSize,\n  { dismiss: string; padding: string; paddingLeft: string; root: string }\n> = {\n  xs: {\n    dismiss: \"!w-5 !min-w-5 !px-1\",\n    padding: \"px-1\",\n    paddingLeft: \"pl-1\",\n    root: \"h-5 rounded-[3px]\",\n  },\n  sm: {\n    dismiss: \"!w-5 !min-w-5 !px-1\",\n    padding: \"px-[6px]\",\n    paddingLeft: \"pl-[6px]\",\n    root: \"h-6 rounded-[4px]\",\n  },\n  md: {\n    dismiss: \"!w-6 !min-w-6 !px-1\",\n    padding: \"px-2\",\n    paddingLeft: \"pl-2\",\n    root: \"h-7 rounded-[5px]\",\n  },\n};\n\nfunction CloseIcon() {\n  return (\n    <svg aria-hidden=\"true\" className=\"size-3.5 fill-current\" viewBox=\"0 0 16 16\">\n      <path d=\"M12.72 2.22C13.01 1.93 13.49 1.93 13.78 2.22C14.07 2.51 14.07 2.99 13.78 3.28L9.06 8L13.78 12.72C14.07 13.01 14.07 13.49 13.78 13.78C13.49 14.07 13.01 14.07 12.72 13.78L8 9.06L3.28 13.78C2.99 14.07 2.51 14.07 2.22 13.78C1.93 13.49 1.93 13.01 2.22 12.72L6.94 8L2.22 3.28C1.93 2.99 1.93 2.51 2.22 2.22C2.51 1.93 2.99 1.93 3.28 2.22L8 6.94L12.72 2.22Z\" />\n    </svg>\n  );\n}\n\nexport function Chip({\n  className,\n  onDismiss,\n  operator,\n  property,\n  readonly = false,\n  size = \"md\",\n  value,\n  ...rest\n}: ChipProps) {\n  const classes = chipSizeClasses[size];\n  const textSize = size === \"xs\" ? \"sm\" : \"md\";\n  const valueVariant = readonly ? \"secondary\" : property === undefined ? \"primary\" : \"accent\";\n  const label = [property, operator, value].filter(Boolean).join(\" \");\n\n  return (\n    <div\n      {...rest}\n      className={cn(\n        \"box-border inline-flex items-center overflow-hidden border border-[var(--scraps-chip-chonk)] bg-[var(--scraps-chip-background)] leading-4 shadow-[0_1px_0_0_var(--scraps-chip-chonk)]\",\n        onDismiss ? classes.paddingLeft : classes.padding,\n        classes.root,\n        className,\n      )}\n    >\n      <Flex align=\"center\" gap=\"xs\" padding=\"2xs 0\">\n        {property !== undefined ? (\n          <Text size={textSize} variant=\"primary\" wrap=\"nowrap\">\n            {property}\n          </Text>\n        ) : null}\n        {operator ? (\n          <Text size={textSize} variant=\"secondary\" wrap=\"nowrap\">\n            {operator}\n          </Text>\n        ) : null}\n        {value !== undefined ? (\n          <Text size={textSize} variant={valueVariant} wrap=\"nowrap\">\n            {value}\n          </Text>\n        ) : null}\n      </Flex>\n      {onDismiss ? (\n        <Button\n          aria-label={`Remove ${label}`}\n          className={cn(\n            \"!h-auto !min-h-0 shrink-0 self-stretch !rounded-none text-[var(--scraps-chip-content-secondary)] hover:!bg-[var(--scraps-chip-hover)] hover:!text-[var(--scraps-chip-content-primary)]\",\n            classes.dismiss,\n          )}\n          icon={<CloseIcon />}\n          size=\"zero\"\n          type=\"button\"\n          variant=\"transparent\"\n          onClick={(event) => {\n            event.stopPropagation();\n            onDismiss();\n          }}\n        />\n      ) : null}\n    </div>\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "cssVars": {
+    "light": {
+      "scraps-chip-background": "#ffffff",
+      "scraps-chip-chonk": "#dad9de",
+      "scraps-chip-content-primary": "#181225",
+      "scraps-chip-content-secondary": "#6a6772",
+      "scraps-chip-hover": "#f8f8f9"
+    },
+    "dark": {
+      "scraps-chip-background": "#2e2936",
+      "scraps-chip-chonk": "#141119",
+      "scraps-chip-content-primary": "#ffffff",
+      "scraps-chip-content-secondary": "#b5b0bd",
+      "scraps-chip-hover": "#24202b"
+    }
+  },
+  "type": "registry:ui"
+}

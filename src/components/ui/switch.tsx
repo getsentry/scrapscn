@@ -1,72 +1,61 @@
-"use client"
+import type React from "react";
 
-import { Switch as SwitchPrimitive } from "@base-ui/react/switch"
-import { Check, X } from "lucide-react"
-
-import { cn } from "@/lib/utils"
-
-function Switch({
-  className,
-  size = "default",
-  ...props
-}: SwitchPrimitive.Root.Props & {
-  size?: "sm" | "default"
-}) {
-  return (
-    <SwitchPrimitive.Root
-      data-slot="switch"
-      data-size={size}
-      className={cn(
-        "peer group/switch relative inline-flex shrink-0 cursor-pointer items-center outline-none",
-        "after:absolute after:-inset-x-3 after:-inset-y-2",
-        "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-        "data-disabled:cursor-not-allowed data-disabled:opacity-50",
-        size === "sm" ? "h-5 w-9" : "h-6 w-10",
-        className
-      )}
-      {...props}
-    >
-      {/* Debossed track */}
-      <span
-        className={cn(
-          "absolute inset-0 rounded-sm",
-          "bg-[color:oklch(0.07_0.01_280/.08)] border border-border border-t-2",
-          "transition-colors [transition-duration:var(--duration-moderate)]",
-          "group-data-checked/switch:bg-primary group-data-checked/switch:border-chonk-accent"
-        )}
-      />
-      {/* Embossed thumb */}
-      <SwitchPrimitive.Thumb
-        data-slot="switch-thumb"
-        className={cn(
-          "pointer-events-none relative z-10 flex items-center justify-center rounded-sm",
-          "bg-background border border-border",
-          "-translate-x-px -translate-y-px",
-          "transition-transform [transition-duration:var(--duration-moderate)] [transition-timing-function:var(--ease-snap)]",
-          "group-data-checked/switch:border-chonk-accent",
-          "group-data-disabled/switch:translate-y-0",
-          size === "sm" ? "size-5 data-checked:translate-x-[16px]" : "size-6 data-checked:translate-x-[16px]",
-        )}
-      >
-        <X
-          className={cn(
-            "absolute text-muted-foreground transition-all [transition-duration:var(--duration-fast)]",
-            "group-data-checked/switch:scale-90 group-data-checked/switch:opacity-0",
-            "group-data-unchecked/switch:scale-100 group-data-unchecked/switch:opacity-100",
-            size === "sm" ? "size-2.5" : "size-3"
-          )}
-        />
-        <Check
-          className={cn(
-            "absolute text-primary transition-all [transition-duration:var(--duration-fast)]",
-            "group-data-unchecked/switch:scale-90 group-data-unchecked/switch:opacity-0",
-            "group-data-checked/switch:scale-100 group-data-checked/switch:opacity-100",
-            size === "sm" ? "size-2.5" : "size-3"
-          )}
-        />
-      </SwitchPrimitive.Thumb>
-    </SwitchPrimitive.Root>
-  )
+export interface SwitchProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "size" | "type" | "onClick"
+> {
+  ref?: React.Ref<HTMLInputElement>;
+  size?: "sm" | "lg";
 }
 
-export { Switch }
+const switchSizes = {
+  lg: { icon: "size-[14px]", thumb: "size-6", track: "h-6 w-10" },
+  sm: { icon: "size-3", thumb: "size-5", track: "h-5 w-9" },
+} satisfies Record<NonNullable<SwitchProps["size"]>, Record<string, string>>;
+
+const moderateSpring =
+  "duration-[350ms] ease-[linear(0,0.2949,0.6842,0.911,0.9988,1.0172,1.0129,1.006,1.0018,1.0001,1,1)]";
+const fastSpring =
+  "duration-[350ms] ease-[linear(0,0.4005,0.8613,1.0429,1.0528,1.0214,1.0015,0.9965,0.9977,0.9994,1,1)]";
+
+/** Renders the native, form-compatible Switch used by regular Scraps. */
+export function Switch({ className, ref, size = "sm", ...props }: SwitchProps) {
+  const dimensions = switchSizes[size];
+
+  return (
+    <div className="relative inline-flex justify-start">
+      <input
+        ref={ref}
+        type="checkbox"
+        className={`peer absolute top-0 left-0 m-0 size-full cursor-pointer p-0 opacity-0 disabled:cursor-not-allowed ${className ?? ""}`}
+        {...props}
+      />
+      <div
+        data-slot="switch-track"
+        className={`pointer-events-none relative ${dimensions.track} ${moderateSpring} rounded-[5px] border border-t-2 border-[var(--scraps-switch-neutral-chonk)] bg-[var(--scraps-switch-neutral-background)] transition-all peer-checked:border-[var(--scraps-switch-accent-chonk)] peer-checked:bg-[var(--scraps-switch-accent-background)] peer-focus-visible:[box-shadow:0_0_0_0_var(--scraps-switch-focus-mask),0_0_0_2px_var(--scraps-switch-focus)] peer-disabled:opacity-60 peer-checked:[&_[data-icon=checkmark]]:[transform:scale(1)_translate(-50%,-50%)] peer-checked:[&_[data-icon=checkmark]]:opacity-100 peer-checked:[&_[data-icon=close]]:[transform:scale(.94)_translate(-50%,-50%)] peer-checked:[&_[data-icon=close]]:opacity-0 peer-checked:[&_[data-slot=switch-thumb]]:[transform:translateY(-1px)_translateX(-1px)_translateX(17px)] peer-checked:[&_[data-slot=switch-thumb]]:border-[var(--scraps-switch-accent-chonk)] peer-disabled:[&_[data-slot=switch-thumb]]:[transform:translateY(0px)_translateX(-1px)] peer-checked:peer-disabled:[&_[data-slot=switch-thumb]]:[transform:translateY(0px)_translateX(17px)]`}
+      >
+        <div
+          data-slot="switch-thumb"
+          className={`absolute top-0 left-0 flex ${dimensions.thumb} ${moderateSpring} [transform:translateY(-1px)] items-center justify-center rounded-[5px] border border-[var(--scraps-switch-neutral-chonk)] bg-[var(--scraps-switch-thumb-surface)] transition-transform`}
+        >
+          <svg
+            aria-hidden="true"
+            data-icon="close"
+            viewBox="0 0 16 16"
+            className={`absolute top-1/2 left-1/2 ${dimensions.icon} ${fastSpring} origin-center [transform:scale(1)_translate(-50%,-50%)] fill-[var(--scraps-switch-close)] opacity-100 transition-all`}
+          >
+            <path d="M12.72 2.22C13.01 1.93 13.49 1.93 13.78 2.22C14.07 2.51 14.07 2.99 13.78 3.28L9.06 8L13.78 12.72C14.07 13.01 14.07 13.49 13.78 13.78C13.49 14.07 13.01 14.07 12.72 13.78L8 9.06L3.28 13.78C2.99 14.07 2.51 14.07 2.22 13.78C1.93 13.49 1.93 13.01 2.22 12.72L6.94 8L2.22 3.28C1.93 2.99 1.93 2.51 2.22 2.22C2.51 1.93 2.99 1.93 3.28 2.22L8 6.94L12.72 2.22Z" />
+          </svg>
+          <svg
+            aria-hidden="true"
+            data-icon="checkmark"
+            viewBox="0 0 16 16"
+            className={`absolute top-1/2 left-1/2 ${dimensions.icon} ${fastSpring} origin-center [transform:scale(.94)_translate(-50%,-50%)] fill-[var(--scraps-switch-check)] opacity-0 transition-all`}
+          >
+            <path d="M13.72 3.22C14.01 2.93 14.49 2.93 14.78 3.22C15.07 3.51 15.07 3.99 14.78 4.28L6.53 12.53C6.24 12.82 5.76 12.82 5.47 12.53L1.22 8.28C0.93 7.99 0.93 7.51 1.22 7.22C1.51 6.93 1.99 6.93 2.28 7.22L6 10.94L13.72 3.22Z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+}
