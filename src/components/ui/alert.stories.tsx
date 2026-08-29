@@ -10,7 +10,7 @@ const meta = {
   args: { children: "This is an informational message", variant: "info" },
   decorators: [
     (Story) => (
-      <MemoryRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
+      <MemoryRouter>
         <Story />
       </MemoryRouter>
     ),

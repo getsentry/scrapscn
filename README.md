@@ -22,7 +22,7 @@ Run `pnpm parity:generate` only when you intentionally refresh the inventory fro
 
 ## Start a prototype
 
-You need Node.js 24 or later and pnpm. This checkout pins Next.js to 16.3.3 and uses Oxlint and Oxfmt instead of ESLint and Prettier. It uses shadcn 4.8.x and Tailwind CSS 4.
+You need Node.js 24 or later and pnpm. This checkout pins Next.js to 16.3.3 and uses Oxlint and Oxfmt instead of ESLint and Prettier. It uses shadcn 4.19.x and Tailwind CSS 4.
 
 ```bash
 pnpm install

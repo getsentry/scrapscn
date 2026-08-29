@@ -11,7 +11,7 @@ const meta = {
   component: Link,
   decorators: [
     (Story) => (
-      <MemoryRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
+      <MemoryRouter>
         <Story />
       </MemoryRouter>
     ),

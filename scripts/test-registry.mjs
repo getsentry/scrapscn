@@ -63,7 +63,7 @@ const files = {
   "src/app/layout.tsx":
     "import './globals.css';\nexport default function Layout({ children }: { children: React.ReactNode }) { return <html><body>{children}</body></html>; }\n",
   "src/app/page.tsx":
-    'import { Checkbox } from "@/components/ui/checkbox";\nexport default function Page() { return <main><Checkbox aria-label="Registry proof" checked /></main>; }\n',
+    '"use client";\nimport { Checkbox } from "@/components/ui/checkbox";\nimport { Link } from "@/components/ui/link";\nimport { MemoryRouter } from "react-router-dom";\nexport default function Page() { return <MemoryRouter><main><Checkbox aria-label="Registry proof" checked /><Link to="/">Registry link</Link></main></MemoryRouter>; }\n',
   "src/lib/utils.ts":
     'import { clsx, type ClassValue } from "clsx";\nimport { twMerge } from "tailwind-merge";\nexport function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }\n',
   "tsconfig.json": JSON.stringify(
@@ -120,7 +120,7 @@ try {
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const { port } = server.address();
   const shadcn = path.resolve("node_modules/.bin/shadcn");
-  for (const itemName of ["sentry-base", "checkbox"]) {
+  for (const itemName of ["sentry-base", "checkbox", "link"]) {
     await run(
       shadcn,
       ["add", `http://127.0.0.1:${port}/r/${itemName}.json`, "--yes", "--overwrite"],
@@ -132,7 +132,7 @@ try {
   await run("pnpm", ["typecheck"], { cwd: projectDirectory });
   await run("pnpm", ["build"], { cwd: projectDirectory });
   process.stdout.write(
-    "Installed sentry-base and checkbox into a clean Tailwind project; typecheck and production build passed.\n",
+    "Installed sentry-base, checkbox, and link into a clean Tailwind project; typecheck and production build passed.\n",
   );
 } finally {
   server.close();

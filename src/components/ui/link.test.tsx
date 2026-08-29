@@ -20,11 +20,7 @@ function render(ui: ReactElement) {
 }
 
 function RouterFixture({ children }: { children: ReactElement }) {
-  return (
-    <MemoryRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
-      {children}
-    </MemoryRouter>
-  );
+  return <MemoryRouter>{children}</MemoryRouter>;
 }
 
 describe("Link", () => {

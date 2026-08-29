@@ -11,7 +11,7 @@ test("Link registry has the exact local closure and type-only history dependency
   assert.deepEqual(item.dependencies, [
     "@sentry/react@10.69.0",
     "@types/history@3.2.5",
-    "react-router-dom@6.30.6",
+    "react-router-dom@7.18.3",
   ]);
   assert.deepEqual(
     item.files.map((file) => file.path),

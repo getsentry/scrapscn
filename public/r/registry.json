@@ -807,7 +807,7 @@
       "type": "registry:ui",
       "title": "Link",
       "description": "Regular Scraps router Link, ExternalLink, and Link behavior context.",
-      "dependencies": ["@sentry/react@10.69.0", "@types/history@3.2.5", "react-router-dom@6.30.6"],
+      "dependencies": ["@sentry/react@10.69.0", "@types/history@3.2.5", "react-router-dom@7.18.3"],
       "cssVars": {
         "light": { "scraps-link-disabled": "#878490" },
         "dark": { "scraps-link-disabled": "#958e9f" }
