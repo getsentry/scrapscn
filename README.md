@@ -51,6 +51,10 @@ Edit `template.tsx`. Do not edit a central template registry. Scrapscn generates
 
 Each template uses local mock data. Put state that reviewers must share in URL parameters.
 
+## Reuse the page frame
+
+Select **Page frame** in the template menu, or open `/templates/page-frame`. The reusable shell is ported from Ivy’s Seer automation frame, with the Figma product navigation, sidebar peek/flyout/pin behavior, and a mobile drawer. Run `pnpm storybook` and open **Compositions → Page Frame** for docs and Desktop, Collapsed, Mobile, Dark, and With Panel examples. See [the page frame guide](docs/page-frame.md) for composition and navigation props.
+
 ## Share with Vercel Preview
 
 Push the prototype branch. Open both the Vercel branch URL and the commit URL. The branch URL follows new commits. The commit URL keeps the reviewed version fixed. If deployment protection is active, create a Vercel Shareable Link for an external reviewer.
