@@ -857,3 +857,48 @@
     @apply font-sans;
   }
 }
+
+/* Page Frame navigation tokens ported from Ivy’s shared shell.
+ * Typography uses Scrapscn’s existing scale; these tokens are scoped to the frame. */
+@theme inline {
+  --color-nav-fg: var(--nav-fg);
+  --color-nav-fg-hover: var(--nav-fg-hover);
+  --color-nav-fg-selected: var(--nav-fg-selected);
+  --color-nav-hover: var(--nav-hover);
+  --color-nav-active: var(--nav-active);
+  --color-nav-selected: var(--nav-selected);
+  --color-nav-selected-hover: var(--nav-selected-hover);
+  --color-nav-selected-active: var(--nav-selected-active);
+  --color-nav-border: var(--nav-border);
+  --color-nav-selected-border: var(--nav-selected-border);
+  --color-nav-focus: var(--nav-focus);
+}
+
+.sentry-page-frame {
+  --nav-fg: #6a6772; /* interactive/link/neutral/rest */
+  --nav-fg-hover: #5b5864; /* interactive/link/neutral/hover */
+  --nav-fg-selected: #181225; /* content/headings */
+  --nav-hover: #10103008; /* interactive/transparent/neutral/background/hover */
+  --nav-active: #0000200f; /* interactive/transparent/neutral/background/active */
+  --nav-selected: #0000f008; /* interactive/transparent/accent/selected/background/rest */
+  --nav-selected-hover: #0008f012;
+  --nav-selected-active: #1010f81f;
+  --nav-border: #00002026; /* border/transparent/neutral/muted */
+  --nav-selected-border: #1008f82e; /* border/transparent/accent/muted */
+  --nav-focus: #7553ff; /* focus/default */
+}
+
+.dark .sentry-page-frame,
+.sentry-page-frame.dark {
+  --nav-fg: #b5b0bd;
+  --nav-fg-hover: #c4c0cb;
+  --nav-fg-selected: #ffffff;
+  --nav-hover: #d8a0f80f;
+  --nav-active: #c0a8f81a;
+  --nav-selected: #5828f05e;
+  --nav-selected-hover: #4828b894;
+  --nav-selected-active: #402898d1;
+  --nav-border: #c0a8e03d;
+  --nav-selected-border: #6048d0c9;
+  --nav-focus: #7553ff;
+}

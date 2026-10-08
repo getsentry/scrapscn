@@ -1,0 +1,6 @@
+{
+  "slug": "page-frame",
+  "title": "Page frame",
+  "description": "Reusable Sentry navigation, breadcrumbs, and responsive page chrome.",
+  "tags": ["navigation", "layout", "page-frame"]
+}
